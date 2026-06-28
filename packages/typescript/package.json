@@ -1,0 +1,48 @@
+{
+  "name": "stophy",
+  "version": "0.1.0",
+  "description": "Official TypeScript SDK for Stophy — YouTube context API for AI agents.",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://stophy.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stophy/typescript-sdk.git"
+  },
+  "keywords": [
+    "stophy",
+    "youtube",
+    "transcript",
+    "sdk",
+    "ai-agents"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "generate": "openapi-ts",
+    "build": "tsup",
+    "test": "bun test ../../test/typescript",
+    "check-types": "tsc --noEmit",
+    "prepublishOnly": "npm run generate && npm run build"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "^0.64.0",
+    "@types/bun": "^1.1.14",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "@hey-api/client-fetch": "^0.10.2"
+  }
+}
