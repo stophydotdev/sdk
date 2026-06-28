@@ -1,0 +1,18 @@
+# JavaScript / TypeScript
+node_modules
+dist
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+build/
+*.egg-info/
+.pytest_cache/
+
+# Lockfiles for the publishable packages are committed; root has none.
+
+# Misc
+*.log
+.DS_Store
