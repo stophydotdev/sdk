@@ -1,14 +1,12 @@
 # stophy
 
-Official Python SDK for [Stophy](https://stophy.dev) — the **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
+Official Python SDK for [Stophy](https://stophy.dev) **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
 
-Built on [`httpx`](https://www.python-httpx.org/). Python 3.9+.
 
 ## Install
 
 ```bash
-pip install stophy
-# or: uv add stophy
+uv install stophy
 ```
 
 Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>` on every request.
@@ -81,25 +79,6 @@ except StophyError as err:
     # err.code: "UNAUTHORIZED" | "INSUFFICIENT_CREDITS" | "BAD_REQUEST" |
     #           "INVALID_INPUT" | "NOT_FOUND" | "CONCURRENCY_LIMITED" | "INTERNAL_ERROR"
 ```
-
-## Configuration
-
-```python
-Stophy(
-    api_key,
-    base_url="https://api.stophy.dev",  # optional override
-    headers={"x-app": "my-app"},          # optional, sent on every request
-    timeout=30.0,                          # optional httpx timeout
-    max_retries=2,                         # optional, 0 disables (default 2)
-    retry_initial_delay=0.5,               # optional backoff base, seconds
-)
-```
-
-### Retries
-
-Transient failures — network errors and `429`/`500`/`502`/`503`/`504` — are retried automatically with exponential backoff and jitter, honoring the `Retry-After` header. Every endpoint is a read, so retries are always safe. Set `max_retries=0` to opt out.
-
-The client is also a context manager (`with Stophy(...) as stophy:`) and exposes the underlying `httpx.Client` as `stophy.client`.
 
 ## License
 

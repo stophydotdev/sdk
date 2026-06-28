@@ -1,8 +1,7 @@
 # stophy
 
-Official TypeScript SDK for [Stophy](https://stophy.dev) — the **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
+Official TypeScript SDK for [Stophy](https://stophy.dev)  **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
 
-Fully typed, dependency-light (built on `fetch`), works in Node, Bun, Deno, and the browser.
 
 ## Install
 
@@ -95,24 +94,6 @@ try {
 }
 ```
 
-## Configuration
-
-```ts
-new Stophy({
-  apiKey: "sk_...",                  // required
-  baseUrl: "https://api.stophy.dev", // optional override
-  headers: { "x-app": "my-app" },    // optional, sent on every request
-  fetch: customFetch,                // optional fetch implementation
-  maxRetries: 2,                     // optional, 0 disables (default 2)
-  retryInitialDelayMs: 500,          // optional backoff base (default 500)
-});
-```
-
-### Retries
-
-Transient failures — network errors and `429`/`500`/`502`/`503`/`504` — are retried automatically with exponential backoff and jitter, honoring the `Retry-After` header. Every endpoint is a read, so retries are always safe. Set `maxRetries: 0` to opt out.
-
-Need lower-level access? The underlying [`@hey-api/client-fetch`](https://heyapi.dev) client is exposed as `stophy.client`.
 
 ## License
 

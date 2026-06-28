@@ -1,7 +1,7 @@
 [project]
 name = "stophy"
 version = "0.1.0"
-description = "Official Python SDK for Stophy — YouTube context API for AI agents."
+description = "Official Python SDK for Stophy - YouTube context API for AI agents."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
