@@ -20,13 +20,11 @@ npm install stophy
 ```ts
 import { Stophy } from "stophy";
 
-const stophy = new Stophy({ apiKey: process.env.STOPHY_API_KEY! });
-
-const { data } = await stophy.video({
-  type: "transcript",
-  videoUrl: "https://www.youtube.com/watch?v=D7liwdjvhWc",
-});
-console.log(data?.text);
+const stophy = new Stophy(); // reads STOPHY_API_KEY
+const result = await stophy.transcript(
+  "https://www.youtube.com/watch?v=D7liwdjvhWc",
+);
+console.log(result.data.text);
 ```
 
 ### Python
@@ -36,14 +34,11 @@ pip install stophy
 ```
 
 ```python
-import os
 from stophy import Stophy
 
-stophy = Stophy(os.environ["STOPHY_API_KEY"])
-
-result = stophy.video(
-    type="transcript",
-    video_url="https://www.youtube.com/watch?v=D7liwdjvhWc",
+stophy = Stophy()  # reads STOPHY_API_KEY
+result = stophy.transcript(
+    "https://www.youtube.com/watch?v=D7liwdjvhWc"
 )
 print(result["data"]["text"])
 ```
@@ -52,7 +47,10 @@ print(result["data"]["text"])
 
 | Method | Description |
 | --- | --- |
-| `video(...)` | Details, transcript, comments, replies, or live chat (set `type`) |
+| `video_details(...)` / `videoDetails(...)` | Video metadata and related videos |
+| `transcript(...)` | Timestamped captions and full text |
+| `comments(...)` / `replies(...)` | Top-level comments and reply threads |
+| `live_chat(...)` / `liveChat(...)` | Live stream chat messages |
 | `search(...)` | Search with filters for type, sort, date, duration, features |
 | `channel(...)` | Channel metadata + content by `tab` |
 | `playlist(...)` | Playlist items, paginated |
@@ -61,7 +59,7 @@ print(result["data"]["text"])
 | `logs(...)` | Recent request logs |
 | `usage(...)` | Daily credit/request counts |
 
-Each SDK exposes the same surface with idiomatic naming for its language (camelCase in TS, snake_case in Python). List endpoints return a `continuationToken` — pass it back to fetch the next page.
+Each SDK exposes the same surface with idiomatic naming for its language (camelCase in TypeScript, snake_case in Python). Python also exports `AsyncStophy` with matching awaitable methods. The generic `video(...)` method remains available for callers that prefer the API discriminant directly.
 
 ## Errors
 
