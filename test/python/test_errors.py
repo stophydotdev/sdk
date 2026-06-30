@@ -6,7 +6,14 @@ from helpers import make_client
 
 def test_raises_on_401_with_code_and_message():
     client, _ = make_client(
-        {"status": 401, "json": {"success": False, "code": "UNAUTHORIZED", "error": "Invalid API key"}}
+        {
+            "status": 401,
+            "json": {
+                "success": False,
+                "code": "UNAUTHORIZED",
+                "error": "Invalid API key",
+            },
+        }
     )
     with pytest.raises(StophyError) as info:
         client.credits()
@@ -18,7 +25,14 @@ def test_raises_on_401_with_code_and_message():
 
 def test_maps_insufficient_credits_402():
     client, _ = make_client(
-        {"status": 402, "json": {"success": False, "code": "INSUFFICIENT_CREDITS", "error": "Out of credits"}}
+        {
+            "status": 402,
+            "json": {
+                "success": False,
+                "code": "INSUFFICIENT_CREDITS",
+                "error": "Out of credits",
+            },
+        }
     )
     with pytest.raises(StophyError) as info:
         client.search(q="x")

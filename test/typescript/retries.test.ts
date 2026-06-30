@@ -6,10 +6,13 @@ const ok = { json: { success: true, data: { credits: 1 } } };
 
 describe("retries", () => {
 	test("retries a 429 then succeeds", async () => {
-		const { client, calls } = makeClient([{ status: 429, json: { success: false } }, ok], {
-			maxRetries: 2,
-			retryInitialDelayMs: 0,
-		});
+		const { client, calls } = makeClient(
+			[{ status: 429, json: { success: false } }, ok],
+			{
+				maxRetries: 2,
+				retryInitialDelayMs: 0,
+			},
+		);
 		const res = await client.credits();
 		expect(res.data?.credits).toBe(1);
 		expect(calls.length).toBe(2);
@@ -17,7 +20,10 @@ describe("retries", () => {
 
 	test("retries 5xx up to maxRetries, then throws", async () => {
 		const { client, calls } = makeClient(
-			{ status: 503, json: { success: false, code: "INTERNAL_ERROR", error: "down" } },
+			{
+				status: 503,
+				json: { success: false, code: "INTERNAL_ERROR", error: "down" },
+			},
 			{ maxRetries: 2, retryInitialDelayMs: 0 },
 		);
 		const err = await client.credits().catch((e) => e);
@@ -27,14 +33,20 @@ describe("retries", () => {
 	});
 
 	test("does not retry when maxRetries is 0", async () => {
-		const { client, calls } = makeClient({ status: 429, json: { success: false } });
+		const { client, calls } = makeClient({
+			status: 429,
+			json: { success: false },
+		});
 		await client.credits().catch(() => {});
 		expect(calls.length).toBe(1);
 	});
 
 	test("does not retry non-retryable statuses (400)", async () => {
 		const { client, calls } = makeClient(
-			{ status: 400, json: { success: false, code: "INVALID_INPUT", error: "bad" } },
+			{
+				status: 400,
+				json: { success: false, code: "INVALID_INPUT", error: "bad" },
+			},
 			{ maxRetries: 3, retryInitialDelayMs: 0 },
 		);
 		await client.search({ q: "x" }).catch(() => {});
@@ -62,7 +74,14 @@ describe("retries", () => {
 
 	test("honors the Retry-After header (seconds)", async () => {
 		const { client, calls } = makeClient(
-			[{ status: 429, headers: { "retry-after": "0" }, json: { success: false } }, ok],
+			[
+				{
+					status: 429,
+					headers: { "retry-after": "0" },
+					json: { success: false },
+				},
+				ok,
+			],
 			{ maxRetries: 1, retryInitialDelayMs: 9999 },
 		);
 		const started = Date.now();

@@ -1,4 +1,7 @@
-import { Stophy, type StophyOptions } from "../../packages/typescript/src/index";
+import {
+	Stophy,
+	type StophyOptions,
+} from "../../packages/typescript/src/index";
 
 // A request recorded by the mock fetch, so tests can assert on what was sent.
 export interface CapturedRequest {
@@ -47,9 +50,14 @@ export function createMock(responses: MockResponseInit | MockResponseInit[]) {
 			body,
 		});
 
-		const next = queue.length > 1 ? (queue.shift() as MockResponseInit) : queue[0];
+		const next =
+			queue.length > 1 ? (queue.shift() as MockResponseInit) : queue[0];
 		const payload =
-			next.raw !== undefined ? next.raw : next.json !== undefined ? JSON.stringify(next.json) : "";
+			next.raw !== undefined
+				? next.raw
+				: next.json !== undefined
+					? JSON.stringify(next.json)
+					: "";
 		return new Response(payload, {
 			status: next.status ?? 200,
 			headers: { "content-type": "application/json", ...next.headers },
@@ -65,7 +73,12 @@ export function makeClient(
 	opts: Partial<StophyOptions> = {},
 ) {
 	const { fetchImpl, calls } = createMock(responses);
-	const client = new Stophy({ apiKey: "sk_test", fetch: fetchImpl, maxRetries: 0, ...opts });
+	const client = new Stophy({
+		apiKey: "sk_test",
+		fetch: fetchImpl,
+		maxRetries: 0,
+		...opts,
+	});
 	return { client, calls };
 }
 

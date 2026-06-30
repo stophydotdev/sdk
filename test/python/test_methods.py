@@ -7,7 +7,10 @@ def test_video_posts_body_and_returns_data():
 
     assert calls[0].method == "POST"
     assert calls[0].url.path == "/v1/video"
-    assert body_of(calls[0]) == {"type": "transcript", "videoUrl": "https://youtu.be/abc"}
+    assert body_of(calls[0]) == {
+        "type": "transcript",
+        "videoUrl": "https://youtu.be/abc",
+    }
     assert res["data"] == {"text": "hello world"}
     assert res["requestId"] == "req_1"
 
@@ -24,7 +27,11 @@ def test_search_posts_filters():
 
     assert calls[0].method == "POST"
     assert calls[0].url.path == "/v1/search"
-    assert body_of(calls[0]) == {"q": "lofi", "sortBy": "popularity", "duration": "long"}
+    assert body_of(calls[0]) == {
+        "q": "lofi",
+        "sortBy": "popularity",
+        "duration": "long",
+    }
     assert res["data"]["continuationToken"] == "next"
 
 
@@ -33,7 +40,10 @@ def test_channel_posts_url_and_tab():
     client.channel(channel_url="https://youtube.com/@mkbhd", tab="video")
 
     assert calls[0].url.path == "/v1/channel"
-    assert body_of(calls[0]) == {"channelUrl": "https://youtube.com/@mkbhd", "tab": "video"}
+    assert body_of(calls[0]) == {
+        "channelUrl": "https://youtube.com/@mkbhd",
+        "tab": "video",
+    }
 
 
 def test_playlist_posts_url():
@@ -41,7 +51,9 @@ def test_playlist_posts_url():
     client.playlist(playlist_url="https://youtube.com/playlist?list=PL123")
 
     assert calls[0].url.path == "/v1/playlist"
-    assert body_of(calls[0]) == {"playlistUrl": "https://youtube.com/playlist?list=PL123"}
+    assert body_of(calls[0]) == {
+        "playlistUrl": "https://youtube.com/playlist?list=PL123"
+    }
 
 
 def test_suggest_sends_query_params():

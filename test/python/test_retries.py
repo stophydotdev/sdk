@@ -22,7 +22,10 @@ def test_retries_a_429_then_succeeds():
 
 def test_retries_5xx_up_to_max_then_raises():
     client, calls = make_client(
-        {"status": 503, "json": {"success": False, "code": "INTERNAL_ERROR", "error": "down"}},
+        {
+            "status": 503,
+            "json": {"success": False, "code": "INTERNAL_ERROR", "error": "down"},
+        },
         max_retries=2,
         retry_initial_delay=0,
     )
@@ -41,7 +44,10 @@ def test_does_not_retry_when_max_retries_is_zero():
 
 def test_does_not_retry_non_retryable_status():
     client, calls = make_client(
-        {"status": 400, "json": {"success": False, "code": "INVALID_INPUT", "error": "bad"}},
+        {
+            "status": 400,
+            "json": {"success": False, "code": "INVALID_INPUT", "error": "bad"},
+        },
         max_retries=3,
         retry_initial_delay=0,
     )
@@ -71,7 +77,14 @@ def test_retries_network_errors():
 
 def test_honors_retry_after_header_seconds():
     client, calls = make_client(
-        [{"status": 429, "headers": {"retry-after": "0"}, "json": {"success": False}}, OK],
+        [
+            {
+                "status": 429,
+                "headers": {"retry-after": "0"},
+                "json": {"success": False},
+            },
+            OK,
+        ],
         max_retries=1,
         retry_initial_delay=9999,
     )
