@@ -15,6 +15,7 @@ export type ErrorResponse = {
     | "INVALID_INPUT"
     | "NOT_FOUND"
     | "CONCURRENCY_LIMITED"
+    | "UPSTREAM_UNAVAILABLE"
     | "INTERNAL_ERROR";
   /**
    * Human-readable error message.
@@ -58,38 +59,38 @@ export type TranscriptResult = {
 
 export type VideoDetails = {
   id: string;
-  type?: "video";
+  type: "video";
   videoUrl: string;
   title: string | null;
-  author?: string | null;
-  authorId?: string | null;
-  category?: string | null;
-  description?: string | null;
-  durationSec?: number | null;
-  durationText?: string | null;
-  isLive?: boolean;
-  likeCount?: number | null;
-  likeCountText?: string | null;
-  publishedAt?: string | null;
-  tags?: Array<string>;
-  viewCount?: number | null;
-  viewCountText?: string | null;
+  author: string | null;
+  authorId: string | null;
+  category: string | null;
+  description: string | null;
+  durationSec: number | null;
+  durationText: string | null;
+  isLive: boolean;
+  likeCount: number | null;
+  likeCountText: string | null;
+  publishedAt: string | null;
+  tags: Array<string>;
+  viewCount: number | null;
+  viewCountText: string | null;
   thumbnails: Array<Thumbnail>;
 };
 
 export type RelatedVideo = {
   id: string;
-  type?: "video";
+  type: "video";
   videoUrl: string;
-  title?: string | null;
-  author?: string | null;
-  authorId?: string | null;
-  durationSec?: number | null;
-  durationText?: string | null;
-  publishedAt?: string | null;
-  publishedAtText?: string | null;
-  viewCount?: number | null;
-  viewCountText?: string | null;
+  title: string | null;
+  author: string | null;
+  authorId: string | null;
+  durationSec: number | null;
+  durationText: string | null;
+  publishedAt: string | null;
+  publishedAtText: string | null;
+  viewCount: number | null;
+  viewCountText: string | null;
   thumbnails: Array<Thumbnail>;
 };
 
@@ -103,22 +104,30 @@ export type Comment = {
   text: string | null;
   author: string | null;
   authorId: string | null;
-  authorThumbnail?: string | null;
+  authorThumbnail: string | null;
   hasChannelOwnerReplied: boolean;
   isChannelOwner: boolean;
   isHearted: boolean;
   isPinned: boolean;
   isVerified: boolean;
-  publishedAt?: string | null;
-  publishedAtText?: string | null;
-  likeCount?: number | null;
-  likeCountText?: string | null;
-  replyCount?: number | null;
-  replyCountText?: string | null;
-  repliesToken?: string | null;
+  publishedAt: string | null;
+  publishedAtText: string | null;
+  likeCount: number | null;
+  likeCountText: string | null;
+  replyCount: number | null;
+  replyCountText: string | null;
+  repliesToken: string | null;
 };
 
 export type CommentsData = {
+  /**
+   * Present for top-level comment requests.
+   */
+  videoId?: string;
+  /**
+   * Resolved sort order for top-level comment requests.
+   */
+  sortBy?: "any" | "latest" | "top";
   items: Array<Comment>;
   continuationToken: string | null;
   empty?: EmptyState;
@@ -127,21 +136,21 @@ export type CommentsData = {
 export type LiveChatMessage = {
   id: string;
   text: string;
-  author?: string | null;
-  authorId?: string | null;
-  timestampUsec?: string | null;
+  author: string | null;
+  authorId: string | null;
+  timestampUsec: string | null;
   isOwner: boolean;
   isModerator: boolean;
   isVerified: boolean;
-  superChatAmount?: string | null;
-  superChatCurrency?: string | null;
+  superChatAmount: string | null;
+  superChatCurrency: string | null;
 };
 
 export type LiveChatData = {
-  status: string;
+  status: "live" | "upcoming" | "replay" | "chat_disabled" | "not_live";
   isLive: boolean;
-  concurrentViewers?: number | null;
-  pollIntervalMs?: number | null;
+  concurrentViewers: number | null;
+  pollIntervalMs: number | null;
   messages: Array<LiveChatMessage>;
   continuationToken: string | null;
 };
@@ -160,19 +169,19 @@ export type SearchVideo = {
   id: string;
   videoUrl: string;
   title: string;
-  author?: string | null;
-  authorId?: string | null;
-  description?: string | null;
-  duration?: string | null;
-  durationSec?: number | null;
-  durationText?: string | null;
-  isLive?: boolean;
-  isUpcoming?: boolean;
-  isVerified?: boolean;
-  viewCount?: number | null;
-  viewCountText?: string | null;
-  publishedAt?: string | null;
-  publishedAtText?: string | null;
+  author: string | null;
+  authorId: string | null;
+  description: string | null;
+  duration: string | null;
+  durationSec: number | null;
+  durationText: string | null;
+  isLive: boolean;
+  isUpcoming: boolean;
+  isVerified: boolean;
+  viewCount: number | null;
+  viewCountText: string | null;
+  publishedAt: string | null;
+  publishedAtText: string | null;
   thumbnails: Array<Thumbnail>;
 };
 
@@ -181,16 +190,8 @@ export type SearchShort = {
   id: string;
   shortUrl: string;
   title: string;
-  author?: string | null;
-  authorId?: string | null;
-  description?: string | null;
-  duration?: string | null;
-  durationSec?: number | null;
-  durationText?: string | null;
-  viewCount?: number | null;
-  viewCountText?: string | null;
-  publishedAt?: string | null;
-  publishedAtText?: string | null;
+  viewCount: number | null;
+  viewCountText: string | null;
   thumbnails: Array<Thumbnail>;
 };
 
@@ -199,10 +200,10 @@ export type SearchPlaylist = {
   id: string;
   playlistUrl: string;
   title: string;
-  author?: string | null;
-  authorId?: string | null;
-  videoCount?: number | null;
-  videoCountText?: string | null;
+  author: string | null;
+  authorId: string | null;
+  videoCount: number | null;
+  videoCountText: string | null;
   thumbnails: Array<Thumbnail>;
 };
 
@@ -211,11 +212,11 @@ export type SearchChannel = {
   id: string;
   channelUrl: string;
   name: string;
-  handle?: string | null;
-  description?: string | null;
-  subscriberCount?: number | null;
-  subscriberCountText?: string | null;
-  isVerified?: boolean;
+  handle: string | null;
+  description: string | null;
+  subscriberCount: number | null;
+  subscriberCountText: string | null;
+  isVerified: boolean;
   thumbnails: Array<Thumbnail>;
 };
 
@@ -233,7 +234,17 @@ export type SearchItem =
       type?: "channel";
     } & SearchChannel);
 
+export type SearchQuery = {
+  q: string;
+  type?: "video" | "short" | "channel" | "playlist" | "movie";
+  sortBy?: "relevance" | "popularity" | "date" | "rating";
+  uploadDate?: "today" | "week" | "month" | "year";
+  duration?: "short" | "medium" | "long";
+  features?: Array<string>;
+};
+
 export type SearchData = {
+  query: SearchQuery;
   items: Array<SearchItem>;
   continuationToken: string | null;
   estimatedResults?: number;
@@ -250,11 +261,11 @@ export type ChannelProfile = {
   name: string | null;
   handle: string | null;
   channelUrl: string | null;
-  description?: string | null;
-  subscriberCount?: number | null;
-  subscriberCountText?: string | null;
-  videoCount?: number | null;
-  videoCountText?: string | null;
+  description: string | null;
+  subscriberCount: number | null;
+  subscriberCountText: string | null;
+  videoCount: number | null;
+  videoCountText: string | null;
   viewCount?: number | null;
   viewCountText?: string | null;
   isVerified: boolean;
@@ -265,27 +276,63 @@ export type ChannelProfile = {
   links?: Array<ChannelLink> | null;
 };
 
-export type ContentItem = {
+export type ChannelVideo = {
   id: string;
-  type?: string;
-  title?: string | null;
-  videoUrl?: string;
-  shortUrl?: string;
-  playlistUrl?: string;
-  author?: string | null;
-  authorId?: string | null;
-  durationSec?: number | null;
-  durationText?: string | null;
-  viewCount?: number | null;
-  viewCountText?: string | null;
-  publishedAt?: string | null;
-  publishedAtText?: string | null;
+  type: "video";
+  title: string | null;
+  videoUrl: string;
+  author: string | null;
+  authorId: string | null;
+  duration: string | null;
+  durationSec: number | null;
+  durationText: string | null;
+  isLive: boolean;
+  isUpcoming: boolean;
+  upcomingAt: string | null;
+  viewCount: number | null;
+  viewCountText: string | null;
+  publishedAt: string | null;
+  publishedAtText: string | null;
   thumbnails: Array<Thumbnail>;
 };
 
+export type ChannelShort = {
+  id: string;
+  type: "short";
+  shortUrl: string;
+  title: string | null;
+  author: string | null;
+  authorId: string | null;
+  viewCount: number | null;
+  viewCountText: string | null;
+  thumbnails: Array<Thumbnail>;
+};
+
+export type ChannelPlaylist = {
+  id: string;
+  type: "playlist";
+  playlistUrl: string;
+  title: string | null;
+  author: string | null;
+  authorId: string | null;
+  videoCount: string | null;
+  thumbnails: Array<Thumbnail>;
+};
+
+export type ContentItem =
+  | ({
+      type?: "video";
+    } & ChannelVideo)
+  | ({
+      type?: "short";
+    } & ChannelShort)
+  | ({
+      type?: "playlist";
+    } & ChannelPlaylist);
+
 export type ChannelData = {
   channel: ChannelProfile | null;
-  tab?: string | null;
+  tab: "video" | "short" | "playlist" | "about";
   items?: Array<ContentItem>;
   continuationToken?: string | null;
   empty?: EmptyState;
@@ -293,34 +340,35 @@ export type ChannelData = {
 
 export type PlaylistMeta = {
   id: string;
-  type?: "playlist";
+  type: "playlist";
   playlistUrl: string;
-  title?: string | null;
-  author?: string | null;
-  authorId?: string | null;
-  description?: string | null;
-  videoCount?: string | null;
+  title: string | null;
+  author: string | null;
+  authorId: string | null;
+  description: string | null;
+  videoCount: string | null;
   thumbnails: Array<Thumbnail>;
 };
 
 export type PlaylistItem = {
   id: string;
-  type?: "video";
+  type: "video";
   videoUrl: string;
-  title?: string | null;
-  author?: string | null;
-  authorId?: string | null;
-  durationSec?: number | null;
-  durationText?: string | null;
-  index?: number | null;
-  isLive?: boolean;
-  isPlayable?: boolean;
-  isUpcoming?: boolean;
-  upcomingAt?: string | null;
-  viewCount?: number | null;
-  viewCountText?: string | null;
-  publishedAt?: string | null;
-  publishedAtText?: string | null;
+  title: string | null;
+  author: string | null;
+  authorId: string | null;
+  duration: string | null;
+  durationSec: number | null;
+  durationText: string | null;
+  index: number | null;
+  isLive: boolean;
+  isPlayable: boolean;
+  isUpcoming: boolean;
+  upcomingAt: string | null;
+  viewCount: number | null;
+  viewCountText: string | null;
+  publishedAt: string | null;
+  publishedAtText: string | null;
   thumbnails: Array<Thumbnail>;
 };
 
@@ -376,28 +424,36 @@ export type UsageData = {
 };
 
 export type GetVideoData = {
-  body: {
-    /**
-     * The type of data to retrieve.
-     */
-    type: "details" | "transcript" | "comments" | "replies" | "livechat";
-    /**
-     * Full YouTube video URL. Not required when type is replies.
-     */
-    videoUrl: string;
-    /**
-     * Comment sort order. Only applies when type is comments.
-     */
-    sortBy?: "latest" | "top";
-    /**
-     * Live chat mode. Only applies when type is livechat: 'top' = Top chat (moderated, default), 'live' = all messages. Applied on the first call; later polls keep the chosen mode.
-     */
-    chatType?: "top" | "live";
-    /**
-     * Pagination token. Required when type is replies (use the repliesToken from a comment item); for livechat, pass the continuationToken from a previous livechat response to poll for new messages.
-     */
-    continuationToken?: string;
-  };
+  body:
+    | {
+        /**
+         * The type of data to retrieve.
+         */
+        type: "details" | "transcript" | "comments" | "livechat";
+        /**
+         * Full YouTube video URL.
+         */
+        videoUrl: string;
+        /**
+         * Comment sort order. Only applies when type is comments.
+         */
+        sortBy?: "latest" | "top";
+        /**
+         * Live chat mode. Only applies when type is livechat: 'top' = Top chat (moderated, default), 'live' = all messages. Applied on the first call; later polls keep the chosen mode.
+         */
+        chatType?: "top" | "live";
+        /**
+         * For comments, pass a previous comments response token. For livechat, pass the previous livechat token to poll for new messages.
+         */
+        continuationToken?: string;
+      }
+    | {
+        type: "replies";
+        /**
+         * The repliesToken from a top-level comment.
+         */
+        continuationToken: string;
+      };
   path?: never;
   query?: never;
   url: "/v1/video";
@@ -417,6 +473,10 @@ export type GetVideoErrors = {
    */
   402: ErrorResponse;
   /**
+   * Video or captions not found
+   */
+  404: ErrorResponse;
+  /**
    * Rate limited
    */
   429: ErrorResponse;
@@ -424,6 +484,10 @@ export type GetVideoErrors = {
    * Internal error
    */
   500: ErrorResponse;
+  /**
+   * Upstream video data temporarily unavailable
+   */
+  503: ErrorResponse;
 };
 
 export type GetVideoError = GetVideoErrors[keyof GetVideoErrors];

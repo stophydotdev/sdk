@@ -89,6 +89,7 @@
               "INVALID_INPUT",
               "NOT_FOUND",
               "CONCURRENCY_LIMITED",
+              "UPSTREAM_UNAVAILABLE",
               "INTERNAL_ERROR"
             ],
             "description": "Machine-readable error code."
@@ -312,8 +313,22 @@
         },
         "required": [
           "id",
+          "type",
           "videoUrl",
           "title",
+          "author",
+          "authorId",
+          "category",
+          "description",
+          "durationSec",
+          "durationText",
+          "isLive",
+          "likeCount",
+          "likeCountText",
+          "publishedAt",
+          "tags",
+          "viewCount",
+          "viewCountText",
           "thumbnails"
         ],
         "additionalProperties": false
@@ -393,7 +408,17 @@
         },
         "required": [
           "id",
+          "type",
           "videoUrl",
+          "title",
+          "author",
+          "authorId",
+          "durationSec",
+          "durationText",
+          "publishedAt",
+          "publishedAtText",
+          "viewCount",
+          "viewCountText",
           "thumbnails"
         ],
         "additionalProperties": false
@@ -513,17 +538,38 @@
           "text",
           "author",
           "authorId",
+          "authorThumbnail",
           "hasChannelOwnerReplied",
           "isChannelOwner",
           "isHearted",
           "isPinned",
-          "isVerified"
+          "isVerified",
+          "publishedAt",
+          "publishedAtText",
+          "likeCount",
+          "likeCountText",
+          "replyCount",
+          "replyCountText",
+          "repliesToken"
         ],
         "additionalProperties": false
       },
       "CommentsData": {
         "type": "object",
         "properties": {
+          "videoId": {
+            "type": "string",
+            "description": "Present for top-level comment requests."
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "any",
+              "latest",
+              "top"
+            ],
+            "description": "Resolved sort order for top-level comment requests."
+          },
           "items": {
             "type": "array",
             "items": {
@@ -598,9 +644,14 @@
         "required": [
           "id",
           "text",
+          "author",
+          "authorId",
+          "timestampUsec",
           "isOwner",
           "isModerator",
-          "isVerified"
+          "isVerified",
+          "superChatAmount",
+          "superChatCurrency"
         ],
         "additionalProperties": false
       },
@@ -608,7 +659,14 @@
         "type": "object",
         "properties": {
           "status": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "live",
+              "upcoming",
+              "replay",
+              "chat_disabled",
+              "not_live"
+            ]
           },
           "isLive": {
             "type": "boolean"
@@ -641,6 +699,8 @@
         "required": [
           "status",
           "isLive",
+          "concurrentViewers",
+          "pollIntervalMs",
           "messages",
           "continuationToken"
         ],
@@ -759,6 +819,19 @@
           "id",
           "videoUrl",
           "title",
+          "author",
+          "authorId",
+          "description",
+          "duration",
+          "durationSec",
+          "durationText",
+          "isLive",
+          "isUpcoming",
+          "isVerified",
+          "viewCount",
+          "viewCountText",
+          "publishedAt",
+          "publishedAtText",
           "thumbnails"
         ],
         "additionalProperties": false
@@ -778,42 +851,6 @@
           "title": {
             "type": "string"
           },
-          "author": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "authorId": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "description": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "duration": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "durationSec": {
-            "type": [
-              "number",
-              "null"
-            ]
-          },
-          "durationText": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
           "viewCount": {
             "type": [
               "number",
@@ -821,18 +858,6 @@
             ]
           },
           "viewCountText": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "publishedAt": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "publishedAtText": {
             "type": [
               "string",
               "null"
@@ -850,6 +875,8 @@
           "id",
           "shortUrl",
           "title",
+          "viewCount",
+          "viewCountText",
           "thumbnails"
         ],
         "additionalProperties": false
@@ -905,6 +932,10 @@
           "id",
           "playlistUrl",
           "title",
+          "author",
+          "authorId",
+          "videoCount",
+          "videoCountText",
           "thumbnails"
         ],
         "additionalProperties": false
@@ -963,6 +994,11 @@
           "id",
           "channelUrl",
           "name",
+          "handle",
+          "description",
+          "subscriberCount",
+          "subscriberCountText",
+          "isVerified",
           "thumbnails"
         ],
         "additionalProperties": false
@@ -992,9 +1028,66 @@
           }
         }
       },
+      "SearchQuery": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "video",
+              "short",
+              "channel",
+              "playlist",
+              "movie"
+            ]
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "popularity",
+              "date",
+              "rating"
+            ]
+          },
+          "uploadDate": {
+            "type": "string",
+            "enum": [
+              "today",
+              "week",
+              "month",
+              "year"
+            ]
+          },
+          "duration": {
+            "type": "string",
+            "enum": [
+              "short",
+              "medium",
+              "long"
+            ]
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false
+      },
       "SearchData": {
         "type": "object",
         "properties": {
+          "query": {
+            "$ref": "#/components/schemas/SearchQuery"
+          },
           "items": {
             "type": "array",
             "items": {
@@ -1015,6 +1108,7 @@
           }
         },
         "required": [
+          "query",
           "items",
           "continuationToken"
         ],
@@ -1151,20 +1245,25 @@
           "name",
           "handle",
           "channelUrl",
+          "description",
+          "subscriberCount",
+          "subscriberCountText",
+          "videoCount",
+          "videoCountText",
           "isVerified",
           "thumbnails",
           "banners"
         ],
         "additionalProperties": false
       },
-      "ContentItem": {
+      "ChannelVideo": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
           "type": {
-            "type": "string"
+            "const": "video"
           },
           "title": {
             "type": [
@@ -1173,12 +1272,6 @@
             ]
           },
           "videoUrl": {
-            "type": "string"
-          },
-          "shortUrl": {
-            "type": "string"
-          },
-          "playlistUrl": {
             "type": "string"
           },
           "author": {
@@ -1193,6 +1286,12 @@
               "null"
             ]
           },
+          "duration": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "durationSec": {
             "type": [
               "number",
@@ -1200,6 +1299,18 @@
             ]
           },
           "durationText": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "isLive": {
+            "type": "boolean"
+          },
+          "isUpcoming": {
+            "type": "boolean"
+          },
+          "upcomingAt": {
             "type": [
               "string",
               "null"
@@ -1238,8 +1349,162 @@
         },
         "required": [
           "id",
+          "type",
+          "videoUrl",
+          "title",
+          "author",
+          "authorId",
+          "duration",
+          "durationSec",
+          "durationText",
+          "isLive",
+          "isUpcoming",
+          "upcomingAt",
+          "viewCount",
+          "viewCountText",
+          "publishedAt",
+          "publishedAtText",
           "thumbnails"
-        ]
+        ],
+        "additionalProperties": false
+      },
+      "ChannelShort": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "const": "short"
+          },
+          "shortUrl": {
+            "type": "string"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "author": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "authorId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "viewCount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "viewCountText": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "thumbnails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Thumbnail"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "shortUrl",
+          "title",
+          "author",
+          "authorId",
+          "viewCount",
+          "viewCountText",
+          "thumbnails"
+        ],
+        "additionalProperties": false
+      },
+      "ChannelPlaylist": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "const": "playlist"
+          },
+          "playlistUrl": {
+            "type": "string"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "author": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "authorId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "videoCount": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "thumbnails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Thumbnail"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "playlistUrl",
+          "title",
+          "author",
+          "authorId",
+          "videoCount",
+          "thumbnails"
+        ],
+        "additionalProperties": false
+      },
+      "ContentItem": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ChannelVideo"
+          },
+          {
+            "$ref": "#/components/schemas/ChannelShort"
+          },
+          {
+            "$ref": "#/components/schemas/ChannelPlaylist"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "video": "#/components/schemas/ChannelVideo",
+            "short": "#/components/schemas/ChannelShort",
+            "playlist": "#/components/schemas/ChannelPlaylist"
+          }
+        }
       },
       "ChannelData": {
         "type": "object",
@@ -1255,9 +1520,12 @@
             ]
           },
           "tab": {
-            "type": [
-              "string",
-              "null"
+            "type": "string",
+            "enum": [
+              "video",
+              "short",
+              "playlist",
+              "about"
             ]
           },
           "items": {
@@ -1277,7 +1545,8 @@
           }
         },
         "required": [
-          "channel"
+          "channel",
+          "tab"
         ],
         "additionalProperties": false
       },
@@ -1332,9 +1601,16 @@
         },
         "required": [
           "id",
+          "type",
           "playlistUrl",
+          "title",
+          "author",
+          "authorId",
+          "description",
+          "videoCount",
           "thumbnails"
-        ]
+        ],
+        "additionalProperties": false
       },
       "PlaylistItem": {
         "type": "object",
@@ -1361,6 +1637,12 @@
             ]
           },
           "authorId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duration": {
             "type": [
               "string",
               "null"
@@ -1432,9 +1714,26 @@
         },
         "required": [
           "id",
+          "type",
           "videoUrl",
+          "title",
+          "author",
+          "authorId",
+          "duration",
+          "durationSec",
+          "durationText",
+          "index",
+          "isLive",
+          "isPlayable",
+          "isUpcoming",
+          "upcomingAt",
+          "viewCount",
+          "viewCountText",
+          "publishedAt",
+          "publishedAtText",
           "thumbnails"
-        ]
+        ],
+        "additionalProperties": false
       },
       "PlaylistData": {
         "type": "object",
@@ -1659,47 +1958,71 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "type",
-                  "videoUrl"
-                ],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "details",
-                      "transcript",
-                      "comments",
-                      "replies",
-                      "livechat"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "type",
+                      "videoUrl"
                     ],
-                    "description": "The type of data to retrieve."
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "details",
+                          "transcript",
+                          "comments",
+                          "livechat"
+                        ],
+                        "description": "The type of data to retrieve."
+                      },
+                      "videoUrl": {
+                        "type": "string",
+                        "description": "Full YouTube video URL."
+                      },
+                      "sortBy": {
+                        "type": "string",
+                        "enum": [
+                          "latest",
+                          "top"
+                        ],
+                        "description": "Comment sort order. Only applies when type is comments."
+                      },
+                      "chatType": {
+                        "type": "string",
+                        "enum": [
+                          "top",
+                          "live"
+                        ],
+                        "description": "Live chat mode. Only applies when type is livechat: 'top' = Top chat (moderated, default), 'live' = all messages. Applied on the first call; later polls keep the chosen mode."
+                      },
+                      "continuationToken": {
+                        "type": "string",
+                        "description": "For comments, pass a previous comments response token. For livechat, pass the previous livechat token to poll for new messages."
+                      }
+                    },
+                    "additionalProperties": false
                   },
-                  "videoUrl": {
-                    "type": "string",
-                    "description": "Full YouTube video URL. Not required when type is replies."
-                  },
-                  "sortBy": {
-                    "type": "string",
-                    "enum": [
-                      "latest",
-                      "top"
+                  {
+                    "type": "object",
+                    "required": [
+                      "type",
+                      "continuationToken"
                     ],
-                    "description": "Comment sort order. Only applies when type is comments."
-                  },
-                  "chatType": {
-                    "type": "string",
-                    "enum": [
-                      "top",
-                      "live"
-                    ],
-                    "description": "Live chat mode. Only applies when type is livechat: 'top' = Top chat (moderated, default), 'live' = all messages. Applied on the first call; later polls keep the chosen mode."
-                  },
-                  "continuationToken": {
-                    "type": "string",
-                    "description": "Pagination token. Required when type is replies (use the repliesToken from a comment item); for livechat, pass the continuationToken from a previous livechat response to poll for new messages."
+                    "properties": {
+                      "type": {
+                        "const": "replies"
+                      },
+                      "continuationToken": {
+                        "type": "string",
+                        "description": "The repliesToken from a top-level comment."
+                      }
+                    },
+                    "additionalProperties": false
                   }
+                ],
+                "discriminator": {
+                  "propertyName": "type"
                 }
               },
               "examples": {
@@ -1832,6 +2155,16 @@
               }
             }
           },
+          "404": {
+            "description": "Video or captions not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limited",
             "headers": {
@@ -1852,6 +2185,16 @@
           },
           "500": {
             "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Upstream video data temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

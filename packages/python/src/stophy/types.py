@@ -17,8 +17,10 @@ ErrorCode = Literal[
     "INVALID_INPUT",
     "NOT_FOUND",
     "CONCURRENCY_LIMITED",
+    "UPSTREAM_UNAVAILABLE",
     "INTERNAL_ERROR",
 ]
+LiveChatStatus = Literal["live", "upcoming", "replay", "chat_disabled", "not_live"]
 
 
 class Thumbnail(TypedDict, total=False):
@@ -117,6 +119,8 @@ class Comment(TypedDict, total=False):
 
 
 class CommentsData(TypedDict, total=False):
+    videoId: str
+    sortBy: Literal["any", "latest", "top"]
     items: List[Comment]
     continuationToken: Optional[str]
     empty: EmptyState
@@ -137,7 +141,7 @@ class LiveChatMessage(TypedDict, total=False):
 
 
 class LiveChatData(TypedDict, total=False):
-    status: str
+    status: LiveChatStatus
     isLive: bool
     concurrentViewers: Optional[float]
     pollIntervalMs: Optional[float]
@@ -175,16 +179,8 @@ class SearchShort(TypedDict, total=False):
     id: str
     shortUrl: str
     title: str
-    author: Optional[str]
-    authorId: Optional[str]
-    description: Optional[str]
-    duration: Optional[str]
-    durationSec: Optional[float]
-    durationText: Optional[str]
     viewCount: Optional[float]
     viewCountText: Optional[str]
-    publishedAt: Optional[str]
-    publishedAtText: Optional[str]
     thumbnails: List[Thumbnail]
 
 
@@ -216,7 +212,17 @@ class SearchChannel(TypedDict, total=False):
 SearchItem = Union[SearchVideo, SearchShort, SearchPlaylist, SearchChannel]
 
 
+class SearchQuery(TypedDict, total=False):
+    q: str
+    type: Literal["video", "short", "channel", "playlist", "movie"]
+    sortBy: Literal["relevance", "popularity", "date", "rating"]
+    uploadDate: Literal["today", "week", "month", "year"]
+    duration: Literal["short", "medium", "long"]
+    features: List[str]
+
+
 class SearchData(TypedDict, total=False):
+    query: SearchQuery
     items: List[SearchItem]
     continuationToken: Optional[str]
     estimatedResults: int
@@ -249,17 +255,19 @@ class ChannelProfile(TypedDict, total=False):
     links: Optional[List[ChannelLink]]
 
 
-class ContentItem(TypedDict, total=False):
+class ChannelVideo(TypedDict, total=False):
     id: str
-    type: str
+    type: Literal["video"]
     title: Optional[str]
     videoUrl: str
-    shortUrl: str
-    playlistUrl: str
     author: Optional[str]
     authorId: Optional[str]
+    duration: Optional[str]
     durationSec: Optional[float]
     durationText: Optional[str]
+    isLive: bool
+    isUpcoming: bool
+    upcomingAt: Optional[str]
     viewCount: Optional[float]
     viewCountText: Optional[str]
     publishedAt: Optional[str]
@@ -267,9 +275,35 @@ class ContentItem(TypedDict, total=False):
     thumbnails: List[Thumbnail]
 
 
+class ChannelShort(TypedDict, total=False):
+    id: str
+    type: Literal["short"]
+    shortUrl: str
+    title: Optional[str]
+    author: Optional[str]
+    authorId: Optional[str]
+    viewCount: Optional[float]
+    viewCountText: Optional[str]
+    thumbnails: List[Thumbnail]
+
+
+class ChannelPlaylist(TypedDict, total=False):
+    id: str
+    type: Literal["playlist"]
+    playlistUrl: str
+    title: Optional[str]
+    author: Optional[str]
+    authorId: Optional[str]
+    videoCount: Optional[str]
+    thumbnails: List[Thumbnail]
+
+
+ContentItem = Union[ChannelVideo, ChannelShort, ChannelPlaylist]
+
+
 class ChannelData(TypedDict, total=False):
     channel: Optional[ChannelProfile]
-    tab: Optional[str]
+    tab: Literal["video", "short", "playlist", "about"]
     items: List[ContentItem]
     continuationToken: Optional[str]
     empty: EmptyState
@@ -295,6 +329,7 @@ class PlaylistItem(TypedDict, total=False):
     title: Optional[str]
     author: Optional[str]
     authorId: Optional[str]
+    duration: Optional[str]
     durationSec: Optional[float]
     durationText: Optional[str]
     index: Optional[float]

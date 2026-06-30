@@ -11,12 +11,13 @@ import type {
 import { unwrap } from "../transport";
 
 export type VideoResponseFor<T> = Omit<GetVideoResponse, "data"> & { data: T };
+type VideoUrlBody = Extract<GetVideoData["body"], { videoUrl: string }>;
 export type CommentsOptions = Pick<
-	GetVideoData["body"],
+	VideoUrlBody,
 	"sortBy" | "continuationToken"
 >;
 export type LiveChatOptions = Pick<
-	GetVideoData["body"],
+	VideoUrlBody,
 	"chatType" | "continuationToken"
 >;
 
@@ -64,7 +65,7 @@ export function replies(
 	return video(client, {
 		type: "replies",
 		continuationToken,
-	} as GetVideoData["body"]) as Promise<VideoResponseFor<CommentsData>>;
+	}) as Promise<VideoResponseFor<CommentsData>>;
 }
 
 export function liveChat(
