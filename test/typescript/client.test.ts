@@ -4,7 +4,7 @@ import { makeClient } from "./helpers";
 
 describe("Stophy client construction", () => {
 	test("throws when apiKey is missing", () => {
-		// @ts-expect-error — exercising the runtime guard
+		// @ts-expect-error - exercising the runtime guard
 		expect(() => new Stophy({})).toThrow("apiKey");
 		expect(() => new Stophy({ apiKey: "" })).toThrow("apiKey");
 	});
