@@ -170,7 +170,7 @@ git tag python-v0.2.0
 git push origin main python-v0.2.0
 ```
 
-The publish workflow builds the TypeScript client before `npm publish`, so the artifact reflects the current `openapi.json`. npm trusted publishing must point at `.github/workflows/publish.yml` for `stophydotdev/stophy-sdk`. For Python, `uv build` produces the wheel and sdist and PyPI trusted publishing uses the same workflow. Neither package uses a long-lived publish token.
+The publish workflow builds the TypeScript client before `npm publish`, so the artifact reflects the current `openapi.json`. npm trusted publishing must point at `.github/workflows/publish.yml` for `stophydotdev/sdk`. For Python, `uv build` produces the wheel and sdist and PyPI trusted publishing uses the same workflow. Neither package uses a long-lived publish token.
 
 ## TypeScript package
 

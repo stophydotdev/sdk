@@ -6,7 +6,7 @@
   "homepage": "https://stophy.dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stophydotdev/stophy-sdk.git"
+    "url": "git+https://github.com/stophydotdev/sdk.git"
   },
   "workspaces": [
     "packages/typescript"
