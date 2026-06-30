@@ -7,7 +7,8 @@
   "homepage": "https://stophy.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stophy/typescript-sdk.git"
+    "url": "git+https://github.com/stophydotdev/stophy-sdk.git",
+    "directory": "packages/typescript"
   },
   "keywords": [
     "stophy",
@@ -34,7 +35,7 @@
     "build": "tsup",
     "test": "bun test ../../test/typescript",
     "check-types": "tsc --noEmit",
-    "prepublishOnly": "npm run generate && npm run build"
+    "prepublishOnly": "bun run generate && bun run build"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.64.0",
