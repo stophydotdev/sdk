@@ -8,6 +8,7 @@ on:
       - "python-v*"
     paths:
       - "packages/typescript/package.json"
+      - "packages/python/pyproject.toml"
       - ".github/workflows/publish.yml"
   workflow_dispatch:
     inputs:
@@ -70,6 +71,7 @@ jobs:
   publish-python:
     name: PyPI
     if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       startsWith(github.ref, 'refs/tags/python-v') ||
       (github.event_name == 'workflow_dispatch' &&
        (inputs.package == 'python' || inputs.package == 'both'))
@@ -91,10 +93,27 @@ jobs:
             exit 1
           fi
 
+      - name: Check published version
+        id: version
+        run: |
+          VERSION=$(uv version --project packages/python --short)
+          STATUS=$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" \
+            "https://pypi.org/pypi/stophy/${VERSION}/json")
+          case "$STATUS" in
+            200) echo "exists=true" >> "$GITHUB_OUTPUT" ;;
+            404) echo "exists=false" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "PyPI version check failed with HTTP $STATUS" >&2
+              exit 1
+              ;;
+          esac
+
       - name: Build
+        if: steps.version.outputs.exists == 'false'
         run: uv build --project packages/python
 
       - name: Publish to PyPI
+        if: steps.version.outputs.exists == 'false'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: packages/python/dist/
