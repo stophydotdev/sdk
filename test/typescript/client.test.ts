@@ -46,4 +46,35 @@ describe("Stophy client construction", () => {
 		expect(client.client).toBeDefined();
 		expect(typeof client.client.get).toBe("function");
 	});
+
+	test("accepts an API key string", async () => {
+		const client = new Stophy("sk_test");
+		expect(client.client).toBeDefined();
+	});
+
+	test("reads API key and base URL from the environment", async () => {
+		const previousKey = process.env.STOPHY_API_KEY;
+		const previousUrl = process.env.STOPHY_BASE_URL;
+		process.env.STOPHY_API_KEY = "sk_env";
+		process.env.STOPHY_BASE_URL = "https://env.stophy.dev";
+		try {
+			const calls: string[] = [];
+			const client = new Stophy({
+				fetch: async (input) => {
+					calls.push(input instanceof Request ? input.url : String(input));
+					return new Response(
+						JSON.stringify({ success: true, data: { credits: 1 } }),
+						{ status: 200, headers: { "content-type": "application/json" } },
+					);
+				},
+			});
+			await client.credits();
+			expect(calls[0]).toStartWith("https://env.stophy.dev/");
+		} finally {
+			if (previousKey === undefined) delete process.env.STOPHY_API_KEY;
+			else process.env.STOPHY_API_KEY = previousKey;
+			if (previousUrl === undefined) delete process.env.STOPHY_BASE_URL;
+			else process.env.STOPHY_BASE_URL = previousUrl;
+		}
+	});
 });
