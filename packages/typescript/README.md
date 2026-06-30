@@ -16,24 +16,26 @@ Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends i
 ```ts
 import { Stophy } from "stophy";
 
-const stophy = new Stophy({ apiKey: process.env.STOPHY_API_KEY! });
-
-const { data } = await stophy.video({
-  type: "transcript",
-  videoUrl: "https://www.youtube.com/watch?v=D7liwdjvhWc",
-});
-console.log(data?.text);
+const stophy = new Stophy(); // reads STOPHY_API_KEY
+const result = await stophy.transcript(
+  "https://www.youtube.com/watch?v=D7liwdjvhWc",
+);
+console.log(result.data.text);
 ```
 
 ## Methods
 
 | Method | Description |
 | --- | --- |
-| `stophy.video(body)` | Details, transcript, comments, replies, or live chat (set `type`) |
-| `stophy.search(body)` | Search with filters for type, sort, date, duration, features |
-| `stophy.channel(body)` | Channel metadata + content by tab (`video`/`short`/`playlist`/`about`) |
-| `stophy.playlist(body)` | Playlist items, paginated |
-| `stophy.suggest(query)` | Search autocomplete suggestions |
+| `stophy.videoDetails(url)` | Video metadata and related videos |
+| `stophy.transcript(url)` | Timestamped captions and full text |
+| `stophy.comments(url, options?)` | Top-level comments |
+| `stophy.replies(token)` | Replies for a comment thread |
+| `stophy.liveChat(url, options?)` | Live stream chat messages |
+| `stophy.search(query, options?)` | Search with filters |
+| `stophy.channel(url, options?)` | Channel metadata and content |
+| `stophy.playlist(url, options?)` | Playlist items, paginated |
+| `stophy.suggest(query, options?)` | Search autocomplete suggestions |
 | `stophy.credits()` | Current credit balance |
 | `stophy.logs(query?)` | Recent request logs |
 | `stophy.usage(query?)` | Daily credit/request counts |
@@ -42,21 +44,26 @@ console.log(data?.text);
 
 ```ts
 // Search
-const results = await stophy.search({ q: "typescript tutorial", sortBy: "popularity", duration: "long" });
+const results = await stophy.search("typescript tutorial", {
+  sortBy: "popularity",
+  duration: "long",
+});
 
 // Comments (top-level), then replies to a comment.
 // `video()` is overloaded on `type`, so `data` is typed — no casts needed.
-const comments = await stophy.video({ type: "comments", videoUrl, sortBy: "top" });
+const comments = await stophy.comments(videoUrl, { sortBy: "top" });
 const firstReplyToken = comments.data.items[0]?.repliesToken;
 if (firstReplyToken) {
-  const replies = await stophy.video({ type: "replies", continuationToken: firstReplyToken });
+  const replies = await stophy.replies(firstReplyToken);
 }
 
 // Channel videos
-const channel = await stophy.channel({ channelUrl: "https://www.youtube.com/@mkbhd", tab: "video" });
+const channel = await stophy.channel("https://www.youtube.com/@mkbhd", {
+  tab: "video",
+});
 
 // Autocomplete
-const { data: s } = await stophy.suggest({ q: "react", hl: "en", gl: "US" });
+const { data: s } = await stophy.suggest("react", { hl: "en", gl: "US" });
 console.log(s?.suggestions);
 
 // Account
@@ -70,7 +77,7 @@ List endpoints return a `continuationToken`. Pass it back in to fetch the next p
 ```ts
 let token: string | undefined;
 do {
-  const page = await stophy.search({ q: "lofi", continuationToken: token });
+  const page = await stophy.search("lofi", { continuationToken: token });
   // ...handle page.data?.items
   token = page.data?.continuationToken ?? undefined;
 } while (token);

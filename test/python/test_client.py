@@ -46,3 +46,18 @@ def test_exposes_underlying_client():
 def test_works_as_context_manager():
     with make_client({"json": {"success": True, "data": {}}})[0] as client:
         assert client.credits()["success"] is True
+
+
+def test_reads_api_key_and_base_url_from_environment(monkeypatch):
+    monkeypatch.setenv("STOPHY_API_KEY", "sk_env")
+    monkeypatch.setenv("STOPHY_BASE_URL", "https://env.stophy.dev")
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(200, json={"success": True, "data": {}}, request=request)
+
+    client = Stophy(transport=httpx.MockTransport(handler), max_retries=0)
+    client.credits()
+    assert calls[0].url.host == "env.stophy.dev"
+    assert calls[0].headers["authorization"] == "Bearer sk_env"

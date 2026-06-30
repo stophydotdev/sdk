@@ -54,6 +54,32 @@ describe("search()", () => {
 		});
 		expect(res.data?.continuationToken).toBe("next");
 	});
+
+	test("accepts a query and options separately", async () => {
+		const { client, calls } = makeClient(ok({ items: [] }));
+		await client.search("lofi", { sortBy: "popularity" });
+		expect(calls[0]?.body).toEqual({ q: "lofi", sortBy: "popularity" });
+	});
+});
+
+describe("video helpers", () => {
+	test("transcript sends the expected video request", async () => {
+		const { client, calls } = makeClient(ok({ text: "hello" }));
+		await client.transcript("https://youtu.be/abc");
+		expect(calls[0]?.body).toEqual({
+			type: "transcript",
+			videoUrl: "https://youtu.be/abc",
+		});
+	});
+
+	test("replies sends only its continuation token", async () => {
+		const { client, calls } = makeClient(ok({ items: [] }));
+		await client.replies("TOKEN");
+		expect(calls[0]?.body).toEqual({
+			type: "replies",
+			continuationToken: "TOKEN",
+		});
+	});
 });
 
 describe("channel()", () => {
