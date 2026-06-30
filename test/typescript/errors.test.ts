@@ -20,7 +20,11 @@ describe("error handling", () => {
 	test("maps INSUFFICIENT_CREDITS (402)", async () => {
 		const { client } = makeClient({
 			status: 402,
-			json: { success: false, code: "INSUFFICIENT_CREDITS", error: "Out of credits" },
+			json: {
+				success: false,
+				code: "INSUFFICIENT_CREDITS",
+				error: "Out of credits",
+			},
 		});
 		const err = await client.search({ q: "x" }).catch((e) => e);
 		expect(err).toBeInstanceOf(StophyError);
@@ -38,7 +42,9 @@ describe("error handling", () => {
 				details: { field: "videoUrl" },
 			},
 		});
-		const err = await client.video({ type: "details", videoUrl: "" }).catch((e) => e);
+		const err = await client
+			.video({ type: "details", videoUrl: "" })
+			.catch((e) => e);
 		expect(err.code).toBe("INVALID_INPUT");
 		expect(err.details).toEqual({ field: "videoUrl" });
 	});
@@ -62,7 +68,9 @@ describe("error handling", () => {
 	});
 
 	test("does not throw on a successful response", async () => {
-		const { client } = makeClient({ json: { success: true, data: { credits: 5 } } });
+		const { client } = makeClient({
+			json: { success: true, data: { credits: 5 } },
+		});
 		await expect(client.credits()).resolves.toBeDefined();
 	});
 });

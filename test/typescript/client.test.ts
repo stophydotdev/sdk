@@ -10,7 +10,9 @@ describe("Stophy client construction", () => {
 	});
 
 	test("defaults to the production base URL", async () => {
-		const { client, calls } = makeClient({ json: { success: true, data: { credits: 1 } } });
+		const { client, calls } = makeClient({
+			json: { success: true, data: { credits: 1 } },
+		});
 		await client.credits();
 		expect(calls[0]?.url).toStartWith("https://api.stophy.dev/");
 	});

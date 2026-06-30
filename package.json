@@ -2,20 +2,36 @@
   "name": "stophy-sdk",
   "version": "0.0.0",
   "private": true,
-  "description": "Official Stophy SDKs — YouTube context API for AI agents. One repo, many languages.",
+  "description": "Official Stophy SDKs for the YouTube context API for AI agents. One repo, many languages.",
   "homepage": "https://stophy.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stophy/stophy-sdk.git"
+    "url": "git+https://github.com/stophydotdev/sdk.git"
   },
   "workspaces": [
     "packages/typescript"
   ],
   "scripts": {
-    "build": "npm --workspace packages/typescript run build",
-    "generate": "npm --workspace packages/typescript run generate",
-    "test:ts": "npm --workspace packages/typescript run test",
+    "build": "bun run build:ts && bun run build:py",
+    "build:ts": "bun run --cwd packages/typescript build",
+    "build:py": "uv build --project packages/python",
+    "generate": "bun run --cwd packages/typescript generate",
+    "generate:check": "bun run generate && git diff --exit-code packages/typescript/src/generated",
+    "type-check": "bun run --cwd packages/typescript check-types",
+    "check:ts": "biome check packages/typescript/src/index.ts test/typescript",
+    "check:py": "uv run --project packages/python ruff check packages/python/src test/python && uv run --project packages/python ruff format --check packages/python/src test/python",
+    "check": "bun run check:ts && bun run type-check && bun run check:py",
+    "format:ts": "biome check --write packages/typescript/src/index.ts test/typescript",
+    "format:py": "uv run --project packages/python ruff check --fix packages/python/src test/python && uv run --project packages/python ruff format packages/python/src test/python",
+    "format": "bun run format:ts && bun run format:py",
+    "test:ts": "bun run --cwd packages/typescript test",
     "test:py": "uv --project packages/python run pytest",
-    "test": "npm run test:ts && npm run test:py"
+    "test": "bun run test:ts && bun run test:py",
+    "changeset": "changeset",
+    "version": "changeset version"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.16",
+    "@changesets/cli": "2.31.0"
   }
 }
