@@ -1,6 +1,6 @@
 """Response types mirroring the Stophy OpenAPI schemas.
 
-These are ``TypedDict``s with ``total=False`` — they describe the shape of the
+These are ``TypedDict``s with ``total=False`` - they describe the shape of the
 JSON the API returns so editors and type checkers can help, without forcing
 every optional/nullable field to be present.
 """

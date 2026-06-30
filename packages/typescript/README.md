@@ -50,7 +50,7 @@ const results = await stophy.search("typescript tutorial", {
 });
 
 // Comments (top-level), then replies to a comment.
-// `video()` is overloaded on `type`, so `data` is typed — no casts needed.
+// `video()` is overloaded on `type`, so `data` is typed - no casts needed.
 const comments = await stophy.comments(videoUrl, { sortBy: "top" });
 const firstReplyToken = comments.data.items[0]?.repliesToken;
 if (firstReplyToken) {

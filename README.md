@@ -1,11 +1,11 @@
 # stophy
 
-Official client libraries for [Stophy](https://stophy.dev) — the **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
+Official client libraries for [Stophy](https://stophy.dev) - the **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
 
 Pick your language:
 
-- [TypeScript / JavaScript](./packages/typescript) — `npm install stophy`
-- [Python](./packages/python) — `pip install stophy`
+- [TypeScript / JavaScript](./packages/typescript) - `npm install stophy`
+- [Python](./packages/python) - `pip install stophy`
 
 Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>` on every request.
 
@@ -67,7 +67,7 @@ Non-2xx responses surface a `StophyError` with the HTTP `status`, an API `code` 
 
 ## Retries
 
-Transient failures — network errors and `429`/`500`/`502`/`503`/`504` — are retried automatically with exponential backoff and jitter, honoring the `Retry-After` header. Every endpoint is a read, so retries are always safe. Both SDKs let you set `maxRetries` (TS) / `max_retries` (Python) to opt out.
+Transient failures - network errors and `429`/`500`/`502`/`503`/`504` - are retried automatically with exponential backoff and jitter, honoring the `Retry-After` header. Every endpoint is a read, so retries are always safe. Both SDKs let you set `maxRetries` (TS) / `max_retries` (Python) to opt out.
 
 ## License
 

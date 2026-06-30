@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# bump-version.sh — bump a package version and print the commit + tag commands.
+# bump-version.sh - bump a package version and print the commit + tag commands.
 #
 # Usage:
 #   ./scripts/bump-version.sh python 0.2.0
