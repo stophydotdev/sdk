@@ -11,7 +11,7 @@ from .methods import playlist as playlist_method
 from .methods import search as search_method
 from .methods import suggest as suggest_method
 from .methods import video as video_methods
-from .transport import DEFAULT_BASE_URL, SyncTransport
+from .transport import DEFAULT_BASE_URL, AsyncTransport
 from .types import (
     ChannelResponse,
     CommentsResponse,
@@ -28,8 +28,8 @@ from .types import (
 )
 
 
-class Stophy:
-    """Synchronous typed client for the Stophy API."""
+class AsyncStophy:
+    """Asynchronous typed client for the Stophy API."""
 
     def __init__(
         self,
@@ -40,7 +40,7 @@ class Stophy:
         timeout: float = 30.0,
         max_retries: int = 2,
         retry_initial_delay: float = 0.5,
-        transport: Optional[httpx.BaseTransport] = None,
+        transport: Optional[httpx.AsyncBaseTransport] = None,
     ) -> None:
         resolved_key = (api_key or os.getenv("STOPHY_API_KEY", "")).strip()
         if not resolved_key:
@@ -48,20 +48,20 @@ class Stophy:
                 "Stophy: provide api_key or set the STOPHY_API_KEY environment variable."
             )
         resolved_url = base_url or os.getenv("STOPHY_BASE_URL") or DEFAULT_BASE_URL
-        self.client = httpx.Client(
+        self.client = httpx.AsyncClient(
             base_url=resolved_url,
             headers={"Authorization": f"Bearer {resolved_key}", **(headers or {})},
             timeout=timeout,
             transport=transport,
         )
-        self._transport = SyncTransport(
+        self._transport = AsyncTransport(
             self.client,
             max_retries=max_retries,
             retry_initial_delay=retry_initial_delay,
         )
 
     @overload
-    def video(
+    async def video(
         self,
         *,
         type: Literal["details"],
@@ -72,7 +72,7 @@ class Stophy:
     ) -> VideoDetailsResponse: ...
 
     @overload
-    def video(
+    async def video(
         self,
         *,
         type: Literal["transcript"],
@@ -83,7 +83,7 @@ class Stophy:
     ) -> TranscriptResponse: ...
 
     @overload
-    def video(
+    async def video(
         self,
         *,
         type: Literal["comments", "replies"],
@@ -94,7 +94,7 @@ class Stophy:
     ) -> CommentsResponse: ...
 
     @overload
-    def video(
+    async def video(
         self,
         *,
         type: Literal["livechat"],
@@ -104,7 +104,7 @@ class Stophy:
         continuation_token: Optional[str] = None,
     ) -> LiveChatResponse: ...
 
-    def video(
+    async def video(
         self,
         *,
         type: str,
@@ -113,7 +113,7 @@ class Stophy:
         chat_type: Optional[str] = None,
         continuation_token: Optional[str] = None,
     ) -> VideoResponse:
-        return video_methods.video(
+        return await video_methods.video_async(
             self._transport,
             type=type,
             video_url=video_url,
@@ -122,44 +122,44 @@ class Stophy:
             continuation_token=continuation_token,
         )
 
-    def video_details(self, video_url: str) -> VideoDetailsResponse:
-        return video_methods.video_details(self._transport, video_url)
+    async def video_details(self, video_url: str) -> VideoDetailsResponse:
+        return await video_methods.video_details_async(self._transport, video_url)
 
-    def transcript(self, video_url: str) -> TranscriptResponse:
-        return video_methods.transcript(self._transport, video_url)
+    async def transcript(self, video_url: str) -> TranscriptResponse:
+        return await video_methods.transcript_async(self._transport, video_url)
 
-    def comments(
+    async def comments(
         self,
         video_url: str,
         *,
         sort_by: Optional[str] = None,
         continuation_token: Optional[str] = None,
     ) -> CommentsResponse:
-        return video_methods.comments(
+        return await video_methods.comments_async(
             self._transport,
             video_url,
             sort_by=sort_by,
             continuation_token=continuation_token,
         )
 
-    def replies(self, continuation_token: str) -> CommentsResponse:
-        return video_methods.replies(self._transport, continuation_token)
+    async def replies(self, continuation_token: str) -> CommentsResponse:
+        return await video_methods.replies_async(self._transport, continuation_token)
 
-    def live_chat(
+    async def live_chat(
         self,
         video_url: str,
         *,
         chat_type: Optional[str] = None,
         continuation_token: Optional[str] = None,
     ) -> LiveChatResponse:
-        return video_methods.live_chat(
+        return await video_methods.live_chat_async(
             self._transport,
             video_url,
             chat_type=chat_type,
             continuation_token=continuation_token,
         )
 
-    def search(
+    async def search(
         self,
         q: str,
         *,
@@ -170,7 +170,7 @@ class Stophy:
         features: Optional[List[str]] = None,
         continuation_token: Optional[str] = None,
     ) -> SearchResponse:
-        return search_method.search(
+        return await search_method.search_async(
             self._transport,
             q,
             type=type,
@@ -181,7 +181,7 @@ class Stophy:
             continuation_token=continuation_token,
         )
 
-    def channel(
+    async def channel(
         self,
         channel_url: str,
         *,
@@ -189,7 +189,7 @@ class Stophy:
         sort_by: Optional[str] = None,
         continuation_token: Optional[str] = None,
     ) -> ChannelResponse:
-        return channel_method.channel(
+        return await channel_method.channel_async(
             self._transport,
             channel_url,
             tab=tab,
@@ -197,52 +197,54 @@ class Stophy:
             continuation_token=continuation_token,
         )
 
-    def playlist(
+    async def playlist(
         self,
         playlist_url: str,
         *,
         continuation_token: Optional[str] = None,
     ) -> PlaylistResponse:
-        return playlist_method.playlist(
+        return await playlist_method.playlist_async(
             self._transport,
             playlist_url,
             continuation_token=continuation_token,
         )
 
-    def suggest(
+    async def suggest(
         self,
         q: str,
         *,
         hl: Optional[str] = None,
         gl: Optional[str] = None,
     ) -> SuggestResponse:
-        return suggest_method.suggest(self._transport, q, hl=hl, gl=gl)
+        return await suggest_method.suggest_async(self._transport, q, hl=hl, gl=gl)
 
-    def credits(self) -> CreditsResponse:
-        return account_methods.credits(self._transport)
+    async def credits(self) -> CreditsResponse:
+        return await account_methods.credits_async(self._transport)
 
-    def logs(
+    async def logs(
         self,
         *,
         days: Optional[str] = None,
         endpoint: Optional[str] = None,
         page: Optional[int] = None,
     ) -> LogsResponse:
-        return account_methods.logs(self._transport, days=days, endpoint=endpoint, page=page)
+        return await account_methods.logs_async(
+            self._transport, days=days, endpoint=endpoint, page=page
+        )
 
-    def usage(
+    async def usage(
         self,
         *,
         days: Optional[str] = None,
         tz: Optional[str] = None,
     ) -> UsageResponse:
-        return account_methods.usage(self._transport, days=days, tz=tz)
+        return await account_methods.usage_async(self._transport, days=days, tz=tz)
 
-    def close(self) -> None:
-        self.client.close()
+    async def close(self) -> None:
+        await self.client.aclose()
 
-    def __enter__(self) -> "Stophy":
+    async def __aenter__(self) -> "AsyncStophy":
         return self
 
-    def __exit__(self, *exc: Any) -> None:
-        self.close()
+    async def __aexit__(self, *exc: Any) -> None:
+        await self.close()

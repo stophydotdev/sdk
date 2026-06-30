@@ -21,6 +21,16 @@ def test_video_replies_flow():
     assert body_of(calls[0]) == {"type": "replies", "continuationToken": "TOKEN"}
 
 
+def test_transcript_helper():
+    client, calls = make_client(ok({"text": "hello"}))
+    result = client.transcript("https://youtu.be/abc")
+    assert body_of(calls[0]) == {
+        "type": "transcript",
+        "videoUrl": "https://youtu.be/abc",
+    }
+    assert result["data"]["text"] == "hello"
+
+
 def test_search_posts_filters():
     client, calls = make_client(ok({"items": [], "continuationToken": "next"}))
     res = client.search(q="lofi", sort_by="popularity", duration="long")
