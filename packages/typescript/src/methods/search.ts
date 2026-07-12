@@ -5,15 +5,19 @@ import type {
 	SearchVideosResponse,
 } from "../generated/types.gen";
 import { unwrap } from "../transport";
+import type { MeteredResponse } from "./response";
 
 type SearchBody = SearchVideosData["body"];
 export type SearchOptions = Omit<SearchBody, "q">;
+export type SearchResponse = MeteredResponse<
+	NonNullable<SearchVideosResponse["data"]>
+>;
 
 export function search(
 	client: Client,
 	queryOrBody: string | SearchBody,
 	options: SearchOptions = {},
-): Promise<SearchVideosResponse> {
+): Promise<SearchResponse> {
 	if (typeof queryOrBody === "string" && !queryOrBody.trim()) {
 		throw new Error("query cannot be empty");
 	}
@@ -21,5 +25,5 @@ export function search(
 		typeof queryOrBody === "string"
 			? { q: queryOrBody, ...options }
 			: queryOrBody;
-	return searchVideos({ client, body }).then(unwrap);
+	return searchVideos({ client, body }).then(unwrap) as Promise<SearchResponse>;
 }
