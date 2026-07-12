@@ -6,6 +6,7 @@ from ..transport import AsyncTransport, SyncTransport
 from ..types import (
     CommentsResponse,
     LiveChatResponse,
+    RepliesResponse,
     TranscriptResponse,
     VideoDetailsResponse,
     VideoResponse,
@@ -18,6 +19,7 @@ def _payload(
     video_url: Optional[str] = None,
     sort_by: Optional[str] = None,
     chat_type: Optional[str] = None,
+    lang: Optional[str] = None,
     continuation_token: Optional[str] = None,
 ):
     return {
@@ -25,6 +27,7 @@ def _payload(
         "videoUrl": video_url,
         "sortBy": sort_by,
         "chatType": chat_type,
+        "lang": lang,
         "continuationToken": continuation_token,
     }
 
@@ -48,14 +51,21 @@ async def video_details_async(transport: AsyncTransport, video_url: str) -> Vide
     )
 
 
-def transcript(transport: SyncTransport, video_url: str) -> TranscriptResponse:
-    return cast(TranscriptResponse, video(transport, type="transcript", video_url=video_url))
-
-
-async def transcript_async(transport: AsyncTransport, video_url: str) -> TranscriptResponse:
+def transcript(
+    transport: SyncTransport, video_url: str, *, lang: Optional[str] = None
+) -> TranscriptResponse:
     return cast(
         TranscriptResponse,
-        await video_async(transport, type="transcript", video_url=video_url),
+        video(transport, type="transcript", video_url=video_url, lang=lang),
+    )
+
+
+async def transcript_async(
+    transport: AsyncTransport, video_url: str, *, lang: Optional[str] = None
+) -> TranscriptResponse:
+    return cast(
+        TranscriptResponse,
+        await video_async(transport, type="transcript", video_url=video_url, lang=lang),
     )
 
 
@@ -97,16 +107,16 @@ async def comments_async(
     )
 
 
-def replies(transport: SyncTransport, continuation_token: str) -> CommentsResponse:
+def replies(transport: SyncTransport, continuation_token: str) -> RepliesResponse:
     return cast(
-        CommentsResponse,
+        RepliesResponse,
         video(transport, type="replies", continuation_token=continuation_token),
     )
 
 
-async def replies_async(transport: AsyncTransport, continuation_token: str) -> CommentsResponse:
+async def replies_async(transport: AsyncTransport, continuation_token: str) -> RepliesResponse:
     return cast(
-        CommentsResponse,
+        RepliesResponse,
         await video_async(transport, type="replies", continuation_token=continuation_token),
     )
 
