@@ -115,29 +115,50 @@ describe("playlist()", () => {
 });
 
 describe("suggest()", () => {
-	test("GETs /v1/suggest with query params", async () => {
+	test("POSTs /v1/suggest with a JSON body", async () => {
 		const { client, calls } = makeClient(
 			ok({ suggestions: ["react", "react native"] }),
 		);
 		const res = await client.suggest({ q: "react", hl: "en", gl: "US" });
 
-		expect(calls[0]?.method).toBe("GET");
-		expect(calls[0]?.url).toContain("/v1/suggest");
-		expect(queryOf(calls[0]?.url ?? "https://invalid.local")).toEqual({
+		expect(calls[0]?.method).toBe("POST");
+		expect(calls[0]?.url).toEndWith("/v1/suggest");
+		expect(calls[0]?.body).toEqual({
 			q: "react",
 			hl: "en",
 			gl: "US",
 		});
-		expect(calls[0]?.body).toBeUndefined();
 		expect(res.data?.suggestions).toContain("react native");
 	});
 
 	test("sends only the required q when options omitted", async () => {
 		const { client, calls } = makeClient(ok({ suggestions: [] }));
 		await client.suggest({ q: "typescript" });
-		expect(queryOf(calls[0]?.url ?? "https://invalid.local")).toEqual({
-			q: "typescript",
+		expect(calls[0]?.body).toEqual({ q: "typescript" });
+	});
+});
+
+describe("music()", () => {
+	test("POSTs every music resource through /v1/music", async () => {
+		const { client, calls } = makeClient(ok({ items: [] }));
+		await client.music({ type: "search", q: "lofi", searchType: "song" });
+		expect(calls[0]?.method).toBe("POST");
+		expect(calls[0]?.url).toEndWith("/v1/music");
+		expect(calls[0]?.body).toEqual({
+			type: "search",
+			q: "lofi",
+			searchType: "song",
 		});
+	});
+});
+
+describe("kids()", () => {
+	test("POSTs Kids search through /v1/kids", async () => {
+		const { client, calls } = makeClient(ok({ items: [] }));
+		await client.kids({ type: "search", q: "science" });
+		expect(calls[0]?.method).toBe("POST");
+		expect(calls[0]?.url).toEndWith("/v1/kids");
+		expect(calls[0]?.body).toEqual({ type: "search", q: "science" });
 	});
 });
 
