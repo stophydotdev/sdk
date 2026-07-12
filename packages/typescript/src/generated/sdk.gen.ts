@@ -6,12 +6,12 @@ import type {
   Client,
 } from "@hey-api/client-fetch";
 import type {
-  GetVideoData,
-  GetVideoResponse,
-  GetVideoError,
   SearchVideosData,
   SearchVideosResponse,
   SearchVideosError,
+  GetVideoData,
+  GetVideoResponse,
+  GetVideoError,
   GetChannelData,
   GetChannelResponse,
   GetChannelError,
@@ -21,15 +21,27 @@ import type {
   GetSuggestionsData,
   GetSuggestionsResponse,
   GetSuggestionsError,
+  YoutubeMusicData,
+  YoutubeMusicResponse,
+  YoutubeMusicError,
+  YoutubeKidsData,
+  YoutubeKidsResponse,
+  YoutubeKidsError,
   GetCreditsData,
   GetCreditsResponse,
   GetCreditsError,
-  GetLogsData,
-  GetLogsResponse,
-  GetLogsError,
   GetUsageData,
   GetUsageResponse,
   GetUsageError,
+  GetLogsData,
+  GetLogsResponse,
+  GetLogsError,
+  McpTransportHeaderData,
+  McpTransportHeaderResponse,
+  McpTransportHeaderError,
+  McpTransportPathData,
+  McpTransportPathResponse,
+  McpTransportPathError,
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -48,33 +60,6 @@ export type Options<
    * used to access values that aren't defined as part of the SDK function.
    */
   meta?: Record<string, unknown>;
-};
-
-/**
- * Video
- * Fetch video details, transcript, comments, replies, or live chat. Pass type: details for metadata, transcript for timestamped captions, comments for top-level comments, replies for a comment thread (pass the repliesToken from a comment as continuationToken), or livechat for live stream chat messages.
- */
-export const getVideo = <ThrowOnError extends boolean = false>(
-  options: Options<GetVideoData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GetVideoResponse,
-    GetVideoError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/video",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
 };
 
 /**
@@ -105,8 +90,35 @@ export const searchVideos = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Video
+ * Fetch video details, transcript, comments, replies, or live chat. Pass type: details for metadata, transcript for timestamped captions, comments for top-level comments, replies for a comment thread (pass the repliesToken from a comment as continuationToken), or livechat for live stream chat messages.
+ */
+export const getVideo = <ThrowOnError extends boolean = false>(
+  options: Options<GetVideoData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GetVideoResponse,
+    GetVideoError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/video",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
  * Channel
- * Retrieve channel metadata and content by channelUrl. Use the tab field to switch between videos, shorts, playlists, and about info.
+ * Retrieve channel metadata and content by channelUrl. Use the tab field to switch between videos, Shorts, live streams, playlists, community posts, courses, and about info. Set query to search within the channel.
  */
 export const getChannel = <ThrowOnError extends boolean = false>(
   options: Options<GetChannelData, ThrowOnError>
@@ -165,7 +177,7 @@ export const getPlaylist = <ThrowOnError extends boolean = false>(
 export const getSuggestions = <ThrowOnError extends boolean = false>(
   options: Options<GetSuggestionsData, ThrowOnError>
 ) => {
-  return (options.client ?? _heyApiClient).get<
+  return (options.client ?? _heyApiClient).post<
     GetSuggestionsResponse,
     GetSuggestionsError,
     ThrowOnError
@@ -178,6 +190,64 @@ export const getSuggestions = <ThrowOnError extends boolean = false>(
     ],
     url: "/v1/suggest",
     ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * YouTube Music
+ * Search YouTube Music, fetch suggestions, song metadata, lyrics, albums, artists, and playlists. The `type` request field selects the operation.
+ */
+export const youtubeMusic = <ThrowOnError extends boolean = false>(
+  options: Options<YoutubeMusicData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    YoutubeMusicResponse,
+    YoutubeMusicError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/music",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * YouTube Kids
+ * Search YouTube Kids or fetch Kids video details. The `type` request field selects the operation.
+ */
+export const youtubeKids = <ThrowOnError extends boolean = false>(
+  options: Options<YoutubeKidsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    YoutubeKidsResponse,
+    YoutubeKidsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/kids",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
   });
 };
 
@@ -200,6 +270,29 @@ export const getCredits = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/credits",
+    ...options,
+  });
+};
+
+/**
+ * Usage
+ * Return daily credit and request counts for the authenticated key.
+ */
+export const getUsage = <ThrowOnError extends boolean = false>(
+  options?: Options<GetUsageData, ThrowOnError>
+) => {
+  return (options?.client ?? _heyApiClient).get<
+    GetUsageResponse,
+    GetUsageError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/usage",
     ...options,
   });
 };
@@ -228,15 +321,15 @@ export const getLogs = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Usage
- * Return daily credit and request counts for the authenticated key.
+ * MCP transport (header auth)
+ * Streamable HTTP MCP transport. Auth via Authorization: Bearer st_<key> header. Use this with MCP clients like Cursor or Claude Desktop. Each tool call costs 1 credit except stophy_get_credits which is free.
  */
-export const getUsage = <ThrowOnError extends boolean = false>(
-  options?: Options<GetUsageData, ThrowOnError>
+export const mcpTransportHeader = <ThrowOnError extends boolean = false>(
+  options: Options<McpTransportHeaderData, ThrowOnError>
 ) => {
-  return (options?.client ?? _heyApiClient).get<
-    GetUsageResponse,
-    GetUsageError,
+  return (options.client ?? _heyApiClient).post<
+    McpTransportHeaderResponse,
+    McpTransportHeaderError,
     ThrowOnError
   >({
     security: [
@@ -245,7 +338,38 @@ export const getUsage = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/usage",
+    url: "/v1/mcp",
     ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * MCP transport (path auth)
+ * Streamable HTTP MCP transport. Auth via the API key in the URL path. Useful when header auth isn't possible. Note that the key will appear in logs and referrer headers.
+ */
+export const mcpTransportPath = <ThrowOnError extends boolean = false>(
+  options: Options<McpTransportPathData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    McpTransportPathResponse,
+    McpTransportPathError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/mcp/{apiKey}",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
   });
 };
