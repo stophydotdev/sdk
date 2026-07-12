@@ -7,6 +7,8 @@ import httpx
 
 from .methods import account as account_methods
 from .methods import channel as channel_method
+from .methods import kids as kids_method
+from .methods import music as music_method
 from .methods import playlist as playlist_method
 from .methods import search as search_method
 from .methods import suggest as suggest_method
@@ -16,9 +18,12 @@ from .types import (
     ChannelResponse,
     CommentsResponse,
     CreditsResponse,
+    KidsResponse,
     LiveChatResponse,
     LogsResponse,
+    MusicResponse,
     PlaylistResponse,
+    RepliesResponse,
     SearchResponse,
     SuggestResponse,
     TranscriptResponse,
@@ -77,6 +82,7 @@ class AsyncStophy:
         *,
         type: Literal["transcript"],
         video_url: Optional[str] = None,
+        lang: Optional[str] = None,
         sort_by: Optional[str] = None,
         chat_type: Optional[str] = None,
         continuation_token: Optional[str] = None,
@@ -86,12 +92,20 @@ class AsyncStophy:
     async def video(
         self,
         *,
-        type: Literal["comments", "replies"],
+        type: Literal["comments"],
         video_url: Optional[str] = None,
         sort_by: Optional[str] = None,
         chat_type: Optional[str] = None,
         continuation_token: Optional[str] = None,
     ) -> CommentsResponse: ...
+
+    @overload
+    async def video(
+        self,
+        *,
+        type: Literal["replies"],
+        continuation_token: str,
+    ) -> RepliesResponse: ...
 
     @overload
     async def video(
@@ -111,6 +125,7 @@ class AsyncStophy:
         video_url: Optional[str] = None,
         sort_by: Optional[str] = None,
         chat_type: Optional[str] = None,
+        lang: Optional[str] = None,
         continuation_token: Optional[str] = None,
     ) -> VideoResponse:
         return await video_methods.video_async(
@@ -119,14 +134,15 @@ class AsyncStophy:
             video_url=video_url,
             sort_by=sort_by,
             chat_type=chat_type,
+            lang=lang,
             continuation_token=continuation_token,
         )
 
     async def video_details(self, video_url: str) -> VideoDetailsResponse:
         return await video_methods.video_details_async(self._transport, video_url)
 
-    async def transcript(self, video_url: str) -> TranscriptResponse:
-        return await video_methods.transcript_async(self._transport, video_url)
+    async def transcript(self, video_url: str, *, lang: Optional[str] = None) -> TranscriptResponse:
+        return await video_methods.transcript_async(self._transport, video_url, lang=lang)
 
     async def comments(
         self,
@@ -142,7 +158,7 @@ class AsyncStophy:
             continuation_token=continuation_token,
         )
 
-    async def replies(self, continuation_token: str) -> CommentsResponse:
+    async def replies(self, continuation_token: str) -> RepliesResponse:
         return await video_methods.replies_async(self._transport, continuation_token)
 
     async def live_chat(
@@ -185,6 +201,7 @@ class AsyncStophy:
         self,
         channel_url: str,
         *,
+        query: Optional[str] = None,
         tab: Optional[str] = None,
         sort_by: Optional[str] = None,
         continuation_token: Optional[str] = None,
@@ -192,6 +209,7 @@ class AsyncStophy:
         return await channel_method.channel_async(
             self._transport,
             channel_url,
+            query=query,
             tab=tab,
             sort_by=sort_by,
             continuation_token=continuation_token,
@@ -217,6 +235,46 @@ class AsyncStophy:
         gl: Optional[str] = None,
     ) -> SuggestResponse:
         return await suggest_method.suggest_async(self._transport, q, hl=hl, gl=gl)
+
+    async def music(
+        self,
+        *,
+        type: str,
+        q: Optional[str] = None,
+        search_type: Optional[str] = None,
+        video_url: Optional[str] = None,
+        album_url: Optional[str] = None,
+        artist_url: Optional[str] = None,
+        playlist_url: Optional[str] = None,
+        continuation_token: Optional[str] = None,
+    ) -> MusicResponse:
+        return await music_method.music_async(
+            self._transport,
+            type=type,
+            q=q,
+            search_type=search_type,
+            video_url=video_url,
+            album_url=album_url,
+            artist_url=artist_url,
+            playlist_url=playlist_url,
+            continuation_token=continuation_token,
+        )
+
+    async def kids(
+        self,
+        *,
+        type: str,
+        q: Optional[str] = None,
+        video_url: Optional[str] = None,
+        continuation_token: Optional[str] = None,
+    ) -> KidsResponse:
+        return await kids_method.kids_async(
+            self._transport,
+            type=type,
+            q=q,
+            video_url=video_url,
+            continuation_token=continuation_token,
+        )
 
     async def credits(self) -> CreditsResponse:
         return await account_methods.credits_async(self._transport)
