@@ -7,6 +7,8 @@ import httpx
 
 from .methods import account as account_methods
 from .methods import channel as channel_method
+from .methods import kids as kids_method
+from .methods import music as music_method
 from .methods import playlist as playlist_method
 from .methods import search as search_method
 from .methods import suggest as suggest_method
@@ -16,9 +18,12 @@ from .types import (
     ChannelResponse,
     CommentsResponse,
     CreditsResponse,
+    KidsResponse,
     LiveChatResponse,
     LogsResponse,
+    MusicResponse,
     PlaylistResponse,
+    RepliesResponse,
     SearchResponse,
     SuggestResponse,
     TranscriptResponse,
@@ -77,6 +82,7 @@ class Stophy:
         *,
         type: Literal["transcript"],
         video_url: Optional[str] = None,
+        lang: Optional[str] = None,
         sort_by: Optional[str] = None,
         chat_type: Optional[str] = None,
         continuation_token: Optional[str] = None,
@@ -86,12 +92,20 @@ class Stophy:
     def video(
         self,
         *,
-        type: Literal["comments", "replies"],
+        type: Literal["comments"],
         video_url: Optional[str] = None,
         sort_by: Optional[str] = None,
         chat_type: Optional[str] = None,
         continuation_token: Optional[str] = None,
     ) -> CommentsResponse: ...
+
+    @overload
+    def video(
+        self,
+        *,
+        type: Literal["replies"],
+        continuation_token: str,
+    ) -> RepliesResponse: ...
 
     @overload
     def video(
@@ -111,6 +125,7 @@ class Stophy:
         video_url: Optional[str] = None,
         sort_by: Optional[str] = None,
         chat_type: Optional[str] = None,
+        lang: Optional[str] = None,
         continuation_token: Optional[str] = None,
     ) -> VideoResponse:
         return video_methods.video(
@@ -119,14 +134,15 @@ class Stophy:
             video_url=video_url,
             sort_by=sort_by,
             chat_type=chat_type,
+            lang=lang,
             continuation_token=continuation_token,
         )
 
     def video_details(self, video_url: str) -> VideoDetailsResponse:
         return video_methods.video_details(self._transport, video_url)
 
-    def transcript(self, video_url: str) -> TranscriptResponse:
-        return video_methods.transcript(self._transport, video_url)
+    def transcript(self, video_url: str, *, lang: Optional[str] = None) -> TranscriptResponse:
+        return video_methods.transcript(self._transport, video_url, lang=lang)
 
     def comments(
         self,
@@ -142,7 +158,7 @@ class Stophy:
             continuation_token=continuation_token,
         )
 
-    def replies(self, continuation_token: str) -> CommentsResponse:
+    def replies(self, continuation_token: str) -> RepliesResponse:
         return video_methods.replies(self._transport, continuation_token)
 
     def live_chat(
@@ -185,6 +201,7 @@ class Stophy:
         self,
         channel_url: str,
         *,
+        query: Optional[str] = None,
         tab: Optional[str] = None,
         sort_by: Optional[str] = None,
         continuation_token: Optional[str] = None,
@@ -192,6 +209,7 @@ class Stophy:
         return channel_method.channel(
             self._transport,
             channel_url,
+            query=query,
             tab=tab,
             sort_by=sort_by,
             continuation_token=continuation_token,
@@ -217,6 +235,46 @@ class Stophy:
         gl: Optional[str] = None,
     ) -> SuggestResponse:
         return suggest_method.suggest(self._transport, q, hl=hl, gl=gl)
+
+    def music(
+        self,
+        *,
+        type: str,
+        q: Optional[str] = None,
+        search_type: Optional[str] = None,
+        video_url: Optional[str] = None,
+        album_url: Optional[str] = None,
+        artist_url: Optional[str] = None,
+        playlist_url: Optional[str] = None,
+        continuation_token: Optional[str] = None,
+    ) -> MusicResponse:
+        return music_method.music(
+            self._transport,
+            type=type,
+            q=q,
+            search_type=search_type,
+            video_url=video_url,
+            album_url=album_url,
+            artist_url=artist_url,
+            playlist_url=playlist_url,
+            continuation_token=continuation_token,
+        )
+
+    def kids(
+        self,
+        *,
+        type: str,
+        q: Optional[str] = None,
+        video_url: Optional[str] = None,
+        continuation_token: Optional[str] = None,
+    ) -> KidsResponse:
+        return kids_method.kids(
+            self._transport,
+            type=type,
+            q=q,
+            video_url=video_url,
+            continuation_token=continuation_token,
+        )
 
     def credits(self) -> CreditsResponse:
         return account_methods.credits(self._transport)
