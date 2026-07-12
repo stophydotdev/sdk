@@ -1,5 +1,11 @@
 # stophy
 
+## 0.3.0
+
+### Minor Changes
+
+- 4f9bbc4: Add YouTube Music and YouTube Kids SDK methods, switch suggestions to the POST API, and tighten response envelope/data types so stable API fields are required while upstream-variable fields remain nullable.
+
 ## 0.2.1
 
 ### Patch Changes
