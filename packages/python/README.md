@@ -1,6 +1,6 @@
 # stophy
 
-Official Python SDK for [Stophy](https://stophy.dev) **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
+Official Python SDK for [Stophy](https://stophy.dev) **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, use YouTube Music and YouTube Kids, and get autocomplete suggestions, all returned as structured JSON.
 
 
 ## Install
@@ -34,6 +34,8 @@ print(result["data"]["text"])
 | `stophy.channel(...)` | Channel metadata + content by `tab` |
 | `stophy.playlist(...)` | Playlist items, paginated |
 | `stophy.suggest(...)` | Search autocomplete suggestions |
+| `stophy.music(...)` | YouTube Music search, suggestions, songs, lyrics, albums, artists, playlists |
+| `stophy.kids(...)` | YouTube Kids search and video metadata |
 | `stophy.credits()` | Current credit balance |
 | `stophy.logs(...)` | Recent request logs |
 | `stophy.usage(...)` | Daily credit/request counts |
@@ -53,6 +55,12 @@ if token:
 # Autocomplete and account
 print(stophy.suggest("react")["data"]["suggestions"])
 print(stophy.credits()["data"]["credits"])
+
+# YouTube Music and YouTube Kids
+music = stophy.music(type="search", q="lofi", search_type="song")
+kids = stophy.kids(type="search", q="science")
+print(music["data"]["items"])
+print(kids["data"]["items"])
 ```
 
 ### Pagination
