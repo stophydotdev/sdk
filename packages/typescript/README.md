@@ -1,6 +1,6 @@
 # stophy
 
-Official TypeScript SDK for [Stophy](https://stophy.dev)  **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
+Official TypeScript SDK for [Stophy](https://stophy.dev)  **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, use YouTube Music and YouTube Kids, and get autocomplete suggestions, all returned as structured JSON.
 
 
 ## Install
@@ -36,6 +36,8 @@ console.log(result.data.text);
 | `stophy.channel(url, options?)` | Channel metadata and content |
 | `stophy.playlist(url, options?)` | Playlist items, paginated |
 | `stophy.suggest(query, options?)` | Search autocomplete suggestions |
+| `stophy.music(body)` | YouTube Music search, suggestions, songs, lyrics, albums, artists, playlists |
+| `stophy.kids(body)` | YouTube Kids search and video metadata |
 | `stophy.credits()` | Current credit balance |
 | `stophy.logs(query?)` | Recent request logs |
 | `stophy.usage(query?)` | Daily credit/request counts |
@@ -64,10 +66,22 @@ const channel = await stophy.channel("https://www.youtube.com/@mkbhd", {
 
 // Autocomplete
 const { data: s } = await stophy.suggest("react", { hl: "en", gl: "US" });
-console.log(s?.suggestions);
+console.log(s.suggestions);
+
+// YouTube Music
+const music = await stophy.music({
+  type: "search",
+  q: "lofi",
+  searchType: "song",
+});
+console.log(music.data.items);
+
+// YouTube Kids
+const kids = await stophy.kids({ type: "search", q: "science" });
+console.log(kids.data.items);
 
 // Account
-console.log((await stophy.credits()).data?.credits);
+console.log((await stophy.credits()).data.credits);
 ```
 
 ### Pagination
@@ -78,8 +92,8 @@ List endpoints return a `continuationToken`. Pass it back in to fetch the next p
 let token: string | undefined;
 do {
   const page = await stophy.search("lofi", { continuationToken: token });
-  // ...handle page.data?.items
-  token = page.data?.continuationToken ?? undefined;
+  // ...handle page.data.items
+  token = page.data.continuationToken ?? undefined;
 } while (token);
 ```
 
