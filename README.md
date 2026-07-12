@@ -1,6 +1,6 @@
 # stophy
 
-Official client libraries for [Stophy](https://stophy.dev) - the **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, and get autocomplete suggestions, all returned as structured JSON.
+Official client libraries for [Stophy](https://stophy.dev) - the **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, use YouTube Music and YouTube Kids, and get autocomplete suggestions, all returned as structured JSON.
 
 Pick your language:
 
@@ -55,6 +55,8 @@ print(result["data"]["text"])
 | `channel(...)` | Channel metadata + content by `tab` |
 | `playlist(...)` | Playlist items, paginated |
 | `suggest(...)` | Search autocomplete suggestions |
+| `music(...)` | YouTube Music search, suggestions, songs, lyrics, albums, artists, playlists |
+| `kids(...)` | YouTube Kids search and video metadata |
 | `credits()` | Current credit balance |
 | `logs(...)` | Recent request logs |
 | `usage(...)` | Daily credit/request counts |
