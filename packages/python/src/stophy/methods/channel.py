@@ -9,12 +9,14 @@ from ..types import ChannelResponse
 def _payload(
     channel_url: str,
     *,
+    query: Optional[str] = None,
     tab: Optional[str] = None,
     sort_by: Optional[str] = None,
     continuation_token: Optional[str] = None,
 ):
     return {
         "channelUrl": channel_url,
+        "query": query,
         "tab": tab,
         "sortBy": sort_by,
         "continuationToken": continuation_token,
