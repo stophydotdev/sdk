@@ -66,20 +66,36 @@ def test_playlist_posts_url():
     }
 
 
-def test_suggest_sends_query_params():
+def test_suggest_posts_json_body():
     client, calls = make_client(ok({"suggestions": ["react", "react native"]}))
     res = client.suggest(q="react", hl="en", gl="US")
 
-    assert calls[0].method == "GET"
+    assert calls[0].method == "POST"
     assert calls[0].url.path == "/v1/suggest"
-    assert query_of(calls[0]) == {"q": "react", "hl": "en", "gl": "US"}
+    assert body_of(calls[0]) == {"q": "react", "hl": "en", "gl": "US"}
     assert "react native" in res["data"]["suggestions"]
 
 
 def test_suggest_sends_only_required_q():
     client, calls = make_client(ok({"suggestions": []}))
     client.suggest(q="typescript")
-    assert query_of(calls[0]) == {"q": "typescript"}
+    assert body_of(calls[0]) == {"q": "typescript"}
+
+
+def test_music_posts_resource_body():
+    client, calls = make_client(ok({"items": []}))
+    client.music(type="search", q="lofi", search_type="song")
+    assert calls[0].method == "POST"
+    assert calls[0].url.path == "/v1/music"
+    assert body_of(calls[0]) == {"type": "search", "q": "lofi", "searchType": "song"}
+
+
+def test_kids_posts_resource_body():
+    client, calls = make_client(ok({"items": []}))
+    client.kids(type="search", q="science")
+    assert calls[0].method == "POST"
+    assert calls[0].url.path == "/v1/kids"
+    assert body_of(calls[0]) == {"type": "search", "q": "science"}
 
 
 def test_credits_takes_no_arguments():
