@@ -5,21 +5,27 @@ import type {
 	GetSuggestionsResponse,
 } from "../generated/types.gen";
 import { unwrap } from "../transport";
+import type { MeteredResponse } from "./response";
 
-type SuggestQuery = GetSuggestionsData["query"];
-export type SuggestOptions = Omit<SuggestQuery, "q">;
+type SuggestBody = GetSuggestionsData["body"];
+export type SuggestOptions = Omit<SuggestBody, "q">;
+export type SuggestResponse = MeteredResponse<
+	NonNullable<GetSuggestionsResponse["data"]>
+>;
 
 export function suggest(
 	client: Client,
-	queryOrOptions: string | SuggestQuery,
+	queryOrOptions: string | SuggestBody,
 	options: SuggestOptions = {},
-): Promise<GetSuggestionsResponse> {
+): Promise<SuggestResponse> {
 	if (typeof queryOrOptions === "string" && !queryOrOptions.trim()) {
 		throw new Error("query cannot be empty");
 	}
-	const query =
+	const body =
 		typeof queryOrOptions === "string"
 			? { q: queryOrOptions, ...options }
 			: queryOrOptions;
-	return getSuggestions({ client, query }).then(unwrap);
+	return getSuggestions({ client, body }).then(
+		unwrap,
+	) as Promise<SuggestResponse>;
 }
