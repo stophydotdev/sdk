@@ -8,21 +8,32 @@ import type {
 	GetUsageResponse,
 } from "../generated/types.gen";
 import { unwrap } from "../transport";
+import type { AccountResponse } from "./response";
 
-export function credits(client: Client): Promise<GetCreditsResponse> {
-	return getCredits({ client }).then(unwrap);
+export type CreditsResponse = AccountResponse<
+	NonNullable<GetCreditsResponse["data"]>
+>;
+export type LogsResponse = AccountResponse<
+	NonNullable<GetLogsResponse["data"]>
+>;
+export type UsageResponse = AccountResponse<
+	NonNullable<GetUsageResponse["data"]>
+>;
+
+export function credits(client: Client): Promise<CreditsResponse> {
+	return getCredits({ client }).then(unwrap) as Promise<CreditsResponse>;
 }
 
 export function logs(
 	client: Client,
 	query?: GetLogsData["query"],
-): Promise<GetLogsResponse> {
-	return getLogs({ client, query }).then(unwrap);
+): Promise<LogsResponse> {
+	return getLogs({ client, query }).then(unwrap) as Promise<LogsResponse>;
 }
 
 export function usage(
 	client: Client,
 	query?: GetUsageData["query"],
-): Promise<GetUsageResponse> {
-	return getUsage({ client, query }).then(unwrap);
+): Promise<UsageResponse> {
+	return getUsage({ client, query }).then(unwrap) as Promise<UsageResponse>;
 }
