@@ -6,15 +6,15 @@ from ..transport import AsyncTransport, SyncTransport
 from ..types import SuggestResponse
 
 
-def _params(q: str, *, hl: Optional[str] = None, gl: Optional[str] = None):
+def _payload(q: str, *, hl: Optional[str] = None, gl: Optional[str] = None):
     if not q.strip():
         raise ValueError("q cannot be empty")
     return {"q": q, "hl": hl, "gl": gl}
 
 
 def suggest(transport: SyncTransport, q: str, **options) -> SuggestResponse:
-    return cast(SuggestResponse, transport.get("/v1/suggest", _params(q, **options)))
+    return cast(SuggestResponse, transport.post("/v1/suggest", _payload(q, **options)))
 
 
 async def suggest_async(transport: AsyncTransport, q: str, **options) -> SuggestResponse:
-    return cast(SuggestResponse, await transport.get("/v1/suggest", _params(q, **options)))
+    return cast(SuggestResponse, await transport.post("/v1/suggest", _payload(q, **options)))
