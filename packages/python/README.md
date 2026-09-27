@@ -1,7 +1,6 @@
 # stophy
 
-Official Python SDK for [Stophy](https://stophy.dev) **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, use YouTube Music and YouTube Kids, and get autocomplete suggestions, all returned as structured JSON.
-
+Official Python SDK for [Stophy](https://stophy.dev), the **web data API for AI agents**.
 
 ## Install
 
@@ -9,7 +8,7 @@ Official Python SDK for [Stophy](https://stophy.dev) **YouTube context API for A
 pip install stophy
 ```
 
-Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>` on every request.
+Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>`.
 
 ## Quick start
 
@@ -17,93 +16,38 @@ Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends i
 from stophy import Stophy
 
 stophy = Stophy()  # reads STOPHY_API_KEY
-result = stophy.transcript("https://www.youtube.com/watch?v=D7liwdjvhWc")
-print(result["data"]["text"])
+result = stophy.youtube.search(query="bun runtime", limit=2)
+print(result["data"]["results"])
+
+markdown = stophy.youtube.search(query="bun runtime", limit=2, format="markdown")
 ```
 
-## Methods
+`AsyncStophy` has the same methods and is awaitable. Namespaces follow the API: `POST /v1/maps/search` is `client.maps.search(query=...)`. Nested routes are nested attributes, so `client.youtube.comments.replies(video=..., cursor=...)`.
 
-| Method | Description |
-| --- | --- |
-| `stophy.video_details(url)` | Video metadata and related videos |
-| `stophy.transcript(url)` | Timestamped captions and full text |
-| `stophy.comments(url, ...)` | Top-level comments |
-| `stophy.replies(token)` | Replies for a comment thread |
-| `stophy.live_chat(url, ...)` | Live stream chat messages |
-| `stophy.search(...)` | Search with filters for type, sort, date, duration, features |
-| `stophy.channel(...)` | Channel metadata + content by `tab` |
-| `stophy.playlist(...)` | Playlist items, paginated |
-| `stophy.suggest(...)` | Search autocomplete suggestions |
-| `stophy.music(...)` | YouTube Music search, suggestions, songs, lyrics, albums, artists, playlists |
-| `stophy.kids(...)` | YouTube Kids search and video metadata |
-| `stophy.credits()` | Current credit balance |
-| `stophy.logs(...)` | Recent request logs |
-| `stophy.usage(...)` | Daily credit/request counts |
-
-Methods use snake_case options and map them to API field names. The generic `video(...)` method remains available for discriminant-based calls.
+Keyword arguments are snake_case. A JSON field named `from` is passed as `from_`. `format="markdown"` sends `Accept: text/markdown` and returns a string.
 
 ```python
-# Search
-results = stophy.search("typescript tutorial", sort_by="popularity", duration="long")
-
-# Comments, then replies to a comment
-comments = stophy.comments(url, sort_by="top")
-token = comments["data"]["items"][0].get("repliesToken")
-if token:
-    replies = stophy.replies(token)
-
-# Autocomplete and account
-print(stophy.suggest("react")["data"]["suggestions"])
-print(stophy.credits()["data"]["credits"])
-
-# YouTube Music and YouTube Kids
-music = stophy.music(type="search", q="lofi", search_type="song")
-kids = stophy.kids(type="search", q="science")
-print(music["data"]["items"])
-print(kids["data"]["items"])
+usage = stophy.usage()
+logs = stophy.logs(days=7, page=0)
 ```
 
-### Pagination
-
-```python
-token = None
-while True:
-    page = stophy.search("lofi", continuation_token=token)
-    ...  # handle page["data"]["items"]
-    token = page["data"].get("continuationToken")
-    if not token:
-        break
-```
-
-### Async
-
-`AsyncStophy` exposes the same operations with `async`/`await`:
-
-```python
-from stophy import AsyncStophy
-
-async with AsyncStophy() as stophy:
-    result = await stophy.transcript(
-        "https://www.youtube.com/watch?v=D7liwdjvhWc"
-    )
-    print(result["data"]["text"])
-```
+`usage` and `logs` call `GET /v1/usage` and `GET /v1/logs`. Both require an API key.
 
 ## Errors
 
-Non-2xx responses raise `StophyError`:
-
 ```python
-from stophy import Stophy, StophyError
+from stophy import StophyError
 
 try:
-    stophy.credits()
-except StophyError as err:
-    print(err.status, err.code, err, err.request_id)
-    # err.code: "UNAUTHORIZED" | "INSUFFICIENT_CREDITS" | "BAD_REQUEST" |
-    #           "INVALID_INPUT" | "NOT_FOUND" | "CONCURRENCY_LIMITED" | "INTERNAL_ERROR"
+    stophy.youtube.search(query="bun runtime")
+except StophyError as error:
+    print(error.code, error.retryable, error.retry_after_seconds)
 ```
 
-## License
+`StophyError` has `code`, `retryable`, `retry_after_seconds`, `status`, and `request_id`. The message is `str(error)`.
 
-MIT
+Transient failures (network errors and HTTP 429/500/502/503/504) are retried with backoff, honoring `Retry-After`. Set `max_retries=0` to turn that off.
+
+## Regenerating
+
+From the repo root: `bun run sync`, then `bun run generate`. Do not edit `src/stophy/generated/`.

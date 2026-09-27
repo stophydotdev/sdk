@@ -1,13 +1,13 @@
 [project]
 name = "stophy"
-version = "0.2.0"
-description = "Official Python SDK for Stophy - YouTube context API for AI agents."
+version = "1.0.0"
+description = "Official Python SDK for Stophy, the web data API for AI agents."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "Stophy" }]
-keywords = ["stophy", "youtube", "transcript", "sdk", "ai-agents"]
-dependencies = ["httpx>=0.27"]
+keywords = ["stophy", "sdk", "ai-agents", "web", "search"]
+dependencies = ["httpx>=0.27", "typing-extensions>=4.5"]
 
 [project.urls]
 Homepage = "https://stophy.dev"
@@ -32,6 +32,9 @@ src = ["src"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/stophy/generated/**/*.py" = ["E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["stophy"]

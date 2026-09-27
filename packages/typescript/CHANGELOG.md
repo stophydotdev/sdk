@@ -1,5 +1,11 @@
 # stophy
 
+## 1.0.0
+
+### Major Changes
+
+- Replace the YouTube-only client with namespaces generated from the live Stophy API. Call `stophy.youtube.search({ query })` and the same shape for every catalog endpoint. `credits()` is removed. Errors now include `retryable` and `retryAfterSeconds`.
+
 ## 0.3.0
 
 ### Minor Changes

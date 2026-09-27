@@ -2,19 +2,26 @@ import { describe, expect, test } from "bun:test";
 import { Stophy, StophyError } from "../../packages/typescript/src/index";
 import { makeClient } from "./helpers";
 
-const ok = { json: { success: true, data: { credits: 1 } } };
+const ok = {
+	json: {
+		success: true,
+		data: { results: [] },
+		creditsUsed: 1,
+		requestId: "req_1",
+	},
+};
 
 describe("retries", () => {
 	test("retries a 429 then succeeds", async () => {
 		const { client, calls } = makeClient(
-			[{ status: 429, json: { success: false } }, ok],
-			{
-				maxRetries: 2,
-				retryInitialDelayMs: 0,
-			},
+			[
+				{ status: 429, json: { success: false, error: { message: "wait" } } },
+				ok,
+			],
+			{ maxRetries: 2, retryInitialDelayMs: 0 },
 		);
-		const res = await client.credits();
-		expect(res.data?.credits).toBe(1);
+		const res = await client.youtube.search({ query: "x" });
+		expect(res.creditsUsed).toBe(1);
 		expect(calls.length).toBe(2);
 	});
 
@@ -22,14 +29,19 @@ describe("retries", () => {
 		const { client, calls } = makeClient(
 			{
 				status: 503,
-				json: { success: false, code: "INTERNAL_ERROR", error: "down" },
+				json: {
+					success: false,
+					error: { code: "internalError", message: "down", retryable: true },
+				},
 			},
 			{ maxRetries: 2, retryInitialDelayMs: 0 },
 		);
-		const err = await client.credits().catch((e) => e);
+		const err = await client.youtube
+			.search({ query: "x" })
+			.catch((error) => error);
 		expect(err).toBeInstanceOf(StophyError);
 		expect(err.status).toBe(503);
-		expect(calls.length).toBe(3); // initial + 2 retries
+		expect(calls.length).toBe(3);
 	});
 
 	test("does not retry when maxRetries is 0", async () => {
@@ -37,39 +49,56 @@ describe("retries", () => {
 			status: 429,
 			json: { success: false },
 		});
-		await client.credits().catch(() => {});
+		await client.youtube.search({ query: "x" }).catch(() => undefined);
 		expect(calls.length).toBe(1);
 	});
 
-	test("does not retry non-retryable statuses (400)", async () => {
+	test("does not retry a 400", async () => {
 		const { client, calls } = makeClient(
 			{
 				status: 400,
-				json: { success: false, code: "INVALID_INPUT", error: "bad" },
+				json: {
+					success: false,
+					error: { code: "invalidRequest", message: "bad", retryable: false },
+				},
 			},
 			{ maxRetries: 3, retryInitialDelayMs: 0 },
 		);
-		await client.search({ q: "x" }).catch(() => {});
+		await client.youtube.search({ query: "x" }).catch(() => undefined);
 		expect(calls.length).toBe(1);
 	});
 
-	test("retries network errors", async () => {
+	test("retries network errors and does not retry abort", async () => {
 		let n = 0;
 		const fetchImpl = async () => {
-			if (n++ === 0) throw new TypeError("network down");
-			return new Response(JSON.stringify({ success: true, data: {} }), {
-				status: 200,
-				headers: { "content-type": "application/json" },
-			});
+			n += 1;
+			if (n === 1) throw new TypeError("network down");
+			return new Response(JSON.stringify(ok.json), { status: 200 });
 		};
 		const client = new Stophy({
 			apiKey: "sk_test",
-			fetch: fetchImpl as typeof fetch,
+			fetch: fetchImpl,
 			maxRetries: 2,
 			retryInitialDelayMs: 0,
 		});
-		await client.credits();
+		await client.youtube.search({ query: "x" });
 		expect(n).toBe(2);
+
+		const controller = new AbortController();
+		controller.abort();
+		const aborted = new Stophy({
+			apiKey: "sk_test",
+			fetch: async (_input, init) => {
+				if (init?.signal?.aborted)
+					throw new DOMException("aborted", "AbortError");
+				return new Response("{}", { status: 200 });
+			},
+			maxRetries: 2,
+			retryInitialDelayMs: 0,
+		});
+		await expect(
+			aborted.youtube.search({ query: "x" }, { signal: controller.signal }),
+		).rejects.toThrow("aborted");
 	});
 
 	test("honors the Retry-After header (seconds)", async () => {
@@ -85,9 +114,8 @@ describe("retries", () => {
 			{ maxRetries: 1, retryInitialDelayMs: 9999 },
 		);
 		const started = Date.now();
-		await client.credits();
+		await client.youtube.search({ query: "x" });
 		expect(calls.length).toBe(2);
-		// Retry-After "0" should win over the 9999ms base delay.
 		expect(Date.now() - started).toBeLessThan(500);
 	});
 });

@@ -1,6 +1,6 @@
 # stophy
 
-Official client libraries for [Stophy](https://stophy.dev) - the **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, use YouTube Music and YouTube Kids, and get autocomplete suggestions, all returned as structured JSON.
+Official client libraries for [Stophy](https://stophy.dev), the **web data API for AI agents**. One client covers the catalog: YouTube, Reddit, Maps, the web, and the rest of `POST /v1/<source>/<endpoint>`.
 
 Pick your language:
 
@@ -20,11 +20,14 @@ npm install stophy
 ```ts
 import { Stophy } from "stophy";
 
-const stophy = new Stophy(); // reads STOPHY_API_KEY
-const result = await stophy.transcript(
-  "https://www.youtube.com/watch?v=D7liwdjvhWc",
+const stophy = new Stophy({ apiKey: process.env.STOPHY_API_KEY });
+const result = await stophy.youtube.search({ query: "bun runtime", limit: 2 });
+console.log(result.data.results);
+
+const markdown = await stophy.youtube.search(
+  { query: "bun runtime", limit: 2 },
+  { format: "markdown" },
 );
-console.log(result.data.text);
 ```
 
 ### Python
@@ -36,40 +39,31 @@ pip install stophy
 ```python
 from stophy import Stophy
 
-stophy = Stophy()  # reads STOPHY_API_KEY
-result = stophy.transcript(
-    "https://www.youtube.com/watch?v=D7liwdjvhWc"
-)
-print(result["data"]["text"])
+stophy = Stophy(api_key="sk_...")  # or set STOPHY_API_KEY
+result = stophy.youtube.search(query="bun runtime", limit=2)
+print(result["data"]["results"])
+
+markdown = stophy.youtube.search(query="bun runtime", limit=2, format="markdown")
 ```
 
-## What you can do
+Python also exports `AsyncStophy` with the same namespaces. Nested operations are nested attributes: `stophy.youtube.comments.replies(...)`.
 
-| Method | Description |
-| --- | --- |
-| `video_details(...)` / `videoDetails(...)` | Video metadata and related videos |
-| `transcript(...)` | Timestamped captions and full text |
-| `comments(...)` / `replies(...)` | Top-level comments and reply threads |
-| `live_chat(...)` / `liveChat(...)` | Live stream chat messages |
-| `search(...)` | Search with filters for type, sort, date, duration, features |
-| `channel(...)` | Channel metadata + content by `tab` |
-| `playlist(...)` | Playlist items, paginated |
-| `suggest(...)` | Search autocomplete suggestions |
-| `music(...)` | YouTube Music search, suggestions, songs, lyrics, albums, artists, playlists |
-| `kids(...)` | YouTube Kids search and video metadata |
-| `credits()` | Current credit balance |
-| `logs(...)` | Recent request logs |
-| `usage(...)` | Daily credit/request counts |
-
-Each SDK exposes the same surface with idiomatic naming for its language (camelCase in TypeScript, snake_case in Python). Python also exports `AsyncStophy` with matching awaitable methods. The generic `video(...)` method remains available for callers that prefer the API discriminant directly.
+`usage()` and `logs()` read `GET /v1/usage` and `GET /v1/logs`. Both require an API key.
 
 ## Errors
 
-Non-2xx responses surface a `StophyError` with the HTTP `status`, an API `code` (`UNAUTHORIZED`, `INSUFFICIENT_CREDITS`, `BAD_REQUEST`, `INVALID_INPUT`, `NOT_FOUND`, `CONCURRENCY_LIMITED`, `INTERNAL_ERROR`), the message, and a `requestId` you can quote to support.
+A failed response throws `StophyError` with `code`, `message`, `retryable`, `retryAfterSeconds` (`retry_after_seconds` in Python), `status`, and `requestId` (`request_id` in Python). The code and message come from `{ error: { code, message, retryable } }`. `retryAfterSeconds` comes from the body or the `Retry-After` header.
 
-## Retries
+## Keeping the clients current
 
-Transient failures - network errors and `429`/`500`/`502`/`503`/`504` - are retried automatically with exponential backoff and jitter, honoring the `Retry-After` header. Every endpoint is a read, so retries are always safe. Both SDKs let you set `maxRetries` (TS) / `max_retries` (Python) to opt out.
+`openapi.json` is downloaded from the live API. Both clients are generated from it.
+
+```bash
+bun run sync       # GET https://api.stophy.dev/openapi.json
+bun run generate   # TypeScript surface + Python models and namespaces
+```
+
+Set `STOPHY_OPENAPI_URL` to point `sync` at another spec. A new endpoint needs those two commands and nothing else.
 
 ## License
 

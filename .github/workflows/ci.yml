@@ -59,5 +59,11 @@ jobs:
       - name: Build
         run: uv build --project packages/python
 
+      - name: Verify generated client is up to date
+        run: |
+          uv run --project packages/python python scripts/gen_python.py
+          uv run --project packages/python ruff format packages/python/src/stophy/generated
+          git diff --exit-code -- packages/python/src/stophy/generated
+
       - name: Test
         run: uv --project packages/python run pytest

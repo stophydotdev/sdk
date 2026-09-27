@@ -1,121 +1,104 @@
-from helpers import body_of, make_client, ok, query_of
+import json
+from pathlib import Path
+
+from helpers import body_of, make_client, query_of
+
+ENVELOPE = {
+    "success": True,
+    "data": {"results": [{"type": "video", "url": "https://youtu.be/abc"}]},
+    "creditsUsed": 1,
+    "requestId": "req_1",
+}
 
 
-def test_video_posts_body_and_returns_data():
-    client, calls = make_client(ok({"text": "hello world"}))
-    res = client.video(type="transcript", video_url="https://youtu.be/abc")
-
+def test_posts_input_to_the_spec_path():
+    client, calls = make_client({"json": ENVELOPE})
+    result = client.youtube.search(query="bun runtime", limit=2)
+    assert result["data"]["results"][0]["url"] == "https://youtu.be/abc"
     assert calls[0].method == "POST"
-    assert calls[0].url.path == "/v1/video"
-    assert body_of(calls[0]) == {
-        "type": "transcript",
-        "videoUrl": "https://youtu.be/abc",
+    assert calls[0].url.path == "/v1/youtube/search"
+    assert body_of(calls[0]) == {"query": "bun runtime", "limit": 2}
+    assert calls[0].headers["accept"] == "application/json"
+
+
+def test_nested_operation_and_keyword_argument():
+    client, calls = make_client({"json": ENVELOPE})
+    client.youtube.comments.replies(video="abc", cursor="tok", limit=5)
+    assert calls[0].url.path == "/v1/youtube/comments/replies"
+    assert body_of(calls[0]) == {"video": "abc", "cursor": "tok", "limit": 5}
+
+    client.web.search(query="news", from_="2026-01-01")
+    assert body_of(calls[1])["from"] == "2026-01-01"
+
+
+def test_markdown_format_returns_text():
+    client, calls = make_client(
+        {"raw": "# results", "headers": {"content-type": "text/markdown"}}
+    )
+    text = client.youtube.search(query="bun runtime", format="markdown")
+    assert text == "# results"
+    assert calls[0].headers["accept"] == "text/markdown"
+
+
+def test_empty_optional_body_and_endpoint_catalog():
+    client, calls = make_client(
+        [{"json": ENVELOPE}, {"json": {"endpoints": []}}],
+    )
+    client.crypto.trending()
+    catalog = client.endpoints()
+    assert body_of(calls[0]) == {}
+    assert calls[0].url.path == "/v1/crypto/trending"
+    assert catalog["endpoints"] == []
+    assert calls[1].method == "GET"
+
+
+def test_usage_and_logs():
+    client, calls = make_client(
+        [
+            {"json": {"balanceMicros": 1000, "creditsUsed": 2, "requestCount": 1}},
+            {
+                "json": {
+                    "endpoints": ["youtube.search"],
+                    "logs": [
+                        {
+                            "apiKeyId": None,
+                            "apiKeyName": None,
+                            "createdAt": "2026-09-28T00:00:00.000Z",
+                            "credits": 1,
+                            "durationMs": None,
+                            "endpoint": "youtube.search",
+                            "id": "log_1",
+                            "method": "POST",
+                            "response": "success",
+                            "status": 200,
+                        }
+                    ],
+                    "page": 0,
+                    "pageSize": 50,
+                    "total": 1,
+                    "totalPages": 1,
+                }
+            },
+        ]
+    )
+    assert client.usage()["creditsUsed"] == 2
+    logs = client.logs(days=7, page=0, endpoint="youtube.search", api_key_id="key_1")
+    assert logs["logs"][0]["endpoint"] == "youtube.search"
+    assert query_of(calls[1]) == {
+        "days": "7",
+        "page": "0",
+        "endpoint": "youtube.search",
+        "apiKeyId": "key_1",
     }
-    assert res["data"] == {"text": "hello world"}
-    assert res["requestId"] == "req_1"
 
 
-def test_video_replies_flow():
-    client, calls = make_client(ok({"items": []}))
-    client.video(type="replies", continuation_token="TOKEN")
-    assert body_of(calls[0]) == {"type": "replies", "continuationToken": "TOKEN"}
-
-
-def test_transcript_helper():
-    client, calls = make_client(ok({"text": "hello"}))
-    result = client.transcript("https://youtu.be/abc")
-    assert body_of(calls[0]) == {
-        "type": "transcript",
-        "videoUrl": "https://youtu.be/abc",
-    }
-    assert result["data"]["text"] == "hello"
-
-
-def test_search_posts_filters():
-    client, calls = make_client(ok({"items": [], "continuationToken": "next"}))
-    res = client.search(q="lofi", sort_by="popularity", duration="long")
-
-    assert calls[0].method == "POST"
-    assert calls[0].url.path == "/v1/search"
-    assert body_of(calls[0]) == {
-        "q": "lofi",
-        "sortBy": "popularity",
-        "duration": "long",
-    }
-    assert res["data"]["continuationToken"] == "next"
-
-
-def test_channel_posts_url_and_tab():
-    client, calls = make_client(ok({"tab": "video", "items": []}))
-    client.channel(channel_url="https://youtube.com/@mkbhd", tab="video")
-
-    assert calls[0].url.path == "/v1/channel"
-    assert body_of(calls[0]) == {
-        "channelUrl": "https://youtube.com/@mkbhd",
-        "tab": "video",
-    }
-
-
-def test_playlist_posts_url():
-    client, calls = make_client(ok({"items": []}))
-    client.playlist(playlist_url="https://youtube.com/playlist?list=PL123")
-
-    assert calls[0].url.path == "/v1/playlist"
-    assert body_of(calls[0]) == {
-        "playlistUrl": "https://youtube.com/playlist?list=PL123"
-    }
-
-
-def test_suggest_posts_json_body():
-    client, calls = make_client(ok({"suggestions": ["react", "react native"]}))
-    res = client.suggest(q="react", hl="en", gl="US")
-
-    assert calls[0].method == "POST"
-    assert calls[0].url.path == "/v1/suggest"
-    assert body_of(calls[0]) == {"q": "react", "hl": "en", "gl": "US"}
-    assert "react native" in res["data"]["suggestions"]
-
-
-def test_suggest_sends_only_required_q():
-    client, calls = make_client(ok({"suggestions": []}))
-    client.suggest(q="typescript")
-    assert body_of(calls[0]) == {"q": "typescript"}
-
-
-def test_music_posts_resource_body():
-    client, calls = make_client(ok({"items": []}))
-    client.music(type="search", q="lofi", search_type="song")
-    assert calls[0].method == "POST"
-    assert calls[0].url.path == "/v1/music"
-    assert body_of(calls[0]) == {"type": "search", "q": "lofi", "searchType": "song"}
-
-
-def test_kids_posts_resource_body():
-    client, calls = make_client(ok({"items": []}))
-    client.kids(type="search", q="science")
-    assert calls[0].method == "POST"
-    assert calls[0].url.path == "/v1/kids"
-    assert body_of(calls[0]) == {"type": "search", "q": "science"}
-
-
-def test_credits_takes_no_arguments():
-    client, calls = make_client(ok({"credits": 42}))
-    res = client.credits()
-
-    assert calls[0].method == "GET"
-    assert calls[0].url.path == "/v1/credits"
-    assert res["data"]["credits"] == 42
-
-
-def test_logs_forwards_query_filters():
-    client, calls = make_client(ok({"logs": [], "total": 0}))
-    client.logs(days="30", endpoint="/video", page=2)
-    assert query_of(calls[0]) == {"days": "30", "endpoint": "/video", "page": "2"}
-
-
-def test_usage_forwards_query_filters():
-    client, calls = make_client(ok({"items": []}))
-    client.usage(days="7", tz="-120")
-
-    assert calls[0].url.path == "/v1/usage"
-    assert query_of(calls[0]) == {"days": "7", "tz": "-120"}
+def test_every_spec_operation_is_callable():
+    spec = json.loads(Path("openapi.json").read_text())
+    client, _calls = make_client({"json": ENVELOPE})
+    assert len(spec["paths"]) > 100
+    for path in spec["paths"]:
+        node = client
+        for part in [item for item in path.split("/") if item and item != "v1"]:
+            node = getattr(node, part)
+        assert callable(node)
+    client.close()
