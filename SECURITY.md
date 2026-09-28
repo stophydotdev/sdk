@@ -1,8 +1,8 @@
-# Security Policy
+# Security policy
 
-## Reporting a vulnerability
+## Report a security problem
 
-Please do not report security vulnerabilities in public issues.
+Do not report security problems in public issues.
 
 Email security reports to **support@stophy.dev** with:
 
@@ -15,4 +15,4 @@ We will acknowledge a report within five business days and coordinate a fix and 
 
 ## Scope
 
-This repository contains a client, integration, or agent-facing package for the Stophy API. Do not include API keys, credentials, customer data, or private service details in issues or pull requests.
+This policy covers the Stophy TypeScript and Python SDKs in this repository. Do not put API keys, credentials, customer data, or private service details in issues or pull requests.
