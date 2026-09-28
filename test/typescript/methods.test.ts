@@ -51,8 +51,11 @@ describe("namespaced operations", () => {
 	test("forwards the abort signal", async () => {
 		const { client, calls } = makeClient({ json: envelope });
 		const controller = new AbortController();
-		await client.maps.search({ query: "cairo" }, { signal: controller.signal });
-		expect(calls[0]?.signal).toBe(controller.signal);
+		controller.abort();
+		await client.maps
+			.search({ query: "cairo" }, { signal: controller.signal })
+			.catch(() => undefined);
+		expect(calls[0]?.signal?.aborted).toBe(true);
 	});
 
 	test("omits an empty optional body", async () => {

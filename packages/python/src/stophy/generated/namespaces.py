@@ -123,6 +123,7 @@ from .models import (
     LinkedinAdsAdResponse,
     LinkedinAdsSearchResponse,
     LinkedinAdsSearchWithin,
+    LinkedinCompanyResponse,
     LinkedinJobsJobResponse,
     LinkedinJobsSearchExperienceItem,
     LinkedinJobsSearchJobTypesItem,
@@ -130,6 +131,8 @@ from .models import (
     LinkedinJobsSearchSort,
     LinkedinJobsSearchWithin,
     LinkedinJobsSearchWorkplaceItem,
+    LinkedinPostsResponse,
+    LinkedinProfileResponse,
     MapsPlaceResponse,
     MapsReviewsResponse,
     MapsReviewsSort,
@@ -206,6 +209,7 @@ from .models import (
     TiktokAdsSearchResponse,
     TiktokCommentsRepliesResponse,
     TiktokCommentsResponse,
+    TiktokHashtagResponse,
     TiktokPostsResponse,
     TiktokProfileResponse,
     TiktokSearchResponse,
@@ -1884,6 +1888,46 @@ class SyncTiktokPosts:
         return self._call("POST", "/v1/tiktok/posts", body, format)
 
 
+class SyncTiktokHashtag:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    @overload
+    def __call__(
+        self,
+        *,
+        hashtag: str,
+        limit: int | None = None,
+        cursor: str | None = None,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        hashtag: str,
+        limit: int | None = None,
+        cursor: str | None = None,
+        format: None = None,
+    ) -> TiktokHashtagResponse: ...
+    def __call__(
+        self,
+        *,
+        hashtag: str,
+        limit: int | None = None,
+        cursor: str | None = None,
+        format: Literal["markdown"] | None = None,
+    ) -> TiktokHashtagResponse | str:
+        body = _omit_none(
+            {
+                "hashtag": hashtag,
+                "limit": limit,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/tiktok/hashtag", body, format)
+
+
 class SyncTiktokCommentsReplies:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -2119,6 +2163,7 @@ class SyncTiktok:
     url: SyncTiktokUrl
     transcript: SyncTiktokTranscript
     posts: SyncTiktokPosts
+    hashtag: SyncTiktokHashtag
     comments: SyncTiktokComments
     search: SyncTiktokSearch
     ads: SyncTiktokAds
@@ -2130,6 +2175,7 @@ class SyncTiktok:
         self.url = SyncTiktokUrl(call)
         self.transcript = SyncTiktokTranscript(call)
         self.posts = SyncTiktokPosts(call)
+        self.hashtag = SyncTiktokHashtag(call)
         self.comments = SyncTiktokComments(call)
         self.search = SyncTiktokSearch(call)
         self.ads = SyncTiktokAds(call)
@@ -3169,14 +3215,163 @@ class SyncLinkedinAds:
         self.ad = SyncLinkedinAdsAd(call)
 
 
+class SyncLinkedinCompanyPosts:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    @overload
+    def __call__(
+        self,
+        *,
+        company: str,
+        limit: int | None = None,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        company: str,
+        limit: int | None = None,
+        format: None = None,
+    ) -> LinkedinPostsResponse: ...
+    def __call__(
+        self,
+        *,
+        company: str,
+        limit: int | None = None,
+        format: Literal["markdown"] | None = None,
+    ) -> LinkedinPostsResponse | str:
+        body = _omit_none(
+            {
+                "company": company,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/linkedin/company/posts", body, format)
+
+
+class SyncLinkedinCompany:
+    posts: SyncLinkedinCompanyPosts
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.posts = SyncLinkedinCompanyPosts(call)
+
+    @overload
+    def __call__(
+        self,
+        *,
+        company: str,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        company: str,
+        format: None = None,
+    ) -> LinkedinCompanyResponse: ...
+    def __call__(
+        self,
+        *,
+        company: str,
+        format: Literal["markdown"] | None = None,
+    ) -> LinkedinCompanyResponse | str:
+        body = _omit_none(
+            {
+                "company": company,
+            }
+        )
+        return self._call("POST", "/v1/linkedin/company", body, format)
+
+
+class SyncLinkedinProfile:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    @overload
+    def __call__(
+        self,
+        *,
+        profile: str,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        profile: str,
+        format: None = None,
+    ) -> LinkedinProfileResponse: ...
+    def __call__(
+        self,
+        *,
+        profile: str,
+        format: Literal["markdown"] | None = None,
+    ) -> LinkedinProfileResponse | str:
+        body = _omit_none(
+            {
+                "profile": profile,
+            }
+        )
+        return self._call("POST", "/v1/linkedin/profile", body, format)
+
+
+class SyncLinkedinPosts:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    @overload
+    def __call__(
+        self,
+        *,
+        profile: str | None = None,
+        company: str | None = None,
+        limit: int | None = None,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        profile: str | None = None,
+        company: str | None = None,
+        limit: int | None = None,
+        format: None = None,
+    ) -> LinkedinPostsResponse: ...
+    def __call__(
+        self,
+        *,
+        profile: str | None = None,
+        company: str | None = None,
+        limit: int | None = None,
+        format: Literal["markdown"] | None = None,
+    ) -> LinkedinPostsResponse | str:
+        body = _omit_none(
+            {
+                "profile": profile,
+                "company": company,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/linkedin/posts", body, format)
+
+
 class SyncLinkedin:
     jobs: SyncLinkedinJobs
     ads: SyncLinkedinAds
+    company: SyncLinkedinCompany
+    profile: SyncLinkedinProfile
+    posts: SyncLinkedinPosts
 
     def __init__(self, call: SyncCall) -> None:
         self._call = call
         self.jobs = SyncLinkedinJobs(call)
         self.ads = SyncLinkedinAds(call)
+        self.company = SyncLinkedinCompany(call)
+        self.profile = SyncLinkedinProfile(call)
+        self.posts = SyncLinkedinPosts(call)
 
 
 class SyncZillowSearch:
@@ -9612,6 +9807,46 @@ class AsyncTiktokPosts:
         return await self._call("POST", "/v1/tiktok/posts", body, format)
 
 
+class AsyncTiktokHashtag:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    @overload
+    def __call__(
+        self,
+        *,
+        hashtag: str,
+        limit: int | None = None,
+        cursor: str | None = None,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        hashtag: str,
+        limit: int | None = None,
+        cursor: str | None = None,
+        format: None = None,
+    ) -> TiktokHashtagResponse: ...
+    async def __call__(
+        self,
+        *,
+        hashtag: str,
+        limit: int | None = None,
+        cursor: str | None = None,
+        format: Literal["markdown"] | None = None,
+    ) -> TiktokHashtagResponse | str:
+        body = _omit_none(
+            {
+                "hashtag": hashtag,
+                "limit": limit,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/tiktok/hashtag", body, format)
+
+
 class AsyncTiktokCommentsReplies:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -9847,6 +10082,7 @@ class AsyncTiktok:
     url: AsyncTiktokUrl
     transcript: AsyncTiktokTranscript
     posts: AsyncTiktokPosts
+    hashtag: AsyncTiktokHashtag
     comments: AsyncTiktokComments
     search: AsyncTiktokSearch
     ads: AsyncTiktokAds
@@ -9858,6 +10094,7 @@ class AsyncTiktok:
         self.url = AsyncTiktokUrl(call)
         self.transcript = AsyncTiktokTranscript(call)
         self.posts = AsyncTiktokPosts(call)
+        self.hashtag = AsyncTiktokHashtag(call)
         self.comments = AsyncTiktokComments(call)
         self.search = AsyncTiktokSearch(call)
         self.ads = AsyncTiktokAds(call)
@@ -10897,14 +11134,163 @@ class AsyncLinkedinAds:
         self.ad = AsyncLinkedinAdsAd(call)
 
 
+class AsyncLinkedinCompanyPosts:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    @overload
+    def __call__(
+        self,
+        *,
+        company: str,
+        limit: int | None = None,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        company: str,
+        limit: int | None = None,
+        format: None = None,
+    ) -> LinkedinPostsResponse: ...
+    async def __call__(
+        self,
+        *,
+        company: str,
+        limit: int | None = None,
+        format: Literal["markdown"] | None = None,
+    ) -> LinkedinPostsResponse | str:
+        body = _omit_none(
+            {
+                "company": company,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/linkedin/company/posts", body, format)
+
+
+class AsyncLinkedinCompany:
+    posts: AsyncLinkedinCompanyPosts
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.posts = AsyncLinkedinCompanyPosts(call)
+
+    @overload
+    def __call__(
+        self,
+        *,
+        company: str,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        company: str,
+        format: None = None,
+    ) -> LinkedinCompanyResponse: ...
+    async def __call__(
+        self,
+        *,
+        company: str,
+        format: Literal["markdown"] | None = None,
+    ) -> LinkedinCompanyResponse | str:
+        body = _omit_none(
+            {
+                "company": company,
+            }
+        )
+        return await self._call("POST", "/v1/linkedin/company", body, format)
+
+
+class AsyncLinkedinProfile:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    @overload
+    def __call__(
+        self,
+        *,
+        profile: str,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        profile: str,
+        format: None = None,
+    ) -> LinkedinProfileResponse: ...
+    async def __call__(
+        self,
+        *,
+        profile: str,
+        format: Literal["markdown"] | None = None,
+    ) -> LinkedinProfileResponse | str:
+        body = _omit_none(
+            {
+                "profile": profile,
+            }
+        )
+        return await self._call("POST", "/v1/linkedin/profile", body, format)
+
+
+class AsyncLinkedinPosts:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    @overload
+    def __call__(
+        self,
+        *,
+        profile: str | None = None,
+        company: str | None = None,
+        limit: int | None = None,
+        format: Literal["markdown"],
+    ) -> str: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        profile: str | None = None,
+        company: str | None = None,
+        limit: int | None = None,
+        format: None = None,
+    ) -> LinkedinPostsResponse: ...
+    async def __call__(
+        self,
+        *,
+        profile: str | None = None,
+        company: str | None = None,
+        limit: int | None = None,
+        format: Literal["markdown"] | None = None,
+    ) -> LinkedinPostsResponse | str:
+        body = _omit_none(
+            {
+                "profile": profile,
+                "company": company,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/linkedin/posts", body, format)
+
+
 class AsyncLinkedin:
     jobs: AsyncLinkedinJobs
     ads: AsyncLinkedinAds
+    company: AsyncLinkedinCompany
+    profile: AsyncLinkedinProfile
+    posts: AsyncLinkedinPosts
 
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
         self.jobs = AsyncLinkedinJobs(call)
         self.ads = AsyncLinkedinAds(call)
+        self.company = AsyncLinkedinCompany(call)
+        self.profile = AsyncLinkedinProfile(call)
+        self.posts = AsyncLinkedinPosts(call)
 
 
 class AsyncZillowSearch:

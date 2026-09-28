@@ -97,3 +97,30 @@ def test_async_client_reads_environment(monkeypatch):
             assert usage["balanceMicros"] == 1
 
     _run(run)
+
+
+def test_async_raises_instead_of_waiting_more_than_60_seconds():
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(
+            429,
+            headers={"retry-after": "120"},
+            json={"success": False, "error": {"code": "rateLimited"}},
+            request=request,
+        )
+
+    async def run():
+        async with AsyncStophy(
+            "sk_test",
+            transport=httpx.MockTransport(handler),
+            max_retries=2,
+            retry_initial_delay=0,
+        ) as client:
+            await client.youtube.search(query="x")
+
+    with pytest.raises(StophyError) as info:
+        _run(run)
+    assert info.value.retry_after_seconds == 120
+    assert len(calls) == 1

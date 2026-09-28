@@ -15,13 +15,13 @@ export type _Error = {
       | "invalidRequest"
       | "notFound"
       | "rateLimited"
-      | "sourceBusy"
       | "sourceChanged"
       | "sourceRefused"
       | "sourceTimeout"
       | "sourceUnavailable"
       | "tooManyInFlight"
-      | "unauthorized";
+      | "unauthorized"
+      | "unsupportedMediaType";
     message: string;
     retryable: boolean;
     retryAfterSeconds?: number;
@@ -44,6 +44,12 @@ export type EndpointCatalog = {
     input?: {
       [key: string]: unknown;
     };
+    /**
+     * A real input for this endpoint, or null when there is none.
+     */
+    example: {
+      [key: string]: unknown;
+    } | null;
   }>;
 };
 
@@ -2792,6 +2798,86 @@ export type TiktokPostsResponses = {
 
 export type TiktokPostsResponse =
   TiktokPostsResponses[keyof TiktokPostsResponses];
+
+export type TiktokHashtagData = {
+  body: {
+    hashtag: string;
+    limit?: number;
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/hashtag";
+};
+
+export type TiktokHashtagErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokHashtagError = TiktokHashtagErrors[keyof TiktokHashtagErrors];
+
+export type TiktokHashtagResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      videos: Array<{
+        id?: string;
+        url: string;
+        type: "video" | "photo";
+        text?: string;
+        hashtags?: Array<string>;
+        mentions?: Array<string>;
+        createdAt?: string;
+        durationSeconds?: number;
+        width?: number;
+        height?: number;
+        thumbnail?: string;
+        images?: Array<{
+          url: string;
+          caption?: string;
+          alt?: string;
+        }>;
+        views?: number;
+        likes?: number;
+        comments?: number;
+        shares?: number;
+        saves?: number;
+        author?: {
+          id?: string;
+          username?: string;
+          name?: string;
+          url?: string;
+          avatar?: string;
+          isVerified?: boolean;
+        };
+        audio?: {
+          id?: string;
+          title?: string;
+          artist?: string;
+          isOriginal: boolean;
+        };
+        isAd: boolean;
+        isAiGenerated: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokHashtagResponse =
+  TiktokHashtagResponses[keyof TiktokHashtagResponses];
 
 export type TiktokCommentsData = {
   body: {
@@ -5608,6 +5694,225 @@ export type LinkedinAdsAdResponses = {
 
 export type LinkedinAdsAdResponse =
   LinkedinAdsAdResponses[keyof LinkedinAdsAdResponses];
+
+export type LinkedinCompanyData = {
+  body: {
+    company: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/linkedin/company";
+};
+
+export type LinkedinCompanyErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type LinkedinCompanyError =
+  LinkedinCompanyErrors[keyof LinkedinCompanyErrors];
+
+export type LinkedinCompanyResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      company: {
+        id?: string;
+        url: string;
+        name?: string;
+        industry?: string;
+        size?: string;
+        employees?: number;
+        headquarters?: string;
+        website?: string;
+        followers?: number;
+        description?: string;
+        specialties?: Array<string>;
+        founded?: string;
+      };
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type LinkedinCompanyResponse =
+  LinkedinCompanyResponses[keyof LinkedinCompanyResponses];
+
+export type LinkedinProfileData = {
+  body: {
+    profile: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/linkedin/profile";
+};
+
+export type LinkedinProfileErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type LinkedinProfileError =
+  LinkedinProfileErrors[keyof LinkedinProfileErrors];
+
+export type LinkedinProfileResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      profile: {
+        id?: string;
+        url: string;
+        name?: string;
+        headline?: string;
+        location?: string;
+        about?: string;
+        isAboutTruncated: boolean;
+        followers?: number;
+        roles?: Array<{
+          title?: string;
+          company?: string;
+          url?: string;
+          from?: string;
+          to?: string;
+          isCurrent: boolean;
+        }>;
+        education?: Array<{
+          school?: string;
+          degree?: string;
+          url?: string;
+          from?: string;
+          to?: string;
+        }>;
+      };
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type LinkedinProfileResponse =
+  LinkedinProfileResponses[keyof LinkedinProfileResponses];
+
+export type LinkedinPostsData = {
+  body: {
+    profile?: string;
+    company?: string;
+    limit?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/linkedin/posts";
+};
+
+export type LinkedinPostsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type LinkedinPostsError = LinkedinPostsErrors[keyof LinkedinPostsErrors];
+
+export type LinkedinPostsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      posts: Array<{
+        id?: string;
+        url: string;
+        text?: string;
+        createdAt?: string;
+        likes?: number;
+        author?: {
+          name?: string;
+          url?: string;
+        };
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type LinkedinPostsResponse =
+  LinkedinPostsResponses[keyof LinkedinPostsResponses];
+
+export type LinkedinCompanyPostsData = {
+  body: {
+    company: string;
+    limit?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/linkedin/company/posts";
+};
+
+export type LinkedinCompanyPostsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type LinkedinCompanyPostsError =
+  LinkedinCompanyPostsErrors[keyof LinkedinCompanyPostsErrors];
+
+export type LinkedinCompanyPostsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      posts: Array<{
+        id?: string;
+        url: string;
+        text?: string;
+        createdAt?: string;
+        likes?: number;
+        author?: {
+          name?: string;
+          url?: string;
+        };
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type LinkedinCompanyPostsResponse =
+  LinkedinCompanyPostsResponses[keyof LinkedinCompanyPostsResponses];
 
 export type ZillowSearchData = {
   body: {

@@ -1,7 +1,11 @@
+import { version } from "../package.json";
 import { StophyError } from "./errors";
 
 const DEFAULT_BASE_URL = "https://api.stophy.dev";
+const DEFAULT_TIMEOUT_MS = 30_000;
+const MAX_RETRY_WAIT_SECONDS = 60;
 const RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504]);
+const USER_AGENT = `stophy-typescript/${version}`;
 
 export interface CallOptions {
 	/** Send `Accept: text/markdown` and return the response body as a string. */
@@ -25,89 +29,145 @@ export type FetchLike = (
 ) => Promise<Response>;
 
 export interface TransportOptions {
-	apiKey: string;
+	apiKey?: string;
 	baseUrl?: string;
 	fetch?: FetchLike;
 	headers?: Record<string, string>;
 	maxRetries?: number;
 	retryInitialDelayMs?: number;
+	timeoutMs?: number;
 }
 
 export function createCaller(options: TransportOptions): Caller {
 	const baseFetch: FetchLike = options.fetch ?? globalThis.fetch;
 	const baseUrl = (options.baseUrl ?? DEFAULT_BASE_URL).replace(/\/$/, "");
-	const maxRetries = options.maxRetries ?? 2;
-	const initialDelayMs = options.retryInitialDelayMs ?? 500;
+	const retry: RetryPolicy = {
+		maxRetries: options.maxRetries ?? 2,
+		initialDelayMs: options.retryInitialDelayMs ?? 500,
+		timeoutMs: options.timeoutMs ?? DEFAULT_TIMEOUT_MS,
+	};
 
 	return async (spec) => {
+		const markdown = spec.options?.format === "markdown";
 		const headers = new Headers(options.headers);
-		headers.set("authorization", `Bearer ${options.apiKey}`);
-		headers.set(
-			"accept",
-			spec.options?.format === "markdown"
-				? "text/markdown"
-				: "application/json",
-		);
+		if (typeof document === "undefined" && !headers.has("user-agent")) {
+			headers.set("user-agent", USER_AGENT);
+		}
+		if (options.apiKey) {
+			headers.set("authorization", `Bearer ${options.apiKey}`);
+		}
+		headers.set("accept", markdown ? "text/markdown" : "application/json");
 		if (spec.body !== undefined)
 			headers.set("content-type", "application/json");
 
 		const url = withQuery(`${baseUrl}${spec.path}`, spec.query);
-		const response = await send(
+		return send(
 			baseFetch,
-			() => ({
+			url,
+			(signal) => ({
 				method: spec.method,
 				headers,
 				body: spec.body === undefined ? undefined : JSON.stringify(spec.body),
-				signal: spec.options?.signal,
+				signal,
 			}),
-			url,
-			maxRetries,
-			initialDelayMs,
+			markdown,
+			spec.options?.signal,
+			retry,
 		);
-		return readBody(response, spec.options?.format === "markdown");
 	};
 }
 
-function send(
+interface RetryPolicy {
+	maxRetries: number;
+	initialDelayMs: number;
+	timeoutMs: number;
+}
+
+async function send(
 	baseFetch: FetchLike,
-	init: () => RequestInit,
 	url: string,
-	maxRetries: number,
-	initialDelayMs: number,
-): Promise<Response> {
-	const attempt = async (n: number): Promise<Response> => {
+	init: (signal: AbortSignal) => RequestInit,
+	markdown: boolean,
+	signal: AbortSignal | undefined,
+	retry: RetryPolicy,
+): Promise<unknown> {
+	for (let n = 0; ; n += 1) {
+		const deadline = withDeadline(signal, retry.timeoutMs);
+		let waitMs: number;
 		try {
-			const response = await baseFetch(url, init());
-			if (n < maxRetries && RETRYABLE_STATUS.has(response.status)) {
-				await sleep(retryDelayMs(response) ?? backoffMs(n, initialDelayMs));
-				return attempt(n + 1);
+			const response = await baseFetch(url, init(deadline.signal)).catch(
+				(error: unknown) => {
+					if (deadline.signal.aborted || n >= retry.maxRetries) throw error;
+					return undefined;
+				},
+			);
+			if (response === undefined) {
+				waitMs = backoffMs(n, retry.initialDelayMs);
+			} else if (
+				n < retry.maxRetries &&
+				RETRYABLE_STATUS.has(response.status)
+			) {
+				const error = await errorFrom(response);
+				const seconds = error.retryAfterSeconds;
+				if (seconds !== undefined && seconds > MAX_RETRY_WAIT_SECONDS) {
+					throw error;
+				}
+				waitMs =
+					seconds === undefined
+						? backoffMs(n, retry.initialDelayMs)
+						: seconds * 1000;
+			} else {
+				return await readBody(response, markdown);
 			}
-			return response;
-		} catch (error) {
-			if (isAbort(error) || n >= maxRetries) throw error;
-			await sleep(backoffMs(n, initialDelayMs));
-			return attempt(n + 1);
+		} finally {
+			deadline.clear();
 		}
+		await sleep(waitMs);
+	}
+}
+
+function withDeadline(signal: AbortSignal | undefined, timeoutMs: number) {
+	const controller = new AbortController();
+	const abort = () => controller.abort(signal?.reason);
+	if (signal?.aborted) abort();
+	else signal?.addEventListener("abort", abort, { once: true });
+	const timer = setTimeout(
+		() =>
+			controller.abort(
+				new DOMException(
+					`Stophy request timed out after ${timeoutMs} ms`,
+					"TimeoutError",
+				),
+			),
+		timeoutMs,
+	);
+	return {
+		signal: controller.signal,
+		clear: () => {
+			clearTimeout(timer);
+			signal?.removeEventListener("abort", abort);
+		},
 	};
-	return attempt(0);
 }
 
-function readBody(response: Response, markdown: boolean): Promise<unknown> {
-	if (!response.ok) return reject(response);
-	if (markdown) return response.text();
-	return response.text().then((text) => {
-		if (!text) {
-			throw failed(response, "Stophy returned an empty response", {});
-		}
-		try {
-			return JSON.parse(text);
-		} catch {
-			throw failed(response, "Stophy returned a non-JSON response", {});
-		}
-	});
+async function readBody(
+	response: Response,
+	markdown: boolean,
+): Promise<unknown> {
+	if (!response.ok) throw await errorFrom(response);
+	const text = await response.text();
+	if (markdown) return text;
+	if (!text) {
+		throw failed(response, "Stophy returned an empty response", {});
+	}
+	try {
+		return JSON.parse(text);
+	} catch {
+		throw failed(response, "Stophy returned a non-JSON response", {});
+	}
 }
 
-async function reject(response: Response): Promise<never> {
+async function errorFrom(response: Response): Promise<StophyError> {
 	const text = await response.text();
 	let body: unknown;
 	if (text) {
@@ -120,7 +180,7 @@ async function reject(response: Response): Promise<never> {
 	const error = readError(body);
 	const retryAfterSeconds =
 		error.retryAfterSeconds ?? headerRetryAfter(response);
-	throw failed(
+	return failed(
 		response,
 		error.message ?? `Stophy request failed with status ${response.status}`,
 		{
@@ -194,11 +254,6 @@ function headerRetryAfter(response: Response): number | undefined {
 	return Math.max(0, Math.ceil((date - Date.now()) / 1000));
 }
 
-function retryDelayMs(response: Response): number | undefined {
-	const seconds = headerRetryAfter(response);
-	return seconds === undefined ? undefined : seconds * 1000;
-}
-
 function withQuery(
 	url: string,
 	query: Record<string, string | number | undefined> | undefined,
@@ -219,8 +274,4 @@ function backoffMs(attempt: number, base: number): number {
 
 function sleep(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function isAbort(error: unknown): boolean {
-	return error instanceof Error && error.name === "AbortError";
 }

@@ -104,6 +104,9 @@ import type {
   TiktokPostsData,
   TiktokPostsResponse,
   TiktokPostsError,
+  TiktokHashtagData,
+  TiktokHashtagResponse,
+  TiktokHashtagError,
   TiktokCommentsData,
   TiktokCommentsResponse,
   TiktokCommentsError,
@@ -179,6 +182,18 @@ import type {
   LinkedinAdsAdData,
   LinkedinAdsAdResponse,
   LinkedinAdsAdError,
+  LinkedinCompanyData,
+  LinkedinCompanyResponse,
+  LinkedinCompanyError,
+  LinkedinProfileData,
+  LinkedinProfileResponse,
+  LinkedinProfileError,
+  LinkedinPostsData,
+  LinkedinPostsResponse,
+  LinkedinPostsError,
+  LinkedinCompanyPostsData,
+  LinkedinCompanyPostsResponse,
+  LinkedinCompanyPostsError,
   ZillowSearchData,
   ZillowSearchResponse,
   ZillowSearchError,
@@ -1377,6 +1392,33 @@ export const tiktokPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * tiktok.hashtag
+ * Costs 1 credit per 30 items. Pages with cursor.
+ */
+export const tiktokHashtag = <ThrowOnError extends boolean = false>(
+  options: Options<TiktokHashtagData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    TiktokHashtagResponse,
+    TiktokHashtagError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/tiktok/hashtag",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
  * tiktok.comments
  * Costs 1 credit per 20 items. Pages with cursor.
  */
@@ -2043,6 +2085,114 @@ export const linkedinAdsAd = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/linkedin/ads/ad",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * linkedin.company
+ * Costs 1 credit.
+ */
+export const linkedinCompany = <ThrowOnError extends boolean = false>(
+  options: Options<LinkedinCompanyData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    LinkedinCompanyResponse,
+    LinkedinCompanyError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/linkedin/company",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * linkedin.profile
+ * Costs 1 credit.
+ */
+export const linkedinProfile = <ThrowOnError extends boolean = false>(
+  options: Options<LinkedinProfileData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    LinkedinProfileResponse,
+    LinkedinProfileError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/linkedin/profile",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * linkedin.posts
+ * Costs 1 credit.
+ */
+export const linkedinPosts = <ThrowOnError extends boolean = false>(
+  options: Options<LinkedinPostsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    LinkedinPostsResponse,
+    LinkedinPostsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/linkedin/posts",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * linkedin.company.posts
+ * Costs 1 credit.
+ */
+export const linkedinCompanyPosts = <ThrowOnError extends boolean = false>(
+  options: Options<LinkedinCompanyPostsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    LinkedinCompanyPostsResponse,
+    LinkedinCompanyPostsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/linkedin/company/posts",
     ...options,
     headers: {
       "Content-Type": "application/json",

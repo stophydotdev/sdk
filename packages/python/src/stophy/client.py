@@ -7,7 +7,7 @@ import httpx
 
 from .account import Logs, Usage, parse_logs, parse_usage
 from .generated.namespaces import SyncSurface
-from .transport import DEFAULT_BASE_URL, SyncTransport, compact
+from .transport import DEFAULT_BASE_URL, SyncTransport, compact, default_headers
 
 
 class Stophy(SyncSurface):
@@ -25,14 +25,10 @@ class Stophy(SyncSurface):
         transport: httpx.BaseTransport | None = None,
     ) -> None:
         resolved_key = (api_key or os.getenv("STOPHY_API_KEY", "")).strip()
-        if not resolved_key:
-            raise ValueError(
-                "Stophy: provide api_key or set the STOPHY_API_KEY environment variable."
-            )
         resolved_url = base_url or os.getenv("STOPHY_BASE_URL") or DEFAULT_BASE_URL
         self.client = httpx.Client(
             base_url=resolved_url,
-            headers={"Authorization": f"Bearer {resolved_key}", **(headers or {})},
+            headers=default_headers(resolved_key, headers),
             timeout=timeout,
             transport=transport,
         )

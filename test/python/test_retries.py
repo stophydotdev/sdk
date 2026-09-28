@@ -111,3 +111,41 @@ def test_honors_retry_after_header_seconds():
     )
     client.youtube.search(query="x")
     assert len(calls) == 2
+
+
+def test_raises_instead_of_waiting_more_than_60_seconds():
+    client, calls = make_client(
+        [
+            {
+                "status": 429,
+                "headers": {"retry-after": "120"},
+                "json": {"success": False, "error": {"code": "rateLimited"}},
+            },
+            OK,
+        ],
+        max_retries=2,
+        retry_initial_delay=0,
+    )
+    with pytest.raises(StophyError) as info:
+        client.youtube.search(query="x")
+    assert info.value.retry_after_seconds == 120
+    assert len(calls) == 1
+
+    client, calls = make_client(
+        [
+            {
+                "status": 429,
+                "json": {
+                    "success": False,
+                    "error": {"code": "rateLimited", "retryAfterSeconds": 3600},
+                },
+            },
+            OK,
+        ],
+        max_retries=2,
+        retry_initial_delay=0,
+    )
+    with pytest.raises(StophyError) as info:
+        client.youtube.search(query="x")
+    assert info.value.retry_after_seconds == 3600
+    assert len(calls) == 1

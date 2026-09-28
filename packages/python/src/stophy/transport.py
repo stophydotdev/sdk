@@ -4,6 +4,7 @@ import asyncio
 import random
 import time
 from email.utils import parsedate_to_datetime
+from importlib.metadata import version
 from typing import Any, Mapping
 
 import httpx
@@ -11,7 +12,16 @@ import httpx
 from .errors import StophyError
 
 DEFAULT_BASE_URL = "https://api.stophy.dev"
+MAX_RETRY_WAIT_SECONDS = 60
 RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+USER_AGENT = f"stophy-python/{version('stophy')}"
+
+
+def default_headers(api_key: str, headers: Mapping[str, str] | None) -> dict[str, str]:
+    defaults = {"User-Agent": USER_AGENT}
+    if api_key:
+        defaults["Authorization"] = f"Bearer {api_key}"
+    return {**defaults, **(headers or {})}
 
 
 def compact(values: Mapping[str, Any]) -> dict[str, Any]:
@@ -40,16 +50,26 @@ def _header_retry_after(response: httpx.Response) -> int | None:
             return None
 
 
+def _payload(response: httpx.Response) -> Any:
+    try:
+        return response.json()
+    except ValueError:
+        return None
+
+
+def _retry_after(response: httpx.Response, error: dict[str, Any]) -> int | None:
+    seconds = error.get("retryAfterSeconds")
+    if isinstance(seconds, bool) or not isinstance(seconds, int):
+        return _header_retry_after(response)
+    return seconds
+
+
 def handle_response(response: httpx.Response) -> Any:
     accept = response.request.headers.get("accept", "")
     if response.is_success and "text/markdown" in accept:
         return response.text
 
-    try:
-        payload = response.json()
-    except ValueError:
-        payload = None
-
+    payload = _payload(response)
     if response.is_success and isinstance(payload, dict):
         return payload
 
@@ -59,10 +79,8 @@ def handle_response(response: httpx.Response) -> Any:
         message = f"Stophy request failed with status {response.status_code}"
     code = error.get("code")
     retryable = error.get("retryable")
-    retry_after = error.get("retryAfterSeconds")
+    retry_after = _retry_after(response, error)
     request_id = error.get("requestId")
-    if isinstance(retry_after, bool) or not isinstance(retry_after, int):
-        retry_after = _header_retry_after(response)
     if not isinstance(request_id, str):
         request_id = response.headers.get("x-request-id")
     raise StophyError(
@@ -86,11 +104,15 @@ class _RetryConfig:
         window = self.retry_initial_delay * (2**attempt)
         return window / 2 + random.random() * (window / 2)
 
-    def retry_after(self, response: httpx.Response, attempt: int) -> float:
-        seconds = _header_retry_after(response)
-        if seconds is not None:
-            return float(seconds)
-        return self.backoff(attempt)
+    def retry_after(self, response: httpx.Response, attempt: int) -> float | None:
+        if attempt >= self.max_retries or response.status_code not in RETRYABLE_STATUS:
+            return None
+        seconds = _retry_after(response, _error_object(_payload(response)))
+        if seconds is None:
+            return self.backoff(attempt)
+        if seconds > MAX_RETRY_WAIT_SECONDS:
+            return None
+        return float(seconds)
 
 
 class SyncTransport(_RetryConfig):
@@ -115,11 +137,11 @@ class SyncTransport(_RetryConfig):
                 time.sleep(self.backoff(attempt))
                 attempt += 1
                 continue
-            if attempt < self.max_retries and response.status_code in RETRYABLE_STATUS:
-                time.sleep(self.retry_after(response, attempt))
-                attempt += 1
-                continue
-            return handle_response(response)
+            wait = self.retry_after(response, attempt)
+            if wait is None:
+                return handle_response(response)
+            time.sleep(wait)
+            attempt += 1
 
     def get(self, path: str, params: Mapping[str, Any] | None = None) -> Any:
         return self.request("GET", path, params=compact(params or {}))
@@ -150,11 +172,11 @@ class AsyncTransport(_RetryConfig):
                 await asyncio.sleep(self.backoff(attempt))
                 attempt += 1
                 continue
-            if attempt < self.max_retries and response.status_code in RETRYABLE_STATUS:
-                await asyncio.sleep(self.retry_after(response, attempt))
-                attempt += 1
-                continue
-            return handle_response(response)
+            wait = self.retry_after(response, attempt)
+            if wait is None:
+                return handle_response(response)
+            await asyncio.sleep(wait)
+            attempt += 1
 
     async def get(self, path: str, params: Mapping[str, Any] | None = None) -> Any:
         return await self.request("GET", path, params=compact(params or {}))

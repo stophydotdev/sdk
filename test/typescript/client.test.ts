@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { version } from "../../packages/typescript/package.json";
 import { Stophy } from "../../packages/typescript/src/index";
 import { makeClient } from "./helpers";
 
@@ -12,9 +13,24 @@ const searchOk = {
 };
 
 describe("Stophy client construction", () => {
-	test("throws when apiKey is missing", () => {
-		expect(() => new Stophy({})).toThrow("apiKey");
-		expect(() => new Stophy({ apiKey: "" })).toThrow("apiKey");
+	test("sends no Authorization header without an API key", async () => {
+		const previousKey = process.env.STOPHY_API_KEY;
+		delete process.env.STOPHY_API_KEY;
+		try {
+			const { client, calls } = makeClient(searchOk, { apiKey: "" });
+			await client.web.search({ query: "bun" });
+			expect(calls[0]?.authorization).toBeNull();
+		} finally {
+			if (previousKey !== undefined) process.env.STOPHY_API_KEY = previousKey;
+		}
+	});
+
+	test("identifies the SDK in the User-Agent", async () => {
+		const { client, calls } = makeClient(searchOk);
+		await client.youtube.search({ query: "bun" });
+		expect(calls[0]?.headers.get("user-agent")).toBe(
+			`stophy-typescript/${version}`,
+		);
 	});
 
 	test("defaults to the production base URL", async () => {

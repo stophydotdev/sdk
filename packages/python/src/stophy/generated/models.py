@@ -1030,6 +1030,29 @@ TumblrPostsType = Literal[
     "answer",
 ]
 
+LinkedinProfileResponseDataProfileRolesItem = TypedDict(
+    "LinkedinProfileResponseDataProfileRolesItem",
+    {
+        "title": NotRequired[str],
+        "company": NotRequired[str],
+        "url": NotRequired[str],
+        "from": NotRequired[str],
+        "to": NotRequired[str],
+        "isCurrent": bool,
+    },
+)
+
+LinkedinProfileResponseDataProfileEducationItem = TypedDict(
+    "LinkedinProfileResponseDataProfileEducationItem",
+    {
+        "school": NotRequired[str],
+        "degree": NotRequired[str],
+        "url": NotRequired[str],
+        "from": NotRequired[str],
+        "to": NotRequired[str],
+    },
+)
+
 CryptoWalletResponseDataTransactionsItem = TypedDict(
     "CryptoWalletResponseDataTransactionsItem",
     {
@@ -1055,6 +1078,7 @@ class EndpointCatalogEndpointsItem(TypedDict):
     perItems: int | None
     cacheTtlSeconds: int
     input: NotRequired[dict[str, Any]]
+    example: dict[str, Any] | None
 
 
 class EndpointCatalog(TypedDict):
@@ -1985,6 +2009,18 @@ class TiktokPostsResponse(TypedDict):
     requestId: str
 
 
+class TiktokHashtagResponseData(TypedDict):
+    videos: list[TiktokPostsResponseDataPostsItem]
+    cursor: NotRequired[str]
+
+
+class TiktokHashtagResponse(TypedDict):
+    success: Literal[True]
+    data: TiktokHashtagResponseData
+    creditsUsed: int
+    requestId: str
+
+
 class TiktokCommentsResponseDataCommentsItem(TypedDict):
     id: NotRequired[str]
     text: NotRequired[str]
@@ -2752,6 +2788,76 @@ class LinkedinAdsAdResponseData(TypedDict):
 class LinkedinAdsAdResponse(TypedDict):
     success: Literal[True]
     data: LinkedinAdsAdResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class LinkedinCompanyResponseDataCompany(TypedDict):
+    id: NotRequired[str]
+    url: str
+    name: NotRequired[str]
+    industry: NotRequired[str]
+    size: NotRequired[str]
+    employees: NotRequired[int]
+    headquarters: NotRequired[str]
+    website: NotRequired[str]
+    followers: NotRequired[int]
+    description: NotRequired[str]
+    specialties: NotRequired[list[str]]
+    founded: NotRequired[str]
+
+
+class LinkedinCompanyResponseData(TypedDict):
+    company: LinkedinCompanyResponseDataCompany
+
+
+class LinkedinCompanyResponse(TypedDict):
+    success: Literal[True]
+    data: LinkedinCompanyResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class LinkedinProfileResponseDataProfile(TypedDict):
+    id: NotRequired[str]
+    url: str
+    name: NotRequired[str]
+    headline: NotRequired[str]
+    location: NotRequired[str]
+    about: NotRequired[str]
+    isAboutTruncated: bool
+    followers: NotRequired[int]
+    roles: NotRequired[list[LinkedinProfileResponseDataProfileRolesItem]]
+    education: NotRequired[list[LinkedinProfileResponseDataProfileEducationItem]]
+
+
+class LinkedinProfileResponseData(TypedDict):
+    profile: LinkedinProfileResponseDataProfile
+
+
+class LinkedinProfileResponse(TypedDict):
+    success: Literal[True]
+    data: LinkedinProfileResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class LinkedinPostsResponseDataPostsItem(TypedDict):
+    id: NotRequired[str]
+    url: str
+    text: NotRequired[str]
+    createdAt: NotRequired[str]
+    likes: NotRequired[int]
+    author: NotRequired[WebNewsResponseDataArticlesItemPublisher]
+
+
+class LinkedinPostsResponseData(TypedDict):
+    posts: list[LinkedinPostsResponseDataPostsItem]
+
+
+class LinkedinPostsResponse(TypedDict):
+    success: Literal[True]
+    data: LinkedinPostsResponseData
     creditsUsed: int
     requestId: str
 

@@ -11,11 +11,9 @@
     },
     "packages/typescript": {
       "name": "stophy",
-      "version": "0.3.0",
-      "dependencies": {
-        "@hey-api/client-fetch": "^0.10.2",
-      },
+      "version": "1.0.0",
       "devDependencies": {
+        "@hey-api/client-fetch": "^0.10.2",
         "@hey-api/openapi-ts": "^0.64.0",
         "@types/bun": "^1.1.14",
         "tsup": "^8.3.5",

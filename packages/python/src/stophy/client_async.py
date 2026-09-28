@@ -7,7 +7,7 @@ import httpx
 
 from .account import Logs, Usage, parse_logs, parse_usage
 from .generated.namespaces import AsyncSurface
-from .transport import DEFAULT_BASE_URL, AsyncTransport, compact
+from .transport import DEFAULT_BASE_URL, AsyncTransport, compact, default_headers
 
 
 class AsyncStophy(AsyncSurface):
@@ -25,14 +25,10 @@ class AsyncStophy(AsyncSurface):
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
         resolved_key = (api_key or os.getenv("STOPHY_API_KEY", "")).strip()
-        if not resolved_key:
-            raise ValueError(
-                "Stophy: provide api_key or set the STOPHY_API_KEY environment variable."
-            )
         resolved_url = base_url or os.getenv("STOPHY_BASE_URL") or DEFAULT_BASE_URL
         self.client = httpx.AsyncClient(
             base_url=resolved_url,
-            headers={"Authorization": f"Bearer {resolved_key}", **(headers or {})},
+            headers=default_headers(resolved_key, headers),
             timeout=timeout,
             transport=transport,
         )

@@ -10,6 +10,17 @@ npm install stophy
 
 Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>`.
 
+## Try without a key
+
+```ts
+import { Stophy } from "stophy";
+
+const result = await new Stophy().web.search({ query: "bun runtime" });
+console.log(result.data.results);
+```
+
+`web.search`, `youtube.search`, and `youtube.transcript` answer without a key, with a small free limit. Other endpoints throw `StophyError` with code `unauthorized` and status 401.
+
 ## Quick start
 
 ```ts
@@ -29,7 +40,7 @@ const markdown = await stophy.youtube.search(
 
 Namespaces follow the API. `POST /v1/youtube/search` is `stophy.youtube.search(input)`. `POST /v1/youtube/comments/replies` is `stophy.youtube.comments.replies(input)`. Inputs and outputs come from the OpenAPI document.
 
-Pass `{ format: "markdown" }` to send `Accept: text/markdown` and get a string. Pass `signal` to abort the request.
+Pass `{ format: "markdown" }` to send `Accept: text/markdown` and get a string. Pass `signal` to abort the request. Each attempt times out after 30 seconds; set `timeoutMs` to change that. A timeout is not retried.
 
 ```ts
 const usage = await stophy.usage();
@@ -54,7 +65,7 @@ try {
 
 `StophyError` has `code`, `message`, `retryable`, `retryAfterSeconds`, `status`, and `requestId`.
 
-Transient failures (network errors and HTTP 429/500/502/503/504) are retried with backoff, honoring `Retry-After`. Set `maxRetries: 0` to turn that off.
+Transient failures (network errors and HTTP 429/500/502/503/504) are retried with backoff, honoring `Retry-After`. If the API asks to wait more than 60 seconds, the SDK throws right away with `retryAfterSeconds` set. Set `maxRetries: 0` to turn retries off.
 
 ## Regenerating
 

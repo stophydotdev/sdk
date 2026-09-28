@@ -10,6 +10,17 @@ pip install stophy
 
 Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>`.
 
+## Try without a key
+
+```python
+from stophy import Stophy
+
+result = Stophy().web.search(query="bun runtime")
+print(result["data"]["results"])
+```
+
+`web.search`, `youtube.search`, and `youtube.transcript` answer without a key, with a small free limit. Other endpoints raise `StophyError` with code `unauthorized` and status 401.
+
 ## Quick start
 
 ```python
@@ -46,7 +57,7 @@ except StophyError as error:
 
 `StophyError` has `code`, `retryable`, `retry_after_seconds`, `status`, and `request_id`. The message is `str(error)`.
 
-Transient failures (network errors and HTTP 429/500/502/503/504) are retried with backoff, honoring `Retry-After`. Set `max_retries=0` to turn that off.
+Transient failures (network errors and HTTP 429/500/502/503/504) are retried with backoff, honoring `Retry-After`. If the API asks to wait more than 60 seconds, the SDK raises right away with `retry_after_seconds` set. Set `max_retries=0` to turn retries off. `timeout` defaults to 30 seconds.
 
 ## Regenerating
 

@@ -190,7 +190,7 @@ The publish workflow builds the TypeScript client before `npm publish`, so the a
 
 - Package name on npm: `stophy`. Import as `import { Stophy } from "stophy"`.
 - `Stophy` lives in `client.ts`; `index.ts` is the public export barrel.
-- Retry logic lives in `transport.ts`. The `maxRetries` and `retryInitialDelayMs` constructor options forward there.
+- Retry logic lives in `transport.ts`. The `maxRetries`, `retryInitialDelayMs`, and `timeoutMs` constructor options forward there. The API key is optional; without one, no `Authorization` header is sent.
 - `StophyError` carries `code`, `message`, `retryable`, `retryAfterSeconds`, `status`, and `requestId` from the API error envelope and the `Retry-After` header.
 - Call `stophy.<source>.<endpoint>(input)`. Pass `{ format: "markdown" }` to send `Accept: text/markdown` and get a string back. Pass `signal` to abort the request.
 - `usage()` and `logs()` call `GET /v1/usage` and `GET /v1/logs`. There is no `credits()` method; that route needs a browser session.

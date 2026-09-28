@@ -1,13 +1,23 @@
 import httpx
-import pytest
 
 from helpers import make_client
-from stophy import Stophy
+from stophy import AsyncStophy, Stophy, __version__
 
 
-def test_missing_api_key_raises():
-    with pytest.raises(ValueError, match="api_key"):
-        Stophy("")
+def test_no_api_key_sends_no_authorization(monkeypatch):
+    monkeypatch.delenv("STOPHY_API_KEY", raising=False)
+    client, calls = make_client(
+        {"json": {"success": True, "data": {"results": []}}}, api_key=""
+    )
+    client.web.search(query="bun")
+    assert "authorization" not in calls[0].headers
+    assert "authorization" not in AsyncStophy().client.headers
+
+
+def test_sends_user_agent():
+    client, calls = make_client({"json": {"success": True, "data": {"results": []}}})
+    client.youtube.search(query="bun")
+    assert calls[0].headers["user-agent"] == f"stophy-python/{__version__}"
 
 
 def test_defaults_to_production_base_url():

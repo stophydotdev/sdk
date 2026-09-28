@@ -8,7 +8,7 @@ import {
 } from "./transport";
 
 export interface StophyOptions {
-	/** Defaults to `STOPHY_API_KEY`. */
+	/** Defaults to `STOPHY_API_KEY`. Without a key, only the free endpoints answer. */
 	apiKey?: string;
 	/** Defaults to `STOPHY_BASE_URL` or `https://api.stophy.dev`. */
 	baseUrl?: string;
@@ -16,6 +16,8 @@ export interface StophyOptions {
 	headers?: Record<string, string>;
 	maxRetries?: number;
 	retryInitialDelayMs?: number;
+	/** Per-attempt timeout. Defaults to 30000. */
+	timeoutMs?: number;
 }
 
 export type { CallOptions, FetchLike };
@@ -35,12 +37,6 @@ export class Stophy {
 	constructor(input: StophyClientInput = {}) {
 		const options = typeof input === "string" ? { apiKey: input } : input;
 		const apiKey = options.apiKey?.trim() || env("STOPHY_API_KEY")?.trim();
-		if (!apiKey) {
-			throw new Error(
-				"Stophy: provide `apiKey` or set the STOPHY_API_KEY environment variable.",
-			);
-		}
-
 		this.#call = createCaller({
 			...options,
 			apiKey,

@@ -56,13 +56,13 @@
                   "invalidRequest",
                   "notFound",
                   "rateLimited",
-                  "sourceBusy",
                   "sourceChanged",
                   "sourceRefused",
                   "sourceTimeout",
                   "sourceUnavailable",
                   "tooManyInFlight",
-                  "unauthorized"
+                  "unauthorized",
+                  "unsupportedMediaType"
                 ]
               },
               "message": {
@@ -98,7 +98,8 @@
                 "credits",
                 "keyless",
                 "perItems",
-                "cacheTtlSeconds"
+                "cacheTtlSeconds",
+                "example"
               ],
               "properties": {
                 "id": {
@@ -128,6 +129,13 @@
                 "input": {
                   "type": "object",
                   "description": "The endpoint's input as JSON Schema."
+                },
+                "example": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "description": "A real input for this endpoint, or null when there is none."
                 }
               }
             }
@@ -451,6 +459,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "best project management software",
+                "limit": 10
               }
             }
           }
@@ -639,6 +651,10 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "nvidia",
+                "limit": 10
               }
             }
           }
@@ -785,6 +801,10 @@
                   "url"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "url": "https://www.franklinbbq.com",
+                "maxPages": 3
               }
             }
           }
@@ -1025,6 +1045,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "rust tutorial"
               }
             }
           }
@@ -1303,6 +1326,9 @@
                   "video"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "video": "dQw4w9WgXcQ"
               }
             }
           }
@@ -1491,6 +1517,9 @@
                   "video"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "video": "dQw4w9WgXcQ"
               }
             }
           }
@@ -1643,6 +1672,9 @@
                   "video"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "video": "dQw4w9WgXcQ"
               }
             }
           }
@@ -2039,6 +2071,9 @@
                   "channel"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "channel": "@mkbhd"
               }
             }
           }
@@ -2463,6 +2498,9 @@
                   "playlist"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "playlist": "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI"
               }
             }
           }
@@ -2753,6 +2791,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "typescript"
               }
             }
           }
@@ -3667,6 +3708,9 @@
                   "subreddit"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "subreddit": "AskReddit"
               }
             }
           }
@@ -4088,6 +4132,9 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "spez"
               }
             }
           }
@@ -4532,6 +4579,9 @@
                   "domain"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "domain": "github.com"
               }
             }
           }
@@ -4897,6 +4947,11 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "coffee",
+                "near": "Austin, TX",
+                "limit": 20
               }
             }
           }
@@ -5594,6 +5649,9 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "natgeo"
               }
             }
           }
@@ -6021,6 +6079,10 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "natgeo",
+                "limit": 12
               }
             }
           }
@@ -6660,6 +6722,9 @@
                   "url"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "url": "https://www.instagram.com/natgeo/"
               }
             }
           }
@@ -7360,6 +7425,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "street food",
+                "limit": 5
               }
             }
           }
@@ -8158,6 +8227,9 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "khaby.lame"
               }
             }
           }
@@ -8337,6 +8409,9 @@
                   "video"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "video": "7652012587009215774"
               }
             }
           }
@@ -8595,6 +8670,9 @@
                   "url"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "url": "https://www.tiktok.com/@nasa"
               }
             }
           }
@@ -8973,6 +9051,9 @@
                   "video"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "video": "7640167378633919758"
               }
             }
           }
@@ -9116,6 +9197,9 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "khaby.lame"
               }
             }
           }
@@ -9355,6 +9439,281 @@
         }
       }
     },
+    "/v1/tiktok/hashtag": {
+      "post": {
+        "operationId": "tiktokHashtag",
+        "summary": "tiktok.hashtag",
+        "description": "Costs 1 credit per 30 items. Pages with cursor.",
+        "x-credits": 1,
+        "x-per-items": 30,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hashtag": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 30,
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 300
+                  },
+                  "cursor": {
+                    "type": "string",
+                    "pattern": "^(?:\\d{1,4}~(?:\\d{1,20})?|(?:\\d{1,20}))$"
+                  }
+                },
+                "required": [
+                  "hashtag"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "hashtag": "booktok",
+                "limit": 15
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The data, and the credits this call used.",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "x-credits-used": {
+                "$ref": "#/components/headers/CreditsUsed"
+              },
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimitLimit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimitRemaining"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "creditsUsed",
+                    "requestId"
+                  ],
+                  "properties": {
+                    "success": {
+                      "const": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "videos": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "video",
+                                  "photo"
+                                ]
+                              },
+                              "text": {
+                                "type": "string"
+                              },
+                              "hashtags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "mentions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                              },
+                              "durationSeconds": {
+                                "type": "number"
+                              },
+                              "width": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "height": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "thumbnail": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "images": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "url": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "caption": {
+                                      "type": "string"
+                                    },
+                                    "alt": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "url"
+                                  ]
+                                }
+                              },
+                              "views": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "likes": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "comments": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "shares": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "saves": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "author": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "username": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  },
+                                  "avatar": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  },
+                                  "isVerified": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": []
+                              },
+                              "audio": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "artist": {
+                                    "type": "string"
+                                  },
+                                  "isOriginal": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "isOriginal"
+                                ]
+                              },
+                              "isAd": {
+                                "type": "boolean"
+                              },
+                              "isAiGenerated": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "type",
+                              "isAd",
+                              "isAiGenerated"
+                            ]
+                          }
+                        },
+                        "cursor": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "videos"
+                      ]
+                    },
+                    "creditsUsed": {
+                      "type": "integer"
+                    },
+                    "requestId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
     "/v1/tiktok/comments": {
       "post": {
         "operationId": "tiktokComments",
@@ -9387,6 +9746,10 @@
                   "video"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "video": "7652012587009215774",
+                "limit": 20
               }
             }
           }
@@ -9732,6 +10095,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "street food"
               }
             }
           }
@@ -10043,6 +10409,9 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "bsky.app"
               }
             }
           }
@@ -10218,6 +10587,10 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "bsky.app",
+                "limit": 50
               }
             }
           }
@@ -11203,6 +11576,10 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "bsky.app",
+                "limit": 50
               }
             }
           }
@@ -11337,6 +11714,9 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "Gargron@mastodon.social"
               }
             }
           }
@@ -11540,6 +11920,10 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "Gargron@mastodon.social",
+                "limit": 40
               }
             }
           }
@@ -12565,6 +12949,10 @@
                   "hashtag"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "hashtag": "caturday",
+                "limit": 40
               }
             }
           }
@@ -12866,6 +13254,9 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "zuck"
               }
             }
           }
@@ -13029,6 +13420,10 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "zuck",
+                "limit": 20
               }
             }
           }
@@ -15341,6 +15736,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "coffee",
+                "limit": 20
               }
             }
           }
@@ -15960,6 +16359,9 @@
                   "channel"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "channel": "durov"
               }
             }
           }
@@ -16131,6 +16533,10 @@
                   "channel"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "channel": "durov",
+                "limit": 20
               }
             }
           }
@@ -16826,6 +17232,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "nike",
+                "limit": 20
               }
             }
           }
@@ -17289,6 +17699,10 @@
                   "page"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "page": "https://www.facebook.com/nike",
+                "limit": 10
               }
             }
           }
@@ -18304,6 +18718,10 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "product manager",
+                "location": "New York"
               }
             }
           }
@@ -18723,6 +19141,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "software"
               }
             }
           }
@@ -19149,6 +19570,636 @@
         }
       }
     },
+    "/v1/linkedin/company": {
+      "post": {
+        "operationId": "linkedinCompany",
+        "summary": "linkedin.company",
+        "description": "Costs 1 credit.",
+        "x-credits": 1,
+        "x-per-items": null,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "company": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "company"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "company": "microsoft"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The data, and the credits this call used.",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "x-credits-used": {
+                "$ref": "#/components/headers/CreditsUsed"
+              },
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimitLimit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimitRemaining"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "creditsUsed",
+                    "requestId"
+                  ],
+                  "properties": {
+                    "success": {
+                      "const": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "company": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "industry": {
+                              "type": "string"
+                            },
+                            "size": {
+                              "type": "string"
+                            },
+                            "employees": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            },
+                            "headquarters": {
+                              "type": "string"
+                            },
+                            "website": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "followers": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "specialties": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "founded": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "url"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "company"
+                      ]
+                    },
+                    "creditsUsed": {
+                      "type": "integer"
+                    },
+                    "requestId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/linkedin/profile": {
+      "post": {
+        "operationId": "linkedinProfile",
+        "summary": "linkedin.profile",
+        "description": "Costs 1 credit.",
+        "x-credits": 1,
+        "x-per-items": null,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "profile": "satyanadella"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The data, and the credits this call used.",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "x-credits-used": {
+                "$ref": "#/components/headers/CreditsUsed"
+              },
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimitLimit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimitRemaining"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "creditsUsed",
+                    "requestId"
+                  ],
+                  "properties": {
+                    "success": {
+                      "const": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "profile": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "headline": {
+                              "type": "string"
+                            },
+                            "location": {
+                              "type": "string"
+                            },
+                            "about": {
+                              "type": "string"
+                            },
+                            "isAboutTruncated": {
+                              "type": "boolean"
+                            },
+                            "followers": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            },
+                            "roles": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "company": {
+                                    "type": "string"
+                                  },
+                                  "url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  },
+                                  "from": {
+                                    "type": "string"
+                                  },
+                                  "to": {
+                                    "type": "string"
+                                  },
+                                  "isCurrent": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "isCurrent"
+                                ]
+                              }
+                            },
+                            "education": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "school": {
+                                    "type": "string"
+                                  },
+                                  "degree": {
+                                    "type": "string"
+                                  },
+                                  "url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  },
+                                  "from": {
+                                    "type": "string"
+                                  },
+                                  "to": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": []
+                              }
+                            }
+                          },
+                          "required": [
+                            "url",
+                            "isAboutTruncated"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "profile"
+                      ]
+                    },
+                    "creditsUsed": {
+                      "type": "integer"
+                    },
+                    "requestId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/linkedin/posts": {
+      "post": {
+        "operationId": "linkedinPosts",
+        "summary": "linkedin.posts",
+        "description": "Costs 1 credit.",
+        "x-credits": 1,
+        "x-per-items": null,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  },
+                  "company": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 10,
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20
+                  }
+                },
+                "additionalProperties": false
+              },
+              "example": {
+                "profile": "satyanadella",
+                "limit": 5
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The data, and the credits this call used.",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "x-credits-used": {
+                "$ref": "#/components/headers/CreditsUsed"
+              },
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimitLimit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimitRemaining"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "creditsUsed",
+                    "requestId"
+                  ],
+                  "properties": {
+                    "success": {
+                      "const": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "text": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                              },
+                              "likes": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "author": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  }
+                                },
+                                "required": []
+                              }
+                            },
+                            "required": [
+                              "url"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "posts"
+                      ]
+                    },
+                    "creditsUsed": {
+                      "type": "integer"
+                    },
+                    "requestId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/linkedin/company/posts": {
+      "post": {
+        "operationId": "linkedinCompanyPosts",
+        "summary": "linkedin.company.posts",
+        "description": "Costs 1 credit.",
+        "x-credits": 1,
+        "x-per-items": null,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "company": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 10,
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20
+                  }
+                },
+                "required": [
+                  "company"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "company": "openai",
+                "limit": 5
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The data, and the credits this call used.",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "x-credits-used": {
+                "$ref": "#/components/headers/CreditsUsed"
+              },
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimitLimit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimitRemaining"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "creditsUsed",
+                    "requestId"
+                  ],
+                  "properties": {
+                    "success": {
+                      "const": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "text": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                              },
+                              "likes": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "author": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  }
+                                },
+                                "required": []
+                              }
+                            },
+                            "required": [
+                              "url"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "posts"
+                      ]
+                    },
+                    "creditsUsed": {
+                      "type": "integer"
+                    },
+                    "requestId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
     "/v1/zillow/search": {
       "post": {
         "operationId": "zillowSearch",
@@ -19398,6 +20449,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "location": "Austin, TX"
               }
             }
           }
@@ -20022,6 +21076,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "nike"
               }
             }
           }
@@ -20211,6 +21268,10 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "domain": "nike.com",
+                "limit": 25
               }
             }
           }
@@ -20829,6 +21890,10 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "adidas",
+                "limit": 12
               }
             }
           }
@@ -21503,6 +22568,10 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "react developer",
+                "limit": 20
               }
             }
           }
@@ -22042,6 +23111,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "best running shoes",
+                "expand": "alphabet"
               }
             }
           }
@@ -22185,6 +23258,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "how to learn",
+                "expand": "alphabet"
               }
             }
           }
@@ -22344,6 +23421,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "coffee maker",
+                "expand": "alphabet"
               }
             }
           }
@@ -22524,6 +23605,12 @@
                   "queries"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "queries": [
+                  "bitcoin",
+                  "ethereum"
+                ]
               }
             }
           }
@@ -22729,6 +23816,11 @@
                   "queries"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "queries": [
+                  "bitcoin"
+                ]
               }
             }
           }
@@ -22905,6 +23997,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "bitcoin"
               }
             }
           }
@@ -23072,6 +24167,10 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "country": "us",
+                "limit": 50
               }
             }
           }
@@ -23266,6 +24365,10 @@
                   "url"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "url": "https://stripe.com",
+                "limit": 500
               }
             }
           }
@@ -23403,6 +24506,9 @@
                   "url"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "url": "https://www.shopify.com"
               }
             }
           }
@@ -23800,6 +24906,9 @@
                   "domain"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "domain": "stripe.com"
               }
             }
           }
@@ -24006,6 +25115,9 @@
                   "domain"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "domain": "stripe.com"
               }
             }
           }
@@ -24178,6 +25290,9 @@
                   "url"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "url": "https://www.allbirds.com"
               }
             }
           }
@@ -24315,6 +25430,13 @@
                   "emails"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "emails": [
+                  "hello@stripe.com",
+                  "test@mailinator.com",
+                  "bad@@x"
+                ]
               }
             }
           }
@@ -24498,6 +25620,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "limit": 100
               }
             }
           }
@@ -24715,6 +25840,9 @@
                   "coin"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "coin": "bitcoin"
               }
             }
           }
@@ -25049,6 +26177,10 @@
                   "coin"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "coin": "bitcoin",
+                "within": "month"
               }
             }
           }
@@ -25199,7 +26331,8 @@
                 "type": "object",
                 "properties": {},
                 "additionalProperties": false
-              }
+              },
+              "example": {}
             }
           }
         },
@@ -25447,6 +26580,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "limit": 50
               }
             }
           }
@@ -25617,7 +26753,8 @@
                   }
                 },
                 "additionalProperties": false
-              }
+              },
+              "example": {}
             }
           }
         },
@@ -25851,6 +26988,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "limit": 50
               }
             }
           }
@@ -26035,6 +27175,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "pepe"
               }
             }
           }
@@ -26763,6 +27906,11 @@
                   "token"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "chain": "ethereum",
+                "token": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+                "limit": 5
               }
             }
           }
@@ -27219,7 +28367,8 @@
                   }
                 },
                 "additionalProperties": false
-              }
+              },
+              "example": {}
             }
           }
         },
@@ -27661,6 +28810,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "limit": 50
               }
             }
           }
@@ -28258,6 +29410,11 @@
                   "wallet"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "chain": "ethereum",
+                "wallet": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+                "limit": 25
               }
             }
           }
@@ -28474,6 +29631,11 @@
                   "token"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "chain": "ethereum",
+                "token": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+                "limit": 50
               }
             }
           }
@@ -28645,6 +29807,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "category": "listings"
               }
             }
           }
@@ -28923,6 +30088,11 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "data analyst",
+                "location": "Chicago, IL",
+                "limit": 25
               }
             }
           }
@@ -29575,6 +30745,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "Eiffel Tower"
               }
             }
           }
@@ -30382,6 +31555,11 @@
                   "departDate"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "origin": "JFK",
+                "destination": "LAX",
+                "departDate": "2026-11-11"
               }
             }
           }
@@ -30689,6 +31867,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "wireless earbuds"
               }
             }
           }
@@ -31245,6 +32426,9 @@
                   "category"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "category": "electronics"
               }
             }
           }
@@ -31405,6 +32589,10 @@
                   "store"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "store": "allbirds.com",
+                "limit": 50
               }
             }
           }
@@ -31662,6 +32850,9 @@
                   "store"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "store": "allbirds.com"
               }
             }
           }
@@ -31803,6 +32994,9 @@
                   "store"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "store": "allbirds.com"
               }
             }
           }
@@ -32007,6 +33201,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "air fryer"
               }
             }
           }
@@ -32488,6 +33685,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "phone case"
               }
             }
           }
@@ -32891,6 +34091,9 @@
                   "app"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "app": "284882215"
               }
             }
           }
@@ -33205,6 +34408,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "photo editor",
+                "limit": 20
               }
             }
           }
@@ -33460,6 +34667,10 @@
                   "app"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "app": "284882215",
+                "limit": 40
               }
             }
           }
@@ -33645,6 +34856,9 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "limit": 50
               }
             }
           }
@@ -33827,6 +35041,9 @@
                   "app"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "app": "com.spotify.music"
               }
             }
           }
@@ -34147,6 +35364,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "photo editor"
               }
             }
           }
@@ -34347,6 +35567,10 @@
                   "app"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "app": "com.spotify.music",
+                "limit": 40
               }
             }
           }
@@ -34664,6 +35888,9 @@
                   "location"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "location": "Lisbon, Portugal"
               }
             }
           }
@@ -35694,6 +36921,9 @@
                   "location"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "location": "Seattle, WA"
               }
             }
           }
@@ -36515,6 +37745,9 @@
                   "location"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "location": "Denver, CO"
               }
             }
           }
@@ -37436,6 +38669,9 @@
                   "location"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "location": "Manchester"
               }
             }
           }
@@ -38149,6 +39385,9 @@
                   "location"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "location": "Berlin"
               }
             }
           }
@@ -38636,6 +39875,10 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "kitchen ideas",
+                "limit": 25
               }
             }
           }
@@ -39510,6 +40753,10 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "marthastewart",
+                "limit": 25
               }
             }
           }
@@ -39865,6 +41112,9 @@
                   "country"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "country": "DE"
               }
             }
           }
@@ -40321,6 +41571,9 @@
                   "tweet"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "tweet": "https://x.com/jack/status/20"
               }
             }
           }
@@ -40871,6 +42124,9 @@
                   "channel"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "channel": "xqc"
               }
             }
           }
@@ -41097,6 +42353,9 @@
                   "channel"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "channel": "xqc"
               }
             }
           }
@@ -41282,6 +42541,10 @@
                   "channel"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "channel": "xqc",
+                "limit": 20
               }
             }
           }
@@ -41474,6 +42737,13 @@
                   "symbols"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "symbols": [
+                  "AAPL",
+                  "MSFT",
+                  "NVDA"
+                ]
               }
             }
           }
@@ -41701,6 +42971,10 @@
                   "symbol"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "symbol": "AAPL",
+                "within": "month"
               }
             }
           }
@@ -41899,6 +43173,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "tesla"
               }
             }
           }
@@ -42060,6 +43337,9 @@
                   "symbol"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "symbol": "AAPL"
               }
             }
           }
@@ -42286,6 +43566,10 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "shoes",
+                "limit": 24
               }
             }
           }
@@ -42680,6 +43964,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "nike"
               }
             }
           }
@@ -42800,6 +44087,9 @@
                   "user"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "user": "khaby.lame"
               }
             }
           }
@@ -43098,6 +44388,9 @@
                   "advertiser"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "advertiser": "Nike"
               }
             }
           }
@@ -43578,6 +44871,9 @@
                   "blog"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "blog": "staff"
               }
             }
           }
@@ -43740,6 +45036,10 @@
                   "blog"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "blog": "staff",
+                "limit": 20
               }
             }
           }
@@ -44427,6 +45727,9 @@
                   "query"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "query": "photography"
               }
             }
           }
@@ -44717,6 +46020,9 @@
                   "question"
                 ],
                 "additionalProperties": false
+              },
+              "example": {
+                "question": "https://www.quora.com/What-is-the-best-way-to-learn-programming"
               }
             }
           }

@@ -9,6 +9,22 @@ Pick your language:
 
 Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>` on every request.
 
+## Try without a key
+
+`web.search`, `youtube.search`, and `youtube.transcript` answer without a key, with a small free limit. Every other endpoint needs one and throws `StophyError` with code `unauthorized`.
+
+```ts
+import { Stophy } from "stophy";
+
+const result = await new Stophy().web.search({ query: "bun runtime" });
+```
+
+```python
+from stophy import Stophy
+
+result = Stophy().web.search(query="bun runtime")
+```
+
 ## Quick start
 
 ### TypeScript
@@ -53,6 +69,8 @@ Python also exports `AsyncStophy` with the same namespaces. Nested operations ar
 ## Errors
 
 A failed response throws `StophyError` with `code`, `message`, `retryable`, `retryAfterSeconds` (`retry_after_seconds` in Python), `status`, and `requestId` (`request_id` in Python). The code and message come from `{ error: { code, message, retryable } }`. `retryAfterSeconds` comes from the body or the `Retry-After` header.
+
+Network errors and HTTP 429/500/502/503/504 are retried with backoff. When the API asks to wait more than 60 seconds, the SDK throws right away so you can see `retryAfterSeconds`. Each attempt times out after 30 seconds.
 
 ## Keeping the clients current
 

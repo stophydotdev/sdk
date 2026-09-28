@@ -118,4 +118,66 @@ describe("retries", () => {
 		expect(calls.length).toBe(2);
 		expect(Date.now() - started).toBeLessThan(500);
 	});
+
+	test("throws instead of waiting more than 60 seconds", async () => {
+		const { client, calls } = makeClient(
+			[
+				{
+					status: 429,
+					headers: { "retry-after": "120" },
+					json: { success: false, error: { code: "rateLimited" } },
+				},
+				ok,
+			],
+			{ maxRetries: 2, retryInitialDelayMs: 0 },
+		);
+		const err = await client.youtube
+			.search({ query: "x" })
+			.catch((error) => error);
+		expect(err).toBeInstanceOf(StophyError);
+		expect(err.retryAfterSeconds).toBe(120);
+		expect(calls.length).toBe(1);
+
+		const fromBody = makeClient(
+			[
+				{
+					status: 429,
+					json: {
+						success: false,
+						error: { code: "rateLimited", retryAfterSeconds: 3600 },
+					},
+				},
+				ok,
+			],
+			{ maxRetries: 2, retryInitialDelayMs: 0 },
+		);
+		const bodyErr = await fromBody.client.youtube
+			.search({ query: "x" })
+			.catch((error) => error);
+		expect(bodyErr.retryAfterSeconds).toBe(3600);
+		expect(fromBody.calls.length).toBe(1);
+	});
+
+	test("times out after timeoutMs and does not retry", async () => {
+		let n = 0;
+		const client = new Stophy({
+			apiKey: "sk_test",
+			fetch: (_input, init) => {
+				n += 1;
+				return new Promise((_resolve, reject) => {
+					init?.signal?.addEventListener("abort", () =>
+						reject(init.signal?.reason),
+					);
+				});
+			},
+			maxRetries: 2,
+			retryInitialDelayMs: 0,
+			timeoutMs: 20,
+		});
+		const err = await client.youtube
+			.search({ query: "x" })
+			.catch((error) => error);
+		expect(err.name).toBe("TimeoutError");
+		expect(n).toBe(1);
+	});
 });
