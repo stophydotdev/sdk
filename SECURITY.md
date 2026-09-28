@@ -4,7 +4,7 @@
 
 Please do not report security vulnerabilities in public issues.
 
-Email security reports to **security@stophy.dev** with:
+Email security reports to **support@stophy.dev** with:
 
 - A description of the vulnerability
 - Reproduction steps or a proof of concept
