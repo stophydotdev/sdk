@@ -2,7 +2,7 @@
   "name": "stophy-sdk",
   "version": "0.0.0",
   "private": true,
-  "description": "Official Stophy SDKs for the web data API for AI agents. One repo, many languages.",
+  "description": "Public web data for AI agents in TypeScript and Python: search, video, social, places, shopping, jobs and real estate.",
   "homepage": "https://stophy.dev",
   "repository": {
     "type": "git",
