@@ -31,7 +31,7 @@ def test_async_search_and_markdown():
 
     async def run():
         async with AsyncStophy(
-            "sk_test",
+            "st_test",
             transport=httpx.MockTransport(handler),
             max_retries=0,
         ) as client:
@@ -64,7 +64,7 @@ def test_async_error_has_code():
 
     async def run():
         async with AsyncStophy(
-            "sk_test",
+            "st_test",
             transport=httpx.MockTransport(handler),
             max_retries=0,
         ) as client:
@@ -77,11 +77,11 @@ def test_async_error_has_code():
 
 
 def test_async_client_reads_environment(monkeypatch):
-    monkeypatch.setenv("STOPHY_API_KEY", "sk_env")
+    monkeypatch.setenv("STOPHY_API_KEY", "st_env")
     monkeypatch.setenv("STOPHY_BASE_URL", "https://env.stophy.dev")
 
     def handler(request: httpx.Request) -> httpx.Response:
-        assert request.headers["authorization"] == "Bearer sk_env"
+        assert request.headers["authorization"] == "Bearer st_env"
         assert request.url.host == "env.stophy.dev"
         return httpx.Response(
             200,
@@ -113,7 +113,7 @@ def test_async_raises_instead_of_waiting_more_than_60_seconds():
 
     async def run():
         async with AsyncStophy(
-            "sk_test",
+            "st_test",
             transport=httpx.MockTransport(handler),
             max_retries=2,
             retry_initial_delay=0,

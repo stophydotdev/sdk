@@ -1,6 +1,6 @@
 import { Stophy } from "../../packages/typescript/src/index";
 
-const client = new Stophy({ apiKey: "sk_test" });
+const client = new Stophy({ apiKey: "st_test" });
 
 type Expect<T extends true> = T;
 type SearchBody = Parameters<Stophy["youtube"]["search"]>[0];

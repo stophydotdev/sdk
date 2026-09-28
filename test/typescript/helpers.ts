@@ -66,7 +66,7 @@ export function makeClient(
 ) {
 	const { fetchImpl, calls } = createMock(responses);
 	const client = new Stophy({
-		apiKey: "sk_test",
+		apiKey: "st_test",
 		fetch: fetchImpl,
 		maxRetries: 0,
 		...opts,

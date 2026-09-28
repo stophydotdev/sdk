@@ -29,7 +29,7 @@ def make_client(
             return httpx.Response(status, headers=headers, text=spec["raw"])
         return httpx.Response(status, headers=headers, json=spec.get("json"))
 
-    kwargs = {"api_key": "sk_test", "max_retries": 0, **opts}
+    kwargs = {"api_key": "st_test", "max_retries": 0, **opts}
     client = Stophy(transport=httpx.MockTransport(handler), **kwargs)
     return client, calls
 

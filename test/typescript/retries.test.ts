@@ -76,7 +76,7 @@ describe("retries", () => {
 			return new Response(JSON.stringify(ok.json), { status: 200 });
 		};
 		const client = new Stophy({
-			apiKey: "sk_test",
+			apiKey: "st_test",
 			fetch: fetchImpl,
 			maxRetries: 2,
 			retryInitialDelayMs: 0,
@@ -87,7 +87,7 @@ describe("retries", () => {
 		const controller = new AbortController();
 		controller.abort();
 		const aborted = new Stophy({
-			apiKey: "sk_test",
+			apiKey: "st_test",
 			fetch: async (_input, init) => {
 				if (init?.signal?.aborted)
 					throw new DOMException("aborted", "AbortError");
@@ -161,7 +161,7 @@ describe("retries", () => {
 	test("times out after timeoutMs and does not retry", async () => {
 		let n = 0;
 		const client = new Stophy({
-			apiKey: "sk_test",
+			apiKey: "st_test",
 			fetch: (_input, init) => {
 				n += 1;
 				return new Promise((_resolve, reject) => {

@@ -30,8 +30,19 @@ export type _Error = {
 };
 
 export type EndpointCatalog = {
+  sources: Array<{
+    id: string;
+    /**
+     * What you can get from this source.
+     */
+    summary: string;
+  }>;
   endpoints: Array<{
     id: string;
+    /**
+     * What this endpoint returns, in one line.
+     */
+    summary: string;
     method: "POST";
     path: string;
     credits: number;

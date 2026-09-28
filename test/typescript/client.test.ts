@@ -50,7 +50,7 @@ describe("Stophy client construction", () => {
 	test("sends the API key as a Bearer token on every request", async () => {
 		const { client, calls } = makeClient(searchOk);
 		await client.youtube.search({ query: "bun" });
-		expect(calls[0]?.authorization).toBe("Bearer sk_test");
+		expect(calls[0]?.authorization).toBe("Bearer st_test");
 	});
 
 	test("includes custom headers on requests", async () => {
@@ -62,14 +62,14 @@ describe("Stophy client construction", () => {
 	});
 
 	test("accepts an API key string", () => {
-		const client = new Stophy("sk_test");
+		const client = new Stophy("st_test");
 		expect(typeof client.youtube.search).toBe("function");
 	});
 
 	test("reads API key and base URL from the environment", async () => {
 		const previousKey = process.env.STOPHY_API_KEY;
 		const previousUrl = process.env.STOPHY_BASE_URL;
-		process.env.STOPHY_API_KEY = "sk_env";
+		process.env.STOPHY_API_KEY = "st_env";
 		process.env.STOPHY_BASE_URL = "https://env.stophy.dev";
 		try {
 			const calls: string[] = [];

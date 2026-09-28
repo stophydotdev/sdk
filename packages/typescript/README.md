@@ -1,6 +1,6 @@
-# stophy
+# Stophy for TypeScript
 
-Official TypeScript SDK for [Stophy](https://stophy.dev), the **web data API for AI agents**.
+Get public web data in your TypeScript or JavaScript code: search results, videos, social posts, places, products, jobs, homes, and more. Every method and result is typed.
 
 ## Install
 
@@ -8,9 +8,7 @@ Official TypeScript SDK for [Stophy](https://stophy.dev), the **web data API for
 npm install stophy
 ```
 
-Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>`.
-
-## Try without a key
+## Try it without a key
 
 ```ts
 import { Stophy } from "stophy";
@@ -19,43 +17,50 @@ const result = await new Stophy().web.search({ query: "bun runtime" });
 console.log(result.data.results);
 ```
 
-`web.search`, `youtube.search`, and `youtube.transcript` answer without a key, with a small free limit. Other endpoints throw `StophyError` with code `unauthorized` and status 401.
+Web search, YouTube search, and YouTube transcripts work without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
 
-## Quick start
+## Use an API key
+
+Get a key from the [dashboard](https://stophy.dev/dashboard). Keys start with `st_`. Set it as `STOPHY_API_KEY`, or pass it in:
 
 ```ts
-import { Stophy } from "stophy";
+const stophy = new Stophy({ apiKey: "st_..." });
 
-const stophy = new Stophy({ apiKey: process.env.STOPHY_API_KEY });
-const result = await stophy.youtube.search({ query: "bun runtime", limit: 2 });
-console.log(result.data.results);
+const videos = await stophy.youtube.search({ query: "bun runtime", limit: 5 });
+console.log(videos.data.results);
+```
 
+`new Stophy("st_...")` works too.
+
+Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.youtube.comments.replies(...)`. Each result has `data`, `creditsUsed`, and `requestId`.
+
+## Get markdown for a model
+
+```ts
 const markdown = await stophy.youtube.search(
-  { query: "bun runtime", limit: 2 },
+  { query: "bun runtime", limit: 5 },
   { format: "markdown" },
 );
 ```
 
-`new Stophy("sk_...")` also works. `apiKey` defaults to `STOPHY_API_KEY`, and `baseUrl` defaults to `STOPHY_BASE_URL` or `https://api.stophy.dev`.
+With `format: "markdown"`, the method returns a string.
 
-Namespaces follow the API. `POST /v1/youtube/search` is `stophy.youtube.search(input)`. `POST /v1/youtube/comments/replies` is `stophy.youtube.comments.replies(input)`. Inputs and outputs come from the OpenAPI document.
+## Get the next page
 
-Pass `{ format: "markdown" }` to send `Accept: text/markdown` and get a string. Pass `signal` to abort the request. Each attempt times out after 30 seconds; set `timeoutMs` to change that. A timeout is not retried.
+When there are more results, `data.cursor` is set. Pass it back to get the next page:
 
 ```ts
-const usage = await stophy.usage();
-const logs = await stophy.logs({ days: 7, page: 0 });
+const first = await stophy.reddit.search({ query: "bun" });
+const next = await stophy.reddit.search({ query: "bun", cursor: first.data.cursor });
 ```
 
-`usage` and `logs` call `GET /v1/usage` and `GET /v1/logs`. Both require an API key.
-
-## Errors
+## Handle errors
 
 ```ts
 import { StophyError } from "stophy";
 
 try {
-  await stophy.youtube.search({ query: "bun runtime" });
+  await stophy.reddit.search({ query: "bun" });
 } catch (error) {
   if (error instanceof StophyError) {
     console.log(error.code, error.retryable, error.retryAfterSeconds);
@@ -65,8 +70,28 @@ try {
 
 `StophyError` has `code`, `message`, `retryable`, `retryAfterSeconds`, `status`, and `requestId`.
 
-Transient failures (network errors and HTTP 429/500/502/503/504) are retried with backoff, honoring `Retry-After`. If the API asks to wait more than 60 seconds, the SDK throws right away with `retryAfterSeconds` set. Set `maxRetries: 0` to turn retries off.
+The SDK retries network errors and the HTTP statuses 429, 500, 502, 503, and 504, and it waits as long as the API asks. If the API asks for a wait longer than 60 seconds, the SDK throws right away with `retryAfterSeconds` set.
 
-## Regenerating
+## Options
 
-From the repo root: `bun run sync`, then `bun run generate`. Do not edit `src/generated/`.
+| Option | Default | What it does |
+| --- | --- | --- |
+| `apiKey` | `STOPHY_API_KEY` | Your API key |
+| `baseUrl` | `STOPHY_BASE_URL`, or the Stophy API | The server to call |
+| `maxRetries` | `2` | Retries per request. `0` turns retries off. |
+| `timeoutMs` | `30000` | Time limit for each attempt. A timed-out attempt is not retried. |
+
+Each method also takes `signal` to cancel the request.
+
+## Check your account
+
+```ts
+const usage = await stophy.usage();
+const logs = await stophy.logs({ days: 7, page: 0 });
+```
+
+`usage` returns your balance and your all-time usage. `logs` returns your recent requests. Both need an API key.
+
+## License
+
+MIT

@@ -1,7 +1,7 @@
 {
   "name": "stophy",
   "version": "1.0.0",
-  "description": "Official TypeScript SDK for Stophy, the web data API for AI agents.",
+  "description": "Public web data for AI agents in TypeScript: search, video, social, places, shopping, jobs and real estate.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://stophy.dev",
@@ -13,9 +13,14 @@
   "keywords": [
     "stophy",
     "sdk",
+    "web-data",
+    "web-search",
+    "scraping",
     "ai-agents",
-    "web",
-    "search"
+    "llm",
+    "youtube",
+    "reddit",
+    "maps"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

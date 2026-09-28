@@ -84,15 +84,36 @@
       "EndpointCatalog": {
         "type": "object",
         "required": [
-          "endpoints"
+          "endpoints",
+          "sources"
         ],
         "properties": {
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "summary"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What you can get from this source."
+                }
+              }
+            }
+          },
           "endpoints": {
             "type": "array",
             "items": {
               "type": "object",
               "required": [
                 "id",
+                "summary",
                 "method",
                 "path",
                 "credits",
@@ -104,6 +125,10 @@
               "properties": {
                 "id": {
                   "type": "string"
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What this endpoint returns, in one line."
                 },
                 "method": {
                   "const": "POST"
@@ -31559,7 +31584,7 @@
               "example": {
                 "origin": "JFK",
                 "destination": "LAX",
-                "departDate": "2026-11-11"
+                "departDate": "2026-11-12"
               }
             }
           }

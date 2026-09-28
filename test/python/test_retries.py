@@ -86,7 +86,7 @@ def test_retries_network_errors():
         return httpx.Response(200, json=OK["json"], request=request)
 
     client = Stophy(
-        "sk_test",
+        "st_test",
         transport=httpx.MockTransport(handler),
         max_retries=2,
         retry_initial_delay=0,

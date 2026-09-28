@@ -1069,8 +1069,14 @@ CryptoWalletResponseDataTransactionsItem = TypedDict(
 )
 
 
+class EndpointCatalogSourcesItem(TypedDict):
+    id: str
+    summary: str
+
+
 class EndpointCatalogEndpointsItem(TypedDict):
     id: str
+    summary: str
     method: Literal["POST"]
     path: str
     credits: int
@@ -1082,6 +1088,7 @@ class EndpointCatalogEndpointsItem(TypedDict):
 
 
 class EndpointCatalog(TypedDict):
+    sources: list[EndpointCatalogSourcesItem]
     endpoints: list[EndpointCatalogEndpointsItem]
 
 

@@ -38,7 +38,7 @@ def test_honors_custom_base_url():
 def test_sends_bearer_token():
     client, calls = make_client({"json": {"success": True, "data": {"results": []}}})
     client.youtube.search(query="bun")
-    assert calls[0].headers["authorization"] == "Bearer sk_test"
+    assert calls[0].headers["authorization"] == "Bearer st_test"
 
 
 def test_includes_custom_headers():
@@ -51,7 +51,7 @@ def test_includes_custom_headers():
 
 
 def test_exposes_underlying_client():
-    client = Stophy("sk_test")
+    client = Stophy("st_test")
     assert isinstance(client.client, httpx.Client)
     client.close()
 
@@ -64,7 +64,7 @@ def test_works_as_context_manager():
 
 
 def test_reads_api_key_and_base_url_from_environment(monkeypatch):
-    monkeypatch.setenv("STOPHY_API_KEY", "sk_env")
+    monkeypatch.setenv("STOPHY_API_KEY", "st_env")
     monkeypatch.setenv("STOPHY_BASE_URL", "https://env.stophy.dev")
     calls = []
 
@@ -83,6 +83,6 @@ def test_reads_api_key_and_base_url_from_environment(monkeypatch):
 
     client = Stophy(transport=httpx.MockTransport(handler), max_retries=0)
     client.youtube.search(query="bun")
-    assert calls[0].headers["authorization"] == "Bearer sk_env"
+    assert calls[0].headers["authorization"] == "Bearer st_env"
     assert str(calls[0].url).startswith("https://env.stophy.dev/")
     client.close()
