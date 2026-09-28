@@ -1,7 +1,6 @@
 {
   "name": "stophy-sdk",
   "version": "0.0.0",
-  "private": true,
   "description": "Official Stophy SDKs for the YouTube context API for AI agents. One repo, many languages.",
   "homepage": "https://stophy.dev",
   "repository": {
@@ -33,5 +32,6 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
     "@changesets/cli": "2.31.0"
-  }
+  },
+  "license": "MIT"
 }
