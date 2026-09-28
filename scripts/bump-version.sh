@@ -7,9 +7,6 @@
 # TypeScript versions are normally managed by Changesets. This script remains
 # available for Python releases, where it updates pyproject.toml, uv.lock, and
 # the runtime __version__ value together.
-#
-# After 1.0.0, every release is a patch bump (1.0.1, 1.0.2, ...) unless a
-# larger bump was explicitly requested.
 
 set -euo pipefail
 
