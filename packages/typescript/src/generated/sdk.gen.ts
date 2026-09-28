@@ -528,7 +528,7 @@ export const listEndpoints = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * web.search
+ * Search the web and get titles, links and snippets
  * Costs 1 credit per 10 items. Works without an API key, within free limits.
  */
 export const webSearch = <ThrowOnError extends boolean = false>(
@@ -555,7 +555,7 @@ export const webSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * web.news
+ * Search news articles by topic, date and country
  * Costs 2 credits per 10 items.
  */
 export const webNews = <ThrowOnError extends boolean = false>(
@@ -582,7 +582,7 @@ export const webNews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * web.contacts
+ * Find emails, phone numbers and social profiles on a website
  * Costs 2 credits per 5 items.
  */
 export const webContacts = <ThrowOnError extends boolean = false>(
@@ -609,7 +609,7 @@ export const webContacts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * youtube.search
+ * Search YouTube videos, channels, playlists and shorts
  * Costs 1 credit per 20 items. Pages with cursor. Works without an API key, within free limits.
  */
 export const youtubeSearch = <ThrowOnError extends boolean = false>(
@@ -636,7 +636,7 @@ export const youtubeSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * youtube.video
+ * Get a video's title, channel, views, likes and description
  * Costs 1 credit.
  */
 export const youtubeVideo = <ThrowOnError extends boolean = false>(
@@ -663,7 +663,7 @@ export const youtubeVideo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * youtube.transcript
+ * Get a video's transcript, with optional timestamps
  * Costs 3 credits. Works without an API key, within free limits.
  */
 export const youtubeTranscript = <ThrowOnError extends boolean = false>(
@@ -690,7 +690,7 @@ export const youtubeTranscript = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * youtube.comments
+ * Get a video's comments
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const youtubeComments = <ThrowOnError extends boolean = false>(
@@ -717,7 +717,7 @@ export const youtubeComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * youtube.comments.replies
+ * Get the replies to a video comment
  * Costs 1 credit per 10 items. Pages with cursor.
  */
 export const youtubeCommentsReplies = <ThrowOnError extends boolean = false>(
@@ -744,7 +744,7 @@ export const youtubeCommentsReplies = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * youtube.channel
+ * Get a channel's videos, shorts, playlists and about info
  * Costs 1 credit per 30 items. Pages with cursor.
  */
 export const youtubeChannel = <ThrowOnError extends boolean = false>(
@@ -771,7 +771,7 @@ export const youtubeChannel = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * youtube.playlist
+ * Get the videos in a playlist
  * Costs 1 credit per 100 items. Pages with cursor.
  */
 export const youtubePlaylist = <ThrowOnError extends boolean = false>(
@@ -798,7 +798,7 @@ export const youtubePlaylist = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * reddit.search
+ * Search Reddit posts, comments, subreddits and users
  * Costs 2 credits. Pages with cursor.
  */
 export const redditSearch = <ThrowOnError extends boolean = false>(
@@ -825,7 +825,7 @@ export const redditSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * reddit.post
+ * Read a post and its comment thread
  * Costs 2 credits.
  */
 export const redditPost = <ThrowOnError extends boolean = false>(
@@ -852,7 +852,7 @@ export const redditPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * reddit.comments.more
+ * Load more comments from a thread
  * Costs 2 credits. Pages with cursor.
  */
 export const redditCommentsMore = <ThrowOnError extends boolean = false>(
@@ -879,7 +879,7 @@ export const redditCommentsMore = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * reddit.subreddit
+ * Get a subreddit's info and posts
  * Costs 2 credits. Pages with cursor.
  */
 export const redditSubreddit = <ThrowOnError extends boolean = false>(
@@ -906,7 +906,7 @@ export const redditSubreddit = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * reddit.user
+ * Get a user's posts and comments
  * Costs 2 credits. Pages with cursor.
  */
 export const redditUser = <ThrowOnError extends boolean = false>(
@@ -933,7 +933,7 @@ export const redditUser = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * reddit.domain
+ * Get Reddit posts that link to a website
  * Costs 2 credits. Pages with cursor.
  */
 export const redditDomain = <ThrowOnError extends boolean = false>(
@@ -960,7 +960,7 @@ export const redditDomain = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * maps.search
+ * Search places on Google Maps by keyword and location
  * Costs 3 credits per 20 items.
  */
 export const mapsSearch = <ThrowOnError extends boolean = false>(
@@ -987,7 +987,7 @@ export const mapsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * maps.place
+ * Get a place's address, hours, rating and contact details
  * Costs 2 credits.
  */
 export const mapsPlace = <ThrowOnError extends boolean = false>(
@@ -1014,7 +1014,7 @@ export const mapsPlace = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * maps.reviews
+ * Get a place's reviews
  * Costs 1 credit per 10 items. Pages with cursor.
  */
 export const mapsReviews = <ThrowOnError extends boolean = false>(
@@ -1041,7 +1041,7 @@ export const mapsReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * instagram.profile
+ * Get a profile's bio, stats and recent posts
  * Costs 1 credit.
  */
 export const instagramProfile = <ThrowOnError extends boolean = false>(
@@ -1068,7 +1068,7 @@ export const instagramProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * instagram.posts
+ * Get a profile's posts and reels
  * Costs 1 credit per 12 items. Pages with cursor.
  */
 export const instagramPosts = <ThrowOnError extends boolean = false>(
@@ -1095,7 +1095,7 @@ export const instagramPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * instagram.post
+ * Get a post or reel, with its comments
  * Costs 1 credit.
  */
 export const instagramPost = <ThrowOnError extends boolean = false>(
@@ -1122,7 +1122,7 @@ export const instagramPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * instagram.url
+ * Get any Instagram profile, post or reel from its link
  * Costs 1 credit.
  */
 export const instagramUrl = <ThrowOnError extends boolean = false>(
@@ -1149,7 +1149,7 @@ export const instagramUrl = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * instagram.search
+ * Search Instagram posts and reels
  * Costs 3 credits per 10 items.
  */
 export const instagramSearch = <ThrowOnError extends boolean = false>(
@@ -1176,7 +1176,7 @@ export const instagramSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * instagram.transcript
+ * Get the transcript of a reel or video post
  * Costs 5 credits per 1 items.
  */
 export const instagramTranscript = <ThrowOnError extends boolean = false>(
@@ -1203,7 +1203,7 @@ export const instagramTranscript = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * instagram.comments
+ * Get a post's comments
  * Costs 1 credit per 15 items. Pages with cursor.
  */
 export const instagramComments = <ThrowOnError extends boolean = false>(
@@ -1230,7 +1230,7 @@ export const instagramComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * instagram.comments.replies
+ * Get the replies to a post comment
  * Costs 1 credit per 15 items. Pages with cursor.
  */
 export const instagramCommentsReplies = <ThrowOnError extends boolean = false>(
@@ -1257,7 +1257,7 @@ export const instagramCommentsReplies = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.profile
+ * Get a profile's bio and stats
  * Costs 1 credit.
  */
 export const tiktokProfile = <ThrowOnError extends boolean = false>(
@@ -1284,7 +1284,7 @@ export const tiktokProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.video
+ * Get a video's caption, stats and music
  * Costs 1 credit.
  */
 export const tiktokVideo = <ThrowOnError extends boolean = false>(
@@ -1311,7 +1311,7 @@ export const tiktokVideo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.url
+ * Get any TikTok profile or video from its link
  * Costs 1 credit.
  */
 export const tiktokUrl = <ThrowOnError extends boolean = false>(
@@ -1338,7 +1338,7 @@ export const tiktokUrl = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.transcript
+ * Get a video's transcript, with optional timestamps
  * Costs 5 credits.
  */
 export const tiktokTranscript = <ThrowOnError extends boolean = false>(
@@ -1365,7 +1365,7 @@ export const tiktokTranscript = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.posts
+ * Get a profile's videos
  * Costs 1 credit per 30 items. Pages with cursor.
  */
 export const tiktokPosts = <ThrowOnError extends boolean = false>(
@@ -1392,7 +1392,7 @@ export const tiktokPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.hashtag
+ * Get videos for a hashtag
  * Costs 1 credit per 30 items. Pages with cursor.
  */
 export const tiktokHashtag = <ThrowOnError extends boolean = false>(
@@ -1419,7 +1419,7 @@ export const tiktokHashtag = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.comments
+ * Get a video's comments
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const tiktokComments = <ThrowOnError extends boolean = false>(
@@ -1446,7 +1446,7 @@ export const tiktokComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.comments.replies
+ * Get the replies to a video comment
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const tiktokCommentsReplies = <ThrowOnError extends boolean = false>(
@@ -1473,7 +1473,7 @@ export const tiktokCommentsReplies = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.search
+ * Search TikTok videos and users
  * Costs 1 credit per 12 items. Pages with cursor.
  */
 export const tiktokSearch = <ThrowOnError extends boolean = false>(
@@ -1500,7 +1500,7 @@ export const tiktokSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * bluesky.profile
+ * Get a profile's bio and stats
  * Costs 1 credit.
  */
 export const blueskyProfile = <ThrowOnError extends boolean = false>(
@@ -1527,7 +1527,7 @@ export const blueskyProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * bluesky.posts
+ * Get a profile's posts
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const blueskyPosts = <ThrowOnError extends boolean = false>(
@@ -1554,7 +1554,7 @@ export const blueskyPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * bluesky.post
+ * Read a post and its replies
  * Costs 1 credit per 50 items.
  */
 export const blueskyPost = <ThrowOnError extends boolean = false>(
@@ -1581,7 +1581,7 @@ export const blueskyPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * bluesky.followers
+ * Get a profile's followers
  * Costs 1 credit per 50 items. Pages with cursor.
  */
 export const blueskyFollowers = <ThrowOnError extends boolean = false>(
@@ -1608,7 +1608,7 @@ export const blueskyFollowers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * mastodon.profile
+ * Get a profile's bio and stats
  * Costs 1 credit.
  */
 export const mastodonProfile = <ThrowOnError extends boolean = false>(
@@ -1635,7 +1635,7 @@ export const mastodonProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * mastodon.posts
+ * Get a profile's posts
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const mastodonPosts = <ThrowOnError extends boolean = false>(
@@ -1662,7 +1662,7 @@ export const mastodonPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * mastodon.post
+ * Read a post with its thread and replies
  * Costs 1 credit.
  */
 export const mastodonPost = <ThrowOnError extends boolean = false>(
@@ -1689,7 +1689,7 @@ export const mastodonPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * mastodon.hashtag
+ * Get posts for a hashtag
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const mastodonHashtag = <ThrowOnError extends boolean = false>(
@@ -1716,7 +1716,7 @@ export const mastodonHashtag = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * threads.profile
+ * Get a profile's bio and stats
  * Costs 1 credit.
  */
 export const threadsProfile = <ThrowOnError extends boolean = false>(
@@ -1743,7 +1743,7 @@ export const threadsProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * threads.posts
+ * Get a profile's posts
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const threadsPosts = <ThrowOnError extends boolean = false>(
@@ -1770,7 +1770,7 @@ export const threadsPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * threads.post
+ * Read a post with its thread and replies
  * Costs 1 credit. Pages with cursor.
  */
 export const threadsPost = <ThrowOnError extends boolean = false>(
@@ -1797,7 +1797,7 @@ export const threadsPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * threads.search
+ * Search Threads posts
  * Costs 1 credit.
  */
 export const threadsSearch = <ThrowOnError extends boolean = false>(
@@ -1824,7 +1824,7 @@ export const threadsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * telegram.channel
+ * Get a public channel's info
  * Costs 1 credit.
  */
 export const telegramChannel = <ThrowOnError extends boolean = false>(
@@ -1851,7 +1851,7 @@ export const telegramChannel = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * telegram.posts
+ * Get a public channel's posts
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const telegramPosts = <ThrowOnError extends boolean = false>(
@@ -1878,7 +1878,7 @@ export const telegramPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * telegram.post
+ * Get a single channel post
  * Costs 1 credit.
  */
 export const telegramPost = <ThrowOnError extends boolean = false>(
@@ -1905,7 +1905,7 @@ export const telegramPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * meta.ads.search
+ * Search ads in the Meta ad library
  * Costs 2 credits per 10 items. Pages with cursor.
  */
 export const metaAdsSearch = <ThrowOnError extends boolean = false>(
@@ -1932,7 +1932,7 @@ export const metaAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * meta.ads.page
+ * Get the ads a Facebook page runs
  * Costs 2 credits per 10 items. Pages with cursor.
  */
 export const metaAdsPage = <ThrowOnError extends boolean = false>(
@@ -1959,7 +1959,7 @@ export const metaAdsPage = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * meta.ads.ad
+ * Get a Meta ad's details
  * Costs 2 credits.
  */
 export const metaAdsAd = <ThrowOnError extends boolean = false>(
@@ -1986,7 +1986,7 @@ export const metaAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * linkedin.jobs.search
+ * Search LinkedIn jobs
  * Costs 1 credit per 10 items. Pages with cursor.
  */
 export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
@@ -2013,7 +2013,7 @@ export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * linkedin.jobs.job
+ * Get a LinkedIn job's details
  * Costs 1 credit.
  */
 export const linkedinJobsJob = <ThrowOnError extends boolean = false>(
@@ -2040,7 +2040,7 @@ export const linkedinJobsJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * linkedin.ads.search
+ * Search ads in the LinkedIn ad library
  * Costs 2 credits per 24 items. Pages with cursor.
  */
 export const linkedinAdsSearch = <ThrowOnError extends boolean = false>(
@@ -2067,7 +2067,7 @@ export const linkedinAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * linkedin.ads.ad
+ * Get a LinkedIn ad's details
  * Costs 2 credits.
  */
 export const linkedinAdsAd = <ThrowOnError extends boolean = false>(
@@ -2094,7 +2094,7 @@ export const linkedinAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * linkedin.company
+ * Get a company's profile, size and industry
  * Costs 1 credit.
  */
 export const linkedinCompany = <ThrowOnError extends boolean = false>(
@@ -2121,7 +2121,7 @@ export const linkedinCompany = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * linkedin.profile
+ * Get a person's profile
  * Costs 1 credit.
  */
 export const linkedinProfile = <ThrowOnError extends boolean = false>(
@@ -2148,7 +2148,7 @@ export const linkedinProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * linkedin.posts
+ * Get a person's or company's posts
  * Costs 1 credit.
  */
 export const linkedinPosts = <ThrowOnError extends boolean = false>(
@@ -2175,7 +2175,7 @@ export const linkedinPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * linkedin.company.posts
+ * Get a company's posts
  * Costs 1 credit.
  */
 export const linkedinCompanyPosts = <ThrowOnError extends boolean = false>(
@@ -2202,7 +2202,7 @@ export const linkedinCompanyPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * zillow.search
+ * Search homes for sale, for rent or sold
  * Costs 3 credits per 41 items. Pages with cursor.
  */
 export const zillowSearch = <ThrowOnError extends boolean = false>(
@@ -2229,7 +2229,7 @@ export const zillowSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * zillow.property
+ * Get a home's details, price and Zestimate
  * Costs 3 credits.
  */
 export const zillowProperty = <ThrowOnError extends boolean = false>(
@@ -2256,7 +2256,7 @@ export const zillowProperty = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * google.ads.advertisers
+ * Find advertisers in the Google ads library
  * Costs 1 credit.
  */
 export const googleAdsAdvertisers = <ThrowOnError extends boolean = false>(
@@ -2283,7 +2283,7 @@ export const googleAdsAdvertisers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * google.ads.search
+ * Search ads in the Google ads library
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const googleAdsSearch = <ThrowOnError extends boolean = false>(
@@ -2310,7 +2310,7 @@ export const googleAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * google.ads.ad
+ * Get a Google ad's details
  * Costs 1 credit.
  */
 export const googleAdsAd = <ThrowOnError extends boolean = false>(
@@ -2337,7 +2337,7 @@ export const googleAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.ads.search
+ * Search ads in the TikTok ad library
  * Costs 1 credit per 12 items. Pages with cursor.
  */
 export const tiktokAdsSearch = <ThrowOnError extends boolean = false>(
@@ -2364,7 +2364,7 @@ export const tiktokAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tiktok.ads.ad
+ * Get a TikTok ad's details and reach
  * Costs 1 credit.
  */
 export const tiktokAdsAd = <ThrowOnError extends boolean = false>(
@@ -2391,7 +2391,7 @@ export const tiktokAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * upwork.search
+ * Search Upwork jobs
  * Costs 2 credits per 10 items. Pages with cursor.
  */
 export const upworkSearch = <ThrowOnError extends boolean = false>(
@@ -2418,7 +2418,7 @@ export const upworkSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * upwork.job
+ * Get an Upwork job's details
  * Costs 3 credits.
  */
 export const upworkJob = <ThrowOnError extends boolean = false>(
@@ -2445,7 +2445,7 @@ export const upworkJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * google.suggest
+ * Get Google search suggestions for a keyword
  * Costs 1 credit per 50 items.
  */
 export const googleSuggest = <ThrowOnError extends boolean = false>(
@@ -2472,7 +2472,7 @@ export const googleSuggest = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * youtube.suggest
+ * Get YouTube search suggestions for a keyword
  * Costs 1 credit per 50 items.
  */
 export const youtubeSuggest = <ThrowOnError extends boolean = false>(
@@ -2499,7 +2499,7 @@ export const youtubeSuggest = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * amazon.suggest
+ * Get Amazon search suggestions for a keyword
  * Costs 1 credit per 50 items.
  */
 export const amazonSuggest = <ThrowOnError extends boolean = false>(
@@ -2526,7 +2526,7 @@ export const amazonSuggest = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * google.trends.interest
+ * Get search interest over time
  * Costs 1 credit.
  */
 export const googleTrendsInterest = <ThrowOnError extends boolean = false>(
@@ -2553,7 +2553,7 @@ export const googleTrendsInterest = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * google.trends.regions
+ * Get search interest by region
  * Costs 1 credit.
  */
 export const googleTrendsRegions = <ThrowOnError extends boolean = false>(
@@ -2580,7 +2580,7 @@ export const googleTrendsRegions = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * google.trends.related
+ * Get related searches for a keyword
  * Costs 1 credit.
  */
 export const googleTrendsRelated = <ThrowOnError extends boolean = false>(
@@ -2607,7 +2607,7 @@ export const googleTrendsRelated = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * google.trends.trending
+ * Get what is trending on Google now
  * Costs 1 credit per 50 items.
  */
 export const googleTrendsTrending = <ThrowOnError extends boolean = false>(
@@ -2634,7 +2634,7 @@ export const googleTrendsTrending = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * site.map
+ * List every page on a website
  * Costs 2 credits per 500 items. Pages with cursor.
  */
 export const siteMap = <ThrowOnError extends boolean = false>(
@@ -2661,7 +2661,7 @@ export const siteMap = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * site.seo
+ * Check a page's SEO: titles, tags, headings and links
  * Costs 2 credits per 2 items.
  */
 export const siteSeo = <ThrowOnError extends boolean = false>(
@@ -2688,7 +2688,7 @@ export const siteSeo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * domain.whois
+ * Get a domain's registrar and key dates
  * Costs 1 credit.
  */
 export const domainWhois = <ThrowOnError extends boolean = false>(
@@ -2715,7 +2715,7 @@ export const domainWhois = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * domain.dns
+ * Get a domain's DNS records
  * Costs 1 credit.
  */
 export const domainDns = <ThrowOnError extends boolean = false>(
@@ -2742,7 +2742,7 @@ export const domainDns = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * domain.tech
+ * Find the technologies a website uses
  * Costs 1 credit.
  */
 export const domainTech = <ThrowOnError extends boolean = false>(
@@ -2769,7 +2769,7 @@ export const domainTech = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * email.check
+ * Check if email addresses can receive mail
  * Costs 1 credit per 10 items.
  */
 export const emailCheck = <ThrowOnError extends boolean = false>(
@@ -2796,7 +2796,7 @@ export const emailCheck = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.coins
+ * Get coin prices, market caps and volume
  * Costs 1 credit per 50 items. Pages with cursor.
  */
 export const cryptoCoins = <ThrowOnError extends boolean = false>(
@@ -2823,7 +2823,7 @@ export const cryptoCoins = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.coin
+ * Get a coin's price, supply and details
  * Costs 1 credit.
  */
 export const cryptoCoin = <ThrowOnError extends boolean = false>(
@@ -2850,7 +2850,7 @@ export const cryptoCoin = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.history
+ * Get a coin's price history
  * Costs 1 credit.
  */
 export const cryptoHistory = <ThrowOnError extends boolean = false>(
@@ -2877,7 +2877,7 @@ export const cryptoHistory = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.trending
+ * Get trending coins, categories and NFTs
  * Costs 1 credit.
  */
 export const cryptoTrending = <ThrowOnError extends boolean = false>(
@@ -2904,7 +2904,7 @@ export const cryptoTrending = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.categories
+ * Get crypto categories by market cap
  * Costs 1 credit.
  */
 export const cryptoCategories = <ThrowOnError extends boolean = false>(
@@ -2931,7 +2931,7 @@ export const cryptoCategories = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.movers
+ * Get the top gaining and losing coins
  * Costs 1 credit.
  */
 export const cryptoMovers = <ThrowOnError extends boolean = false>(
@@ -2958,7 +2958,7 @@ export const cryptoMovers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.new
+ * Get newly listed coins
  * Costs 1 credit per 50 items.
  */
 export const cryptoNew = <ThrowOnError extends boolean = false>(
@@ -2985,7 +2985,7 @@ export const cryptoNew = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.dex.search
+ * Search DEX trading pairs
  * Costs 1 credit.
  */
 export const cryptoDexSearch = <ThrowOnError extends boolean = false>(
@@ -3012,7 +3012,7 @@ export const cryptoDexSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.dex.pairs
+ * Get a DEX trading pair
  * Costs 1 credit.
  */
 export const cryptoDexPairs = <ThrowOnError extends boolean = false>(
@@ -3039,7 +3039,7 @@ export const cryptoDexPairs = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.dex.token
+ * Get a token and its DEX pairs
  * Costs 1 credit.
  */
 export const cryptoDexToken = <ThrowOnError extends boolean = false>(
@@ -3066,7 +3066,7 @@ export const cryptoDexToken = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.dex.new
+ * Get new and boosted tokens on DEXes
  * Costs 1 credit.
  */
 export const cryptoDexNew = <ThrowOnError extends boolean = false>(
@@ -3093,7 +3093,7 @@ export const cryptoDexNew = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.pump.coins
+ * Get pump.fun coins
  * Costs 1 credit per 50 items. Pages with cursor.
  */
 export const cryptoPumpCoins = <ThrowOnError extends boolean = false>(
@@ -3120,7 +3120,7 @@ export const cryptoPumpCoins = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.pump.coin
+ * Get a pump.fun coin's details
  * Costs 1 credit.
  */
 export const cryptoPumpCoin = <ThrowOnError extends boolean = false>(
@@ -3147,7 +3147,7 @@ export const cryptoPumpCoin = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.pump.trades
+ * Get a pump.fun coin's trades
  * Costs 1 credit per 100 items. Pages with cursor.
  */
 export const cryptoPumpTrades = <ThrowOnError extends boolean = false>(
@@ -3174,7 +3174,7 @@ export const cryptoPumpTrades = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.wallet
+ * Get a wallet's balance, tokens and transactions
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const cryptoWallet = <ThrowOnError extends boolean = false>(
@@ -3201,7 +3201,7 @@ export const cryptoWallet = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.token.holders
+ * Get a token's top holders
  * Costs 1 credit per 50 items. Pages with cursor.
  */
 export const cryptoTokenHolders = <ThrowOnError extends boolean = false>(
@@ -3228,7 +3228,7 @@ export const cryptoTokenHolders = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * crypto.binance.announcements
+ * Get Binance announcements and listings
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const cryptoBinanceAnnouncements = <
@@ -3257,7 +3257,7 @@ export const cryptoBinanceAnnouncements = <
 };
 
 /**
- * indeed.search
+ * Search Indeed jobs
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const indeedSearch = <ThrowOnError extends boolean = false>(
@@ -3284,7 +3284,7 @@ export const indeedSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * indeed.job
+ * Get an Indeed job's details
  * Costs 1 credit.
  */
 export const indeedJob = <ThrowOnError extends boolean = false>(
@@ -3311,7 +3311,7 @@ export const indeedJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tripadvisor.search
+ * Search hotels, restaurants and attractions
  * Costs 1 credit.
  */
 export const tripadvisorSearch = <ThrowOnError extends boolean = false>(
@@ -3338,7 +3338,7 @@ export const tripadvisorSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tripadvisor.place
+ * Get a place's rating, ranking and details
  * Costs 1 credit.
  */
 export const tripadvisorPlace = <ThrowOnError extends boolean = false>(
@@ -3365,7 +3365,7 @@ export const tripadvisorPlace = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tripadvisor.reviews
+ * Get a place's reviews
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
@@ -3392,7 +3392,7 @@ export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * googletravel.flights
+ * Search flights with prices and times
  * Costs 3 credits.
  */
 export const googletravelFlights = <ThrowOnError extends boolean = false>(
@@ -3419,7 +3419,7 @@ export const googletravelFlights = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * amazon.search
+ * Search Amazon products
  * Costs 5 credits per 20 items. Pages with cursor.
  */
 export const amazonSearch = <ThrowOnError extends boolean = false>(
@@ -3446,7 +3446,7 @@ export const amazonSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * amazon.product
+ * Get a product's price, details and rating
  * Costs 5 credits.
  */
 export const amazonProduct = <ThrowOnError extends boolean = false>(
@@ -3473,7 +3473,7 @@ export const amazonProduct = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * amazon.bestsellers
+ * Get the best sellers in a category
  * Costs 2 credits per 50 items. Pages with cursor.
  */
 export const amazonBestsellers = <ThrowOnError extends boolean = false>(
@@ -3500,7 +3500,7 @@ export const amazonBestsellers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * shopify.products
+ * Get a Shopify store's products
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const shopifyProducts = <ThrowOnError extends boolean = false>(
@@ -3527,7 +3527,7 @@ export const shopifyProducts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * shopify.collections
+ * Get a Shopify store's collections
  * Costs 1 credit per 100 items. Pages with cursor.
  */
 export const shopifyCollections = <ThrowOnError extends boolean = false>(
@@ -3554,7 +3554,7 @@ export const shopifyCollections = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * shopify.store
+ * Get a Shopify store's details
  * Costs 1 credit.
  */
 export const shopifyStore = <ThrowOnError extends boolean = false>(
@@ -3581,7 +3581,7 @@ export const shopifyStore = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * walmart.search
+ * Search Walmart products
  * Costs 5 credits per 40 items. Pages with cursor.
  */
 export const walmartSearch = <ThrowOnError extends boolean = false>(
@@ -3608,7 +3608,7 @@ export const walmartSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * walmart.product
+ * Get a Walmart product's price and details
  * Costs 3 credits.
  */
 export const walmartProduct = <ThrowOnError extends boolean = false>(
@@ -3635,7 +3635,7 @@ export const walmartProduct = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * aliexpress.search
+ * Search AliExpress products
  * Costs 2 credits per 60 items. Pages with cursor.
  */
 export const aliexpressSearch = <ThrowOnError extends boolean = false>(
@@ -3662,7 +3662,7 @@ export const aliexpressSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * aliexpress.product
+ * Get an AliExpress product's price and details
  * Costs 2 credits.
  */
 export const aliexpressProduct = <ThrowOnError extends boolean = false>(
@@ -3689,7 +3689,7 @@ export const aliexpressProduct = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * appstore.app
+ * Get an app's details from the App Store
  * Costs 1 credit.
  */
 export const appstoreApp = <ThrowOnError extends boolean = false>(
@@ -3716,7 +3716,7 @@ export const appstoreApp = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * appstore.search
+ * Search App Store apps
  * Costs 1 credit per 20 items.
  */
 export const appstoreSearch = <ThrowOnError extends boolean = false>(
@@ -3743,7 +3743,7 @@ export const appstoreSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * appstore.reviews
+ * Get an app's App Store reviews
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const appstoreReviews = <ThrowOnError extends boolean = false>(
@@ -3770,7 +3770,7 @@ export const appstoreReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * appstore.top
+ * Get App Store top charts
  * Costs 1 credit per 100 items.
  */
 export const appstoreTop = <ThrowOnError extends boolean = false>(
@@ -3797,7 +3797,7 @@ export const appstoreTop = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * googleplay.app
+ * Get an app's details from Google Play
  * Costs 1 credit.
  */
 export const googleplayApp = <ThrowOnError extends boolean = false>(
@@ -3824,7 +3824,7 @@ export const googleplayApp = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * googleplay.search
+ * Search Google Play apps
  * Costs 1 credit.
  */
 export const googleplaySearch = <ThrowOnError extends boolean = false>(
@@ -3851,7 +3851,7 @@ export const googleplaySearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * googleplay.reviews
+ * Get an app's Google Play reviews
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const googleplayReviews = <ThrowOnError extends boolean = false>(
@@ -3878,7 +3878,7 @@ export const googleplayReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * airbnb.search
+ * Search Airbnb stays by place and dates
  * Costs 2 credits per 18 items. Pages with cursor.
  */
 export const airbnbSearch = <ThrowOnError extends boolean = false>(
@@ -3905,7 +3905,7 @@ export const airbnbSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * airbnb.listing
+ * Get a listing's details, amenities and host
  * Costs 2 credits.
  */
 export const airbnbListing = <ThrowOnError extends boolean = false>(
@@ -3932,7 +3932,7 @@ export const airbnbListing = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * airbnb.calendar
+ * Get a listing's available dates
  * Costs 1 credit.
  */
 export const airbnbCalendar = <ThrowOnError extends boolean = false>(
@@ -3959,7 +3959,7 @@ export const airbnbCalendar = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * airbnb.reviews
+ * Get a listing's reviews
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const airbnbReviews = <ThrowOnError extends boolean = false>(
@@ -3986,7 +3986,7 @@ export const airbnbReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * redfin.search
+ * Search Redfin homes for sale or sold
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const redfinSearch = <ThrowOnError extends boolean = false>(
@@ -4013,7 +4013,7 @@ export const redfinSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * redfin.property
+ * Get a home's details and estimate
  * Costs 1 credit.
  */
 export const redfinProperty = <ThrowOnError extends boolean = false>(
@@ -4040,7 +4040,7 @@ export const redfinProperty = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * realtor.search
+ * Search Realtor.com homes for sale or sold
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const realtorSearch = <ThrowOnError extends boolean = false>(
@@ -4067,7 +4067,7 @@ export const realtorSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * realtor.property
+ * Get a home's details and price
  * Costs 1 credit.
  */
 export const realtorProperty = <ThrowOnError extends boolean = false>(
@@ -4094,7 +4094,7 @@ export const realtorProperty = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * rightmove.search
+ * Search UK homes for sale or rent
  * Costs 1 credit per 24 items. Pages with cursor.
  */
 export const rightmoveSearch = <ThrowOnError extends boolean = false>(
@@ -4121,7 +4121,7 @@ export const rightmoveSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * rightmove.property
+ * Get a Rightmove property's details
  * Costs 1 credit.
  */
 export const rightmoveProperty = <ThrowOnError extends boolean = false>(
@@ -4148,7 +4148,7 @@ export const rightmoveProperty = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * immoscout.search
+ * Search German homes for rent or sale
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const immoscoutSearch = <ThrowOnError extends boolean = false>(
@@ -4175,7 +4175,7 @@ export const immoscoutSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * immoscout.listing
+ * Get an ImmoScout listing's details
  * Costs 1 credit.
  */
 export const immoscoutListing = <ThrowOnError extends boolean = false>(
@@ -4202,7 +4202,7 @@ export const immoscoutListing = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * pinterest.search
+ * Search pins
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const pinterestSearch = <ThrowOnError extends boolean = false>(
@@ -4229,7 +4229,7 @@ export const pinterestSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * pinterest.pin
+ * Get a pin's details
  * Costs 1 credit.
  */
 export const pinterestPin = <ThrowOnError extends boolean = false>(
@@ -4256,7 +4256,7 @@ export const pinterestPin = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * pinterest.board
+ * Get a board and its pins
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const pinterestBoard = <ThrowOnError extends boolean = false>(
@@ -4283,7 +4283,7 @@ export const pinterestBoard = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * pinterest.user
+ * Get a profile and its pins
  * Costs 1 credit per 25 items. Pages with cursor.
  */
 export const pinterestUser = <ThrowOnError extends boolean = false>(
@@ -4310,7 +4310,7 @@ export const pinterestUser = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * pinterest.ads.search
+ * Search ads in the Pinterest ads library
  * Costs 1 credit per 24 items. Pages with cursor.
  */
 export const pinterestAdsSearch = <ThrowOnError extends boolean = false>(
@@ -4337,7 +4337,7 @@ export const pinterestAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * pinterest.ads.ad
+ * Get a Pinterest ad's details
  * Costs 1 credit.
  */
 export const pinterestAdsAd = <ThrowOnError extends boolean = false>(
@@ -4364,7 +4364,7 @@ export const pinterestAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * x.tweet
+ * Get a post's text, author and stats
  * Costs 1 credit.
  */
 export const xTweet = <ThrowOnError extends boolean = false>(
@@ -4391,7 +4391,7 @@ export const xTweet = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * kick.channel
+ * Get a channel's info and stats
  * Costs 1 credit.
  */
 export const kickChannel = <ThrowOnError extends boolean = false>(
@@ -4418,7 +4418,7 @@ export const kickChannel = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * kick.videos
+ * Get a channel's past streams
  * Costs 1 credit.
  */
 export const kickVideos = <ThrowOnError extends boolean = false>(
@@ -4445,7 +4445,7 @@ export const kickVideos = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * kick.clips
+ * Get a channel's clips
  * Costs 1 credit per 20 items. Pages with cursor.
  */
 export const kickClips = <ThrowOnError extends boolean = false>(
@@ -4472,7 +4472,7 @@ export const kickClips = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * finance.quote
+ * Get live stock and ETF quotes
  * Costs 1 credit.
  */
 export const financeQuote = <ThrowOnError extends boolean = false>(
@@ -4499,7 +4499,7 @@ export const financeQuote = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * finance.history
+ * Get a stock's price history
  * Costs 1 credit.
  */
 export const financeHistory = <ThrowOnError extends boolean = false>(
@@ -4526,7 +4526,7 @@ export const financeHistory = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * finance.search
+ * Search stocks and related news
  * Costs 1 credit.
  */
 export const financeSearch = <ThrowOnError extends boolean = false>(
@@ -4553,7 +4553,7 @@ export const financeSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * finance.profile
+ * Get a company's profile and key stats
  * Costs 1 credit.
  */
 export const financeProfile = <ThrowOnError extends boolean = false>(
@@ -4580,7 +4580,7 @@ export const financeProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * microsoft.ads.search
+ * Search ads in the Microsoft ads library
  * Costs 1 credit. Pages with cursor.
  */
 export const microsoftAdsSearch = <ThrowOnError extends boolean = false>(
@@ -4607,7 +4607,7 @@ export const microsoftAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * microsoft.ads.ad
+ * Get a Microsoft ad's details
  * Costs 1 credit.
  */
 export const microsoftAdsAd = <ThrowOnError extends boolean = false>(
@@ -4634,7 +4634,7 @@ export const microsoftAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * microsoft.ads.advertisers
+ * Find advertisers in the Microsoft ads library
  * Costs 1 credit.
  */
 export const microsoftAdsAdvertisers = <ThrowOnError extends boolean = false>(
@@ -4661,7 +4661,7 @@ export const microsoftAdsAdvertisers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * snapchat.profile
+ * Get a profile with its spotlights and stories
  * Costs 2 credits.
  */
 export const snapchatProfile = <ThrowOnError extends boolean = false>(
@@ -4688,7 +4688,7 @@ export const snapchatProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * snapchat.ads.search
+ * Search ads in the Snapchat ads library
  * Costs 1 credit per 10 items. Pages with cursor.
  */
 export const snapchatAdsSearch = <ThrowOnError extends boolean = false>(
@@ -4715,7 +4715,7 @@ export const snapchatAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * snapchat.ads.ad
+ * Get a Snapchat ad's details
  * Costs 1 credit.
  */
 export const snapchatAdsAd = <ThrowOnError extends boolean = false>(
@@ -4742,7 +4742,7 @@ export const snapchatAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tumblr.blog
+ * Get a blog's info
  * Costs 1 credit.
  */
 export const tumblrBlog = <ThrowOnError extends boolean = false>(
@@ -4769,7 +4769,7 @@ export const tumblrBlog = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tumblr.posts
+ * Get a blog's posts
  * Costs 1 credit per 10 items. Pages with cursor.
  */
 export const tumblrPosts = <ThrowOnError extends boolean = false>(
@@ -4796,7 +4796,7 @@ export const tumblrPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tumblr.post
+ * Get a single post
  * Costs 1 credit.
  */
 export const tumblrPost = <ThrowOnError extends boolean = false>(
@@ -4823,7 +4823,7 @@ export const tumblrPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * tumblr.search
+ * Search Tumblr posts
  * Costs 1 credit per 10 items. Pages with cursor.
  */
 export const tumblrSearch = <ThrowOnError extends boolean = false>(
@@ -4850,7 +4850,7 @@ export const tumblrSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * quora.question
+ * Get a question and its answers
  * Costs 2 credits.
  */
 export const quoraQuestion = <ThrowOnError extends boolean = false>(

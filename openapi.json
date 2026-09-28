@@ -406,7 +406,7 @@
     "/v1/web/search": {
       "post": {
         "operationId": "webSearch",
-        "summary": "web.search",
+        "summary": "Search the web and get titles, links and snippets",
         "description": "Costs 1 credit per 10 items. Works without an API key, within free limits.",
         "security": [
           {},
@@ -593,7 +593,7 @@
     "/v1/web/news": {
       "post": {
         "operationId": "webNews",
-        "summary": "web.news",
+        "summary": "Search news articles by topic, date and country",
         "description": "Costs 2 credits per 10 items.",
         "x-credits": 2,
         "x-per-items": 10,
@@ -801,7 +801,7 @@
     "/v1/web/contacts": {
       "post": {
         "operationId": "webContacts",
-        "summary": "web.contacts",
+        "summary": "Find emails, phone numbers and social profiles on a website",
         "description": "Costs 2 credits per 5 items.",
         "x-credits": 2,
         "x-per-items": 5,
@@ -960,7 +960,7 @@
     "/v1/youtube/search": {
       "post": {
         "operationId": "youtubeSearch",
-        "summary": "youtube.search",
+        "summary": "Search YouTube videos, channels, playlists and shorts",
         "description": "Costs 1 credit per 20 items. Pages with cursor. Works without an API key, within free limits.",
         "security": [
           {},
@@ -1332,7 +1332,7 @@
     "/v1/youtube/video": {
       "post": {
         "operationId": "youtubeVideo",
-        "summary": "youtube.video",
+        "summary": "Get a video's title, channel, views, likes and description",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -1508,7 +1508,7 @@
     "/v1/youtube/transcript": {
       "post": {
         "operationId": "youtubeTranscript",
-        "summary": "youtube.transcript",
+        "summary": "Get a video's transcript, with optional timestamps",
         "description": "Costs 3 credits. Works without an API key, within free limits.",
         "security": [
           {},
@@ -1659,7 +1659,7 @@
     "/v1/youtube/comments": {
       "post": {
         "operationId": "youtubeComments",
-        "summary": "youtube.comments",
+        "summary": "Get a video's comments",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -1856,7 +1856,7 @@
     "/v1/youtube/comments/replies": {
       "post": {
         "operationId": "youtubeCommentsReplies",
-        "summary": "youtube.comments.replies",
+        "summary": "Get the replies to a video comment",
         "description": "Costs 1 credit per 10 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 10,
@@ -2043,7 +2043,7 @@
     "/v1/youtube/channel": {
       "post": {
         "operationId": "youtubeChannel",
-        "summary": "youtube.channel",
+        "summary": "Get a channel's videos, shorts, playlists and about info",
         "description": "Costs 1 credit per 30 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 30,
@@ -2493,7 +2493,7 @@
     "/v1/youtube/playlist": {
       "post": {
         "operationId": "youtubePlaylist",
-        "summary": "youtube.playlist",
+        "summary": "Get the videos in a playlist",
         "description": "Costs 1 credit per 100 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 100,
@@ -2745,7 +2745,7 @@
     "/v1/reddit/search": {
       "post": {
         "operationId": "redditSearch",
-        "summary": "reddit.search",
+        "summary": "Search Reddit posts, comments, subreddits and users",
         "description": "Costs 2 credits. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": null,
@@ -3230,7 +3230,7 @@
     "/v1/reddit/post": {
       "post": {
         "operationId": "redditPost",
-        "summary": "reddit.post",
+        "summary": "Read a post and its comment thread",
         "description": "Costs 2 credits.",
         "x-credits": 2,
         "x-per-items": null,
@@ -3572,7 +3572,7 @@
     "/v1/reddit/comments/more": {
       "post": {
         "operationId": "redditCommentsMore",
-        "summary": "reddit.comments.more",
+        "summary": "Load more comments from a thread",
         "description": "Costs 2 credits. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": null,
@@ -3680,7 +3680,7 @@
     "/v1/reddit/subreddit": {
       "post": {
         "operationId": "redditSubreddit",
-        "summary": "reddit.subreddit",
+        "summary": "Get a subreddit's info and posts",
         "description": "Costs 2 credits. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": null,
@@ -4096,7 +4096,7 @@
     "/v1/reddit/user": {
       "post": {
         "operationId": "redditUser",
-        "summary": "reddit.user",
+        "summary": "Get a user's posts and comments",
         "description": "Costs 2 credits. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": null,
@@ -4551,7 +4551,7 @@
     "/v1/reddit/domain": {
       "post": {
         "operationId": "redditDomain",
-        "summary": "reddit.domain",
+        "summary": "Get Reddit posts that link to a website",
         "description": "Costs 2 credits. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": null,
@@ -4903,7 +4903,7 @@
     "/v1/maps/search": {
       "post": {
         "operationId": "mapsSearch",
-        "summary": "maps.search",
+        "summary": "Search places on Google Maps by keyword and location",
         "description": "Costs 3 credits per 20 items.",
         "x-credits": 3,
         "x-per-items": 20,
@@ -5170,7 +5170,7 @@
     "/v1/maps/place": {
       "post": {
         "operationId": "mapsPlace",
-        "summary": "maps.place",
+        "summary": "Get a place's address, hours, rating and contact details",
         "description": "Costs 2 credits.",
         "x-credits": 2,
         "x-per-items": null,
@@ -5391,7 +5391,7 @@
     "/v1/maps/reviews": {
       "post": {
         "operationId": "mapsReviews",
-        "summary": "maps.reviews",
+        "summary": "Get a place's reviews",
         "description": "Costs 1 credit per 10 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 10,
@@ -5651,7 +5651,7 @@
     "/v1/instagram/profile": {
       "post": {
         "operationId": "instagramProfile",
-        "summary": "instagram.profile",
+        "summary": "Get a profile's bio, stats and recent posts",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -6051,7 +6051,7 @@
     "/v1/instagram/posts": {
       "post": {
         "operationId": "instagramPosts",
-        "summary": "instagram.posts",
+        "summary": "Get a profile's posts and reels",
         "description": "Costs 1 credit per 12 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 12,
@@ -6376,7 +6376,7 @@
     "/v1/instagram/post": {
       "post": {
         "operationId": "instagramPost",
-        "summary": "instagram.post",
+        "summary": "Get a post or reel, with its comments",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -6728,7 +6728,7 @@
     "/v1/instagram/url": {
       "post": {
         "operationId": "instagramUrl",
-        "summary": "instagram.url",
+        "summary": "Get any Instagram profile, post or reel from its link",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -7402,7 +7402,7 @@
     "/v1/instagram/search": {
       "post": {
         "operationId": "instagramSearch",
-        "summary": "instagram.search",
+        "summary": "Search Instagram posts and reels",
         "description": "Costs 3 credits per 10 items.",
         "x-credits": 3,
         "x-per-items": 10,
@@ -7719,7 +7719,7 @@
     "/v1/instagram/transcript": {
       "post": {
         "operationId": "instagramTranscript",
-        "summary": "instagram.transcript",
+        "summary": "Get the transcript of a reel or video post",
         "description": "Costs 5 credits per 1 items.",
         "x-credits": 5,
         "x-per-items": 1,
@@ -7887,7 +7887,7 @@
     "/v1/instagram/comments": {
       "post": {
         "operationId": "instagramComments",
-        "summary": "instagram.comments",
+        "summary": "Get a post's comments",
         "description": "Costs 1 credit per 15 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 15,
@@ -8058,7 +8058,7 @@
     "/v1/instagram/comments/replies": {
       "post": {
         "operationId": "instagramCommentsReplies",
-        "summary": "instagram.comments.replies",
+        "summary": "Get the replies to a post comment",
         "description": "Costs 1 credit per 15 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 15,
@@ -8233,7 +8233,7 @@
     "/v1/tiktok/profile": {
       "post": {
         "operationId": "tiktokProfile",
-        "summary": "tiktok.profile",
+        "summary": "Get a profile's bio and stats",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -8415,7 +8415,7 @@
     "/v1/tiktok/video": {
       "post": {
         "operationId": "tiktokVideo",
-        "summary": "tiktok.video",
+        "summary": "Get a video's caption, stats and music",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -8676,7 +8676,7 @@
     "/v1/tiktok/url": {
       "post": {
         "operationId": "tiktokUrl",
-        "summary": "tiktok.url",
+        "summary": "Get any TikTok profile or video from its link",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -9048,7 +9048,7 @@
     "/v1/tiktok/transcript": {
       "post": {
         "operationId": "tiktokTranscript",
-        "summary": "tiktok.transcript",
+        "summary": "Get a video's transcript, with optional timestamps",
         "description": "Costs 5 credits.",
         "x-credits": 5,
         "x-per-items": null,
@@ -9193,7 +9193,7 @@
     "/v1/tiktok/posts": {
       "post": {
         "operationId": "tiktokPosts",
-        "summary": "tiktok.posts",
+        "summary": "Get a profile's videos",
         "description": "Costs 1 credit per 30 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 30,
@@ -9467,7 +9467,7 @@
     "/v1/tiktok/hashtag": {
       "post": {
         "operationId": "tiktokHashtag",
-        "summary": "tiktok.hashtag",
+        "summary": "Get videos for a hashtag",
         "description": "Costs 1 credit per 30 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 30,
@@ -9742,7 +9742,7 @@
     "/v1/tiktok/comments": {
       "post": {
         "operationId": "tiktokComments",
-        "summary": "tiktok.comments",
+        "summary": "Get a video's comments",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -9911,7 +9911,7 @@
     "/v1/tiktok/comments/replies": {
       "post": {
         "operationId": "tiktokCommentsReplies",
-        "summary": "tiktok.comments.replies",
+        "summary": "Get the replies to a video comment",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -10081,7 +10081,7 @@
     "/v1/tiktok/search": {
       "post": {
         "operationId": "tiktokSearch",
-        "summary": "tiktok.search",
+        "summary": "Search TikTok videos and users",
         "description": "Costs 1 credit per 12 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 12,
@@ -10415,7 +10415,7 @@
     "/v1/bluesky/profile": {
       "post": {
         "operationId": "blueskyProfile",
-        "summary": "bluesky.profile",
+        "summary": "Get a profile's bio and stats",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -10572,7 +10572,7 @@
     "/v1/bluesky/posts": {
       "post": {
         "operationId": "blueskyPosts",
-        "summary": "bluesky.posts",
+        "summary": "Get a profile's posts",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -10949,7 +10949,7 @@
     "/v1/bluesky/post": {
       "post": {
         "operationId": "blueskyPost",
-        "summary": "bluesky.post",
+        "summary": "Read a post and its replies",
         "description": "Costs 1 credit per 50 items.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -11572,7 +11572,7 @@
     "/v1/bluesky/followers": {
       "post": {
         "operationId": "blueskyFollowers",
-        "summary": "bluesky.followers",
+        "summary": "Get a profile's followers",
         "description": "Costs 1 credit per 50 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -11720,7 +11720,7 @@
     "/v1/mastodon/profile": {
       "post": {
         "operationId": "mastodonProfile",
-        "summary": "mastodon.profile",
+        "summary": "Get a profile's bio and stats",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -11908,7 +11908,7 @@
     "/v1/mastodon/posts": {
       "post": {
         "operationId": "mastodonPosts",
-        "summary": "mastodon.posts",
+        "summary": "Get a profile's posts",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -12231,7 +12231,7 @@
     "/v1/mastodon/post": {
       "post": {
         "operationId": "mastodonPost",
-        "summary": "mastodon.post",
+        "summary": "Read a post with its thread and replies",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -12942,7 +12942,7 @@
     "/v1/mastodon/hashtag": {
       "post": {
         "operationId": "mastodonHashtag",
-        "summary": "mastodon.hashtag",
+        "summary": "Get posts for a hashtag",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -13260,7 +13260,7 @@
     "/v1/threads/profile": {
       "post": {
         "operationId": "threadsProfile",
-        "summary": "threads.profile",
+        "summary": "Get a profile's bio and stats",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -13415,7 +13415,7 @@
     "/v1/threads/posts": {
       "post": {
         "operationId": "threadsPosts",
-        "summary": "threads.posts",
+        "summary": "Get a profile's posts",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -14052,7 +14052,7 @@
     "/v1/threads/post": {
       "post": {
         "operationId": "threadsPost",
-        "summary": "threads.post",
+        "summary": "Read a post with its thread and replies",
         "description": "Costs 1 credit. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": null,
@@ -15734,7 +15734,7 @@
     "/v1/threads/search": {
       "post": {
         "operationId": "threadsSearch",
-        "summary": "threads.search",
+        "summary": "Search Threads posts",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -16365,7 +16365,7 @@
     "/v1/telegram/channel": {
       "post": {
         "operationId": "telegramChannel",
-        "summary": "telegram.channel",
+        "summary": "Get a public channel's info",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -16529,7 +16529,7 @@
     "/v1/telegram/posts": {
       "post": {
         "operationId": "telegramPosts",
-        "summary": "telegram.posts",
+        "summary": "Get a public channel's posts",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -16856,7 +16856,7 @@
     "/v1/telegram/post": {
       "post": {
         "operationId": "telegramPost",
-        "summary": "telegram.post",
+        "summary": "Get a single channel post",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -17163,7 +17163,7 @@
     "/v1/meta/ads/search": {
       "post": {
         "operationId": "metaAdsSearch",
-        "summary": "meta.ads.search",
+        "summary": "Search ads in the Meta ad library",
         "description": "Costs 2 credits per 10 items. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": 10,
@@ -17632,7 +17632,7 @@
     "/v1/meta/ads/page": {
       "post": {
         "operationId": "metaAdsPage",
-        "summary": "meta.ads.page",
+        "summary": "Get the ads a Facebook page runs",
         "description": "Costs 2 credits per 10 items. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": 10,
@@ -18099,7 +18099,7 @@
     "/v1/meta/ads/ad": {
       "post": {
         "operationId": "metaAdsAd",
-        "summary": "meta.ads.ad",
+        "summary": "Get a Meta ad's details",
         "description": "Costs 2 credits.",
         "x-credits": 2,
         "x-per-items": null,
@@ -18633,7 +18633,7 @@
     "/v1/linkedin/jobs/search": {
       "post": {
         "operationId": "linkedinJobsSearch",
-        "summary": "linkedin.jobs.search",
+        "summary": "Search LinkedIn jobs",
         "description": "Costs 1 credit per 10 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 10,
@@ -18901,7 +18901,7 @@
     "/v1/linkedin/jobs/job": {
       "post": {
         "operationId": "linkedinJobsJob",
-        "summary": "linkedin.jobs.job",
+        "summary": "Get a LinkedIn job's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -19102,7 +19102,7 @@
     "/v1/linkedin/ads/search": {
       "post": {
         "operationId": "linkedinAdsSearch",
-        "summary": "linkedin.ads.search",
+        "summary": "Search ads in the LinkedIn ad library",
         "description": "Costs 2 credits per 24 items. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": 24,
@@ -19323,7 +19323,7 @@
     "/v1/linkedin/ads/ad": {
       "post": {
         "operationId": "linkedinAdsAd",
-        "summary": "linkedin.ads.ad",
+        "summary": "Get a LinkedIn ad's details",
         "description": "Costs 2 credits.",
         "x-credits": 2,
         "x-per-items": null,
@@ -19598,7 +19598,7 @@
     "/v1/linkedin/company": {
       "post": {
         "operationId": "linkedinCompany",
-        "summary": "linkedin.company",
+        "summary": "Get a company's profile, size and industry",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -19746,7 +19746,7 @@
     "/v1/linkedin/profile": {
       "post": {
         "operationId": "linkedinProfile",
-        "summary": "linkedin.profile",
+        "summary": "Get a person's profile",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -19934,7 +19934,7 @@
     "/v1/linkedin/posts": {
       "post": {
         "operationId": "linkedinPosts",
-        "summary": "linkedin.posts",
+        "summary": "Get a person's or company's posts",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -20081,7 +20081,7 @@
     "/v1/linkedin/company/posts": {
       "post": {
         "operationId": "linkedinCompanyPosts",
-        "summary": "linkedin.company.posts",
+        "summary": "Get a company's posts",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -20228,7 +20228,7 @@
     "/v1/zillow/search": {
       "post": {
         "operationId": "zillowSearch",
-        "summary": "zillow.search",
+        "summary": "Search homes for sale, for rent or sold",
         "description": "Costs 3 credits per 41 items. Pages with cursor.",
         "x-credits": 3,
         "x-per-items": 41,
@@ -20723,7 +20723,7 @@
     "/v1/zillow/property": {
       "post": {
         "operationId": "zillowProperty",
-        "summary": "zillow.property",
+        "summary": "Get a home's details, price and Zestimate",
         "description": "Costs 3 credits.",
         "x-credits": 3,
         "x-per-items": null,
@@ -21069,7 +21069,7 @@
     "/v1/google/ads/advertisers": {
       "post": {
         "operationId": "googleAdsAdvertisers",
-        "summary": "google.ads.advertisers",
+        "summary": "Find advertisers in the Google ads library",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -21231,7 +21231,7 @@
     "/v1/google/ads/search": {
       "post": {
         "operationId": "googleAdsSearch",
-        "summary": "google.ads.search",
+        "summary": "Search ads in the Google ads library",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -21473,7 +21473,7 @@
     "/v1/google/ads/ad": {
       "post": {
         "operationId": "googleAdsAd",
-        "summary": "google.ads.ad",
+        "summary": "Get a Google ad's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -21867,7 +21867,7 @@
     "/v1/tiktok/ads/search": {
       "post": {
         "operationId": "tiktokAdsSearch",
-        "summary": "tiktok.ads.search",
+        "summary": "Search ads in the TikTok ad library",
         "description": "Costs 1 credit per 12 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 12,
@@ -22107,7 +22107,7 @@
     "/v1/tiktok/ads/ad": {
       "post": {
         "operationId": "tiktokAdsAd",
-        "summary": "tiktok.ads.ad",
+        "summary": "Get a TikTok ad's details and reach",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -22463,7 +22463,7 @@
     "/v1/upwork/search": {
       "post": {
         "operationId": "upworkSearch",
-        "summary": "upwork.search",
+        "summary": "Search Upwork jobs",
         "description": "Costs 2 credits per 10 items. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": 10,
@@ -22769,7 +22769,7 @@
     "/v1/upwork/job": {
       "post": {
         "operationId": "upworkJob",
-        "summary": "upwork.job",
+        "summary": "Get an Upwork job's details",
         "description": "Costs 3 credits.",
         "x-credits": 3,
         "x-per-items": null,
@@ -23085,7 +23085,7 @@
     "/v1/google/suggest": {
       "post": {
         "operationId": "googleSuggest",
-        "summary": "google.suggest",
+        "summary": "Get Google search suggestions for a keyword",
         "description": "Costs 1 credit per 50 items.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -23240,7 +23240,7 @@
     "/v1/youtube/suggest": {
       "post": {
         "operationId": "youtubeSuggest",
-        "summary": "youtube.suggest",
+        "summary": "Get YouTube search suggestions for a keyword",
         "description": "Costs 1 credit per 50 items.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -23387,7 +23387,7 @@
     "/v1/amazon/suggest": {
       "post": {
         "operationId": "amazonSuggest",
-        "summary": "amazon.suggest",
+        "summary": "Get Amazon search suggestions for a keyword",
         "description": "Costs 1 credit per 50 items.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -23550,7 +23550,7 @@
     "/v1/google/trends/interest": {
       "post": {
         "operationId": "googleTrendsInterest",
-        "summary": "google.trends.interest",
+        "summary": "Get search interest over time",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -23749,7 +23749,7 @@
     "/v1/google/trends/regions": {
       "post": {
         "operationId": "googleTrendsRegions",
-        "summary": "google.trends.regions",
+        "summary": "Get search interest by region",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -23947,7 +23947,7 @@
     "/v1/google/trends/related": {
       "post": {
         "operationId": "googleTrendsRelated",
-        "summary": "google.trends.related",
+        "summary": "Get related searches for a keyword",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -24118,7 +24118,7 @@
     "/v1/google/trends/trending": {
       "post": {
         "operationId": "googleTrendsTrending",
-        "summary": "google.trends.trending",
+        "summary": "Get what is trending on Google now",
         "description": "Costs 1 credit per 50 items.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -24341,7 +24341,7 @@
     "/v1/site/map": {
       "post": {
         "operationId": "siteMap",
-        "summary": "site.map",
+        "summary": "List every page on a website",
         "description": "Costs 2 credits per 500 items. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": 500,
@@ -24506,7 +24506,7 @@
     "/v1/site/seo": {
       "post": {
         "operationId": "siteSeo",
-        "summary": "site.seo",
+        "summary": "Check a page's SEO: titles, tags, headings and links",
         "description": "Costs 2 credits per 2 items.",
         "x-credits": 2,
         "x-per-items": 2,
@@ -24912,7 +24912,7 @@
     "/v1/domain/whois": {
       "post": {
         "operationId": "domainWhois",
-        "summary": "domain.whois",
+        "summary": "Get a domain's registrar and key dates",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -25093,7 +25093,7 @@
     "/v1/domain/dns": {
       "post": {
         "operationId": "domainDns",
-        "summary": "domain.dns",
+        "summary": "Get a domain's DNS records",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -25296,7 +25296,7 @@
     "/v1/domain/tech": {
       "post": {
         "operationId": "domainTech",
-        "summary": "domain.tech",
+        "summary": "Find the technologies a website uses",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -25429,7 +25429,7 @@
     "/v1/email/check": {
       "post": {
         "operationId": "emailCheck",
-        "summary": "email.check",
+        "summary": "Check if email addresses can receive mail",
         "description": "Costs 1 credit per 10 items.",
         "x-credits": 1,
         "x-per-items": 10,
@@ -25588,7 +25588,7 @@
     "/v1/crypto/coins": {
       "post": {
         "operationId": "cryptoCoins",
-        "summary": "crypto.coins",
+        "summary": "Get coin prices, market caps and volume",
         "description": "Costs 1 credit per 50 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -25828,7 +25828,7 @@
     "/v1/crypto/coin": {
       "post": {
         "operationId": "cryptoCoin",
-        "summary": "crypto.coin",
+        "summary": "Get a coin's price, supply and details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -26133,7 +26133,7 @@
     "/v1/crypto/history": {
       "post": {
         "operationId": "cryptoHistory",
-        "summary": "crypto.history",
+        "summary": "Get a coin's price history",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -26344,7 +26344,7 @@
     "/v1/crypto/trending": {
       "post": {
         "operationId": "cryptoTrending",
-        "summary": "crypto.trending",
+        "summary": "Get trending coins, categories and NFTs",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -26570,7 +26570,7 @@
     "/v1/crypto/categories": {
       "post": {
         "operationId": "cryptoCategories",
-        "summary": "crypto.categories",
+        "summary": "Get crypto categories by market cap",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -26733,7 +26733,7 @@
     "/v1/crypto/movers": {
       "post": {
         "operationId": "cryptoMovers",
-        "summary": "crypto.movers",
+        "summary": "Get the top gaining and losing coins",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -26994,7 +26994,7 @@
     "/v1/crypto/new": {
       "post": {
         "operationId": "cryptoNew",
-        "summary": "crypto.new",
+        "summary": "Get newly listed coins",
         "description": "Costs 1 credit per 50 items.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -27173,7 +27173,7 @@
     "/v1/crypto/dex/search": {
       "post": {
         "operationId": "cryptoDexSearch",
-        "summary": "crypto.dex.search",
+        "summary": "Search DEX trading pairs",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -27540,7 +27540,7 @@
     "/v1/crypto/dex/pairs": {
       "post": {
         "operationId": "cryptoDexPairs",
-        "summary": "crypto.dex.pairs",
+        "summary": "Get a DEX trading pair",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -27901,7 +27901,7 @@
     "/v1/crypto/dex/token": {
       "post": {
         "operationId": "cryptoDexToken",
-        "summary": "crypto.dex.token",
+        "summary": "Get a token and its DEX pairs",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -28355,7 +28355,7 @@
     "/v1/crypto/dex/new": {
       "post": {
         "operationId": "cryptoDexNew",
-        "summary": "crypto.dex.new",
+        "summary": "Get new and boosted tokens on DEXes",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -28797,7 +28797,7 @@
     "/v1/crypto/pump/coins": {
       "post": {
         "operationId": "cryptoPumpCoins",
-        "summary": "crypto.pump.coins",
+        "summary": "Get pump.fun coins",
         "description": "Costs 1 credit per 50 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -29031,7 +29031,7 @@
     "/v1/crypto/pump/coin": {
       "post": {
         "operationId": "cryptoPumpCoin",
-        "summary": "crypto.pump.coin",
+        "summary": "Get a pump.fun coin's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -29237,7 +29237,7 @@
     "/v1/crypto/pump/trades": {
       "post": {
         "operationId": "cryptoPumpTrades",
-        "summary": "crypto.pump.trades",
+        "summary": "Get a pump.fun coin's trades",
         "description": "Costs 1 credit per 100 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 100,
@@ -29392,7 +29392,7 @@
     "/v1/crypto/wallet": {
       "post": {
         "operationId": "cryptoWallet",
-        "summary": "crypto.wallet",
+        "summary": "Get a wallet's balance, tokens and transactions",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -29614,7 +29614,7 @@
     "/v1/crypto/token/holders": {
       "post": {
         "operationId": "cryptoTokenHolders",
-        "summary": "crypto.token.holders",
+        "summary": "Get a token's top holders",
         "description": "Costs 1 credit per 50 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 50,
@@ -29796,7 +29796,7 @@
     "/v1/crypto/binance/announcements": {
       "post": {
         "operationId": "cryptoBinanceAnnouncements",
-        "summary": "crypto.binance.announcements",
+        "summary": "Get Binance announcements and listings",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -29951,7 +29951,7 @@
     "/v1/indeed/search": {
       "post": {
         "operationId": "indeedSearch",
-        "summary": "indeed.search",
+        "summary": "Search Indeed jobs",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -30375,7 +30375,7 @@
     "/v1/indeed/job": {
       "post": {
         "operationId": "indeedJob",
-        "summary": "indeed.job",
+        "summary": "Get an Indeed job's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -30732,7 +30732,7 @@
     "/v1/tripadvisor/search": {
       "post": {
         "operationId": "tripadvisorSearch",
-        "summary": "tripadvisor.search",
+        "summary": "Search hotels, restaurants and attractions",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -30916,7 +30916,7 @@
     "/v1/tripadvisor/place": {
       "post": {
         "operationId": "tripadvisorPlace",
-        "summary": "tripadvisor.place",
+        "summary": "Get a place's rating, ranking and details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -31192,7 +31192,7 @@
     "/v1/tripadvisor/reviews": {
       "post": {
         "operationId": "tripadvisorReviews",
-        "summary": "tripadvisor.reviews",
+        "summary": "Get a place's reviews",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -31507,7 +31507,7 @@
     "/v1/googletravel/flights": {
       "post": {
         "operationId": "googletravelFlights",
-        "summary": "googletravel.flights",
+        "summary": "Search flights with prices and times",
         "description": "Costs 3 credits.",
         "x-credits": 3,
         "x-per-items": null,
@@ -31803,7 +31803,7 @@
     "/v1/amazon/search": {
       "post": {
         "operationId": "amazonSearch",
-        "summary": "amazon.search",
+        "summary": "Search Amazon products",
         "description": "Costs 5 credits per 20 items. Pages with cursor.",
         "x-credits": 5,
         "x-per-items": 20,
@@ -32037,7 +32037,7 @@
     "/v1/amazon/product": {
       "post": {
         "operationId": "amazonProduct",
-        "summary": "amazon.product",
+        "summary": "Get a product's price, details and rating",
         "description": "Costs 5 credits.",
         "x-credits": 5,
         "x-per-items": null,
@@ -32394,7 +32394,7 @@
     "/v1/amazon/bestsellers": {
       "post": {
         "operationId": "amazonBestsellers",
-        "summary": "amazon.bestsellers",
+        "summary": "Get the best sellers in a category",
         "description": "Costs 2 credits per 50 items. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": 50,
@@ -32581,7 +32581,7 @@
     "/v1/shopify/products": {
       "post": {
         "operationId": "shopifyProducts",
-        "summary": "shopify.products",
+        "summary": "Get a Shopify store's products",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -32846,7 +32846,7 @@
     "/v1/shopify/collections": {
       "post": {
         "operationId": "shopifyCollections",
-        "summary": "shopify.collections",
+        "summary": "Get a Shopify store's collections",
         "description": "Costs 1 credit per 100 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 100,
@@ -33000,7 +33000,7 @@
     "/v1/shopify/store": {
       "post": {
         "operationId": "shopifyStore",
-        "summary": "shopify.store",
+        "summary": "Get a Shopify store's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -33170,7 +33170,7 @@
     "/v1/walmart/search": {
       "post": {
         "operationId": "walmartSearch",
-        "summary": "walmart.search",
+        "summary": "Search Walmart products",
         "description": "Costs 5 credits per 40 items. Pages with cursor.",
         "x-credits": 5,
         "x-per-items": 40,
@@ -33379,7 +33379,7 @@
     "/v1/walmart/product": {
       "post": {
         "operationId": "walmartProduct",
-        "summary": "walmart.product",
+        "summary": "Get a Walmart product's price and details",
         "description": "Costs 3 credits.",
         "x-credits": 3,
         "x-per-items": null,
@@ -33656,7 +33656,7 @@
     "/v1/aliexpress/search": {
       "post": {
         "operationId": "aliexpressSearch",
-        "summary": "aliexpress.search",
+        "summary": "Search AliExpress products",
         "description": "Costs 2 credits per 60 items. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": 60,
@@ -33850,7 +33850,7 @@
     "/v1/aliexpress/product": {
       "post": {
         "operationId": "aliexpressProduct",
-        "summary": "aliexpress.product",
+        "summary": "Get an AliExpress product's price and details",
         "description": "Costs 2 credits.",
         "x-credits": 2,
         "x-per-items": null,
@@ -34092,7 +34092,7 @@
     "/v1/appstore/app": {
       "post": {
         "operationId": "appstoreApp",
-        "summary": "appstore.app",
+        "summary": "Get an app's details from the App Store",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -34391,7 +34391,7 @@
     "/v1/appstore/search": {
       "post": {
         "operationId": "appstoreSearch",
-        "summary": "appstore.search",
+        "summary": "Search App Store apps",
         "description": "Costs 1 credit per 20 items.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -34648,7 +34648,7 @@
     "/v1/appstore/reviews": {
       "post": {
         "operationId": "appstoreReviews",
-        "summary": "appstore.reviews",
+        "summary": "Get an app's App Store reviews",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -34833,7 +34833,7 @@
     "/v1/appstore/top": {
       "post": {
         "operationId": "appstoreTop",
-        "summary": "appstore.top",
+        "summary": "Get App Store top charts",
         "description": "Costs 1 credit per 100 items.",
         "x-credits": 1,
         "x-per-items": 100,
@@ -35035,7 +35035,7 @@
     "/v1/googleplay/app": {
       "post": {
         "operationId": "googleplayApp",
-        "summary": "googleplay.app",
+        "summary": "Get an app's details from Google Play",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -35350,7 +35350,7 @@
     "/v1/googleplay/search": {
       "post": {
         "operationId": "googleplaySearch",
-        "summary": "googleplay.search",
+        "summary": "Search Google Play apps",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -35537,7 +35537,7 @@
     "/v1/googleplay/reviews": {
       "post": {
         "operationId": "googleplayReviews",
-        "summary": "googleplay.reviews",
+        "summary": "Get an app's Google Play reviews",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -35755,7 +35755,7 @@
     "/v1/airbnb/search": {
       "post": {
         "operationId": "airbnbSearch",
-        "summary": "airbnb.search",
+        "summary": "Search Airbnb stays by place and dates",
         "description": "Costs 2 credits per 18 items. Pages with cursor.",
         "x-credits": 2,
         "x-per-items": 18,
@@ -36094,7 +36094,7 @@
     "/v1/airbnb/listing": {
       "post": {
         "operationId": "airbnbListing",
-        "summary": "airbnb.listing",
+        "summary": "Get a listing's details, amenities and host",
         "description": "Costs 2 credits.",
         "x-credits": 2,
         "x-per-items": null,
@@ -36415,7 +36415,7 @@
     "/v1/airbnb/calendar": {
       "post": {
         "operationId": "airbnbCalendar",
-        "summary": "airbnb.calendar",
+        "summary": "Get a listing's available dates",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -36562,7 +36562,7 @@
     "/v1/airbnb/reviews": {
       "post": {
         "operationId": "airbnbReviews",
-        "summary": "airbnb.reviews",
+        "summary": "Get a listing's reviews",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -36773,7 +36773,7 @@
     "/v1/redfin/search": {
       "post": {
         "operationId": "redfinSearch",
-        "summary": "redfin.search",
+        "summary": "Search Redfin homes for sale or sold",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -37176,7 +37176,7 @@
     "/v1/redfin/property": {
       "post": {
         "operationId": "redfinProperty",
-        "summary": "redfin.property",
+        "summary": "Get a home's details and estimate",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -37580,7 +37580,7 @@
     "/v1/realtor/search": {
       "post": {
         "operationId": "realtorSearch",
-        "summary": "realtor.search",
+        "summary": "Search Realtor.com homes for sale or sold",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -38044,7 +38044,7 @@
     "/v1/realtor/property": {
       "post": {
         "operationId": "realtorProperty",
-        "summary": "realtor.property",
+        "summary": "Get a home's details and price",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -38558,7 +38558,7 @@
     "/v1/rightmove/search": {
       "post": {
         "operationId": "rightmoveSearch",
-        "summary": "rightmove.search",
+        "summary": "Search UK homes for sale or rent",
         "description": "Costs 1 credit per 24 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 24,
@@ -38956,7 +38956,7 @@
     "/v1/rightmove/property": {
       "post": {
         "operationId": "rightmoveProperty",
-        "summary": "rightmove.property",
+        "summary": "Get a Rightmove property's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -39292,7 +39292,7 @@
     "/v1/immoscout/search": {
       "post": {
         "operationId": "immoscoutSearch",
-        "summary": "immoscout.search",
+        "summary": "Search German homes for rent or sale",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -39584,7 +39584,7 @@
     "/v1/immoscout/listing": {
       "post": {
         "operationId": "immoscoutListing",
-        "summary": "immoscout.listing",
+        "summary": "Get an ImmoScout listing's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -39861,7 +39861,7 @@
     "/v1/pinterest/search": {
       "post": {
         "operationId": "pinterestSearch",
-        "summary": "pinterest.search",
+        "summary": "Search pins",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -40146,7 +40146,7 @@
     "/v1/pinterest/pin": {
       "post": {
         "operationId": "pinterestPin",
-        "summary": "pinterest.pin",
+        "summary": "Get a pin's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -40401,7 +40401,7 @@
     "/v1/pinterest/board": {
       "post": {
         "operationId": "pinterestBoard",
-        "summary": "pinterest.board",
+        "summary": "Get a board and its pins",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -40749,7 +40749,7 @@
     "/v1/pinterest/user": {
       "post": {
         "operationId": "pinterestUser",
-        "summary": "pinterest.user",
+        "summary": "Get a profile and its pins",
         "description": "Costs 1 credit per 25 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 25,
@@ -41091,7 +41091,7 @@
     "/v1/pinterest/ads/search": {
       "post": {
         "operationId": "pinterestAdsSearch",
-        "summary": "pinterest.ads.search",
+        "summary": "Search ads in the Pinterest ads library",
         "description": "Costs 1 credit per 24 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 24,
@@ -41352,7 +41352,7 @@
     "/v1/pinterest/ads/ad": {
       "post": {
         "operationId": "pinterestAdsAd",
-        "summary": "pinterest.ads.ad",
+        "summary": "Get a Pinterest ad's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -41577,7 +41577,7 @@
     "/v1/x/tweet": {
       "post": {
         "operationId": "xTweet",
-        "summary": "x.tweet",
+        "summary": "Get a post's text, author and stats",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -42130,7 +42130,7 @@
     "/v1/kick/channel": {
       "post": {
         "operationId": "kickChannel",
-        "summary": "kick.channel",
+        "summary": "Get a channel's info and stats",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -42353,7 +42353,7 @@
     "/v1/kick/videos": {
       "post": {
         "operationId": "kickVideos",
-        "summary": "kick.videos",
+        "summary": "Get a channel's past streams",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -42519,7 +42519,7 @@
     "/v1/kick/clips": {
       "post": {
         "operationId": "kickClips",
-        "summary": "kick.clips",
+        "summary": "Get a channel's clips",
         "description": "Costs 1 credit per 20 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 20,
@@ -42737,7 +42737,7 @@
     "/v1/finance/quote": {
       "post": {
         "operationId": "financeQuote",
-        "summary": "finance.quote",
+        "summary": "Get live stock and ETF quotes",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -42928,7 +42928,7 @@
     "/v1/finance/history": {
       "post": {
         "operationId": "financeHistory",
-        "summary": "finance.history",
+        "summary": "Get a stock's price history",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -43165,7 +43165,7 @@
     "/v1/finance/search": {
       "post": {
         "operationId": "financeSearch",
-        "summary": "finance.search",
+        "summary": "Search stocks and related news",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -43342,7 +43342,7 @@
     "/v1/finance/profile": {
       "post": {
         "operationId": "financeProfile",
-        "summary": "finance.profile",
+        "summary": "Get a company's profile and key stats",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -43539,7 +43539,7 @@
     "/v1/microsoft/ads/search": {
       "post": {
         "operationId": "microsoftAdsSearch",
-        "summary": "microsoft.ads.search",
+        "summary": "Search ads in the Microsoft ads library",
         "description": "Costs 1 credit. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": null,
@@ -43743,7 +43743,7 @@
     "/v1/microsoft/ads/ad": {
       "post": {
         "operationId": "microsoftAdsAd",
-        "summary": "microsoft.ads.ad",
+        "summary": "Get a Microsoft ad's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -43962,7 +43962,7 @@
     "/v1/microsoft/ads/advertisers": {
       "post": {
         "operationId": "microsoftAdsAdvertisers",
-        "summary": "microsoft.ads.advertisers",
+        "summary": "Find advertisers in the Microsoft ads library",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -44093,7 +44093,7 @@
     "/v1/snapchat/profile": {
       "post": {
         "operationId": "snapchatProfile",
-        "summary": "snapchat.profile",
+        "summary": "Get a profile with its spotlights and stories",
         "description": "Costs 2 credits.",
         "x-credits": 2,
         "x-per-items": null,
@@ -44357,7 +44357,7 @@
     "/v1/snapchat/ads/search": {
       "post": {
         "operationId": "snapchatAdsSearch",
-        "summary": "snapchat.ads.search",
+        "summary": "Search ads in the Snapchat ads library",
         "description": "Costs 1 credit per 10 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 10,
@@ -44639,7 +44639,7 @@
     "/v1/snapchat/ads/ad": {
       "post": {
         "operationId": "snapchatAdsAd",
-        "summary": "snapchat.ads.ad",
+        "summary": "Get a Snapchat ad's details",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -44877,7 +44877,7 @@
     "/v1/tumblr/blog": {
       "post": {
         "operationId": "tumblrBlog",
-        "summary": "tumblr.blog",
+        "summary": "Get a blog's info",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -45014,7 +45014,7 @@
     "/v1/tumblr/posts": {
       "post": {
         "operationId": "tumblrPosts",
-        "summary": "tumblr.posts",
+        "summary": "Get a blog's posts",
         "description": "Costs 1 credit per 10 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 10,
@@ -45385,7 +45385,7 @@
     "/v1/tumblr/post": {
       "post": {
         "operationId": "tumblrPost",
-        "summary": "tumblr.post",
+        "summary": "Get a single post",
         "description": "Costs 1 credit.",
         "x-credits": 1,
         "x-per-items": null,
@@ -45713,7 +45713,7 @@
     "/v1/tumblr/search": {
       "post": {
         "operationId": "tumblrSearch",
-        "summary": "tumblr.search",
+        "summary": "Search Tumblr posts",
         "description": "Costs 1 credit per 10 items. Pages with cursor.",
         "x-credits": 1,
         "x-per-items": 10,
@@ -46026,7 +46026,7 @@
     "/v1/quora/question": {
       "post": {
         "operationId": "quoraQuestion",
-        "summary": "quora.question",
+        "summary": "Get a question and its answers",
         "description": "Costs 2 credits.",
         "x-credits": 2,
         "x-per-items": null,
