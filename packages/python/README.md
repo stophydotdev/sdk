@@ -1,7 +1,6 @@
-# stophy
+# Stophy for Python
 
-Official Python SDK for [Stophy](https://stophy.dev) **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, use YouTube Music and YouTube Kids, and get autocomplete suggestions, all returned as structured JSON.
-
+Get public web data in your Python code: search results, videos, social posts, places, products, jobs, homes, and more. Every method and result is typed.
 
 ## Install
 
@@ -9,100 +8,83 @@ Official Python SDK for [Stophy](https://stophy.dev) **YouTube context API for A
 pip install stophy
 ```
 
-Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>` on every request.
-
-## Quick start
+## Try it without a key
 
 ```python
 from stophy import Stophy
 
-stophy = Stophy()  # reads STOPHY_API_KEY
-result = stophy.transcript("https://www.youtube.com/watch?v=D7liwdjvhWc")
-print(result["data"]["text"])
+result = Stophy().web.search(query="bun runtime")
+print(result["data"]["results"])
 ```
 
-## Methods
+Web search, YouTube search, and YouTube transcripts work without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
 
-| Method | Description |
-| --- | --- |
-| `stophy.video_details(url)` | Video metadata and related videos |
-| `stophy.transcript(url)` | Timestamped captions and full text |
-| `stophy.comments(url, ...)` | Top-level comments |
-| `stophy.replies(token)` | Replies for a comment thread |
-| `stophy.live_chat(url, ...)` | Live stream chat messages |
-| `stophy.search(...)` | Search with filters for type, sort, date, duration, features |
-| `stophy.channel(...)` | Channel metadata + content by `tab` |
-| `stophy.playlist(...)` | Playlist items, paginated |
-| `stophy.suggest(...)` | Search autocomplete suggestions |
-| `stophy.music(...)` | YouTube Music search, suggestions, songs, lyrics, albums, artists, playlists |
-| `stophy.kids(...)` | YouTube Kids search and video metadata |
-| `stophy.credits()` | Current credit balance |
-| `stophy.logs(...)` | Recent request logs |
-| `stophy.usage(...)` | Daily credit/request counts |
+## Use an API key
 
-Methods use snake_case options and map them to API field names. The generic `video(...)` method remains available for discriminant-based calls.
+Get a key from the [dashboard](https://stophy.dev/dashboard). Keys start with `st_`. Set it as `STOPHY_API_KEY`, or pass it in:
 
 ```python
-# Search
-results = stophy.search("typescript tutorial", sort_by="popularity", duration="long")
+stophy = Stophy(api_key="st_...")
 
-# Comments, then replies to a comment
-comments = stophy.comments(url, sort_by="top")
-token = comments["data"]["items"][0].get("repliesToken")
-if token:
-    replies = stophy.replies(token)
-
-# Autocomplete and account
-print(stophy.suggest("react")["data"]["suggestions"])
-print(stophy.credits()["data"]["credits"])
-
-# YouTube Music and YouTube Kids
-music = stophy.music(type="search", q="lofi", search_type="song")
-kids = stophy.kids(type="search", q="science")
-print(music["data"]["items"])
-print(kids["data"]["items"])
+videos = stophy.youtube.search(query="bun runtime", limit=5)
+print(videos["data"]["results"])
 ```
 
-### Pagination
+Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.youtube.comments.replies(...)`. Each result has `data`, `creditsUsed`, and `requestId`.
+
+Arguments are keyword-only and snake_case. A field named `from` is passed as `from_`.
+
+For async code, use `AsyncStophy`. It has the same methods, and you `await` each call.
+
+## Get markdown for a model
 
 ```python
-token = None
-while True:
-    page = stophy.search("lofi", continuation_token=token)
-    ...  # handle page["data"]["items"]
-    token = page["data"].get("continuationToken")
-    if not token:
-        break
+markdown = stophy.youtube.search(query="bun runtime", limit=5, format="markdown")
 ```
 
-### Async
+With `format="markdown"`, the method returns a string.
 
-`AsyncStophy` exposes the same operations with `async`/`await`:
+## Get the next page
+
+When there are more results, `data["cursor"]` is set. Pass it back to get the next page:
 
 ```python
-from stophy import AsyncStophy
-
-async with AsyncStophy() as stophy:
-    result = await stophy.transcript(
-        "https://www.youtube.com/watch?v=D7liwdjvhWc"
-    )
-    print(result["data"]["text"])
+first = stophy.reddit.search(query="bun")
+next_page = stophy.reddit.search(query="bun", cursor=first["data"]["cursor"])
 ```
 
-## Errors
-
-Non-2xx responses raise `StophyError`:
+## Handle errors
 
 ```python
-from stophy import Stophy, StophyError
+from stophy import StophyError
 
 try:
-    stophy.credits()
-except StophyError as err:
-    print(err.status, err.code, err, err.request_id)
-    # err.code: "UNAUTHORIZED" | "INSUFFICIENT_CREDITS" | "BAD_REQUEST" |
-    #           "INVALID_INPUT" | "NOT_FOUND" | "CONCURRENCY_LIMITED" | "INTERNAL_ERROR"
+    stophy.reddit.search(query="bun")
+except StophyError as error:
+    print(error.code, error.retryable, error.retry_after_seconds)
 ```
+
+`StophyError` has `code`, `retryable`, `retry_after_seconds`, `status`, and `request_id`. The message is `str(error)`.
+
+The SDK retries network errors and the HTTP statuses 429, 500, 502, 503, and 504, and it waits as long as the API asks. If the API asks for a wait longer than 60 seconds, the SDK raises right away with `retry_after_seconds` set.
+
+## Options
+
+| Option | Default | What it does |
+| --- | --- | --- |
+| `api_key` | `STOPHY_API_KEY` | Your API key |
+| `base_url` | `STOPHY_BASE_URL`, or the Stophy API | The server to call |
+| `max_retries` | `2` | Retries per request. `0` turns retries off. |
+| `timeout` | `30.0` | Time limit in seconds for each attempt |
+
+## Check your account
+
+```python
+usage = stophy.usage()
+logs = stophy.logs(days=7, page=0)
+```
+
+`usage` returns your balance and your all-time usage. `logs` returns your recent requests. Both need an API key.
 
 ## License
 

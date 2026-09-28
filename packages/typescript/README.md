@@ -1,7 +1,6 @@
-# stophy
+# Stophy for TypeScript
 
-Official TypeScript SDK for [Stophy](https://stophy.dev)  **YouTube context API for AI agents**. Search videos, fetch transcripts, read comments and live chat, inspect channels and playlists, use YouTube Music and YouTube Kids, and get autocomplete suggestions, all returned as structured JSON.
-
+Get public web data in your TypeScript or JavaScript code: search results, videos, social posts, places, products, jobs, homes, and more. Every method and result is typed.
 
 ## Install
 
@@ -9,112 +8,89 @@ Official TypeScript SDK for [Stophy](https://stophy.dev)  **YouTube context API 
 npm install stophy
 ```
 
-Get an API key from your [Stophy dashboard](https://stophy.dev). The SDK sends it as `Authorization: Bearer <key>` on every request.
-
-## Quick start
+## Try it without a key
 
 ```ts
 import { Stophy } from "stophy";
 
-const stophy = new Stophy(); // reads STOPHY_API_KEY
-const result = await stophy.transcript(
-  "https://www.youtube.com/watch?v=D7liwdjvhWc",
+const result = await new Stophy().web.search({ query: "bun runtime" });
+console.log(result.data.results);
+```
+
+Web search, YouTube search, and YouTube transcripts work without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
+
+## Use an API key
+
+Get a key from the [dashboard](https://stophy.dev/dashboard). Keys start with `st_`. Set it as `STOPHY_API_KEY`, or pass it in:
+
+```ts
+const stophy = new Stophy({ apiKey: "st_..." });
+
+const videos = await stophy.youtube.search({ query: "bun runtime", limit: 5 });
+console.log(videos.data.results);
+```
+
+`new Stophy("st_...")` works too.
+
+Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.youtube.comments.replies(...)`. Each result has `data`, `creditsUsed`, and `requestId`.
+
+## Get markdown for a model
+
+```ts
+const markdown = await stophy.youtube.search(
+  { query: "bun runtime", limit: 5 },
+  { format: "markdown" },
 );
-console.log(result.data.text);
 ```
 
-## Methods
+With `format: "markdown"`, the method returns a string.
 
-| Method | Description |
-| --- | --- |
-| `stophy.videoDetails(url)` | Video metadata and related videos |
-| `stophy.transcript(url)` | Timestamped captions and full text |
-| `stophy.comments(url, options?)` | Top-level comments |
-| `stophy.replies(token)` | Replies for a comment thread |
-| `stophy.liveChat(url, options?)` | Live stream chat messages |
-| `stophy.search(query, options?)` | Search with filters |
-| `stophy.channel(url, options?)` | Channel metadata and content |
-| `stophy.playlist(url, options?)` | Playlist items, paginated |
-| `stophy.suggest(query, options?)` | Search autocomplete suggestions |
-| `stophy.music(body)` | YouTube Music search, suggestions, songs, lyrics, albums, artists, playlists |
-| `stophy.kids(body)` | YouTube Kids search and video metadata |
-| `stophy.credits()` | Current credit balance |
-| `stophy.logs(query?)` | Recent request logs |
-| `stophy.usage(query?)` | Daily credit/request counts |
+## Get the next page
 
-### Examples
+When there are more results, `data.cursor` is set. Pass it back to get the next page:
 
 ```ts
-// Search
-const results = await stophy.search("typescript tutorial", {
-  sortBy: "popularity",
-  duration: "long",
-});
-
-// Comments (top-level), then replies to a comment.
-// `video()` is overloaded on `type`, so `data` is typed - no casts needed.
-const comments = await stophy.comments(videoUrl, { sortBy: "top" });
-const firstReplyToken = comments.data.items[0]?.repliesToken;
-if (firstReplyToken) {
-  const replies = await stophy.replies(firstReplyToken);
-}
-
-// Channel videos
-const channel = await stophy.channel("https://www.youtube.com/@mkbhd", {
-  tab: "video",
-});
-
-// Autocomplete
-const { data: s } = await stophy.suggest("react", { hl: "en", gl: "US" });
-console.log(s.suggestions);
-
-// YouTube Music
-const music = await stophy.music({
-  type: "search",
-  q: "lofi",
-  searchType: "song",
-});
-console.log(music.data.items);
-
-// YouTube Kids
-const kids = await stophy.kids({ type: "search", q: "science" });
-console.log(kids.data.items);
-
-// Account
-console.log((await stophy.credits()).data.credits);
+const first = await stophy.reddit.search({ query: "bun" });
+const next = await stophy.reddit.search({ query: "bun", cursor: first.data.cursor });
 ```
 
-### Pagination
-
-List endpoints return a `continuationToken`. Pass it back in to fetch the next page:
+## Handle errors
 
 ```ts
-let token: string | undefined;
-do {
-  const page = await stophy.search("lofi", { continuationToken: token });
-  // ...handle page.data.items
-  token = page.data.continuationToken ?? undefined;
-} while (token);
-```
-
-## Errors
-
-Non-2xx responses throw a `StophyError`:
-
-```ts
-import { Stophy, StophyError } from "stophy";
+import { StophyError } from "stophy";
 
 try {
-  await stophy.credits();
-} catch (err) {
-  if (err instanceof StophyError) {
-    console.error(err.status, err.code, err.message, err.requestId);
-    // err.code: "UNAUTHORIZED" | "INSUFFICIENT_CREDITS" | "BAD_REQUEST" |
-    //           "INVALID_INPUT" | "NOT_FOUND" | "CONCURRENCY_LIMITED" | "INTERNAL_ERROR"
+  await stophy.reddit.search({ query: "bun" });
+} catch (error) {
+  if (error instanceof StophyError) {
+    console.log(error.code, error.retryable, error.retryAfterSeconds);
   }
 }
 ```
 
+`StophyError` has `code`, `message`, `retryable`, `retryAfterSeconds`, `status`, and `requestId`.
+
+The SDK retries network errors and the HTTP statuses 429, 500, 502, 503, and 504, and it waits as long as the API asks. If the API asks for a wait longer than 60 seconds, the SDK throws right away with `retryAfterSeconds` set.
+
+## Options
+
+| Option | Default | What it does |
+| --- | --- | --- |
+| `apiKey` | `STOPHY_API_KEY` | Your API key |
+| `baseUrl` | `STOPHY_BASE_URL`, or the Stophy API | The server to call |
+| `maxRetries` | `2` | Retries per request. `0` turns retries off. |
+| `timeoutMs` | `30000` | Time limit for each attempt. A timed-out attempt is not retried. |
+
+Each method also takes `signal` to cancel the request.
+
+## Check your account
+
+```ts
+const usage = await stophy.usage();
+const logs = await stophy.logs({ days: 7, page: 0 });
+```
+
+`usage` returns your balance and your all-time usage. `logs` returns your recent requests. Both need an API key.
 
 ## License
 

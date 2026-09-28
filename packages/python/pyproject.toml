@@ -1,23 +1,23 @@
 [project]
 name = "stophy"
-version = "0.2.0"
-description = "Official Python SDK for Stophy - YouTube context API for AI agents."
+version = "1.0.0"
+description = "Public web data for AI agents in Python: search, video, social, places, shopping, jobs and real estate."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "Stophy" }]
-keywords = ["stophy", "youtube", "transcript", "sdk", "ai-agents"]
-dependencies = ["httpx>=0.27"]
+keywords = ["stophy", "sdk", "web-data", "web-search", "scraping", "ai-agents", "llm", "youtube", "reddit", "maps"]
+dependencies = ["httpx>=0.27", "typing-extensions>=4.5"]
 
 [project.urls]
 Homepage = "https://stophy.dev"
 Repository = "https://github.com/stophydotdev/sdk"
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.5"]
+dev = ["pytest>=8", "ruff>=0.5", "pyright>=1.1.400"]
 
 [dependency-groups]
-dev = ["pytest>=8", "ruff>=0.5"]
+dev = ["pytest>=8", "ruff>=0.5", "pyright>=1.1.400"]
 
 [build-system]
 requires = ["hatchling"]
@@ -33,8 +33,17 @@ src = ["src"]
 [tool.ruff.lint]
 select = ["E", "F", "I"]
 
+[tool.ruff.lint.per-file-ignores]
+"src/stophy/generated/**/*.py" = ["E501"]
+
 [tool.ruff.lint.isort]
 known-first-party = ["stophy"]
+
+[tool.pyright]
+include = ["../../test/python/typing"]
+extraPaths = ["src"]
+pythonVersion = "3.9"
+typeCheckingMode = "strict"
 
 [tool.pytest.ini_options]
 testpaths = ["../../test/python"]

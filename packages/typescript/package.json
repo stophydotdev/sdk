@@ -1,7 +1,7 @@
 {
   "name": "stophy",
-  "version": "0.3.0",
-  "description": "Official TypeScript SDK for Stophy - The YouTube context API for AI agents.",
+  "version": "1.0.0",
+  "description": "Public web data for AI agents in TypeScript: search, video, social, places, shopping, jobs and real estate.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://stophy.dev",
@@ -12,10 +12,15 @@
   },
   "keywords": [
     "stophy",
-    "youtube",
-    "transcript",
     "sdk",
-    "ai-agents"
+    "web-data",
+    "web-search",
+    "scraping",
+    "ai-agents",
+    "llm",
+    "youtube",
+    "reddit",
+    "maps"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -31,19 +36,17 @@
     "dist"
   ],
   "scripts": {
-    "generate": "openapi-ts",
+    "generate": "openapi-ts && bun ../../scripts/gen-surface.ts",
     "build": "tsup",
     "test": "bun test ../../test/typescript",
-    "check-types": "tsc --noEmit",
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.tests.json",
     "prepublishOnly": "bun run generate && bun run build"
   },
   "devDependencies": {
+    "@hey-api/client-fetch": "^0.10.2",
     "@hey-api/openapi-ts": "^0.64.0",
     "@types/bun": "^1.1.14",
     "tsup": "^8.3.5",
     "typescript": "^5.7.0"
-  },
-  "dependencies": {
-    "@hey-api/client-fetch": "^0.10.2"
   }
 }

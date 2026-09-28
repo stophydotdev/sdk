@@ -1,207 +1,127 @@
 import { describe, expect, test } from "bun:test";
-import { makeClient, queryOf } from "./helpers";
+import { endpointAt, makeClient, queryOf, specPaths } from "./helpers";
 
-const ok = (data: unknown) => ({
-	json: { success: true, requestId: "req_1", data },
-});
+const envelope = {
+	success: true,
+	data: { results: [{ type: "video", url: "https://youtu.be/abc" }] },
+	creditsUsed: 1,
+	requestId: "req_1",
+};
 
-describe("video()", () => {
-	test("POSTs to /v1/video with the body and returns data", async () => {
-		const { client, calls } = makeClient(ok({ text: "hello world" }));
-		const res = await client.video({
-			type: "transcript",
-			videoUrl: "https://youtu.be/abc",
+describe("namespaced operations", () => {
+	test("posts the input to the path derived from the spec", async () => {
+		const { client, calls } = makeClient({ json: envelope });
+		const result = await client.youtube.search({
+			query: "bun runtime",
+			limit: 2,
 		});
-
+		expect(result.data.results[0]?.url).toBe("https://youtu.be/abc");
 		expect(calls[0]?.method).toBe("POST");
-		expect(calls[0]?.url).toEndWith("/v1/video");
-		expect(calls[0]?.body).toEqual({
-			type: "transcript",
-			videoUrl: "https://youtu.be/abc",
-		});
-		expect(calls[0]?.headers.get("content-type")).toContain("application/json");
-		expect(res.data).toEqual({ text: "hello world" });
-		expect(res.requestId).toBe("req_1");
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/youtube/search");
+		expect(calls[0]?.body).toEqual({ query: "bun runtime", limit: 2 });
+		expect(calls[0]?.headers.get("accept")).toBe("application/json");
 	});
 
-	test("supports the replies flow via continuationToken", async () => {
-		const { client, calls } = makeClient(ok({ items: [] }));
-		await client.video({ type: "replies", continuationToken: "TOKEN" });
-		expect(calls[0]?.body).toEqual({
-			type: "replies",
-			continuationToken: "TOKEN",
+	test("calls a nested operation on the parent namespace", async () => {
+		const { client, calls } = makeClient({ json: envelope });
+		await client.youtube.comments.replies({
+			video: "abc",
+			cursor: "tok",
+			limit: 5,
 		});
-	});
-});
-
-describe("search()", () => {
-	test("POSTs to /v1/search with filters", async () => {
-		const { client, calls } = makeClient(
-			ok({ items: [], continuationToken: "next" }),
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe(
+			"/v1/youtube/comments/replies",
 		);
-		const res = await client.search({
-			q: "lofi",
-			sortBy: "popularity",
-			duration: "long",
-		});
-
-		expect(calls[0]?.method).toBe("POST");
-		expect(calls[0]?.url).toEndWith("/v1/search");
-		expect(calls[0]?.body).toEqual({
-			q: "lofi",
-			sortBy: "popularity",
-			duration: "long",
-		});
-		expect(res.data?.continuationToken).toBe("next");
+		expect(calls[0]?.body).toEqual({ video: "abc", cursor: "tok", limit: 5 });
 	});
 
-	test("accepts a query and options separately", async () => {
-		const { client, calls } = makeClient(ok({ items: [] }));
-		await client.search("lofi", { sortBy: "popularity" });
-		expect(calls[0]?.body).toEqual({ q: "lofi", sortBy: "popularity" });
-	});
-});
-
-describe("video helpers", () => {
-	test("transcript sends the expected video request", async () => {
-		const { client, calls } = makeClient(ok({ text: "hello" }));
-		await client.transcript("https://youtu.be/abc");
-		expect(calls[0]?.body).toEqual({
-			type: "transcript",
-			videoUrl: "https://youtu.be/abc",
+	test("returns markdown when format is markdown", async () => {
+		const { client, calls } = makeClient({
+			raw: "# results",
+			headers: { "content-type": "text/markdown" },
 		});
-	});
-
-	test("replies sends only its continuation token", async () => {
-		const { client, calls } = makeClient(ok({ items: [] }));
-		await client.replies("TOKEN");
-		expect(calls[0]?.body).toEqual({
-			type: "replies",
-			continuationToken: "TOKEN",
-		});
-	});
-});
-
-describe("channel()", () => {
-	test("POSTs to /v1/channel with channelUrl and tab", async () => {
-		const { client, calls } = makeClient(ok({ tab: "video", items: [] }));
-		await client.channel({
-			channelUrl: "https://youtube.com/@mkbhd",
-			tab: "video",
-		});
-
-		expect(calls[0]?.method).toBe("POST");
-		expect(calls[0]?.url).toEndWith("/v1/channel");
-		expect(calls[0]?.body).toEqual({
-			channelUrl: "https://youtube.com/@mkbhd",
-			tab: "video",
-		});
-	});
-});
-
-describe("playlist()", () => {
-	test("POSTs to /v1/playlist with playlistUrl", async () => {
-		const { client, calls } = makeClient(ok({ items: [] }));
-		await client.playlist({
-			playlistUrl: "https://youtube.com/playlist?list=PL123",
-		});
-
-		expect(calls[0]?.method).toBe("POST");
-		expect(calls[0]?.url).toEndWith("/v1/playlist");
-		expect(calls[0]?.body).toEqual({
-			playlistUrl: "https://youtube.com/playlist?list=PL123",
-		});
-	});
-});
-
-describe("suggest()", () => {
-	test("POSTs /v1/suggest with a JSON body", async () => {
-		const { client, calls } = makeClient(
-			ok({ suggestions: ["react", "react native"] }),
+		const text = await client.youtube.search(
+			{ query: "bun runtime" },
+			{ format: "markdown" },
 		);
-		const res = await client.suggest({ q: "react", hl: "en", gl: "US" });
-
-		expect(calls[0]?.method).toBe("POST");
-		expect(calls[0]?.url).toEndWith("/v1/suggest");
-		expect(calls[0]?.body).toEqual({
-			q: "react",
-			hl: "en",
-			gl: "US",
-		});
-		expect(res.data?.suggestions).toContain("react native");
+		expect(text).toBe("# results");
+		expect(calls[0]?.headers.get("accept")).toBe("text/markdown");
 	});
 
-	test("sends only the required q when options omitted", async () => {
-		const { client, calls } = makeClient(ok({ suggestions: [] }));
-		await client.suggest({ q: "typescript" });
-		expect(calls[0]?.body).toEqual({ q: "typescript" });
+	test("forwards the abort signal", async () => {
+		const { client, calls } = makeClient({ json: envelope });
+		const controller = new AbortController();
+		controller.abort();
+		await client.maps
+			.search({ query: "cairo" }, { signal: controller.signal })
+			.catch(() => undefined);
+		expect(calls[0]?.signal?.aborted).toBe(true);
 	});
-});
 
-describe("music()", () => {
-	test("POSTs every music resource through /v1/music", async () => {
-		const { client, calls } = makeClient(ok({ items: [] }));
-		await client.music({ type: "search", q: "lofi", searchType: "song" });
-		expect(calls[0]?.method).toBe("POST");
-		expect(calls[0]?.url).toEndWith("/v1/music");
-		expect(calls[0]?.body).toEqual({
-			type: "search",
-			q: "lofi",
-			searchType: "song",
-		});
+	test("omits an empty optional body", async () => {
+		const { client, calls } = makeClient({ json: envelope });
+		await client.crypto.trending();
+		expect(calls[0]?.body).toEqual({});
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/crypto/trending");
 	});
-});
 
-describe("kids()", () => {
-	test("POSTs Kids search through /v1/kids", async () => {
-		const { client, calls } = makeClient(ok({ items: [] }));
-		await client.kids({ type: "search", q: "science" });
-		expect(calls[0]?.method).toBe("POST");
-		expect(calls[0]?.url).toEndWith("/v1/kids");
-		expect(calls[0]?.body).toEqual({ type: "search", q: "science" });
-	});
-});
-
-describe("credits()", () => {
-	test("GETs /v1/credits with no arguments", async () => {
-		const { client, calls } = makeClient(ok({ credits: 42 }));
-		const res = await client.credits();
-
+	test("lists endpoints with GET", async () => {
+		const { client, calls } = makeClient({ json: { endpoints: [] } });
+		const catalog = await client.endpoints();
+		expect(catalog.endpoints).toEqual([]);
 		expect(calls[0]?.method).toBe("GET");
-		expect(calls[0]?.url).toEndWith("/v1/credits");
-		expect(res.data?.credits).toBe(42);
-	});
-});
-
-describe("logs()", () => {
-	test("GETs /v1/logs with no query when called bare", async () => {
-		const { client, calls } = makeClient(ok({ logs: [], total: 0 }));
-		await client.logs();
-		expect(calls[0]?.method).toBe("GET");
-		expect(calls[0]?.url).toEndWith("/v1/logs");
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/endpoints");
 	});
 
-	test("forwards query filters", async () => {
-		const { client, calls } = makeClient(ok({ logs: [], total: 0 }));
-		await client.logs({ days: "30", endpoint: "/video", page: 2 });
-		expect(queryOf(calls[0]?.url ?? "https://invalid.local")).toEqual({
-			days: "30",
-			endpoint: "/video",
-			page: "2",
+	test("loads usage and logs with an API key", async () => {
+		const { client, calls } = makeClient([
+			{
+				json: { balanceMicros: 1000, creditsUsed: 2, requestCount: 1 },
+			},
+			{
+				json: {
+					endpoints: ["youtube.search"],
+					logs: [
+						{
+							apiKeyId: null,
+							apiKeyName: null,
+							createdAt: "2026-09-28T00:00:00.000Z",
+							credits: 1,
+							durationMs: null,
+							endpoint: "youtube.search",
+							id: "log_1",
+							method: "POST",
+							response: "success",
+							status: 200,
+						},
+					],
+					page: 0,
+					pageSize: 50,
+					total: 1,
+					totalPages: 1,
+				},
+			},
+		]);
+		expect((await client.usage()).creditsUsed).toBe(2);
+		const logs = await client.logs({
+			days: 7,
+			page: 0,
+			endpoint: "youtube.search",
 		});
-	});
-});
-
-describe("usage()", () => {
-	test("GETs /v1/usage and forwards query filters", async () => {
-		const { client, calls } = makeClient(ok({ items: [] }));
-		await client.usage({ days: "7", tz: "-120" });
-
-		expect(calls[0]?.method).toBe("GET");
-		expect(calls[0]?.url).toContain("/v1/usage");
-		expect(queryOf(calls[0]?.url ?? "https://invalid.local")).toEqual({
+		expect(logs.logs[0]?.endpoint).toBe("youtube.search");
+		expect(queryOf(calls[1]?.url ?? "")).toEqual({
 			days: "7",
-			tz: "-120",
+			page: "0",
+			endpoint: "youtube.search",
 		});
+	});
+
+	test("exposes every operation in the spec", async () => {
+		const { client } = makeClient({ json: envelope });
+		const paths = await specPaths();
+		expect(paths.length).toBeGreaterThan(100);
+		for (const path of paths) {
+			expect(typeof endpointAt(client, path)).toBe("function");
+		}
 	});
 });

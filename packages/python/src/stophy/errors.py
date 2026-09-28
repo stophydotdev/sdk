@@ -1,22 +1,22 @@
 from __future__ import annotations
 
-from typing import Any, Optional
-
 
 class StophyError(Exception):
-    """Raised when the Stophy API responds with a non-2xx status."""
+    """Raised when the Stophy API responds with a non-success status."""
 
     def __init__(
         self,
         message: str,
         *,
         status: int,
-        code: Optional[str] = None,
-        request_id: Optional[str] = None,
-        details: Any = None,
+        code: str | None = None,
+        retryable: bool = False,
+        retry_after_seconds: int | None = None,
+        request_id: str | None = None,
     ) -> None:
         super().__init__(message)
         self.status = status
         self.code = code
+        self.retryable = retryable
+        self.retry_after_seconds = retry_after_seconds
         self.request_id = request_id
-        self.details = details

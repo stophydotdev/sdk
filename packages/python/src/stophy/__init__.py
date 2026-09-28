@@ -1,7 +1,14 @@
-from . import types
+from .account import LogEntry, Logs, Usage
 from .client import Stophy
 from .client_async import AsyncStophy
 from .errors import StophyError
 
-__all__ = ["AsyncStophy", "Stophy", "StophyError", "types"]
-__version__ = "0.2.0"
+__all__ = [
+    "AsyncStophy",
+    "LogEntry",
+    "Logs",
+    "Stophy",
+    "StophyError",
+    "Usage",
+]
+__version__ = "1.0.0"

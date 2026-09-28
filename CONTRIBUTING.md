@@ -2,18 +2,33 @@
 
 Thanks for contributing to Stophy.
 
-## Development
+## Keep the clients in sync with the API
 
-1. Fork the repository and create a focused branch.
-2. Install dependencies using the package manager documented in `README.md`.
-3. Run the repository's check, type-check, build, and test commands before opening a pull request.
-4. Keep changes focused and include tests for behavior changes.
-5. Never commit API keys, credentials, customer data, or generated build output.
+Both clients are generated from the Stophy OpenAPI document, which is stored as `openapi.json`. To pick up new or changed endpoints, run:
+
+```bash
+bun run sync
+bun run generate
+```
+
+`sync` downloads the live OpenAPI document. To read it from another server, set `STOPHY_OPENAPI_URL`. `generate` rebuilds the TypeScript methods and the Python models and methods. Do not edit `packages/typescript/src/generated/` or `packages/python/src/stophy/generated/` by hand.
+
+## Check your change
+
+```bash
+bun run check
+bun run test
+```
+
+`check` runs the linters and the type checkers for both languages. `test` runs both test suites.
 
 ## Pull requests
 
-Describe the expected behavior, the change, and the verification commands you ran. Keep one concern per pull request where possible.
+1. Fork the repository and create a branch for one change.
+2. Include tests for behavior changes.
+3. Never commit API keys, credentials, customer data, or build output.
+4. In the pull request, describe the expected behavior, the change, and the commands you ran to check it.
 
 ## Issues
 
-Use issues for reproducible bugs and focused feature requests. For security vulnerabilities, follow `SECURITY.md` instead.
+Use issues for bugs you can reproduce and for focused feature requests. To report a security problem, follow [SECURITY.md](./SECURITY.md) instead.

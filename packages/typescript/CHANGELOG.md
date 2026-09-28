@@ -1,5 +1,16 @@
 # stophy
 
+## 1.0.0
+
+### Major Changes
+
+- Every endpoint is generated from the live Stophy API. Call `stophy.youtube.search({ query })` and the same shape for every catalog endpoint.
+- The old YouTube-only methods are gone: the `kids` and `music` namespaces, the hand-written YouTube methods, and `credits()`.
+- The API key is optional. Without one, `web.search`, `youtube.search`, and `youtube.transcript` work on the free limit; other endpoints throw `StophyError` with code `unauthorized`.
+- Errors include `retryable` and `retryAfterSeconds`. A `Retry-After` over 60 seconds throws right away instead of waiting.
+- Requests time out after 30 seconds by default (`timeoutMs`) and send `User-Agent: stophy-typescript/<version>` outside browsers.
+- `@hey-api/client-fetch` is no longer a runtime dependency.
+
 ## 0.3.0
 
 ### Minor Changes

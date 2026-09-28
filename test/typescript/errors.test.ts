@@ -2,75 +2,82 @@ import { describe, expect, test } from "bun:test";
 import { StophyError } from "../../packages/typescript/src/index";
 import { makeClient } from "./helpers";
 
-describe("error handling", () => {
-	test("throws StophyError on 401 with code and message", async () => {
-		const { client } = makeClient({
-			status: 401,
-			json: { success: false, code: "UNAUTHORIZED", error: "Invalid API key" },
-		});
+const unauthorized = {
+	status: 401,
+	json: {
+		success: false,
+		error: {
+			code: "unauthorized",
+			message: "Invalid API key",
+			retryable: false,
+			requestId: "req_err",
+		},
+	},
+};
 
-		const err = await client.credits().catch((e) => e);
+describe("error handling", () => {
+	test("throws StophyError from the error envelope", async () => {
+		const { client } = makeClient(unauthorized);
+		const err = await client.youtube
+			.search({ query: "x" })
+			.catch((error) => error);
 		expect(err).toBeInstanceOf(StophyError);
 		expect(err.status).toBe(401);
-		expect(err.code).toBe("UNAUTHORIZED");
+		expect(err.code).toBe("unauthorized");
 		expect(err.message).toBe("Invalid API key");
+		expect(err.retryable).toBe(false);
+		expect(err.requestId).toBe("req_err");
 		expect(err.name).toBe("StophyError");
 	});
 
-	test("maps INSUFFICIENT_CREDITS (402)", async () => {
-		const { client } = makeClient({
-			status: 402,
+	test("reads retryAfterSeconds from the body, then the header", async () => {
+		const fromBody = makeClient({
+			status: 429,
 			json: {
 				success: false,
-				code: "INSUFFICIENT_CREDITS",
-				error: "Out of credits",
+				error: {
+					code: "rateLimited",
+					message: "slow down",
+					retryable: true,
+					retryAfterSeconds: 9,
+					requestId: "req_2",
+				},
 			},
 		});
-		const err = await client.search({ q: "x" }).catch((e) => e);
-		expect(err).toBeInstanceOf(StophyError);
-		expect(err.status).toBe(402);
-		expect(err.code).toBe("INSUFFICIENT_CREDITS");
-	});
+		const bodyError = await fromBody.client.usage().catch((error) => error);
+		expect(bodyError.retryAfterSeconds).toBe(9);
+		expect(bodyError.retryable).toBe(true);
 
-	test("surfaces validation details on 400", async () => {
-		const { client } = makeClient({
-			status: 400,
+		const fromHeader = makeClient({
+			status: 429,
+			headers: { "retry-after": "4", "x-request-id": "req_header" },
 			json: {
 				success: false,
-				code: "INVALID_INPUT",
-				error: "videoUrl is required",
-				details: { field: "videoUrl" },
+				error: { code: "rateLimited", message: "slow down", retryable: true },
 			},
 		});
-		const err = await client
-			.video({ type: "details", videoUrl: "" })
-			.catch((e) => e);
-		expect(err.code).toBe("INVALID_INPUT");
-		expect(err.details).toEqual({ field: "videoUrl" });
+		const headerError = await fromHeader.client.usage().catch((error) => error);
+		expect(headerError.retryAfterSeconds).toBe(4);
+		expect(headerError.requestId).toBe("req_header");
 	});
 
-	test("captures the x-request-id header when present", async () => {
-		const { client } = makeClient({
-			status: 500,
-			headers: { "x-request-id": "req_err_99" },
-			json: { success: false, code: "INTERNAL_ERROR", error: "boom" },
-		});
-		const err = await client.credits().catch((e) => e);
-		expect(err.requestId).toBe("req_err_99");
-	});
-
-	test("falls back to a status-based message when the body is not JSON", async () => {
-		const { client } = makeClient({ status: 429, raw: "Too Many Requests" });
-		const err = await client.credits().catch((e) => e);
+	test("falls back to a status message when the body is not JSON", async () => {
+		const { client } = makeClient({ status: 502, raw: "bad gateway" });
+		const err = await client.usage().catch((error) => error);
 		expect(err).toBeInstanceOf(StophyError);
-		expect(err.status).toBe(429);
-		expect(err.message).toContain("429");
+		expect(err.status).toBe(502);
+		expect(err.message).toContain("502");
+		expect(err.retryable).toBe(true);
 	});
 
 	test("does not throw on a successful response", async () => {
 		const { client } = makeClient({
-			json: { success: true, data: { credits: 5 } },
+			json: { balanceMicros: 1, creditsUsed: 0, requestCount: 0 },
 		});
-		await expect(client.credits()).resolves.toBeDefined();
+		await expect(client.usage()).resolves.toEqual({
+			balanceMicros: 1,
+			creditsUsed: 0,
+			requestCount: 0,
+		});
 	});
 });

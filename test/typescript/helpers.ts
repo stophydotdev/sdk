@@ -3,16 +3,15 @@ import {
 	type StophyOptions,
 } from "../../packages/typescript/src/index";
 
-// A request recorded by the mock fetch, so tests can assert on what was sent.
 export interface CapturedRequest {
 	url: string;
 	method: string;
 	headers: Headers;
 	authorization: string | null;
 	body: unknown;
+	signal: AbortSignal | null;
 }
 
-// One canned reply. Use `json` for a normal body, `raw` for non-JSON/empty.
 export interface MockResponseInit {
 	status?: number;
 	json?: unknown;
@@ -20,18 +19,12 @@ export interface MockResponseInit {
 	headers?: Record<string, string>;
 }
 
-// A fetch that records every request and replies with the given response(s).
-// Pass an array to vary the reply per call; the last entry repeats.
 export function createMock(responses: MockResponseInit | MockResponseInit[]) {
 	const queue = Array.isArray(responses) ? [...responses] : [responses];
 	const calls: CapturedRequest[] = [];
 
-	const fetchImpl = async (
-		input: Request | string | URL,
-		init?: RequestInit,
-	): Promise<Response> => {
+	const fetchImpl = async (input: RequestInfo | URL, init?: RequestInit) => {
 		const req = input instanceof Request ? input : new Request(input, init);
-
 		let body: unknown;
 		const text = await req.clone().text();
 		if (text) {
@@ -41,40 +34,39 @@ export function createMock(responses: MockResponseInit | MockResponseInit[]) {
 				body = text;
 			}
 		}
-
 		calls.push({
 			url: req.url,
 			method: req.method,
 			headers: req.headers,
 			authorization: req.headers.get("authorization"),
 			body,
+			signal: init?.signal ?? null,
 		});
 
-		const next =
-			queue.length > 1 ? (queue.shift() as MockResponseInit) : queue[0];
+		const shifted = queue.length > 1 ? queue.shift() : queue[0];
+		if (!shifted) throw new Error("mock has no response");
 		const payload =
-			next.raw !== undefined
-				? next.raw
-				: next.json !== undefined
-					? JSON.stringify(next.json)
+			shifted.raw !== undefined
+				? shifted.raw
+				: shifted.json !== undefined
+					? JSON.stringify(shifted.json)
 					: "";
 		return new Response(payload, {
-			status: next.status ?? 200,
-			headers: { "content-type": "application/json", ...next.headers },
+			status: shifted.status ?? 200,
+			headers: { "content-type": "application/json", ...shifted.headers },
 		});
 	};
 
 	return { fetchImpl, calls };
 }
 
-// A Stophy client wired to a mock fetch, plus the list it records into.
 export function makeClient(
 	responses: MockResponseInit | MockResponseInit[],
 	opts: Partial<StophyOptions> = {},
 ) {
 	const { fetchImpl, calls } = createMock(responses);
 	const client = new Stophy({
-		apiKey: "sk_test",
+		apiKey: "st_test",
 		fetch: fetchImpl,
 		maxRetries: 0,
 		...opts,
@@ -82,7 +74,37 @@ export function makeClient(
 	return { client, calls };
 }
 
-// Pull the query string off a URL as a plain object.
 export function queryOf(url: string): Record<string, string> {
 	return Object.fromEntries(new URL(url).searchParams.entries());
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export async function specPaths(): Promise<string[]> {
+	const text = await Bun.file(
+		new URL("../../openapi.json", import.meta.url),
+	).text();
+	const document: unknown = JSON.parse(text);
+	if (!isRecord(document) || !isRecord(document.paths)) {
+		throw new Error("openapi.json has no paths");
+	}
+	return Object.keys(document.paths);
+}
+
+export function endpointAt(root: object, path: string): unknown {
+	const parts = path
+		.split("/")
+		.filter((part) => part.length > 0 && part !== "v1");
+	let node: object = root;
+	for (const [index, part] of parts.entries()) {
+		const value = Object.getOwnPropertyDescriptor(node, part)?.value;
+		if (index === parts.length - 1) return value;
+		if (typeof value !== "function" && !isRecord(value)) {
+			throw new Error(`${path} is missing ${part}`);
+		}
+		node = value;
+	}
+	return node;
 }
