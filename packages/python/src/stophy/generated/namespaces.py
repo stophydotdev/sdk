@@ -8219,13 +8219,13 @@ class AsyncEndpoints:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         format: None = None,
@@ -8244,7 +8244,7 @@ class AsyncWebSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -8259,7 +8259,7 @@ class AsyncWebSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -8308,7 +8308,7 @@ class AsyncWebNews:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -8324,7 +8324,7 @@ class AsyncWebNews:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -8376,7 +8376,7 @@ class AsyncWebContacts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -8384,7 +8384,7 @@ class AsyncWebContacts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -8424,7 +8424,7 @@ class AsyncYoutubeSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -8440,7 +8440,7 @@ class AsyncYoutubeSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -8492,14 +8492,14 @@ class AsyncYoutubeVideo:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -8524,7 +8524,7 @@ class AsyncYoutubeTranscript:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -8533,7 +8533,7 @@ class AsyncYoutubeTranscript:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -8564,7 +8564,7 @@ class AsyncYoutubeCommentsReplies:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -8573,7 +8573,7 @@ class AsyncYoutubeCommentsReplies:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -8607,7 +8607,7 @@ class AsyncYoutubeComments:
         self.replies = AsyncYoutubeCommentsReplies(call)
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -8617,7 +8617,7 @@ class AsyncYoutubeComments:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -8651,7 +8651,7 @@ class AsyncYoutubeChannel:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -8663,7 +8663,7 @@ class AsyncYoutubeChannel:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -8703,7 +8703,7 @@ class AsyncYoutubePlaylist:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         playlist: str,
@@ -8712,7 +8712,7 @@ class AsyncYoutubePlaylist:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         playlist: str,
@@ -8743,7 +8743,7 @@ class AsyncYoutubeSuggest:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -8753,7 +8753,7 @@ class AsyncYoutubeSuggest:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -8807,7 +8807,7 @@ class AsyncRedditSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -8821,7 +8821,7 @@ class AsyncRedditSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -8867,7 +8867,7 @@ class AsyncRedditPost:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -8877,7 +8877,7 @@ class AsyncRedditPost:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -8911,7 +8911,7 @@ class AsyncRedditCommentsMore:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         limit: int | None = None,
@@ -8919,7 +8919,7 @@ class AsyncRedditCommentsMore:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         limit: int | None = None,
@@ -8955,7 +8955,7 @@ class AsyncRedditSubreddit:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         subreddit: str,
@@ -8966,7 +8966,7 @@ class AsyncRedditSubreddit:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         subreddit: str,
@@ -9003,7 +9003,7 @@ class AsyncRedditUser:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9015,7 +9015,7 @@ class AsyncRedditUser:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9055,7 +9055,7 @@ class AsyncRedditDomain:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         domain: str,
@@ -9066,7 +9066,7 @@ class AsyncRedditDomain:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         domain: str,
@@ -9121,7 +9121,7 @@ class AsyncMapsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -9134,7 +9134,7 @@ class AsyncMapsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -9177,7 +9177,7 @@ class AsyncMapsPlace:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         place: str,
@@ -9186,7 +9186,7 @@ class AsyncMapsPlace:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         place: str,
@@ -9217,7 +9217,7 @@ class AsyncMapsReviews:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         place: str,
@@ -9229,7 +9229,7 @@ class AsyncMapsReviews:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         place: str,
@@ -9281,7 +9281,7 @@ class AsyncInstagramProfile:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9289,7 +9289,7 @@ class AsyncInstagramProfile:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9317,7 +9317,7 @@ class AsyncInstagramPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9330,7 +9330,7 @@ class AsyncInstagramPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9373,7 +9373,7 @@ class AsyncInstagramPost:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -9381,7 +9381,7 @@ class AsyncInstagramPost:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -9409,14 +9409,14 @@ class AsyncInstagramUrl:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -9441,7 +9441,7 @@ class AsyncInstagramSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -9451,7 +9451,7 @@ class AsyncInstagramSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -9485,7 +9485,7 @@ class AsyncInstagramTranscript:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -9495,7 +9495,7 @@ class AsyncInstagramTranscript:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -9529,7 +9529,7 @@ class AsyncInstagramCommentsReplies:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -9539,7 +9539,7 @@ class AsyncInstagramCommentsReplies:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -9576,7 +9576,7 @@ class AsyncInstagramComments:
         self.replies = AsyncInstagramCommentsReplies(call)
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -9585,7 +9585,7 @@ class AsyncInstagramComments:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -9636,14 +9636,14 @@ class AsyncTiktokProfile:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9668,14 +9668,14 @@ class AsyncTiktokVideo:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -9700,14 +9700,14 @@ class AsyncTiktokUrl:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -9732,7 +9732,7 @@ class AsyncTiktokTranscript:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -9741,7 +9741,7 @@ class AsyncTiktokTranscript:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -9772,7 +9772,7 @@ class AsyncTiktokPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9781,7 +9781,7 @@ class AsyncTiktokPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -9812,7 +9812,7 @@ class AsyncTiktokHashtag:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         hashtag: str,
@@ -9821,7 +9821,7 @@ class AsyncTiktokHashtag:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         hashtag: str,
@@ -9852,7 +9852,7 @@ class AsyncTiktokCommentsReplies:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -9862,7 +9862,7 @@ class AsyncTiktokCommentsReplies:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -9899,7 +9899,7 @@ class AsyncTiktokComments:
         self.replies = AsyncTiktokCommentsReplies(call)
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -9908,7 +9908,7 @@ class AsyncTiktokComments:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         video: str,
@@ -9939,7 +9939,7 @@ class AsyncTiktokSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -9949,7 +9949,7 @@ class AsyncTiktokSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -9983,7 +9983,7 @@ class AsyncTiktokAdsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -9996,7 +9996,7 @@ class AsyncTiktokAdsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -10039,14 +10039,14 @@ class AsyncTiktokAdsAd:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
@@ -10105,14 +10105,14 @@ class AsyncBlueskyProfile:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10137,7 +10137,7 @@ class AsyncBlueskyPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10147,7 +10147,7 @@ class AsyncBlueskyPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10181,7 +10181,7 @@ class AsyncBlueskyPost:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -10190,7 +10190,7 @@ class AsyncBlueskyPost:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -10221,7 +10221,7 @@ class AsyncBlueskyFollowers:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10230,7 +10230,7 @@ class AsyncBlueskyFollowers:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10275,14 +10275,14 @@ class AsyncMastodonProfile:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10307,7 +10307,7 @@ class AsyncMastodonPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10318,7 +10318,7 @@ class AsyncMastodonPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10355,14 +10355,14 @@ class AsyncMastodonPost:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -10387,7 +10387,7 @@ class AsyncMastodonHashtag:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         hashtag: str,
@@ -10397,7 +10397,7 @@ class AsyncMastodonHashtag:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         hashtag: str,
@@ -10445,14 +10445,14 @@ class AsyncThreadsProfile:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10477,7 +10477,7 @@ class AsyncThreadsPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10486,7 +10486,7 @@ class AsyncThreadsPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -10517,7 +10517,7 @@ class AsyncThreadsPost:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -10525,7 +10525,7 @@ class AsyncThreadsPost:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -10553,7 +10553,7 @@ class AsyncThreadsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -10561,7 +10561,7 @@ class AsyncThreadsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -10603,14 +10603,14 @@ class AsyncTelegramChannel:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -10635,7 +10635,7 @@ class AsyncTelegramPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -10644,7 +10644,7 @@ class AsyncTelegramPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -10675,14 +10675,14 @@ class AsyncTelegramPost:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -10719,7 +10719,7 @@ class AsyncMetaAdsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -10736,7 +10736,7 @@ class AsyncMetaAdsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -10791,7 +10791,7 @@ class AsyncMetaAdsPage:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         page: str,
@@ -10808,7 +10808,7 @@ class AsyncMetaAdsPage:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         page: str,
@@ -10863,14 +10863,14 @@ class AsyncMetaAdsAd:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
@@ -10915,7 +10915,7 @@ class AsyncLinkedinJobsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -10933,7 +10933,7 @@ class AsyncLinkedinJobsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -10991,14 +10991,14 @@ class AsyncLinkedinJobsJob:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         job: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         job: str,
@@ -11033,7 +11033,7 @@ class AsyncLinkedinAdsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -11048,7 +11048,7 @@ class AsyncLinkedinAdsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -11097,14 +11097,14 @@ class AsyncLinkedinAdsAd:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
@@ -11139,7 +11139,7 @@ class AsyncLinkedinCompanyPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         company: str,
@@ -11147,7 +11147,7 @@ class AsyncLinkedinCompanyPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         company: str,
@@ -11178,14 +11178,14 @@ class AsyncLinkedinCompany:
         self.posts = AsyncLinkedinCompanyPosts(call)
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         company: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         company: str,
@@ -11210,14 +11210,14 @@ class AsyncLinkedinProfile:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         profile: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         profile: str,
@@ -11242,7 +11242,7 @@ class AsyncLinkedinPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         profile: str | None = None,
@@ -11251,7 +11251,7 @@ class AsyncLinkedinPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         profile: str | None = None,
@@ -11298,7 +11298,7 @@ class AsyncZillowSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str | None = None,
@@ -11322,7 +11322,7 @@ class AsyncZillowSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str | None = None,
@@ -11398,14 +11398,14 @@ class AsyncZillowProperty:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         property: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         property: str,
@@ -11440,7 +11440,7 @@ class AsyncGoogleAdsAdvertisers:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -11449,7 +11449,7 @@ class AsyncGoogleAdsAdvertisers:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -11480,7 +11480,7 @@ class AsyncGoogleAdsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         advertiser: str | None = None,
@@ -11495,7 +11495,7 @@ class AsyncGoogleAdsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         advertiser: str | None = None,
@@ -11544,7 +11544,7 @@ class AsyncGoogleAdsAd:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         advertiser: str | None = None,
@@ -11552,7 +11552,7 @@ class AsyncGoogleAdsAd:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         advertiser: str | None = None,
@@ -11592,7 +11592,7 @@ class AsyncGoogleSuggest:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -11603,7 +11603,7 @@ class AsyncGoogleSuggest:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -11640,7 +11640,7 @@ class AsyncGoogleTrendsInterest:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         queries: list[str],
@@ -11655,7 +11655,7 @@ class AsyncGoogleTrendsInterest:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         queries: list[str],
@@ -11704,7 +11704,7 @@ class AsyncGoogleTrendsRegions:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         queries: list[str],
@@ -11721,7 +11721,7 @@ class AsyncGoogleTrendsRegions:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         queries: list[str],
@@ -11776,7 +11776,7 @@ class AsyncGoogleTrendsRelated:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -11791,7 +11791,7 @@ class AsyncGoogleTrendsRelated:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -11840,7 +11840,7 @@ class AsyncGoogleTrendsTrending:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         country: str | None = None,
@@ -11853,7 +11853,7 @@ class AsyncGoogleTrendsTrending:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         country: str | None = None,
@@ -11922,7 +11922,7 @@ class AsyncUpworkSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -11941,7 +11941,7 @@ class AsyncUpworkSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -12002,14 +12002,14 @@ class AsyncUpworkJob:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         job: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         job: str,
@@ -12044,7 +12044,7 @@ class AsyncAmazonSuggest:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -12053,7 +12053,7 @@ class AsyncAmazonSuggest:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -12084,7 +12084,7 @@ class AsyncAmazonSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -12098,7 +12098,7 @@ class AsyncAmazonSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -12144,7 +12144,7 @@ class AsyncAmazonProduct:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         product: str,
@@ -12152,7 +12152,7 @@ class AsyncAmazonProduct:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         product: str,
@@ -12180,7 +12180,7 @@ class AsyncAmazonBestsellers:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         category: str,
@@ -12190,7 +12190,7 @@ class AsyncAmazonBestsellers:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         category: str,
@@ -12238,7 +12238,7 @@ class AsyncSiteMap:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -12249,7 +12249,7 @@ class AsyncSiteMap:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -12286,7 +12286,7 @@ class AsyncSiteSeo:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -12294,7 +12294,7 @@ class AsyncSiteSeo:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -12332,14 +12332,14 @@ class AsyncDomainWhois:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         domain: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         domain: str,
@@ -12364,7 +12364,7 @@ class AsyncDomainDns:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         domain: str,
@@ -12372,7 +12372,7 @@ class AsyncDomainDns:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         domain: str,
@@ -12400,14 +12400,14 @@ class AsyncDomainTech:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         url: str,
@@ -12444,14 +12444,14 @@ class AsyncEmailCheck:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         emails: list[str],
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         emails: list[str],
@@ -12484,7 +12484,7 @@ class AsyncCryptoCoins:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         currency: str | None = None,
@@ -12497,7 +12497,7 @@ class AsyncCryptoCoins:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         currency: str | None = None,
@@ -12540,7 +12540,7 @@ class AsyncCryptoCoin:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         coin: str,
@@ -12550,7 +12550,7 @@ class AsyncCryptoCoin:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         coin: str,
@@ -12584,7 +12584,7 @@ class AsyncCryptoHistory:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         coin: str,
@@ -12596,7 +12596,7 @@ class AsyncCryptoHistory:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         coin: str,
@@ -12636,13 +12636,13 @@ class AsyncCryptoTrending:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         format: None = None,
@@ -12661,7 +12661,7 @@ class AsyncCryptoCategories:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         sort: CryptoCategoriesSort | None = None,
@@ -12670,7 +12670,7 @@ class AsyncCryptoCategories:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         sort: CryptoCategoriesSort | None = None,
@@ -12701,7 +12701,7 @@ class AsyncCryptoMovers:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         within: CryptoMoversWithin | None = None,
@@ -12710,7 +12710,7 @@ class AsyncCryptoMovers:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         within: CryptoMoversWithin | None = None,
@@ -12741,14 +12741,14 @@ class AsyncCryptoNew:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         limit: int | None = None,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         limit: int | None = None,
@@ -12773,7 +12773,7 @@ class AsyncCryptoDexSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -12781,7 +12781,7 @@ class AsyncCryptoDexSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -12809,7 +12809,7 @@ class AsyncCryptoDexPairs:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chain: str | None = None,
@@ -12817,7 +12817,7 @@ class AsyncCryptoDexPairs:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chain: str | None = None,
@@ -12845,7 +12845,7 @@ class AsyncCryptoDexToken:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chain: str | None = None,
@@ -12854,7 +12854,7 @@ class AsyncCryptoDexToken:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chain: str | None = None,
@@ -12885,7 +12885,7 @@ class AsyncCryptoDexNew:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         type: CryptoDexNewType | None = None,
@@ -12895,7 +12895,7 @@ class AsyncCryptoDexNew:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         type: CryptoDexNewType | None = None,
@@ -12943,7 +12943,7 @@ class AsyncCryptoPumpCoins:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         sort: CryptoPumpCoinsSort | None = None,
@@ -12953,7 +12953,7 @@ class AsyncCryptoPumpCoins:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         sort: CryptoPumpCoinsSort | None = None,
@@ -12987,14 +12987,14 @@ class AsyncCryptoPumpCoin:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         coin: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         coin: str,
@@ -13019,7 +13019,7 @@ class AsyncCryptoPumpTrades:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         coin: str,
@@ -13028,7 +13028,7 @@ class AsyncCryptoPumpTrades:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         coin: str,
@@ -13071,7 +13071,7 @@ class AsyncCryptoWallet:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chain: CryptoWalletChain,
@@ -13081,7 +13081,7 @@ class AsyncCryptoWallet:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chain: CryptoWalletChain,
@@ -13115,7 +13115,7 @@ class AsyncCryptoTokenHolders:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chain: CryptoTokenHoldersChain,
@@ -13125,7 +13125,7 @@ class AsyncCryptoTokenHolders:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chain: CryptoTokenHoldersChain,
@@ -13167,7 +13167,7 @@ class AsyncCryptoBinanceAnnouncements:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         category: CryptoBinanceAnnouncementsCategory | None = None,
@@ -13176,7 +13176,7 @@ class AsyncCryptoBinanceAnnouncements:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         category: CryptoBinanceAnnouncementsCategory | None = None,
@@ -13245,7 +13245,7 @@ class AsyncIndeedSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -13262,7 +13262,7 @@ class AsyncIndeedSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -13317,7 +13317,7 @@ class AsyncIndeedJob:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         job: str,
@@ -13325,7 +13325,7 @@ class AsyncIndeedJob:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         job: str,
@@ -13363,7 +13363,7 @@ class AsyncTripadvisorSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -13372,7 +13372,7 @@ class AsyncTripadvisorSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -13403,14 +13403,14 @@ class AsyncTripadvisorPlace:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         place: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         place: str,
@@ -13435,7 +13435,7 @@ class AsyncTripadvisorReviews:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         place: str,
@@ -13446,7 +13446,7 @@ class AsyncTripadvisorReviews:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         place: str,
@@ -13495,7 +13495,7 @@ class AsyncGoogletravelFlights:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         origin: str,
@@ -13511,7 +13511,7 @@ class AsyncGoogletravelFlights:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         origin: str,
@@ -13571,7 +13571,7 @@ class AsyncShopifyProducts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         store: str,
@@ -13581,7 +13581,7 @@ class AsyncShopifyProducts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         store: str,
@@ -13615,7 +13615,7 @@ class AsyncShopifyCollections:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         store: str,
@@ -13624,7 +13624,7 @@ class AsyncShopifyCollections:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         store: str,
@@ -13655,14 +13655,14 @@ class AsyncShopifyStore:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         store: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         store: str,
@@ -13699,7 +13699,7 @@ class AsyncWalmartSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -13710,7 +13710,7 @@ class AsyncWalmartSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -13747,14 +13747,14 @@ class AsyncWalmartProduct:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         product: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         product: str,
@@ -13789,7 +13789,7 @@ class AsyncAliexpressSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -13800,7 +13800,7 @@ class AsyncAliexpressSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -13837,14 +13837,14 @@ class AsyncAliexpressProduct:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         product: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         product: str,
@@ -13879,7 +13879,7 @@ class AsyncAppstoreApp:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         app: str,
@@ -13887,7 +13887,7 @@ class AsyncAppstoreApp:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         app: str,
@@ -13915,7 +13915,7 @@ class AsyncAppstoreSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -13925,7 +13925,7 @@ class AsyncAppstoreSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -13959,7 +13959,7 @@ class AsyncAppstoreReviews:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         app: str,
@@ -13970,7 +13970,7 @@ class AsyncAppstoreReviews:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         app: str,
@@ -14007,7 +14007,7 @@ class AsyncAppstoreTop:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chart: AppstoreTopChart | None = None,
@@ -14018,7 +14018,7 @@ class AsyncAppstoreTop:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         chart: AppstoreTopChart | None = None,
@@ -14069,7 +14069,7 @@ class AsyncGoogleplayApp:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         app: str,
@@ -14078,7 +14078,7 @@ class AsyncGoogleplayApp:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         app: str,
@@ -14109,7 +14109,7 @@ class AsyncGoogleplaySearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -14119,7 +14119,7 @@ class AsyncGoogleplaySearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -14153,7 +14153,7 @@ class AsyncGoogleplayReviews:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         app: str,
@@ -14166,7 +14166,7 @@ class AsyncGoogleplayReviews:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         app: str,
@@ -14221,7 +14221,7 @@ class AsyncAirbnbSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14245,7 +14245,7 @@ class AsyncAirbnbSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14321,14 +14321,14 @@ class AsyncAirbnbListing:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         listing: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         listing: str,
@@ -14353,7 +14353,7 @@ class AsyncAirbnbCalendar:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         listing: str,
@@ -14362,7 +14362,7 @@ class AsyncAirbnbCalendar:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         listing: str,
@@ -14393,7 +14393,7 @@ class AsyncAirbnbReviews:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         listing: str,
@@ -14403,7 +14403,7 @@ class AsyncAirbnbReviews:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         listing: str,
@@ -14451,7 +14451,7 @@ class AsyncRedfinSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14471,7 +14471,7 @@ class AsyncRedfinSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14535,14 +14535,14 @@ class AsyncRedfinProperty:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         property: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         property: str,
@@ -14577,7 +14577,7 @@ class AsyncRealtorSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14600,7 +14600,7 @@ class AsyncRealtorSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14673,14 +14673,14 @@ class AsyncRealtorProperty:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         property: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         property: str,
@@ -14715,7 +14715,7 @@ class AsyncRightmoveSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14734,7 +14734,7 @@ class AsyncRightmoveSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14795,14 +14795,14 @@ class AsyncRightmoveProperty:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         property: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         property: str,
@@ -14837,7 +14837,7 @@ class AsyncImmoscoutSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14854,7 +14854,7 @@ class AsyncImmoscoutSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         location: str,
@@ -14909,14 +14909,14 @@ class AsyncImmoscoutListing:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         listing: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         listing: str,
@@ -14951,7 +14951,7 @@ class AsyncPinterestSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -14961,7 +14961,7 @@ class AsyncPinterestSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -14995,14 +14995,14 @@ class AsyncPinterestPin:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         pin: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         pin: str,
@@ -15027,7 +15027,7 @@ class AsyncPinterestBoard:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         board: str,
@@ -15036,7 +15036,7 @@ class AsyncPinterestBoard:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         board: str,
@@ -15067,7 +15067,7 @@ class AsyncPinterestUser:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -15076,7 +15076,7 @@ class AsyncPinterestUser:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -15107,7 +15107,7 @@ class AsyncPinterestAdsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         country: str,
@@ -15119,7 +15119,7 @@ class AsyncPinterestAdsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         country: str,
@@ -15159,14 +15159,14 @@ class AsyncPinterestAdsAd:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
@@ -15217,14 +15217,14 @@ class AsyncXTweet:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         tweet: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         tweet: str,
@@ -15257,14 +15257,14 @@ class AsyncKickChannel:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -15289,7 +15289,7 @@ class AsyncKickVideos:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -15297,7 +15297,7 @@ class AsyncKickVideos:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -15325,7 +15325,7 @@ class AsyncKickClips:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -15336,7 +15336,7 @@ class AsyncKickClips:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         channel: str,
@@ -15385,14 +15385,14 @@ class AsyncFinanceQuote:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         symbols: list[str],
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         symbols: list[str],
@@ -15417,7 +15417,7 @@ class AsyncFinanceHistory:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         symbol: str,
@@ -15429,7 +15429,7 @@ class AsyncFinanceHistory:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         symbol: str,
@@ -15469,7 +15469,7 @@ class AsyncFinanceSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -15478,7 +15478,7 @@ class AsyncFinanceSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -15509,14 +15509,14 @@ class AsyncFinanceProfile:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         symbol: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         symbol: str,
@@ -15555,7 +15555,7 @@ class AsyncMicrosoftAdsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -15568,7 +15568,7 @@ class AsyncMicrosoftAdsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str | None = None,
@@ -15611,14 +15611,14 @@ class AsyncMicrosoftAdsAd:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
@@ -15643,7 +15643,7 @@ class AsyncMicrosoftAdsAdvertisers:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -15651,7 +15651,7 @@ class AsyncMicrosoftAdsAdvertisers:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -15699,14 +15699,14 @@ class AsyncSnapchatProfile:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         user: str,
@@ -15731,7 +15731,7 @@ class AsyncSnapchatAdsSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         advertiser: str,
@@ -15744,7 +15744,7 @@ class AsyncSnapchatAdsSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         advertiser: str,
@@ -15787,14 +15787,14 @@ class AsyncSnapchatAdsAd:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         ad: str,
@@ -15839,14 +15839,14 @@ class AsyncTumblrBlog:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         blog: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         blog: str,
@@ -15871,7 +15871,7 @@ class AsyncTumblrPosts:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         blog: str,
@@ -15882,7 +15882,7 @@ class AsyncTumblrPosts:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         blog: str,
@@ -15919,14 +15919,14 @@ class AsyncTumblrPost:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         post: str,
@@ -15951,7 +15951,7 @@ class AsyncTumblrSearch:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -15961,7 +15961,7 @@ class AsyncTumblrSearch:
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         query: str,
@@ -16009,14 +16009,14 @@ class AsyncQuoraQuestion:
         self._call = call
 
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         question: str,
         format: Literal["markdown"],
     ) -> str: ...
     @overload
-    def __call__(
+    async def __call__(
         self,
         *,
         question: str,

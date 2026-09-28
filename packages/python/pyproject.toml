@@ -14,10 +14,10 @@ Homepage = "https://stophy.dev"
 Repository = "https://github.com/stophydotdev/sdk"
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.5"]
+dev = ["pytest>=8", "ruff>=0.5", "pyright>=1.1.400"]
 
 [dependency-groups]
-dev = ["pytest>=8", "ruff>=0.5"]
+dev = ["pytest>=8", "ruff>=0.5", "pyright>=1.1.400"]
 
 [build-system]
 requires = ["hatchling"]
@@ -38,6 +38,12 @@ select = ["E", "F", "I"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["stophy"]
+
+[tool.pyright]
+include = ["../../test/python/typing"]
+extraPaths = ["src"]
+pythonVersion = "3.9"
+typeCheckingMode = "strict"
 
 [tool.pytest.ini_options]
 testpaths = ["../../test/python"]

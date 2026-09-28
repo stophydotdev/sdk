@@ -272,7 +272,7 @@ def render_signature(
     overload: str | None,
     async_mode: bool,
 ) -> list[str]:
-    prefix = "async def" if async_mode and overload is None else "def"
+    prefix = "async def" if async_mode else "def"
     lines = [f"    {prefix} __call__("]
     lines.append("        self,")
     lines.append("        *,")

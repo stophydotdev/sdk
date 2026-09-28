@@ -94,7 +94,8 @@ The Python package generates `generated/models.py` and `generated/namespaces.py`
 - **Toolchain.** `uv` for environment and dependency management, `hatchling` as build backend, `pytest` for tests, `ruff` for linting and formatting.
 - **Supported Python.** `>=3.9` (pinned in `pyproject.toml`). Keep `from __future__ import annotations` at the top of every source file so `|`-style type hints work on 3.9.
 - **Tests.** Tests live in `test/python/` and are run from the repo root via `bun run test:py` (which delegates to `uv --project packages/python run pytest`). Like the TS tests, they use a mock transport - no real API calls.
-- **Linting and formatting.** `ruff check` and `ruff format` are the only quality tools. Config lives in `packages/python/pyproject.toml` under `[tool.ruff]`.
+- **Linting and formatting.** `ruff check` and `ruff format`. Config lives in `packages/python/pyproject.toml` under `[tool.ruff]`.
+- **Type-checking.** `pyright` in strict mode on `test/python/typing/`, which calls the sync and async clients the way users do (`bun run type-check:py`). Config lives under `[tool.pyright]`.
 
 ### Commit conventions
 

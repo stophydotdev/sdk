@@ -56,6 +56,9 @@ jobs:
       - name: Check formatting and lint
         run: uv run --project packages/python ruff check packages/python/src test/python && uv run --project packages/python ruff format --check packages/python/src test/python
 
+      - name: Type-check
+        run: uv run --directory packages/python pyright
+
       - name: Build
         run: uv build --project packages/python
 
