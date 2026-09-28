@@ -38,11 +38,3 @@ Python supports 3.9 and later. Keep `from __future__ import annotations` at the 
 ## Commits
 
 Work on a branch. Use Conventional Commits with a scope: `typescript`, `python`, or `root` (spec, scripts, CI, repo files). Example: `fix(python): read Retry-After in seconds`.
-
-## Releases
-
-Merging never publishes. Both packages are at 1.0.0, and every later release is a patch: 1.0.1, 1.0.2, and so on. Ask Hussein before a minor or major bump.
-
-- TypeScript: add a patch changeset with `bun run changeset`. Merge the feature PR, then merge the `version package` PR that Changesets opens.
-- Python: set the version with `scripts/bump-version.sh python <version>` in a normal PR.
-- Publish by hand: `gh workflow run publish.yml -R stophydotdev/sdk -f package=typescript` (or `python`, or `both`). The workflow skips a version that is already published. It logs in to npm and PyPI with trusted publishing, so do not add a publish token.
