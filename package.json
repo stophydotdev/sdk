@@ -2,7 +2,7 @@
   "name": "stophy-sdk",
   "version": "0.0.0",
   "private": true,
-  "description": "Public web data for AI agents in TypeScript and Python: search, video, social, places, shopping, jobs and real estate.",
+  "description": "Live data from 40+ sites for AI agents in TypeScript and Python: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto.",
   "homepage": "https://stophy.dev",
   "repository": {
     "type": "git",

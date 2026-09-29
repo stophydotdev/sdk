@@ -1,6 +1,6 @@
 # Stophy for Python
 
-Get public web data in your Python code: search results, videos, social posts, places, products, jobs, homes, and more. Every method and result is typed.
+Live data from 40+ sites for AI agents in Python: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto. Every method and result is typed.
 
 ## Install
 
@@ -35,6 +35,30 @@ Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.re
 Arguments are keyword-only and snake_case. A field named `from` is passed as `from_`.
 
 For async code, use `AsyncStophy`. It has the same methods, and you `await` each call.
+
+## More sources
+
+A YouTube transcript, Reddit posts, Google Maps reviews and an Amazon product:
+
+```python
+stophy = Stophy(api_key="st_...")
+
+transcript = stophy.youtube.transcript(video="dQw4w9WgXcQ", include_timestamps=True)
+print(transcript["data"].get("text"), transcript["data"].get("segments"))
+
+posts = stophy.reddit.search(query="bun runtime", sort="top", within="month")
+print(posts["data"]["results"])
+
+places = stophy.maps.search(query="coffee", near="Austin, TX", limit=5)
+place_id = places["data"]["places"][0].get("id")
+if place_id:
+    reviews = stophy.maps.reviews(place=place_id, limit=20)
+    print(reviews["data"]["reviews"])
+
+product = stophy.amazon.product(product="B08N5WRWNW", country="us")
+item = product["data"]["product"]
+print(item.get("title"), item.get("price"))
+```
 
 ## Get markdown for a model
 

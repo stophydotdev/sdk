@@ -1,7 +1,7 @@
 {
   "name": "stophy",
   "version": "1.0.0",
-  "description": "Public web data for AI agents in TypeScript: search, video, social, places, shopping, jobs and real estate.",
+  "description": "Live data from 40+ sites for AI agents in TypeScript: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://stophy.dev",
@@ -20,7 +20,12 @@
     "llm",
     "youtube",
     "reddit",
-    "maps"
+    "maps",
+    "google-maps",
+    "transcripts",
+    "ads",
+    "finance",
+    "crypto"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

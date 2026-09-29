@@ -1,6 +1,6 @@
 # Stophy for TypeScript
 
-Get public web data in your TypeScript or JavaScript code: search results, videos, social posts, places, products, jobs, homes, and more. Every method and result is typed.
+Live data from 40+ sites for AI agents in TypeScript: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto. Every method and result is typed.
 
 ## Install
 
@@ -33,6 +33,30 @@ console.log(videos.data.results);
 `new Stophy("st_...")` works too.
 
 Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.youtube.comments.replies(...)`. Each result has `data`, `creditsUsed`, and `requestId`.
+
+## More sources
+
+A YouTube transcript, Reddit posts, Google Maps reviews and an Amazon product:
+
+```ts
+const stophy = new Stophy({ apiKey: "st_..." });
+
+const transcript = await stophy.youtube.transcript({ video: "dQw4w9WgXcQ", includeTimestamps: true });
+console.log(transcript.data.text, transcript.data.segments);
+
+const posts = await stophy.reddit.search({ query: "bun runtime", sort: "top", within: "month" });
+console.log(posts.data.results);
+
+const places = await stophy.maps.search({ query: "coffee", near: "Austin, TX", limit: 5 });
+const placeId = places.data.places[0]?.id;
+if (placeId) {
+  const reviews = await stophy.maps.reviews({ place: placeId, limit: 20 });
+  console.log(reviews.data.reviews);
+}
+
+const product = await stophy.amazon.product({ product: "B08N5WRWNW", country: "us" });
+console.log(product.data.product.title, product.data.product.price);
+```
 
 ## Get markdown for a model
 
