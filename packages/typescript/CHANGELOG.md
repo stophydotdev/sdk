@@ -1,5 +1,11 @@
 # stophy
 
+## 1.0.1
+
+### Patch Changes
+
+- 1d5bed6: New package description and keywords, and README examples for YouTube transcripts, Reddit, Google Maps reviews and Amazon products.
+
 ## 1.0.0
 
 ### Major Changes
