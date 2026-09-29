@@ -1,5 +1,9 @@
 # stophy
 
+## 1.0.1
+
+- New package description and keywords, and README examples for YouTube transcripts, Reddit, Google Maps reviews and Amazon products.
+
 ## 1.0.0
 
 - Every endpoint is generated from the live Stophy API. Call `stophy.youtube.search(query=...)` and the same shape for every catalog endpoint, on `Stophy` and `AsyncStophy`.
