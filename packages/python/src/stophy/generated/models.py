@@ -34,18 +34,6 @@ WebNewsWithin = Literal[
     "all",
 ]
 
-WebContactsResponseDataSocialsItemPlatform = Literal[
-    "facebook",
-    "instagram",
-    "x",
-    "linkedin",
-    "youtube",
-    "tiktok",
-    "pinterest",
-    "github",
-    "threads",
-]
-
 YoutubeSearchType = Literal[
     "videos",
     "all",
@@ -176,21 +164,6 @@ LinkedinJobsSearchWithin = Literal[
     "all",
 ]
 
-LinkedinJobsSearchWorkplacesItem = Literal[
-    "onsite",
-    "remote",
-    "hybrid",
-]
-
-LinkedinJobsSearchExperiencesItem = Literal[
-    "internship",
-    "entry",
-    "associate",
-    "midSenior",
-    "director",
-    "executive",
-]
-
 ZillowSearchStatus = Literal[
     "forSale",
     "forRent",
@@ -266,17 +239,26 @@ GoogleTrendsTrendingCategory = Literal[
     "climate",
 ]
 
-EmailCheckResponseDataEmailsItemStatus = Literal[
-    "ok",
+EmailVerifyResponseDataStatus = Literal[
+    "valid",
     "risky",
     "invalid",
 ]
 
-EmailFindResponseDataStatus = Literal[
-    "ok",
+EmailFindResponseDataOption0Status = Literal[
+    "valid",
     "risky",
-    "invalid",
-    "unknown",
+    "notFound",
+]
+
+EmailFindResponseDataOption1ResultsItemStatus = Literal[
+    "valid",
+    "risky",
+]
+
+EmailFindResponseDataOption1ResultsItemType = Literal[
+    "personal",
+    "generic",
 ]
 
 CryptoCoinsSort = Literal[
@@ -409,6 +391,11 @@ GoogletravelFlightsCabin = Literal[
     "premiumEconomy",
     "business",
     "first",
+]
+
+GoogletravelFlightsResponseDataTripType = Literal[
+    "oneWay",
+    "roundTrip",
 ]
 
 AmazonSearchSort = Literal[
@@ -711,25 +698,6 @@ class WebNewsResponseData(TypedDict):
 class WebNewsResponse(TypedDict):
     success: Literal[True]
     data: WebNewsResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class WebContactsResponseDataSocialsItem(TypedDict):
-    platform: WebContactsResponseDataSocialsItemPlatform
-    url: str
-
-
-class WebContactsResponseData(TypedDict):
-    emails: list[str]
-    phones: list[str]
-    socials: list[WebContactsResponseDataSocialsItem]
-    pages: list[str]
-
-
-class WebContactsResponse(TypedDict):
-    success: Literal[True]
-    data: WebContactsResponseData
     creditsUsed: int
     requestId: str
 
@@ -2342,40 +2310,44 @@ class SiteSeoResponse(TypedDict):
     requestId: str
 
 
-class EmailCheckResponseDataEmailsItem(TypedDict):
+class EmailVerifyResponseData(TypedDict):
     email: NotRequired[str]
-    status: EmailCheckResponseDataEmailsItemStatus
-    reasons: NotRequired[list[str]]
-    isValidSyntax: bool
-    domain: NotRequired[str]
-    mx: NotRequired[list[str]]
-    isDisposable: bool
+    status: EmailVerifyResponseDataStatus
+    mxProvider: NotRequired[str]
     isRole: bool
+    isDisposable: bool
     isFree: bool
 
 
-class EmailCheckResponseData(TypedDict):
-    emails: list[EmailCheckResponseDataEmailsItem]
-
-
-class EmailCheckResponse(TypedDict):
+class EmailVerifyResponse(TypedDict):
     success: Literal[True]
-    data: EmailCheckResponseData
+    data: EmailVerifyResponseData
     creditsUsed: int
     requestId: str
 
 
-class EmailFindResponseData(TypedDict):
+class EmailFindResponseDataOption0(TypedDict):
     email: NotRequired[str]
-    status: EmailFindResponseDataStatus
+    status: EmailFindResponseDataOption0Status
     domain: NotRequired[str]
-    isCatchAll: NotRequired[bool]
-    pattern: NotRequired[str]
+    mxProvider: NotRequired[str]
+
+
+class EmailFindResponseDataOption1ResultsItem(TypedDict):
+    email: NotRequired[str]
+    status: EmailFindResponseDataOption1ResultsItemStatus
+    type: EmailFindResponseDataOption1ResultsItemType
+
+
+class EmailFindResponseDataOption1(TypedDict):
+    domain: NotRequired[str]
+    mxProvider: NotRequired[str]
+    results: NotRequired[list[EmailFindResponseDataOption1ResultsItem]]
 
 
 class EmailFindResponse(TypedDict):
     success: Literal[True]
-    data: EmailFindResponseData
+    data: EmailFindResponseDataOption0 | EmailFindResponseDataOption1
     creditsUsed: int
     requestId: str
 
@@ -2855,6 +2827,9 @@ class GoogletravelFlightsResponseDataResultsItem(TypedDict):
 
 
 class GoogletravelFlightsResponseData(TypedDict):
+    cabin: GoogletravelFlightsCabin
+    tripType: GoogletravelFlightsResponseDataTripType
+    adults: int
     results: list[GoogletravelFlightsResponseDataResultsItem]
 
 
@@ -3027,7 +3002,6 @@ class ShopifyCollectionsResponseDataResultsItem(TypedDict):
     title: NotRequired[str]
     description: NotRequired[str]
     imageUrl: NotRequired[str]
-    products: NotRequired[int]
     publishedAt: NotRequired[str]
     updatedAt: NotRequired[str]
 
@@ -3450,6 +3424,8 @@ class AirbnbSearchResponseDataResultsItem(TypedDict):
     subtitle: NotRequired[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
+    nights: NotRequired[int]
+    pricePerNight: NotRequired[float]
     priceCurrency: NotRequired[str]
     priceText: NotRequired[str]
     rating: NotRequired[float]
@@ -3548,7 +3524,6 @@ class AirbnbCalendarResponseDataResultsItem(TypedDict):
     isCheckOutDay: bool
     minNights: NotRequired[int]
     maxNights: NotRequired[int]
-    priceText: NotRequired[str]
 
 
 class AirbnbCalendarResponseData(TypedDict):
@@ -3595,6 +3570,7 @@ class RightmoveSearchResponseDataResultsItem(TypedDict):
     addressFull: NotRequired[str]
     summary: NotRequired[str]
     price: NotRequired[float]
+    isPriceOnApplication: bool
     priceText: NotRequired[str]
     priceQualifier: NotRequired[str]
     priceFrequency: NotRequired[str]
@@ -3650,6 +3626,7 @@ class RightmovePropertyResponseData(TypedDict):
     addressCountry: NotRequired[str]
     description: NotRequired[str]
     price: NotRequired[float]
+    isPriceOnApplication: bool
     priceCurrency: NotRequired[str]
     priceText: NotRequired[str]
     priceQualifier: NotRequired[str]
@@ -4419,19 +4396,19 @@ class SuggestResponse(TypedDict):
 
 class GoogleTrendsResponseDataOption0ResultsItem(TypedDict):
     recordedAt: str
-    values: NotRequired[list[float]]
+    values: NotRequired[dict[str, float]]
     isPartial: bool
 
 
 class GoogleTrendsResponseDataOption0(TypedDict):
     results: NotRequired[list[GoogleTrendsResponseDataOption0ResultsItem]]
-    averages: NotRequired[list[float]]
+    averages: NotRequired[dict[str, float]]
 
 
 class GoogleTrendsResponseDataOption1ResultsItem(TypedDict):
     code: NotRequired[str]
     name: NotRequired[str]
-    values: NotRequired[list[float]]
+    values: NotRequired[dict[str, float]]
 
 
 class GoogleTrendsResponseDataOption1(TypedDict):

@@ -54,6 +54,10 @@
                   "forbidden",
                   "insufficientCredits",
                   "internalError",
+                  "inviteClaimed",
+                  "inviteDisabled",
+                  "inviteExpired",
+                  "inviteUsedUp",
                   "invalidCliSession",
                   "invalidCliVerifier",
                   "invalidRequest",
@@ -317,7 +321,7 @@
                   "language": {
                     "type": "string",
                     "pattern": "^[A-Za-z]{2}$",
-                    "description": "BCP 47 language tag, e.g. en or pt-BR. Any case is accepted."
+                    "description": "Two-letter language code like en or pt. Any case is accepted."
                   },
                   "includeDomains": {
                     "maxItems": 10,
@@ -348,7 +352,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -503,7 +507,7 @@
                   "language": {
                     "type": "string",
                     "pattern": "^[A-Za-z]{2}$",
-                    "description": "BCP 47 language tag, e.g. en or pt-BR. Any case is accepted."
+                    "description": "Two-letter language code like en or pt. Any case is accepted."
                   },
                   "includeDomains": {
                     "maxItems": 10,
@@ -535,7 +539,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -657,156 +661,6 @@
         }
       }
     },
-    "/v1/web/contacts": {
-      "post": {
-        "operationId": "webContacts",
-        "summary": "Find emails, phone numbers and social profiles on a website",
-        "description": "Costs 2 credits per call.",
-        "x-credits": 2,
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "url": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "url"
-                ],
-                "additionalProperties": false
-              },
-              "example": {
-                "url": "https://www.franklinbbq.com"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The data, and the credits this call used.",
-            "headers": {
-              "X-Request-ID": {
-                "$ref": "#/components/headers/RequestId"
-              },
-              "x-credits-used": {
-                "$ref": "#/components/headers/CreditsUsed"
-              },
-              "X-RateLimit-Limit": {
-                "$ref": "#/components/headers/RateLimitLimit"
-              },
-              "X-RateLimit-Remaining": {
-                "$ref": "#/components/headers/RateLimitRemaining"
-              },
-              "X-RateLimit-Reset": {
-                "$ref": "#/components/headers/RateLimitReset"
-              },
-              "x-cache": {
-                "$ref": "#/components/headers/Cache"
-              },
-              "x-cache-age": {
-                "$ref": "#/components/headers/CacheAge"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "success",
-                    "data",
-                    "creditsUsed",
-                    "requestId"
-                  ],
-                  "properties": {
-                    "success": {
-                      "const": true
-                    },
-                    "data": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "emails": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "phones": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "socials": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "platform": {
-                                "type": "string",
-                                "enum": [
-                                  "facebook",
-                                  "instagram",
-                                  "x",
-                                  "linkedin",
-                                  "youtube",
-                                  "tiktok",
-                                  "pinterest",
-                                  "github",
-                                  "threads"
-                                ]
-                              },
-                              "url": {
-                                "type": "string",
-                                "format": "uri"
-                              }
-                            },
-                            "required": [
-                              "platform",
-                              "url"
-                            ]
-                          }
-                        },
-                        "pages": {
-                          "type": "array",
-                          "items": {
-                            "type": "string",
-                            "format": "uri"
-                          }
-                        }
-                      },
-                      "required": [
-                        "emails",
-                        "phones",
-                        "socials",
-                        "pages"
-                      ]
-                    },
-                    "creditsUsed": {
-                      "type": "integer"
-                    },
-                    "requestId": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "4XX": {
-            "$ref": "#/components/responses/Error"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
     "/v1/youtube/search": {
       "post": {
         "operationId": "youtubeSearch",
@@ -871,7 +725,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -1471,7 +1325,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -1662,7 +1516,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -2000,7 +1854,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -2255,7 +2109,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -2911,7 +2765,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -3227,7 +3081,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -3565,7 +3419,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -3832,7 +3686,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -4237,7 +4091,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -5075,7 +4929,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -5330,7 +5184,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -6009,7 +5863,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -6251,7 +6105,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -6423,7 +6277,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -7324,7 +7178,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -8226,7 +8080,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -8462,7 +8316,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -9031,7 +8885,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -9332,35 +9186,6 @@
                       "all"
                     ]
                   },
-                  "workplaces": {
-                    "default": [],
-                    "maxItems": 3,
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "enum": [
-                        "onsite",
-                        "remote",
-                        "hybrid"
-                      ]
-                    }
-                  },
-                  "experiences": {
-                    "default": [],
-                    "maxItems": 6,
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "enum": [
-                        "internship",
-                        "entry",
-                        "associate",
-                        "midSenior",
-                        "director",
-                        "executive"
-                      ]
-                    }
-                  },
                   "cursor": {
                     "type": "string",
                     "pattern": "^\\d{1,3}$"
@@ -9369,7 +9194,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -10002,7 +9827,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -10205,7 +10030,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -10289,6 +10114,7 @@
                                 "type": "string"
                               },
                               "price": {
+                                "description": "Asking price, monthly rent, or the sale price of a sold home. Null when Zillow shows none, which includes sold homes in states that keep sale prices private, such as Texas.",
                                 "type": "number",
                                 "minimum": 0
                               },
@@ -10511,6 +10337,7 @@
                           "type": "string"
                         },
                         "price": {
+                          "description": "Asking price, monthly rent, or the sale price of a sold home. Null when Zillow shows none, which includes sold homes in states that keep sale prices private, such as Texas.",
                           "type": "number",
                           "minimum": 0
                         },
@@ -10746,7 +10573,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -11200,7 +11027,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -11358,7 +11185,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -11861,10 +11688,10 @@
         }
       }
     },
-    "/v1/email/check": {
+    "/v1/email/verify": {
       "post": {
-        "operationId": "emailCheck",
-        "summary": "Check if email addresses can receive mail",
+        "operationId": "emailVerify",
+        "summary": "Check if an email address can receive mail",
         "description": "Costs 1 credit per call.",
         "x-credits": 1,
         "requestBody": {
@@ -11874,197 +11701,19 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "emails": {
-                    "minItems": 1,
-                    "maxItems": 100,
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 320
-                    }
+                  "email": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 320
                   }
                 },
                 "required": [
-                  "emails"
+                  "email"
                 ],
                 "additionalProperties": false
               },
               "example": {
-                "emails": [
-                  "hello@stripe.com",
-                  "test@mailinator.com",
-                  "bad@@x"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The data, and the credits this call used.",
-            "headers": {
-              "X-Request-ID": {
-                "$ref": "#/components/headers/RequestId"
-              },
-              "x-credits-used": {
-                "$ref": "#/components/headers/CreditsUsed"
-              },
-              "X-RateLimit-Limit": {
-                "$ref": "#/components/headers/RateLimitLimit"
-              },
-              "X-RateLimit-Remaining": {
-                "$ref": "#/components/headers/RateLimitRemaining"
-              },
-              "X-RateLimit-Reset": {
-                "$ref": "#/components/headers/RateLimitReset"
-              },
-              "x-cache": {
-                "$ref": "#/components/headers/Cache"
-              },
-              "x-cache-age": {
-                "$ref": "#/components/headers/CacheAge"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "success",
-                    "data",
-                    "creditsUsed",
-                    "requestId"
-                  ],
-                  "properties": {
-                    "success": {
-                      "const": true
-                    },
-                    "data": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "emails": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "email": {
-                                "type": "string"
-                              },
-                              "status": {
-                                "type": "string",
-                                "enum": [
-                                  "ok",
-                                  "risky",
-                                  "invalid"
-                                ]
-                              },
-                              "reasons": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
-                              },
-                              "isValidSyntax": {
-                                "type": "boolean"
-                              },
-                              "domain": {
-                                "type": "string"
-                              },
-                              "mx": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
-                              },
-                              "isDisposable": {
-                                "type": "boolean"
-                              },
-                              "isRole": {
-                                "type": "boolean"
-                              },
-                              "isFree": {
-                                "type": "boolean"
-                              }
-                            },
-                            "required": [
-                              "status",
-                              "isValidSyntax",
-                              "isDisposable",
-                              "isRole",
-                              "isFree"
-                            ]
-                          }
-                        }
-                      },
-                      "required": [
-                        "emails"
-                      ]
-                    },
-                    "creditsUsed": {
-                      "type": "integer"
-                    },
-                    "requestId": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "4XX": {
-            "$ref": "#/components/responses/Error"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
-    "/v1/email/find": {
-      "post": {
-        "operationId": "emailFind",
-        "summary": "Find a person's most likely work email address",
-        "description": "Costs 1 credit per call.",
-        "x-credits": 1,
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 200
-                  },
-                  "firstName": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 100
-                  },
-                  "lastName": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 100
-                  },
-                  "company": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 253
-                  }
-                },
-                "required": [
-                  "company"
-                ],
-                "additionalProperties": false
-              },
-              "example": {
-                "name": "Patrick Collison",
-                "company": "stripe.com"
+                "email": "info@the305agency.com"
               }
             }
           }
@@ -12119,24 +11768,208 @@
                         "status": {
                           "type": "string",
                           "enum": [
-                            "ok",
+                            "valid",
                             "risky",
-                            "invalid",
-                            "unknown"
+                            "invalid"
                           ]
                         },
-                        "domain": {
+                        "mxProvider": {
                           "type": "string"
                         },
-                        "isCatchAll": {
+                        "isRole": {
                           "type": "boolean"
                         },
-                        "pattern": {
-                          "type": "string"
+                        "isDisposable": {
+                          "type": "boolean"
+                        },
+                        "isFree": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
-                        "status"
+                        "status",
+                        "isRole",
+                        "isDisposable",
+                        "isFree"
+                      ]
+                    },
+                    "creditsUsed": {
+                      "type": "integer"
+                    },
+                    "requestId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/email/find": {
+      "post": {
+        "operationId": "emailFind",
+        "summary": "Find a person's work email from their name, or the emails on a company's site",
+        "description": "Costs 1 credit per call.",
+        "x-credits": 1,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 253
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  }
+                },
+                "required": [
+                  "domain"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "name": "Patrick Collison",
+                "domain": "stripe.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The data, and the credits this call used.",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "x-credits-used": {
+                "$ref": "#/components/headers/CreditsUsed"
+              },
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimitLimit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimitRemaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimitReset"
+              },
+              "x-cache": {
+                "$ref": "#/components/headers/Cache"
+              },
+              "x-cache-age": {
+                "$ref": "#/components/headers/CacheAge"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "creditsUsed",
+                    "requestId"
+                  ],
+                  "properties": {
+                    "success": {
+                      "const": true
+                    },
+                    "data": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "email": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "valid",
+                                "risky",
+                                "notFound"
+                              ]
+                            },
+                            "domain": {
+                              "type": "string"
+                            },
+                            "mxProvider": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "status"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "domain": {
+                              "type": "string"
+                            },
+                            "mxProvider": {
+                              "type": "string"
+                            },
+                            "results": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "email": {
+                                    "type": "string"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "valid",
+                                      "risky"
+                                    ]
+                                  },
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "personal",
+                                      "generic"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "type"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        }
                       ]
                     },
                     "creditsUsed": {
@@ -12206,7 +12039,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -12727,7 +12560,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -12858,7 +12691,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -13714,6 +13547,7 @@
                     "maxLength": 200
                   },
                   "location": {
+                    "description": "City, region or postal code, e.g. Kansas City, MO. Only jobs within about 5 miles are returned, so a city on a state line stays in its own state.",
                     "type": "string",
                     "minLength": 2,
                     "maxLength": 200
@@ -13816,7 +13650,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -14398,7 +14232,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -14819,7 +14653,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -15072,7 +14906,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -15134,6 +14968,27 @@
                       "type": "object",
                       "additionalProperties": false,
                       "properties": {
+                        "cabin": {
+                          "type": "string",
+                          "enum": [
+                            "economy",
+                            "premiumEconomy",
+                            "business",
+                            "first"
+                          ]
+                        },
+                        "tripType": {
+                          "type": "string",
+                          "enum": [
+                            "oneWay",
+                            "roundTrip"
+                          ]
+                        },
+                        "adults": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
                         "results": {
                           "type": "array",
                           "items": {
@@ -15144,6 +14999,7 @@
                                 "type": "boolean"
                               },
                               "price": {
+                                "description": "Total fare in USD for all adults together. For a round trip it covers both directions.",
                                 "type": "number"
                               },
                               "priceCurrency": {
@@ -15219,7 +15075,8 @@
                                     }
                                   },
                                   "required": []
-                                }
+                                },
+                                "description": "The outbound journey only, including a return search."
                               },
                               "layovers": {
                                 "type": "array",
@@ -15261,10 +15118,14 @@
                               "priceCurrency",
                               "stops"
                             ]
-                          }
+                          },
+                          "description": "Outbound flight options. With returnDate, each price is the round-trip total for that outbound choice."
                         }
                       },
                       "required": [
+                        "cabin",
+                        "tripType",
+                        "adults",
                         "results"
                       ]
                     },
@@ -15366,7 +15227,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -15860,7 +15721,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -16026,7 +15887,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -16274,7 +16135,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -16357,11 +16218,6 @@
                               "imageUrl": {
                                 "type": "string",
                                 "format": "uri"
-                              },
-                              "products": {
-                                "type": "integer",
-                                "minimum": -9007199254740991,
-                                "maximum": 9007199254740991
                               },
                               "publishedAt": {
                                 "type": "string",
@@ -16602,7 +16458,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -17031,7 +16887,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -17110,10 +16966,12 @@
                                 "format": "uri"
                               },
                               "price": {
+                                "description": "Lowest sale price across the variants, as listed in search. minPrice and maxPrice filter on this price. The product page can show a lower promotional price.",
                                 "type": "number",
                                 "minimum": 0
                               },
                               "originalPrice": {
+                                "description": "Lowest list price across the variants before any discount. It matches the product's originalPrice.",
                                 "type": "number",
                                 "minimum": 0
                               },
@@ -17260,10 +17118,12 @@
                           }
                         },
                         "price": {
+                          "description": "Lowest sale price across the variants, including the promotional price the product page shows. It can be lower than the search price for the same item.",
                           "type": "number",
                           "minimum": 0
                         },
                         "originalPrice": {
+                          "description": "Lowest list price across the variants before any discount. It matches the search result's originalPrice.",
                           "type": "number",
                           "minimum": 0
                         },
@@ -17696,7 +17556,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -17943,7 +17803,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -18137,7 +17997,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "additionalProperties": false
@@ -18568,7 +18428,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -18753,7 +18613,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -18931,10 +18791,12 @@
                     "maximum": 16
                   },
                   "minPrice": {
+                    "description": "Lowest average nightly rate in USD, before taxes and fees. Compare with pricePerNight, which includes them.",
                     "type": "number",
                     "minimum": 0
                   },
                   "maxPrice": {
+                    "description": "Highest average nightly rate in USD, before taxes and fees. Compare with pricePerNight, which includes them.",
                     "type": "number",
                     "minimum": 0
                   },
@@ -18946,7 +18808,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -19027,9 +18889,21 @@
                                 "type": "string"
                               },
                               "price": {
+                                "description": "Total for the whole stay in USD, taxes and fees included.",
                                 "type": "number"
                               },
                               "originalPrice": {
+                                "description": "Total for the whole stay before a discount, in USD.",
+                                "type": "number"
+                              },
+                              "nights": {
+                                "description": "Number of nights the price covers. A search without dates is priced for a default 5-night stay.",
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "pricePerNight": {
+                                "description": "price divided by nights, in USD, taxes and fees included.",
                                 "type": "number"
                               },
                               "priceCurrency": {
@@ -19449,7 +19323,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -19536,9 +19410,6 @@
                                 "type": "integer",
                                 "minimum": -9007199254740991,
                                 "maximum": 9007199254740991
-                              },
-                              "priceText": {
-                                "type": "string"
                               }
                             },
                             "required": [
@@ -19609,7 +19480,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -19805,7 +19676,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -19885,6 +19756,10 @@
                               "price": {
                                 "type": "number",
                                 "minimum": 0
+                              },
+                              "isPriceOnApplication": {
+                                "type": "boolean",
+                                "description": "True when the agent shows no price (POA); price is then null."
                               },
                               "priceText": {
                                 "type": "string"
@@ -19973,6 +19848,7 @@
                             },
                             "required": [
                               "propertyUrl",
+                              "isPriceOnApplication",
                               "isFeatured",
                               "isAuction"
                             ]
@@ -20102,6 +19978,10 @@
                         "price": {
                           "type": "number",
                           "minimum": 0
+                        },
+                        "isPriceOnApplication": {
+                          "type": "boolean",
+                          "description": "True when the agent shows no price (POA); price is then null."
                         },
                         "priceCurrency": {
                           "type": "string",
@@ -20245,6 +20125,7 @@
                       },
                       "required": [
                         "propertyUrl",
+                        "isPriceOnApplication",
                         "sizes",
                         "tags",
                         "keyFeatures",
@@ -20334,7 +20215,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -20754,7 +20635,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -21156,7 +21037,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -21424,7 +21305,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -21921,7 +21802,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -22139,7 +22020,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -22213,7 +22094,8 @@
                               "openedAt": {
                                 "type": "string",
                                 "format": "date-time",
-                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
+                                "description": "When the candle opened. Weekly and monthly candles carry the first trading day of that week or month inside the requested range."
                               },
                               "open": {
                                 "type": "number"
@@ -22329,7 +22211,7 @@
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 100,
-                    "description": "Return at most this many results from the page. The price stays the same."
+                    "description": "Return at most this many results (1-100)."
                   }
                 },
                 "required": [
@@ -22521,7 +22403,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -22542,7 +22424,7 @@
                       "country": {
                         "type": "string",
                         "pattern": "^[A-Za-z]{2}$",
-                        "description": "ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted."
+                        "description": "Country code like de. Only ads shown in this country are returned. Any case is accepted."
                       },
                       "mediaType": {
                         "type": "string",
@@ -22564,7 +22446,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -22588,7 +22470,7 @@
                       "country": {
                         "type": "string",
                         "pattern": "^[A-Za-z]{2}$",
-                        "description": "ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted."
+                        "description": "European country code like de. TikTok publishes ads for these countries only. Any case is accepted."
                       },
                       "cursor": {
                         "type": "string",
@@ -22602,7 +22484,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -22647,7 +22529,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -22670,7 +22552,7 @@
                       "country": {
                         "type": "string",
                         "pattern": "^[A-Za-z]{2}$",
-                        "description": "ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted."
+                        "description": "EU/EEA country code like de. Microsoft publishes ads for these countries only. Any case is accepted."
                       },
                       "cursor": {
                         "type": "string",
@@ -22684,7 +22566,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -22698,7 +22580,7 @@
                       "country": {
                         "type": "string",
                         "pattern": "^[A-Za-z]{2}$",
-                        "description": "ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted."
+                        "description": "EU country code like fr, or br or tr. Pinterest publishes ads for these countries only. Any case is accepted."
                       },
                       "advertiser": {
                         "type": "string",
@@ -22717,7 +22599,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -24569,7 +24451,7 @@
                       "country": {
                         "type": "string",
                         "pattern": "^[A-Za-z]{2}$",
-                        "description": "ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted."
+                        "description": "Country code like de. Advertisers are matched on ads shown in this country, wherever the advertiser is based. Any case is accepted."
                       },
                       "network": {
                         "type": "string",
@@ -24579,7 +24461,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -24604,7 +24486,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -24814,7 +24696,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -24851,7 +24733,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -24904,7 +24786,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -25123,7 +25005,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -25178,7 +25060,7 @@
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 100,
-                        "description": "Return at most this many results from the page. The price stays the same."
+                        "description": "Return at most this many results (1-100)."
                       }
                     },
                     "required": [
@@ -25257,8 +25139,11 @@
                                     "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                                   },
                                   "values": {
-                                    "type": "array",
-                                    "items": {
+                                    "type": "object",
+                                    "propertyNames": {
+                                      "type": "string"
+                                    },
+                                    "additionalProperties": {
                                       "type": "number"
                                     }
                                   },
@@ -25273,8 +25158,11 @@
                               }
                             },
                             "averages": {
-                              "type": "array",
-                              "items": {
+                              "type": "object",
+                              "propertyNames": {
+                                "type": "string"
+                              },
+                              "additionalProperties": {
                                 "type": "number"
                               }
                             }
@@ -25298,8 +25186,11 @@
                                     "type": "string"
                                   },
                                   "values": {
-                                    "type": "array",
-                                    "items": {
+                                    "type": "object",
+                                    "propertyNames": {
+                                      "type": "string"
+                                    },
+                                    "additionalProperties": {
                                       "type": "number"
                                     }
                                   }
