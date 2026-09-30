@@ -1,6 +1,6 @@
 # Stophy SDKs
 
-Live data from 40+ sites for AI agents in TypeScript and Python: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto. Each result comes back typed, or as markdown for a model.
+Live data from 40+ sites for AI agents in TypeScript and Python: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto. Every result is flat and typed.
 
 | Language | Install | Guide |
 | --- | --- | --- |
@@ -23,26 +23,29 @@ Both examples work without an API key. For every other source, get a key from th
 
 ## More sources
 
-A YouTube transcript, Reddit posts, Google Maps reviews and an Amazon product, in TypeScript:
+A transcript, YouTube search, Google Maps reviews, an Amazon product and Meta ads, in TypeScript:
 
 ```ts
 const stophy = new Stophy({ apiKey: "st_..." });
 
-const transcript = await stophy.youtube.transcript({ video: "dQw4w9WgXcQ", includeTimestamps: true });
-console.log(transcript.data.text, transcript.data.segments);
+const transcript = await stophy.transcript({ video: "https://youtu.be/dQw4w9WgXcQ" });
+console.log(transcript.data.text);
 
-const posts = await stophy.reddit.search({ query: "bun runtime", sort: "top", within: "month" });
-console.log(posts.data.results);
+const videos = await stophy.youtube.search({ query: "bun runtime", limit: 5 });
+console.log(videos.data.results);
 
-const places = await stophy.maps.search({ query: "coffee", near: "Austin, TX", limit: 5 });
-const placeId = places.data.places[0]?.id;
+const places = await stophy.maps.search({ query: "coffee", location: "Austin, TX", limit: 5 });
+const placeId = places.data.results[0]?.placeId;
 if (placeId) {
   const reviews = await stophy.maps.reviews({ place: placeId, limit: 20 });
-  console.log(reviews.data.reviews);
+  console.log(reviews.data.results);
 }
 
 const product = await stophy.amazon.product({ product: "B08N5WRWNW", country: "us" });
-console.log(product.data.product.title, product.data.product.price);
+console.log(product.data.title, product.data.price);
+
+const ads = await stophy.ads.search({ network: "meta", query: "running shoes" });
+console.log(ads.data.results);
 ```
 
 And in Python:
@@ -50,23 +53,24 @@ And in Python:
 ```python
 stophy = Stophy(api_key="st_...")
 
-transcript = stophy.youtube.transcript(video="dQw4w9WgXcQ", include_timestamps=True)
-print(transcript["data"].get("text"), transcript["data"].get("segments"))
+transcript = stophy.transcript(video="https://youtu.be/dQw4w9WgXcQ")
+print(transcript["data"].get("text"))
 
-posts = stophy.reddit.search(query="bun runtime", sort="top", within="month")
-print(posts["data"]["results"])
+videos = stophy.youtube.search(query="bun runtime", limit=5)
+print(videos["data"]["results"])
 
-places = stophy.maps.search(query="coffee", near="Austin, TX", limit=5)
-place_id = places["data"]["places"][0].get("id")
+places = stophy.maps.search(query="coffee", location="Austin, TX", limit=5)
+place_id = places["data"]["results"][0].get("placeId")
 if place_id:
     reviews = stophy.maps.reviews(place=place_id, limit=20)
-    print(reviews["data"]["reviews"])
+    print(reviews["data"]["results"])
 
 product = stophy.amazon.product(product="B08N5WRWNW", country="us")
-item = product["data"]["product"]
-print(item.get("title"), item.get("price"))
-```
+print(product["data"].get("title"), product["data"].get("price"))
 
+ads = stophy.ads.search(network="meta", query="running shoes")
+print(ads["data"]["results"])
+```
 
 To change the SDKs, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 

@@ -17,7 +17,7 @@ const result = await new Stophy().web.search({ query: "bun runtime" });
 console.log(result.data.results);
 ```
 
-Web search, YouTube search, and YouTube transcripts work without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
+Web search, YouTube search, and transcripts work without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 
@@ -32,42 +32,38 @@ console.log(videos.data.results);
 
 `new Stophy("st_...")` works too.
 
-Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.youtube.comments.replies(...)`. Each result has `data`, `creditsUsed`, and `requestId`.
+Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.ads.search({ network: "meta", ... })`. Endpoints with a single name are methods on the client: `stophy.transcript(...)`, `stophy.suggest(...)`.
+
+Every response is `{ success, data, creditsUsed, requestId }`. `data` is one flat object. Lists are in `data.results`.
 
 ## More sources
 
-A YouTube transcript, Reddit posts, Google Maps reviews and an Amazon product:
+A transcript, Reddit posts, Google Maps reviews, an Amazon product and Meta ads:
 
 ```ts
 const stophy = new Stophy({ apiKey: "st_..." });
 
-const transcript = await stophy.youtube.transcript({ video: "dQw4w9WgXcQ", includeTimestamps: true });
+const transcript = await stophy.transcript({ video: "https://youtu.be/dQw4w9WgXcQ", includeTimestamps: true });
 console.log(transcript.data.text, transcript.data.segments);
 
 const posts = await stophy.reddit.search({ query: "bun runtime", sort: "top", within: "month" });
 console.log(posts.data.results);
 
-const places = await stophy.maps.search({ query: "coffee", near: "Austin, TX", limit: 5 });
-const placeId = places.data.places[0]?.id;
+const places = await stophy.maps.search({ query: "coffee", location: "Austin, TX", limit: 5 });
+const placeId = places.data.results[0]?.placeId;
 if (placeId) {
   const reviews = await stophy.maps.reviews({ place: placeId, limit: 20 });
-  console.log(reviews.data.reviews);
+  console.log(reviews.data.results);
 }
 
 const product = await stophy.amazon.product({ product: "B08N5WRWNW", country: "us" });
-console.log(product.data.product.title, product.data.product.price);
+console.log(product.data.title, product.data.price);
+
+const ads = await stophy.ads.search({ network: "meta", query: "running shoes" });
+console.log(ads.data.results);
 ```
 
-## Get markdown for a model
-
-```ts
-const markdown = await stophy.youtube.search(
-  { query: "bun runtime", limit: 5 },
-  { format: "markdown" },
-);
-```
-
-With `format: "markdown"`, the method returns a string.
+Some endpoints cover several sources. Pick one with a field: `network` for `ads.*`, `source` for `suggest`, `by` for `google.trends`. The types follow the choice.
 
 ## Get the next page
 

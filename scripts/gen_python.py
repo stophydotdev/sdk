@@ -191,6 +191,51 @@ def body_schema(operation: dict[str, Any]) -> dict[str, Any] | None:
     return schema if isinstance(schema, dict) else None
 
 
+def schema_branches(schema: dict[str, Any] | None) -> list[dict[str, Any]]:
+    if schema is None:
+        return []
+    options = schema.get("oneOf", schema.get("anyOf"))
+    if isinstance(options, list) and options:
+        return [option for option in options if isinstance(option, dict)]
+    return [schema]
+
+
+def branch_params(
+    emitter: Emitter, schema: dict[str, Any], hint: str, index: int | None
+) -> list[dict[str, Any]]:
+    properties = schema.get("properties", {})
+    required = set(schema.get("required", []))
+    if not isinstance(properties, dict):
+        return []
+    scope = hint if index is None else f"{hint}Option{index}"
+    return [
+        {
+            "json": key,
+            "name": param_name(key),
+            "required": key in required,
+            "type": emitter.py_type(prop, scope + pascal(key)),
+        }
+        for key, prop in properties.items()
+    ]
+
+
+def merge_params(branches: list[list[dict[str, Any]]]) -> list[dict[str, Any]]:
+    if len(branches) == 1:
+        return branches[0]
+    merged: dict[str, dict[str, Any]] = {}
+    for branch in branches:
+        for param in branch:
+            known = merged.get(param["json"])
+            if known is None:
+                merged[param["json"]] = {**param, "types": [param["type"]]}
+            elif param["type"] not in known["types"]:
+                known["types"].append(param["type"])
+    return [
+        {**param, "type": " | ".join(param["types"]), "required": False}
+        for param in merged.values()
+    ]
+
+
 class Node:
     def __init__(self, name: str) -> None:
         self.name = name
@@ -269,49 +314,38 @@ def render_signature(
     params: list[dict[str, Any]],
     response: str,
     *,
-    overload: str | None,
     async_mode: bool,
+    all_optional: bool = False,
 ) -> list[str]:
     prefix = "async def" if async_mode else "def"
     lines = [f"    {prefix} __call__("]
     lines.append("        self,")
-    lines.append("        *,")
+    if params:
+        lines.append("        *,")
     for param in params:
-        if param["required"]:
+        if param["required"] and not all_optional:
             lines.append(f"        {param['name']}: {param['type']},")
         else:
             lines.append(f"        {param['name']}: {param['type']} | None = None,")
-    if overload == "markdown":
-        lines.append('        format: Literal["markdown"],')
-        lines.append("    ) -> str: ...")
-        return lines
-    if overload == "json":
-        lines.append("        format: None = None,")
-        lines.append(f"    ) -> {response}: ...")
-        return lines
-    lines.append('        format: Literal["markdown"] | None = None,')
-    lines.append(f"    ) -> {response} | str:")
+    lines.append(f"    ) -> {response}:")
     return lines
 
 
 def render_method(operation: dict[str, Any], *, async_mode: bool) -> list[str]:
     lines: list[str] = []
-    for kind in ("markdown", "json"):
-        lines.append("    @overload")
-        lines.extend(
-            render_signature(
-                operation["params"],
-                operation["response"],
-                overload=kind,
-                async_mode=async_mode,
-            )
-        )
+    branches = operation["branches"]
+    if len(branches) > 1:
+        for branch in branches:
+            lines.append("    @overload")
+            signature = render_signature(branch, operation["response"], async_mode=async_mode)
+            signature[-1] = signature[-1] + " ..."
+            lines.extend(signature)
     lines.extend(
         render_signature(
             operation["params"],
             operation["response"],
-            overload=None,
             async_mode=async_mode,
+            all_optional=len(branches) > 1,
         )
     )
     if operation["method"] == "GET":
@@ -324,9 +358,7 @@ def render_method(operation: dict[str, Any], *, async_mode: bool) -> list[str]:
     else:
         lines.append("        body = {}")
     call = "await self._call" if async_mode else "self._call"
-    lines.append(
-        f'        return {call}("{operation["method"]}", "{operation["path"]}", body, format)'
-    )
+    lines.append(f'        return {call}("{operation["method"]}", "{operation["path"]}", body)')
     return lines
 
 
@@ -404,20 +436,13 @@ def main() -> None:
                 raise SystemExit(f"{method.upper()} {path} is missing operationId.")
             segments = [part for part in path.split("/") if part and part != "v1"]
             schema = body_schema(operation)
-            properties = schema.get("properties", {}) if schema else {}
-            required = set(schema.get("required", []) if schema else [])
-            if not isinstance(properties, dict):
-                properties = {}
-            params = []
-            for key, prop in properties.items():
-                params.append(
-                    {
-                        "json": key,
-                        "name": param_name(key),
-                        "required": key in required,
-                        "type": emitter.py_type(prop, pascal(operation_id) + pascal(key)),
-                    }
-                )
+            hint = pascal(operation_id)
+            branch_schemas = schema_branches(schema)
+            branches = [
+                branch_params(emitter, branch, hint, index if len(branch_schemas) > 1 else None)
+                for index, branch in enumerate(branch_schemas)
+            ]
+            params = merge_params(branches)
             prepared.append(
                 {
                     "id": operation_id,
@@ -425,6 +450,7 @@ def main() -> None:
                     "path": path,
                     "segments": segments,
                     "params": params,
+                    "branches": branches,
                     "response": emitter.py_type(
                         response_schema(operation),
                         pascal(operation_id) + "Response",
@@ -442,7 +468,6 @@ def main() -> None:
         "        method: str,",
         "        path: str,",
         "        body: Mapping[str, Any] | None,",
-        "        format: str | None,",
         "    ) -> Any: ...",
         "",
         "",
@@ -452,7 +477,6 @@ def main() -> None:
         "        method: str,",
         "        path: str,",
         "        body: Mapping[str, Any] | None,",
-        "        format: str | None,",
         "    ) -> Any: ...",
         "",
         "",

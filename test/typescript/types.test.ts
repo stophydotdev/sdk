@@ -13,18 +13,22 @@ export async function typedCalls(): Promise<void> {
 		query: "bun runtime",
 		limit: 2,
 	});
-	const url = result.data.results[0]?.url;
-	if (url !== undefined && typeof url !== "string") {
-		throw new Error(url);
+	const first = result.data.results[0];
+	if (first?.type === "video") {
+		const url: string = first.videoUrl;
+		if (url.length < 0) throw new Error(url);
 	}
-	const markdown: string = await client.youtube.search(
-		{ query: "bun runtime" },
-		{ format: "markdown" },
-	);
-	if (markdown.length < 0) throw new Error("unreachable");
-	await client.youtube.comments.replies({ video: "abc", cursor: "tok" });
-	await client.maps.search({ query: "cairo" });
+	const credits: number = result.creditsUsed;
+	if (credits < 0) throw new Error("unreachable");
+	await client.transcript({ video: "https://youtu.be/abc" });
+	await client.ads.search({ network: "meta", query: "shoes" });
+	await client.suggest({ source: "amazon", query: "bun" });
+	await client.google.trends({ by: "region", queries: ["bun"] });
 
 	// @ts-expect-error query is required
 	await client.youtube.search({});
+	// @ts-expect-error network is required
+	await client.ads.search({ query: "shoes" });
+	// @ts-expect-error format is gone
+	await client.youtube.search({ query: "bun" }, { format: "markdown" });
 }

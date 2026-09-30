@@ -18,7 +18,7 @@ USER_AGENT = f"stophy-python/{version('stophy')}"
 
 
 def default_headers(api_key: str, headers: Mapping[str, str] | None) -> dict[str, str]:
-    defaults = {"User-Agent": USER_AGENT}
+    defaults = {"User-Agent": USER_AGENT, "Accept": "application/json"}
     if api_key:
         defaults["Authorization"] = f"Bearer {api_key}"
     return {**defaults, **(headers or {})}
@@ -65,10 +65,6 @@ def _retry_after(response: httpx.Response, error: dict[str, Any]) -> int | None:
 
 
 def handle_response(response: httpx.Response) -> Any:
-    accept = response.request.headers.get("accept", "")
-    if response.is_success and "text/markdown" in accept:
-        return response.text
-
     payload = _payload(response)
     if response.is_success and isinstance(payload, dict):
         return payload

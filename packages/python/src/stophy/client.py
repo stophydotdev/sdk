@@ -44,14 +44,10 @@ class Stophy(SyncSurface):
         method: str,
         path: str,
         body: Mapping[str, Any] | None,
-        format: str | None,
     ) -> Any:
-        headers = {"Accept": "text/markdown" if format == "markdown" else "application/json"}
         if method == "GET":
-            return self._transport.request(method, path, headers=headers)
-        return self._transport.request(
-            method, path, headers=headers, json={} if body is None else body
-        )
+            return self._transport.request(method, path)
+        return self._transport.request(method, path, json={} if body is None else body)
 
     def usage(self) -> Usage:
         """Current balance and lifetime usage. Requires an API key."""

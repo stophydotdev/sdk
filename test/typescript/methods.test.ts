@@ -3,7 +3,16 @@ import { endpointAt, makeClient, queryOf, specPaths } from "./helpers";
 
 const envelope = {
 	success: true,
-	data: { results: [{ type: "video", url: "https://youtu.be/abc" }] },
+	data: {
+		results: [
+			{
+				type: "video",
+				videoId: "abc",
+				videoUrl: "https://youtu.be/abc",
+				channelName: "Bun",
+			},
+		],
+	},
 	creditsUsed: 1,
 	requestId: "req_1",
 };
@@ -15,37 +24,35 @@ describe("namespaced operations", () => {
 			query: "bun runtime",
 			limit: 2,
 		});
-		expect(result.data.results[0]?.url).toBe("https://youtu.be/abc");
+		const first = result.data.results[0];
+		expect(first?.type === "video" && first.videoUrl).toBe(
+			"https://youtu.be/abc",
+		);
 		expect(calls[0]?.method).toBe("POST");
 		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/youtube/search");
 		expect(calls[0]?.body).toEqual({ query: "bun runtime", limit: 2 });
 		expect(calls[0]?.headers.get("accept")).toBe("application/json");
 	});
 
-	test("calls a nested operation on the parent namespace", async () => {
+	test("calls a single-segment operation", async () => {
 		const { client, calls } = makeClient({ json: envelope });
-		await client.youtube.comments.replies({
-			video: "abc",
-			cursor: "tok",
-			limit: 5,
-		});
-		expect(new URL(calls[0]?.url ?? "").pathname).toBe(
-			"/v1/youtube/comments/replies",
-		);
-		expect(calls[0]?.body).toEqual({ video: "abc", cursor: "tok", limit: 5 });
+		await client.transcript({ video: "https://youtu.be/abc" });
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/transcript");
+		expect(calls[0]?.body).toEqual({ video: "https://youtu.be/abc" });
+
+		await client.suggest({ source: "google", query: "bun" });
+		expect(new URL(calls[1]?.url ?? "").pathname).toBe("/v1/suggest");
+		expect(calls[1]?.body).toEqual({ source: "google", query: "bun" });
 	});
 
-	test("returns markdown when format is markdown", async () => {
-		const { client, calls } = makeClient({
-			raw: "# results",
-			headers: { "content-type": "text/markdown" },
-		});
-		const text = await client.youtube.search(
-			{ query: "bun runtime" },
-			{ format: "markdown" },
-		);
-		expect(text).toBe("# results");
-		expect(calls[0]?.headers.get("accept")).toBe("text/markdown");
+	test("sends the network discriminator for joined endpoints", async () => {
+		const { client, calls } = makeClient({ json: envelope });
+		await client.ads.search({ network: "meta", query: "shoes" });
+		await client.google.trends({ by: "time", queries: ["bun"] });
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/ads/search");
+		expect(calls[0]?.body).toEqual({ network: "meta", query: "shoes" });
+		expect(new URL(calls[1]?.url ?? "").pathname).toBe("/v1/google/trends");
+		expect(calls[1]?.body).toEqual({ by: "time", queries: ["bun"] });
 	});
 
 	test("forwards the abort signal", async () => {
@@ -53,16 +60,19 @@ describe("namespaced operations", () => {
 		const controller = new AbortController();
 		controller.abort();
 		await client.maps
-			.search({ query: "cairo" }, { signal: controller.signal })
+			.search(
+				{ query: "cairo", location: "Cairo" },
+				{ signal: controller.signal },
+			)
 			.catch(() => undefined);
 		expect(calls[0]?.signal?.aborted).toBe(true);
 	});
 
 	test("omits an empty optional body", async () => {
 		const { client, calls } = makeClient({ json: envelope });
-		await client.crypto.trending();
+		await client.crypto.coins();
 		expect(calls[0]?.body).toEqual({});
-		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/crypto/trending");
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/crypto/coins");
 	});
 
 	test("lists endpoints with GET", async () => {
@@ -119,7 +129,7 @@ describe("namespaced operations", () => {
 	test("exposes every operation in the spec", async () => {
 		const { client } = makeClient({ json: envelope });
 		const paths = await specPaths();
-		expect(paths.length).toBeGreaterThan(100);
+		expect(paths.length).toBeGreaterThan(90);
 		for (const path of paths) {
 			expect(typeof endpointAt(client, path)).toBe("function");
 		}

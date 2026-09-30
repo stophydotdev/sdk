@@ -54,28 +54,9 @@ YoutubeSearchType = Literal[
     "shorts",
 ]
 
-YoutubeSearchDuration = Literal[
-    "all",
-    "short",
-    "medium",
-    "long",
-]
-
 YoutubeSearchSort = Literal[
     "relevance",
     "top",
-]
-
-YoutubeSearchFeaturesItem = Literal[
-    "360",
-    "live",
-    "4k",
-    "hd",
-    "subtitles",
-    "creativeCommons",
-    "vr180",
-    "3d",
-    "hdr",
 ]
 
 YoutubeCommentsSort = Literal[
@@ -89,7 +70,6 @@ YoutubeChannelTab = Literal[
     "live",
     "playlists",
     "posts",
-    "search",
 ]
 
 RedditSearchType = Literal[
@@ -110,17 +90,12 @@ RedditPostSort = Literal[
     "best",
     "top",
     "newest",
-    "controversial",
-    "oldest",
-    "qa",
 ]
 
 RedditSubredditSort = Literal[
     "hot",
     "newest",
     "top",
-    "rising",
-    "controversial",
 ]
 
 RedditUserTab = Literal[
@@ -133,7 +108,6 @@ RedditUserSort = Literal[
     "newest",
     "hot",
     "top",
-    "controversial",
 ]
 
 MapsReviewsSort = Literal[
@@ -150,20 +124,13 @@ InstagramProfileResponseDataPostsItemType = Literal[
     "carousel",
 ]
 
-InstagramPostsType = Literal[
-    "all",
-    "reels",
-    "videos",
-    "photos",
-]
-
 InstagramSearchType = Literal[
     "all",
     "posts",
     "reels",
 ]
 
-TiktokVideoResponseDataVideoType = Literal[
+TiktokProfileResponseDataPostsItemType = Literal[
     "video",
     "photo",
 ]
@@ -173,27 +140,19 @@ TiktokSearchType = Literal[
     "users",
 ]
 
-BlueskyPostsType = Literal[
-    "all",
-    "posts",
-    "media",
-    "video",
-    "threads",
-]
-
-ThreadsPostsResponseDataPostsItemType = Literal[
+ThreadsProfileResponseDataPostsItemType = Literal[
     "text",
     "photo",
     "video",
     "carousel",
 ]
 
-TelegramChannelResponseDataChannelType = Literal[
+TelegramPostsResponseDataChannelType = Literal[
     "channel",
     "group",
 ]
 
-TelegramPostsResponseDataPostsItemMediaItemType = Literal[
+TelegramPostsResponseDataResultsItemMediaItemType = Literal[
     "photo",
     "video",
     "roundVideo",
@@ -204,30 +163,10 @@ TelegramPostsResponseDataPostsItemMediaItemType = Literal[
     "poll",
 ]
 
-MetaAdsSearchAdType = Literal[
-    "all",
-    "politicalAndIssue",
-]
-
-MetaAdsSearchStatus = Literal[
+MetaAdsPageStatus = Literal[
     "active",
     "inactive",
     "all",
-]
-
-MetaAdsSearchMediaType = Literal[
-    "all",
-    "image",
-    "video",
-    "meme",
-    "none",
-]
-
-MetaAdsSearchPlatformsItem = Literal[
-    "facebook",
-    "instagram",
-    "messenger",
-    "audienceNetwork",
 ]
 
 LinkedinJobsSearchWithin = Literal[
@@ -237,15 +176,13 @@ LinkedinJobsSearchWithin = Literal[
     "all",
 ]
 
-LinkedinJobsSearchJobTypesItem = Literal[
-    "fullTime",
-    "partTime",
-    "contract",
-    "temporary",
-    "internship",
+LinkedinJobsSearchWorkplacesItem = Literal[
+    "onsite",
+    "remote",
+    "hybrid",
 ]
 
-LinkedinJobsSearchExperienceItem = Literal[
+LinkedinJobsSearchExperiencesItem = Literal[
     "internship",
     "entry",
     "associate",
@@ -254,38 +191,10 @@ LinkedinJobsSearchExperienceItem = Literal[
     "executive",
 ]
 
-LinkedinJobsSearchWorkplaceItem = Literal[
-    "onsite",
-    "remote",
-    "hybrid",
-]
-
-LinkedinJobsSearchSort = Literal[
-    "relevance",
-    "newest",
-]
-
-LinkedinAdsSearchWithin = Literal[
-    "month",
-    "year",
-    "all",
-]
-
 ZillowSearchStatus = Literal[
     "forSale",
     "forRent",
     "sold",
-]
-
-ZillowSearchSort = Literal[
-    "relevance",
-    "newest",
-    "priceHigh",
-    "priceLow",
-    "bedrooms",
-    "bathrooms",
-    "sqft",
-    "lot",
 ]
 
 ZillowSearchHomeTypesItem = Literal[
@@ -298,79 +207,18 @@ ZillowSearchHomeTypesItem = Literal[
     "manufactured",
 ]
 
-ZillowSearchListingTypesItem = Literal[
-    "agent",
-    "owner",
-    "newConstruction",
-    "comingSoon",
-    "auction",
-    "foreclosure",
+ZillowSearchSort = Literal[
+    "relevance",
+    "newest",
+    "priceHigh",
+    "priceLow",
 ]
 
-ZillowSearchWithin = Literal[
-    "day",
-    "week",
-    "twoWeeks",
-    "month",
-    "threeMonths",
-    "sixMonths",
-    "year",
-    "twoYears",
-    "threeYears",
-    "all",
-]
-
-ZillowSearchFeaturesItem = Literal[
-    "garage",
-    "pool",
-    "airConditioning",
-    "waterfront",
-    "singleStory",
-    "openHouse",
-    "tour3d",
-    "cityView",
-    "parkView",
-    "waterView",
-    "mountainView",
-    "catsAllowed",
-    "furnished",
-]
-
-ZillowSearchResponseDataListingsItemStatus = Literal[
+ZillowSearchResponseDataResultsItemStatus = Literal[
     "forSale",
     "forRent",
     "sold",
     "other",
-]
-
-GoogleAdsSearchMediaType = Literal[
-    "text",
-    "image",
-    "video",
-]
-
-GoogleAdsSearchPlatform = Literal[
-    "play",
-    "maps",
-    "search",
-    "shopping",
-    "youtube",
-]
-
-GoogleAdsSearchResponseDataAdsItemFormat = Literal[
-    "text",
-    "image",
-    "video",
-    "unknown",
-]
-
-GoogleAdsAdResponseDataAdRegionsItemPlatformsItemPlatform = Literal[
-    "play",
-    "maps",
-    "search",
-    "shopping",
-    "youtube",
-    "unknown",
 ]
 
 UpworkSearchSort = Literal[
@@ -383,79 +231,10 @@ UpworkSearchJobType = Literal[
     "fixed",
 ]
 
-UpworkSearchExperienceItem = Literal[
+UpworkSearchExperience = Literal[
     "entry",
     "intermediate",
     "expert",
-]
-
-UpworkSearchDurationItem = Literal[
-    "week",
-    "month",
-    "semester",
-    "ongoing",
-]
-
-UpworkSearchWorkloadItem = Literal[
-    "asNeeded",
-    "partTime",
-    "fullTime",
-]
-
-UpworkSearchClientHiresItem = Literal[
-    "none",
-    "oneToNine",
-    "tenPlus",
-]
-
-GoogleSuggestExpand = Literal[
-    "none",
-    "alphabet",
-    "questions",
-    "all",
-]
-
-GoogleSuggestVertical = Literal[
-    "web",
-    "shopping",
-]
-
-AmazonSuggestCountry = Literal[
-    "us",
-    "ca",
-    "mx",
-    "br",
-    "gb",
-    "de",
-    "fr",
-    "it",
-    "es",
-    "nl",
-    "be",
-    "se",
-    "pl",
-    "tr",
-    "ae",
-    "sa",
-    "eg",
-    "in",
-    "jp",
-    "au",
-    "sg",
-]
-
-GoogleTrendsInterestVertical = Literal[
-    "web",
-    "images",
-    "news",
-    "youtube",
-    "shopping",
-]
-
-GoogleTrendsRegionsResolution = Literal[
-    "country",
-    "region",
-    "metro",
 ]
 
 GoogleTrendsTrendingWithin = Literal[
@@ -487,99 +266,22 @@ GoogleTrendsTrendingCategory = Literal[
     "climate",
 ]
 
-SiteMapResponseDataSource = Literal[
-    "sitemap",
-    "crawl",
-]
-
-DomainDnsTypesItem = Literal[
-    "A",
-    "AAAA",
-    "CNAME",
-    "MX",
-    "NS",
-    "TXT",
-    "SOA",
-    "CAA",
-]
-
-DomainTechResponseDataTechnologiesItemEvidence = Literal[
-    "html",
-    "script",
-    "cookie",
-    "generator",
-    "dns",
-]
-
 EmailCheckResponseDataEmailsItemStatus = Literal[
     "ok",
     "risky",
     "invalid",
 ]
 
+EmailFindResponseDataStatus = Literal[
+    "ok",
+    "risky",
+    "invalid",
+    "unknown",
+]
+
 CryptoCoinsSort = Literal[
     "marketCap",
     "volume",
-    "id",
-]
-
-CryptoCoinsOrder = Literal[
-    "asc",
-    "desc",
-]
-
-CryptoCoinsResponseDataCoinsItemSource = Literal[
-    "coingecko",
-    "coinmarketcap",
-]
-
-CryptoHistoryWithin = Literal[
-    "day",
-    "week",
-    "twoWeeks",
-    "month",
-    "threeMonths",
-    "sixMonths",
-    "year",
-]
-
-CryptoCategoriesSort = Literal[
-    "marketCap",
-    "change",
-    "name",
-]
-
-CryptoMoversWithin = Literal[
-    "hour",
-    "day",
-    "week",
-    "month",
-]
-
-CryptoMoversRankUpTo = Literal[
-    100,
-    200,
-    500,
-]
-
-CryptoDexNewType = Literal[
-    "profiles",
-    "boosts",
-    "topBoosts",
-    "takeovers",
-]
-
-CryptoPumpCoinsSort = Literal[
-    "newest",
-    "lastTrade",
-    "marketCap",
-    "lastReply",
-    "live",
-]
-
-CryptoPumpTradesResponseDataTradesItemType = Literal[
-    "buy",
-    "sell",
 ]
 
 CryptoWalletChain = Literal[
@@ -597,25 +299,6 @@ CryptoWalletResponseDataTransactionsItemStatus = Literal[
     "success",
     "failed",
     "pending",
-]
-
-CryptoTokenHoldersChain = Literal[
-    "ethereum",
-    "base",
-    "arbitrum",
-    "optimism",
-    "polygon",
-    "gnosis",
-]
-
-CryptoBinanceAnnouncementsCategory = Literal[
-    "listings",
-    "delistings",
-    "news",
-    "activities",
-    "airdrops",
-    "maintenance",
-    "api",
 ]
 
 IndeedSearchCountry = Literal[
@@ -692,28 +375,25 @@ IndeedSearchCountry = Literal[
     "pa",
 ]
 
-IndeedSearchJobType = Literal[
-    "fullTime",
-    "partTime",
-    "contract",
-    "internship",
-]
-
 IndeedSearchWithin = Literal[
     "day",
-    "threeDays",
     "week",
-    "twoWeeks",
     "month",
-    "all",
 ]
 
-IndeedSearchResponseDataJobsItemSalaryPeriod = Literal[
+IndeedSearchResponseDataResultsItemSalaryPeriod = Literal[
     "hour",
     "day",
     "week",
     "month",
     "year",
+]
+
+IndeedSearchResponseDataResultsItemJobTypesItem = Literal[
+    "fullTime",
+    "partTime",
+    "contract",
+    "internship",
 ]
 
 TripadvisorSearchType = Literal[
@@ -799,107 +479,37 @@ AppstoreTopChart = Literal[
     "grossing",
 ]
 
+AppstoreTopGenre = Literal[
+    "business",
+    "weather",
+    "utilities",
+    "travel",
+    "sports",
+    "socialNetworking",
+    "reference",
+    "productivity",
+    "photoVideo",
+    "news",
+    "navigation",
+    "music",
+    "lifestyle",
+    "healthFitness",
+    "games",
+    "finance",
+    "entertainment",
+    "education",
+    "books",
+    "medical",
+    "foodDrink",
+    "shopping",
+    "developerTools",
+    "graphicsDesign",
+]
+
 GoogleplayReviewsSort = Literal[
     "newest",
     "relevance",
     "highest",
-]
-
-AirbnbSearchRoomType = Literal[
-    "entireHome",
-    "privateRoom",
-    "sharedRoom",
-    "hotelRoom",
-]
-
-AirbnbSearchAmenitiesItem = Literal[
-    "wifi",
-    "kitchen",
-    "washer",
-    "dryer",
-    "airConditioning",
-    "heating",
-    "workspace",
-    "tv",
-    "hairDryer",
-    "iron",
-    "pool",
-    "hotTub",
-    "freeParking",
-    "evCharger",
-    "crib",
-    "gym",
-    "bbqGrill",
-    "breakfast",
-    "fireplace",
-    "smokingAllowed",
-    "smokeAlarm",
-    "carbonMonoxideAlarm",
-    "selfCheckIn",
-]
-
-RedfinSearchStatus = Literal[
-    "forSale",
-    "sold",
-]
-
-RedfinSearchSoldWithin = Literal[
-    "week",
-    "month",
-    "threeMonths",
-    "sixMonths",
-    "year",
-    "twoYears",
-    "threeYears",
-    "fiveYears",
-]
-
-RedfinSearchSort = Literal[
-    "relevance",
-    "newest",
-    "priceLow",
-    "priceHigh",
-    "sqft",
-    "pricePerSqft",
-]
-
-RedfinSearchHomeTypesItem = Literal[
-    "house",
-    "condo",
-    "townhouse",
-    "multiFamily",
-    "land",
-    "other",
-    "manufactured",
-    "coop",
-]
-
-RealtorSearchStatus = Literal[
-    "forSale",
-    "forRent",
-    "sold",
-    "pending",
-]
-
-RealtorSearchSort = Literal[
-    "relevance",
-    "newest",
-    "priceLow",
-    "priceHigh",
-    "sqft",
-    "recentlySold",
-]
-
-RealtorSearchHomeTypesItem = Literal[
-    "house",
-    "condo",
-    "townhouse",
-    "multiFamily",
-    "duplex",
-    "apartment",
-    "mobile",
-    "land",
-    "farm",
 ]
 
 RightmoveSearchStatus = Literal[
@@ -912,33 +522,6 @@ RightmoveSearchSort = Literal[
     "oldest",
     "priceHigh",
     "priceLow",
-]
-
-RightmoveSearchPropertyTypesItem = Literal[
-    "detached",
-    "semiDetached",
-    "terraced",
-    "flat",
-    "bungalow",
-    "land",
-    "parkHome",
-]
-
-RightmoveSearchMustHaveItem = Literal[
-    "garden",
-    "parking",
-    "newHome",
-    "retirement",
-    "sharedOwnership",
-    "auction",
-]
-
-RightmoveSearchWithin = Literal[
-    "day",
-    "threeDays",
-    "week",
-    "twoWeeks",
-    "all",
 ]
 
 ImmoscoutSearchType = Literal[
@@ -958,96 +541,94 @@ ImmoscoutSearchSort = Literal[
     "largest",
 ]
 
-ImmoscoutSearchEquipmentItem = Literal[
-    "balcony",
-    "builtInKitchen",
-    "garden",
-    "cellar",
-    "parking",
-    "lift",
-    "stepFree",
-    "guestToilet",
-]
-
 PinterestSearchType = Literal[
     "pins",
     "videos",
 ]
 
-XTweetResponseDataTweetMediaItemType = Literal[
+XPostResponseDataMediaItemType = Literal[
     "photo",
     "video",
     "gif",
 ]
 
-FinanceHistoryWithin = Literal[
-    "day",
-    "fiveDays",
-    "month",
-    "threeMonths",
-    "sixMonths",
-    "year",
-    "twoYears",
-    "fiveYears",
-    "tenYears",
-    "yearToDate",
-    "all",
-]
-
 FinanceHistoryInterval = Literal[
     "minute",
-    "twoMinutes",
     "fiveMinutes",
     "fifteenMinutes",
-    "thirtyMinutes",
     "hour",
-    "ninetyMinutes",
     "day",
-    "fiveDays",
     "week",
     "month",
-    "threeMonths",
 ]
 
-SnapchatProfileResponseDataStoriesItemType = Literal[
+AdsSearchOption1MediaType = Literal[
+    "text",
     "image",
     "video",
 ]
 
-SnapchatAdsSearchStatus = Literal[
-    "active",
-    "paused",
+AdsSearchOption3Within = Literal[
+    "month",
+    "year",
+    "all",
 ]
 
-TumblrPostsType = Literal[
+AdsSearchResponseDataOption1ResultsItemFormat = Literal[
     "text",
-    "photo",
-    "quote",
-    "link",
-    "chat",
-    "audio",
+    "image",
     "video",
-    "answer",
+    "unknown",
 ]
 
-LinkedinProfileResponseDataProfileRolesItem = TypedDict(
-    "LinkedinProfileResponseDataProfileRolesItem",
+SuggestOption2Country = Literal[
+    "us",
+    "ca",
+    "mx",
+    "br",
+    "gb",
+    "de",
+    "fr",
+    "it",
+    "es",
+    "nl",
+    "be",
+    "se",
+    "pl",
+    "tr",
+    "ae",
+    "sa",
+    "eg",
+    "in",
+    "jp",
+    "au",
+    "sg",
+]
+
+GoogleTrendsOption1Resolution = Literal[
+    "country",
+    "region",
+    "metro",
+]
+
+LinkedinProfileResponseDataRolesItem = TypedDict(
+    "LinkedinProfileResponseDataRolesItem",
     {
         "title": NotRequired[str],
         "company": NotRequired[str],
-        "url": NotRequired[str],
+        "companyUrl": NotRequired[str],
         "from": NotRequired[str],
         "to": NotRequired[str],
         "isCurrent": bool,
     },
 )
 
-LinkedinProfileResponseDataProfileEducationItem = TypedDict(
-    "LinkedinProfileResponseDataProfileEducationItem",
+LinkedinProfileResponseDataEducationItem = TypedDict(
+    "LinkedinProfileResponseDataEducationItem",
     {
         "school": NotRequired[str],
         "degree": NotRequired[str],
-        "url": NotRequired[str],
+        "schoolUrl": NotRequired[str],
         "from": NotRequired[str],
         "to": NotRequired[str],
     },
@@ -1056,7 +637,7 @@ LinkedinProfileResponseDataProfileEducationItem = TypedDict(
 CryptoWalletResponseDataTransactionsItem = TypedDict(
     "CryptoWalletResponseDataTransactionsItem",
     {
-        "id": NotRequired[str],
+        "transactionId": NotRequired[str],
         "createdAt": NotRequired[str],
         "block": NotRequired[int],
         "from": NotRequired[str],
@@ -1071,17 +652,19 @@ CryptoWalletResponseDataTransactionsItem = TypedDict(
 
 class EndpointCatalogSourcesItem(TypedDict):
     id: str
+    name: str
     summary: str
 
 
 class EndpointCatalogEndpointsItem(TypedDict):
     id: str
+    title: str
     summary: str
+    bestWhen: str | None
     method: Literal["POST"]
     path: str
     credits: int
     keyless: bool
-    perItems: int | None
     cacheTtlSeconds: int
     input: NotRequired[dict[str, Any]]
     example: dict[str, Any] | None
@@ -1111,22 +694,18 @@ class WebSearchResponse(TypedDict):
     requestId: str
 
 
-class WebNewsResponseDataArticlesItemPublisher(TypedDict):
-    name: NotRequired[str]
-    url: NotRequired[str]
-
-
-class WebNewsResponseDataArticlesItem(TypedDict):
+class WebNewsResponseDataResultsItem(TypedDict):
     title: str
     url: str
-    publisher: NotRequired[WebNewsResponseDataArticlesItemPublisher]
-    createdAt: NotRequired[str]
+    publisherName: NotRequired[str]
+    publisherUrl: NotRequired[str]
+    publishedAt: NotRequired[str]
     domain: NotRequired[str]
     position: int
 
 
 class WebNewsResponseData(TypedDict):
-    articles: list[WebNewsResponseDataArticlesItem]
+    results: list[WebNewsResponseDataResultsItem]
 
 
 class WebNewsResponse(TypedDict):
@@ -1145,7 +724,6 @@ class WebContactsResponseData(TypedDict):
     emails: list[str]
     phones: list[str]
     socials: list[WebContactsResponseDataSocialsItem]
-    url: str
     pages: list[str]
 
 
@@ -1156,48 +734,45 @@ class WebContactsResponse(TypedDict):
     requestId: str
 
 
-class YoutubeSearchResponseDataResultsItemOption0Channel(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    isVerified: NotRequired[bool]
-
-
 class YoutubeSearchResponseDataResultsItemOption0(TypedDict):
     type: Literal["video"]
-    id: NotRequired[str]
-    url: str
+    videoId: NotRequired[str]
+    videoUrl: str
     title: NotRequired[str]
-    channel: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    channelId: NotRequired[str]
+    channelName: NotRequired[str]
+    channelUrl: NotRequired[str]
+    channelUsername: NotRequired[str]
     durationSeconds: NotRequired[int]
     views: NotRequired[int]
-    thumbnail: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
     isShort: bool
     isLive: bool
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
 
 
 class YoutubeSearchResponseDataResultsItemOption1(TypedDict):
     type: Literal["channel"]
-    id: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    username: NotRequired[str]
+    channelId: NotRequired[str]
+    channelUrl: str
+    channelName: NotRequired[str]
+    channelUsername: NotRequired[str]
     description: NotRequired[str]
     subscribers: NotRequired[int]
-    thumbnail: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
 
 
 class YoutubeSearchResponseDataResultsItemOption2(TypedDict):
     type: Literal["playlist"]
-    id: NotRequired[str]
-    url: str
+    playlistId: NotRequired[str]
+    playlistUrl: str
     title: NotRequired[str]
-    channel: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    channelId: NotRequired[str]
+    channelName: NotRequired[str]
+    channelUrl: NotRequired[str]
+    channelUsername: NotRequired[str]
     videos: NotRequired[int]
-    thumbnail: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
 
 
 class YoutubeSearchResponseData(TypedDict):
@@ -1217,16 +792,19 @@ class YoutubeSearchResponse(TypedDict):
 
 
 class YoutubeVideoResponseData(TypedDict):
-    id: NotRequired[str]
-    url: str
+    videoId: NotRequired[str]
+    videoUrl: str
     title: NotRequired[str]
-    channel: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    channelId: NotRequired[str]
+    channelName: NotRequired[str]
+    channelUrl: NotRequired[str]
+    channelUsername: NotRequired[str]
     durationSeconds: NotRequired[int]
     views: NotRequired[int]
-    thumbnail: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
     isShort: bool
     isLive: bool
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     description: NotRequired[str]
     likes: NotRequired[int]
     category: NotRequired[str]
@@ -1240,37 +818,40 @@ class YoutubeVideoResponse(TypedDict):
     requestId: str
 
 
-class YoutubeTranscriptResponseDataSegmentsItem(TypedDict):
+class TranscriptResponseDataSegmentsItem(TypedDict):
     startSeconds: float
     endSeconds: float
     text: NotRequired[str]
 
 
-class YoutubeTranscriptResponseData(TypedDict):
-    id: NotRequired[str]
-    url: str
+class TranscriptResponseData(TypedDict):
+    videoId: NotRequired[str]
+    videoUrl: str
     language: NotRequired[str]
     isAutoGenerated: bool
     durationSeconds: NotRequired[float]
     text: NotRequired[str]
-    segments: NotRequired[list[YoutubeTranscriptResponseDataSegmentsItem]]
+    segments: NotRequired[list[TranscriptResponseDataSegmentsItem]]
 
 
-class YoutubeTranscriptResponse(TypedDict):
+class TranscriptResponse(TypedDict):
     success: Literal[True]
-    data: YoutubeTranscriptResponseData
+    data: TranscriptResponseData
     creditsUsed: int
     requestId: str
 
 
-class YoutubeCommentsResponseDataCommentsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
+class YoutubeCommentsResponseDataResultsItem(TypedDict):
+    commentId: NotRequired[str]
+    commentUrl: str
     text: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    authorId: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorUrl: NotRequired[str]
     likes: int
     replies: int
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     isPinned: bool
     isHearted: bool
     isChannelOwner: bool
@@ -1278,7 +859,7 @@ class YoutubeCommentsResponseDataCommentsItem(TypedDict):
 
 
 class YoutubeCommentsResponseData(TypedDict):
-    comments: list[YoutubeCommentsResponseDataCommentsItem]
+    results: list[YoutubeCommentsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -1289,78 +870,38 @@ class YoutubeCommentsResponse(TypedDict):
     requestId: str
 
 
-class YoutubeCommentsRepliesResponseData(TypedDict):
-    replies: list[YoutubeCommentsResponseDataCommentsItem]
-    cursor: NotRequired[str]
-
-
-class YoutubeCommentsRepliesResponse(TypedDict):
-    success: Literal[True]
-    data: YoutubeCommentsRepliesResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class YoutubeChannelResponseDataChannelAboutLinksItem(TypedDict):
-    title: NotRequired[str]
-    url: str
-
-
-class YoutubeChannelResponseDataChannelAbout(TypedDict):
-    country: NotRequired[str]
-    joinedDate: NotRequired[str]
-    views: NotRequired[int]
-    links: NotRequired[list[YoutubeChannelResponseDataChannelAboutLinksItem]]
-
-
-class YoutubeChannelResponseDataChannel(TypedDict):
-    id: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    username: NotRequired[str]
-    description: NotRequired[str]
-    subscribers: NotRequired[int]
-    videos: NotRequired[int]
-    avatar: NotRequired[str]
-    banner: NotRequired[str]
-    about: NotRequired[YoutubeChannelResponseDataChannelAbout]
-
-
-class YoutubeChannelResponseDataItemsItemOption2ImagesItem(TypedDict):
-    url: str
-    caption: NotRequired[str]
-    alt: NotRequired[str]
-
-
-class YoutubeChannelResponseDataItemsItemOption2Video(TypedDict):
-    id: NotRequired[str]
-    title: NotRequired[str]
-
-
-class YoutubeChannelResponseDataItemsItemOption2Poll(TypedDict):
-    choices: NotRequired[list[str]]
-    totalVotes: NotRequired[int]
-
-
-class YoutubeChannelResponseDataItemsItemOption2(TypedDict):
+class YoutubeChannelResponseDataResultsItemOption2(TypedDict):
     type: Literal["post"]
-    id: NotRequired[str]
-    url: str
+    postId: NotRequired[str]
+    postUrl: str
     text: NotRequired[str]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     likes: NotRequired[int]
     comments: NotRequired[int]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    video: NotRequired[YoutubeChannelResponseDataItemsItemOption2Video]
-    poll: NotRequired[YoutubeChannelResponseDataItemsItemOption2Poll]
+    imageUrls: NotRequired[list[str]]
+    videoId: NotRequired[str]
+    videoTitle: NotRequired[str]
+    pollChoices: NotRequired[list[str]]
+    pollTotalVotes: NotRequired[int]
 
 
 class YoutubeChannelResponseData(TypedDict):
-    channel: NotRequired[YoutubeChannelResponseDataChannel]
-    items: list[
+    channelId: NotRequired[str]
+    channelUrl: NotRequired[str]
+    channelName: NotRequired[str]
+    channelUsername: NotRequired[str]
+    description: NotRequired[str]
+    subscribers: NotRequired[int]
+    videos: NotRequired[int]
+    avatarUrl: NotRequired[str]
+    bannerUrl: NotRequired[str]
+    country: NotRequired[str]
+    joinedDate: NotRequired[str]
+    totalViews: NotRequired[int]
+    results: list[
         YoutubeSearchResponseDataResultsItemOption0
         | YoutubeSearchResponseDataResultsItemOption2
-        | YoutubeChannelResponseDataItemsItemOption2
+        | YoutubeChannelResponseDataResultsItemOption2
     ]
     cursor: NotRequired[str]
 
@@ -1372,20 +913,19 @@ class YoutubeChannelResponse(TypedDict):
     requestId: str
 
 
-class YoutubePlaylistResponseDataPlaylist(TypedDict):
-    id: NotRequired[str]
-    url: str
+class YoutubePlaylistResponseData(TypedDict):
+    playlistId: NotRequired[str]
+    playlistUrl: NotRequired[str]
     title: NotRequired[str]
     description: NotRequired[str]
-    channel: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    channelId: NotRequired[str]
+    channelName: NotRequired[str]
+    channelUrl: NotRequired[str]
+    channelUsername: NotRequired[str]
     videos: NotRequired[int]
     views: NotRequired[int]
-    thumbnail: NotRequired[str]
-
-
-class YoutubePlaylistResponseData(TypedDict):
-    playlist: NotRequired[YoutubePlaylistResponseDataPlaylist]
-    videos: list[YoutubeSearchResponseDataResultsItemOption0]
+    thumbnailUrl: NotRequired[str]
+    results: list[YoutubeSearchResponseDataResultsItemOption0]
     cursor: NotRequired[str]
 
 
@@ -1396,89 +936,63 @@ class YoutubePlaylistResponse(TypedDict):
     requestId: str
 
 
-class RedditSearchResponseDataResultsItemOption0Link(TypedDict):
-    url: str
-    title: NotRequired[str]
-    description: NotRequired[str]
-    image: NotRequired[str]
-
-
-class RedditSearchResponseDataResultsItemOption0Video(TypedDict):
-    url: str
-    hls: NotRequired[str]
-    durationSeconds: NotRequired[float]
-
-
 class RedditSearchResponseDataResultsItemOption0PollOptionsItem(TypedDict):
     text: NotRequired[str]
     votes: NotRequired[int]
 
 
-class RedditSearchResponseDataResultsItemOption0Poll(TypedDict):
-    options: NotRequired[list[RedditSearchResponseDataResultsItemOption0PollOptionsItem]]
-    totalVotes: NotRequired[int]
-    endsAt: NotRequired[str]
-
-
-class RedditSearchResponseDataResultsItemOption0RepostOf(TypedDict):
-    id: NotRequired[str]
-    url: NotRequired[str]
-    subreddit: NotRequired[str]
-    title: NotRequired[str]
-
-
 class RedditSearchResponseDataResultsItemOption0(TypedDict):
     type: Literal["post"]
-    id: NotRequired[str]
-    url: str
+    postId: NotRequired[str]
+    postUrl: str
     title: NotRequired[str]
     text: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorUrl: NotRequired[str]
     subreddit: NotRequired[str]
     score: int
     upvotePercent: NotRequired[float]
     comments: int
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     flair: NotRequired[str]
-    link: NotRequired[RedditSearchResponseDataResultsItemOption0Link]
-    thumbnail: NotRequired[str]
+    linkUrl: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
     isNsfw: bool
     isVideo: bool
     isPinned: bool
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    video: NotRequired[RedditSearchResponseDataResultsItemOption0Video]
-    poll: NotRequired[RedditSearchResponseDataResultsItemOption0Poll]
-    repostOf: NotRequired[RedditSearchResponseDataResultsItemOption0RepostOf]
-
-
-class RedditSearchResponseDataResultsItemOption1RulesItem(TypedDict):
-    title: NotRequired[str]
-    description: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+    videoUrl: NotRequired[str]
+    videoHlsUrl: NotRequired[str]
+    videoDurationSeconds: NotRequired[float]
+    pollOptions: NotRequired[list[RedditSearchResponseDataResultsItemOption0PollOptionsItem]]
+    pollTotalVotes: NotRequired[int]
+    pollEndsAt: NotRequired[str]
+    repostOfUrl: NotRequired[str]
 
 
 class RedditSearchResponseDataResultsItemOption1(TypedDict):
     type: Literal["subreddit"]
-    id: NotRequired[str]
-    name: NotRequired[str]
-    url: str
+    subredditId: NotRequired[str]
+    subredditName: NotRequired[str]
+    subredditUrl: str
     title: NotRequired[str]
     description: NotRequired[str]
     members: NotRequired[int]
     createdAt: NotRequired[str]
-    avatar: NotRequired[str]
+    avatarUrl: NotRequired[str]
     isNsfw: bool
-    rules: NotRequired[list[RedditSearchResponseDataResultsItemOption1RulesItem]]
 
 
 class RedditSearchResponseDataResultsItemOption2(TypedDict):
     type: Literal["user"]
-    id: NotRequired[str]
+    userId: NotRequired[str]
     username: NotRequired[str]
-    url: str
+    userUrl: str
     postKarma: NotRequired[int]
     commentKarma: NotRequired[int]
     createdAt: NotRequired[str]
-    avatar: NotRequired[str]
+    avatarUrl: NotRequired[str]
     isVerified: bool
 
 
@@ -1498,24 +1012,49 @@ class RedditSearchResponse(TypedDict):
     requestId: str
 
 
-class RedditPostSchema0(TypedDict):
-    id: NotRequired[str]
-    url: str
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+class RedditPostResponseDataCommentsItem(TypedDict):
+    commentId: NotRequired[str]
+    commentUrl: str
+    parentId: NotRequired[str]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorUrl: NotRequired[str]
     text: NotRequired[str]
     score: int
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     depth: int
     isSubmitter: bool
     isPinned: bool
-    children: NotRequired[list[RedditPostSchema0]]
-    repliesCursor: NotRequired[str]
 
 
 class RedditPostResponseData(TypedDict):
-    post: RedditSearchResponseDataResultsItemOption0
-    comments: list[RedditPostSchema0]
-    commentsCursor: NotRequired[str]
+    postId: NotRequired[str]
+    postUrl: str
+    title: NotRequired[str]
+    text: NotRequired[str]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorUrl: NotRequired[str]
+    subreddit: NotRequired[str]
+    score: int
+    upvotePercent: NotRequired[float]
+    publishedAt: NotRequired[str]
+    flair: NotRequired[str]
+    linkUrl: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
+    isNsfw: bool
+    isVideo: bool
+    isPinned: bool
+    imageUrls: list[str]
+    videoUrl: NotRequired[str]
+    videoHlsUrl: NotRequired[str]
+    videoDurationSeconds: NotRequired[float]
+    pollOptions: list[RedditSearchResponseDataResultsItemOption0PollOptionsItem]
+    pollTotalVotes: NotRequired[int]
+    pollEndsAt: NotRequired[str]
+    repostOfUrl: NotRequired[str]
+    commentCount: int
+    comments: list[RedditPostResponseDataCommentsItem]
 
 
 class RedditPostResponse(TypedDict):
@@ -1525,35 +1064,23 @@ class RedditPostResponse(TypedDict):
     requestId: str
 
 
-class RedditCommentsMoreSchema0(TypedDict):
-    id: NotRequired[str]
-    url: str
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    text: NotRequired[str]
-    score: int
-    createdAt: NotRequired[str]
-    depth: int
-    isSubmitter: bool
-    isPinned: bool
-    children: NotRequired[list[RedditCommentsMoreSchema0]]
-    repliesCursor: NotRequired[str]
-
-
-class RedditCommentsMoreResponseData(TypedDict):
-    comments: list[RedditCommentsMoreSchema0]
-    cursor: NotRequired[str]
-
-
-class RedditCommentsMoreResponse(TypedDict):
-    success: Literal[True]
-    data: RedditCommentsMoreResponseData
-    creditsUsed: int
-    requestId: str
+class RedditSubredditResponseDataRulesItem(TypedDict):
+    title: NotRequired[str]
+    description: NotRequired[str]
 
 
 class RedditSubredditResponseData(TypedDict):
-    subreddit: NotRequired[RedditSearchResponseDataResultsItemOption1]
-    posts: list[RedditSearchResponseDataResultsItemOption0]
+    subredditId: NotRequired[str]
+    subredditName: NotRequired[str]
+    subredditUrl: NotRequired[str]
+    title: NotRequired[str]
+    description: NotRequired[str]
+    members: NotRequired[int]
+    createdAt: NotRequired[str]
+    avatarUrl: NotRequired[str]
+    isNsfw: NotRequired[bool]
+    rules: NotRequired[list[RedditSubredditResponseDataRulesItem]]
+    results: list[RedditSearchResponseDataResultsItemOption0]
     cursor: NotRequired[str]
 
 
@@ -1564,21 +1091,30 @@ class RedditSubredditResponse(TypedDict):
     requestId: str
 
 
-class RedditUserResponseDataItemsItemOption1(TypedDict):
+class RedditUserResponseDataResultsItemOption1(TypedDict):
     type: Literal["comment"]
-    id: NotRequired[str]
-    url: str
+    commentId: NotRequired[str]
+    commentUrl: str
     text: NotRequired[str]
     score: int
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     subreddit: NotRequired[str]
     postId: NotRequired[str]
     postTitle: NotRequired[str]
 
 
 class RedditUserResponseData(TypedDict):
-    user: NotRequired[RedditSearchResponseDataResultsItemOption2]
-    items: list[RedditSearchResponseDataResultsItemOption0 | RedditUserResponseDataItemsItemOption1]
+    userId: NotRequired[str]
+    username: NotRequired[str]
+    userUrl: NotRequired[str]
+    postKarma: NotRequired[int]
+    commentKarma: NotRequired[int]
+    createdAt: NotRequired[str]
+    avatarUrl: NotRequired[str]
+    isVerified: NotRequired[bool]
+    results: list[
+        RedditSearchResponseDataResultsItemOption0 | RedditUserResponseDataResultsItemOption1
+    ]
     cursor: NotRequired[str]
 
 
@@ -1590,7 +1126,7 @@ class RedditUserResponse(TypedDict):
 
 
 class RedditDomainResponseData(TypedDict):
-    posts: list[RedditSearchResponseDataResultsItemOption0]
+    results: list[RedditSearchResponseDataResultsItemOption0]
     cursor: NotRequired[str]
 
 
@@ -1601,33 +1137,15 @@ class RedditDomainResponse(TypedDict):
     requestId: str
 
 
-class MapsSearchCenter(TypedDict):
-    lat: float
-    lng: float
-
-
-class MapsSearchResponseDataPlacesItemAddress(TypedDict):
-    full: NotRequired[str]
-    street: NotRequired[str]
-    city: NotRequired[str]
-    state: NotRequired[str]
-    postalCode: NotRequired[str]
-    country: NotRequired[str]
-
-
-class MapsSearchResponseDataPlacesItemLocation(TypedDict):
-    lat: float
-    lng: float
-
-
-class MapsSearchResponseDataPlacesItem(TypedDict):
-    id: NotRequired[str]
+class MapsSearchResponseDataResultsItem(TypedDict):
     placeId: NotRequired[str]
-    url: str
+    googlePlaceId: NotRequired[str]
+    placeUrl: str
     name: NotRequired[str]
     categories: NotRequired[list[str]]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    location: MapsSearchResponseDataPlacesItemLocation
+    address: NotRequired[str]
+    latitude: float
+    longitude: float
     rating: NotRequired[float]
     photos: NotRequired[int]
     phone: NotRequired[str]
@@ -1637,13 +1155,14 @@ class MapsSearchResponseDataPlacesItem(TypedDict):
     openStatus: NotRequired[str]
     timezone: NotRequired[str]
     plusCode: NotRequired[str]
-    thumbnail: NotRequired[str]
-    reservation: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
+    reservationUrl: NotRequired[str]
     attributes: NotRequired[list[str]]
 
 
 class MapsSearchResponseData(TypedDict):
-    places: list[MapsSearchResponseDataPlacesItem]
+    results: list[MapsSearchResponseDataResultsItem]
+    cursor: NotRequired[str]
 
 
 class MapsSearchResponse(TypedDict):
@@ -1654,7 +1173,26 @@ class MapsSearchResponse(TypedDict):
 
 
 class MapsPlaceResponseData(TypedDict):
-    place: MapsSearchResponseDataPlacesItem
+    placeId: NotRequired[str]
+    googlePlaceId: NotRequired[str]
+    placeUrl: str
+    name: NotRequired[str]
+    categories: list[str]
+    address: NotRequired[str]
+    latitude: float
+    longitude: float
+    rating: NotRequired[float]
+    photos: NotRequired[int]
+    phone: NotRequired[str]
+    website: NotRequired[str]
+    description: NotRequired[str]
+    hoursToday: NotRequired[str]
+    openStatus: NotRequired[str]
+    timezone: NotRequired[str]
+    plusCode: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
+    reservationUrl: NotRequired[str]
+    attributes: list[str]
 
 
 class MapsPlaceResponse(TypedDict):
@@ -1664,44 +1202,33 @@ class MapsPlaceResponse(TypedDict):
     requestId: str
 
 
-class MapsReviewsResponseDataReviewsItemAuthor(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    isVerified: NotRequired[bool]
-    reviews: NotRequired[int]
-    photos: NotRequired[int]
-    isLocalGuide: bool
-
-
-class MapsReviewsResponseDataReviewsItemDetailsItem(TypedDict):
+class MapsReviewsResponseDataResultsItemDetailsItem(TypedDict):
     label: NotRequired[str]
     value: NotRequired[str]
     rating: NotRequired[float]
 
 
-class MapsReviewsResponseDataReviewsItemOwnerReply(TypedDict):
-    text: NotRequired[str]
-    createdAt: NotRequired[str]
-
-
-class MapsReviewsResponseDataReviewsItem(TypedDict):
-    id: NotRequired[str]
-    url: NotRequired[str]
+class MapsReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
+    reviewUrl: NotRequired[str]
     rating: int
     text: NotRequired[str]
     language: NotRequired[str]
-    createdAt: NotRequired[str]
-    author: MapsReviewsResponseDataReviewsItemAuthor
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    details: NotRequired[list[MapsReviewsResponseDataReviewsItemDetailsItem]]
-    ownerReply: NotRequired[MapsReviewsResponseDataReviewsItemOwnerReply]
+    publishedAt: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorReviews: NotRequired[int]
+    authorPhotos: NotRequired[int]
+    authorIsLocalGuide: bool
+    imageUrls: NotRequired[list[str]]
+    details: NotRequired[list[MapsReviewsResponseDataResultsItemDetailsItem]]
+    ownerReplyText: NotRequired[str]
+    ownerReplyAt: NotRequired[str]
 
 
 class MapsReviewsResponseData(TypedDict):
-    reviews: list[MapsReviewsResponseDataReviewsItem]
+    results: list[MapsReviewsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -1712,72 +1239,60 @@ class MapsReviewsResponse(TypedDict):
     requestId: str
 
 
-class InstagramProfileResponseDataProfile(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    bio: NotRequired[str]
-    bioLinks: NotRequired[list[YoutubeChannelResponseDataChannelAboutLinksItem]]
-    pronouns: NotRequired[list[str]]
-    isVerified: bool
-    isPrivate: bool
-    followers: NotRequired[int]
-    following: NotRequired[int]
-    posts: NotRequired[int]
-    avatar: NotRequired[str]
-
-
-class InstagramProfileResponseDataStats(TypedDict):
-    postsAnalyzed: int
-    averageLikes: NotRequired[float]
-    averageComments: NotRequired[float]
-    engagementRate: NotRequired[float]
-    postsPerWeek: NotRequired[float]
-    lastPostAt: NotRequired[str]
-
-
-class InstagramProfileResponseDataPostsItemVideosItem(TypedDict):
-    url: str
-
-
-class InstagramProfileResponseDataPostsItemAudio(TypedDict):
-    title: NotRequired[str]
-    artist: NotRequired[str]
-    isOriginal: bool
-
-
 class InstagramProfileResponseDataPostsItem(TypedDict):
-    id: NotRequired[str]
-    code: NotRequired[str]
-    url: str
+    postId: NotRequired[str]
+    postCode: NotRequired[str]
+    postUrl: str
     type: InstagramProfileResponseDataPostsItemType
     text: NotRequired[str]
     hashtags: NotRequired[list[str]]
     mentions: NotRequired[list[str]]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     likes: NotRequired[int]
     comments: NotRequired[int]
     views: NotRequired[int]
-    width: NotRequired[int]
-    height: NotRequired[int]
-    thumbnail: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    videos: NotRequired[list[InstagramProfileResponseDataPostsItemVideosItem]]
+    thumbnailUrl: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+    videoUrls: NotRequired[list[str]]
     imageDescription: NotRequired[str]
     isPinned: bool
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: bool
     taggedUsers: NotRequired[list[str]]
     coauthors: NotRequired[list[str]]
-    audio: NotRequired[InstagramProfileResponseDataPostsItemAudio]
+    audioTitle: NotRequired[str]
+    audioArtist: NotRequired[str]
+    audioIsOriginal: NotRequired[bool]
     isPaidPartnership: bool
     sponsors: NotRequired[list[str]]
 
 
 class InstagramProfileResponseData(TypedDict):
-    profile: InstagramProfileResponseDataProfile
-    stats: NotRequired[InstagramProfileResponseDataStats]
+    userId: NotRequired[str]
+    username: NotRequired[str]
+    userUrl: NotRequired[str]
+    name: NotRequired[str]
+    bio: NotRequired[str]
+    bioLinkUrls: NotRequired[list[str]]
+    pronouns: NotRequired[list[str]]
+    isVerified: NotRequired[bool]
+    isPrivate: NotRequired[bool]
+    followers: NotRequired[int]
+    following: NotRequired[int]
+    postCount: NotRequired[int]
+    avatarUrl: NotRequired[str]
+    postsAnalyzed: NotRequired[int]
+    averageLikes: NotRequired[float]
+    averageComments: NotRequired[float]
+    engagementRate: NotRequired[float]
+    postsPerWeek: NotRequired[float]
+    lastPostAt: NotRequired[str]
     posts: list[InstagramProfileResponseDataPostsItem]
+    cursor: NotRequired[str]
 
 
 class InstagramProfileResponse(TypedDict):
@@ -1787,30 +1302,51 @@ class InstagramProfileResponse(TypedDict):
     requestId: str
 
 
-class InstagramPostsResponseData(TypedDict):
-    posts: list[InstagramProfileResponseDataPostsItem]
-    cursor: NotRequired[str]
-
-
-class InstagramPostsResponse(TypedDict):
-    success: Literal[True]
-    data: InstagramPostsResponseData
-    creditsUsed: int
-    requestId: str
-
-
 class InstagramPostResponseDataCommentsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    commentId: NotRequired[str]
+    commentUrl: str
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: bool
     text: NotRequired[str]
     likes: int
     replies: int
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
 
 
 class InstagramPostResponseData(TypedDict):
-    post: InstagramProfileResponseDataPostsItem
+    postId: NotRequired[str]
+    postCode: NotRequired[str]
+    postUrl: str
+    type: InstagramProfileResponseDataPostsItemType
+    text: NotRequired[str]
+    hashtags: list[str]
+    mentions: list[str]
+    publishedAt: NotRequired[str]
+    likes: NotRequired[int]
+    views: NotRequired[int]
+    thumbnailUrl: NotRequired[str]
+    imageUrls: list[str]
+    videoUrls: list[str]
+    imageDescription: NotRequired[str]
+    isPinned: bool
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: bool
+    taggedUsers: list[str]
+    coauthors: list[str]
+    audioTitle: NotRequired[str]
+    audioArtist: NotRequired[str]
+    audioIsOriginal: NotRequired[bool]
+    isPaidPartnership: bool
+    sponsors: list[str]
+    commentCount: NotRequired[int]
     comments: list[InstagramPostResponseDataCommentsItem]
 
 
@@ -1821,28 +1357,8 @@ class InstagramPostResponse(TypedDict):
     requestId: str
 
 
-class InstagramUrlResponseDataOption0(TypedDict):
-    kind: Literal["profile"]
-    profile: InstagramProfileResponseDataProfile
-    stats: NotRequired[InstagramProfileResponseDataStats]
-    posts: NotRequired[list[InstagramProfileResponseDataPostsItem]]
-
-
-class InstagramUrlResponseDataOption1(TypedDict):
-    kind: Literal["post"]
-    post: InstagramProfileResponseDataPostsItem
-    comments: NotRequired[list[InstagramPostResponseDataCommentsItem]]
-
-
-class InstagramUrlResponse(TypedDict):
-    success: Literal[True]
-    data: InstagramUrlResponseDataOption0 | InstagramUrlResponseDataOption1
-    creditsUsed: int
-    requestId: str
-
-
 class InstagramSearchResponseData(TypedDict):
-    posts: list[InstagramProfileResponseDataPostsItem]
+    results: list[InstagramProfileResponseDataPostsItem]
 
 
 class InstagramSearchResponse(TypedDict):
@@ -1852,21 +1368,8 @@ class InstagramSearchResponse(TypedDict):
     requestId: str
 
 
-class InstagramTranscriptResponseData(TypedDict):
-    id: NotRequired[str]
-    url: str
-    transcripts: list[YoutubeTranscriptResponseData]
-
-
-class InstagramTranscriptResponse(TypedDict):
-    success: Literal[True]
-    data: InstagramTranscriptResponseData
-    creditsUsed: int
-    requestId: str
-
-
 class InstagramCommentsResponseData(TypedDict):
-    comments: list[InstagramPostResponseDataCommentsItem]
+    results: list[InstagramPostResponseDataCommentsItem]
     cursor: NotRequired[str]
 
 
@@ -1877,40 +1380,55 @@ class InstagramCommentsResponse(TypedDict):
     requestId: str
 
 
-class InstagramCommentsRepliesResponseData(TypedDict):
-    replies: list[InstagramPostResponseDataCommentsItem]
-    cursor: NotRequired[str]
+class TiktokProfileResponseDataPostsItem(TypedDict):
+    videoId: NotRequired[str]
+    videoUrl: str
+    type: TiktokProfileResponseDataPostsItemType
+    text: NotRequired[str]
+    hashtags: NotRequired[list[str]]
+    mentions: NotRequired[list[str]]
+    publishedAt: NotRequired[str]
+    durationSeconds: NotRequired[float]
+    thumbnailUrl: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+    views: NotRequired[int]
+    likes: NotRequired[int]
+    comments: NotRequired[int]
+    shares: NotRequired[int]
+    saves: NotRequired[int]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: str
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: bool
+    audioId: NotRequired[str]
+    audioTitle: NotRequired[str]
+    audioArtist: NotRequired[str]
+    audioIsOriginal: NotRequired[bool]
+    isAd: bool
+    isAiGenerated: bool
 
 
-class InstagramCommentsRepliesResponse(TypedDict):
-    success: Literal[True]
-    data: InstagramCommentsRepliesResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TiktokProfileResponseDataProfile(TypedDict):
-    id: NotRequired[str]
-    secUid: NotRequired[str]
+class TiktokProfileResponseData(TypedDict):
+    userId: NotRequired[str]
     username: NotRequired[str]
-    url: str
+    userUrl: NotRequired[str]
     name: NotRequired[str]
     bio: NotRequired[str]
-    bioLinks: NotRequired[list[InstagramProfileResponseDataPostsItemVideosItem]]
-    avatar: NotRequired[str]
-    isVerified: bool
-    isPrivate: bool
-    isOrganization: bool
+    bioLinkUrl: NotRequired[str]
+    avatarUrl: NotRequired[str]
+    isVerified: NotRequired[bool]
+    isPrivate: NotRequired[bool]
+    isOrganization: NotRequired[bool]
     language: NotRequired[str]
     createdAt: NotRequired[str]
     followers: NotRequired[int]
     following: NotRequired[int]
     likes: NotRequired[int]
     videos: NotRequired[int]
-
-
-class TiktokProfileResponseData(TypedDict):
-    profile: TiktokProfileResponseDataProfile
+    posts: list[TiktokProfileResponseDataPostsItem]
+    cursor: NotRequired[str]
 
 
 class TiktokProfileResponse(TypedDict):
@@ -1920,40 +1438,35 @@ class TiktokProfileResponse(TypedDict):
     requestId: str
 
 
-class TiktokVideoResponseDataVideoAudio(TypedDict):
-    id: NotRequired[str]
-    title: NotRequired[str]
-    artist: NotRequired[str]
-    isOriginal: bool
-
-
-class TiktokVideoResponseDataVideo(TypedDict):
-    id: NotRequired[str]
-    url: str
-    type: TiktokVideoResponseDataVideoType
+class TiktokVideoResponseData(TypedDict):
+    videoId: NotRequired[str]
+    videoUrl: str
+    type: TiktokProfileResponseDataPostsItemType
     text: NotRequired[str]
-    hashtags: NotRequired[list[str]]
-    mentions: NotRequired[list[str]]
-    createdAt: NotRequired[str]
+    hashtags: list[str]
+    mentions: list[str]
+    publishedAt: NotRequired[str]
     durationSeconds: NotRequired[float]
-    width: NotRequired[int]
-    height: NotRequired[int]
-    thumbnail: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    thumbnailUrl: NotRequired[str]
+    imageUrls: list[str]
     views: NotRequired[int]
     likes: NotRequired[int]
     comments: NotRequired[int]
     shares: NotRequired[int]
     saves: NotRequired[int]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    audio: NotRequired[TiktokVideoResponseDataVideoAudio]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: str
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: bool
+    audioId: NotRequired[str]
+    audioTitle: NotRequired[str]
+    audioArtist: NotRequired[str]
+    audioIsOriginal: NotRequired[bool]
     country: NotRequired[str]
     isAd: bool
     isAiGenerated: bool
-
-
-class TiktokVideoResponseData(TypedDict):
-    video: TiktokVideoResponseDataVideo
 
 
 class TiktokVideoResponse(TypedDict):
@@ -1963,61 +1476,8 @@ class TiktokVideoResponse(TypedDict):
     requestId: str
 
 
-class TiktokUrlResponseDataOption0(TypedDict):
-    kind: Literal["profile"]
-    profile: TiktokProfileResponseDataProfile
-
-
-class TiktokUrlResponseDataOption1(TypedDict):
-    kind: Literal["video"]
-    video: TiktokVideoResponseDataVideo
-
-
-class TiktokUrlResponse(TypedDict):
-    success: Literal[True]
-    data: TiktokUrlResponseDataOption0 | TiktokUrlResponseDataOption1
-    creditsUsed: int
-    requestId: str
-
-
-class TiktokPostsResponseDataPostsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    type: TiktokVideoResponseDataVideoType
-    text: NotRequired[str]
-    hashtags: NotRequired[list[str]]
-    mentions: NotRequired[list[str]]
-    createdAt: NotRequired[str]
-    durationSeconds: NotRequired[float]
-    width: NotRequired[int]
-    height: NotRequired[int]
-    thumbnail: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    views: NotRequired[int]
-    likes: NotRequired[int]
-    comments: NotRequired[int]
-    shares: NotRequired[int]
-    saves: NotRequired[int]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    audio: NotRequired[TiktokVideoResponseDataVideoAudio]
-    isAd: bool
-    isAiGenerated: bool
-
-
-class TiktokPostsResponseData(TypedDict):
-    posts: list[TiktokPostsResponseDataPostsItem]
-    cursor: NotRequired[str]
-
-
-class TiktokPostsResponse(TypedDict):
-    success: Literal[True]
-    data: TiktokPostsResponseData
-    creditsUsed: int
-    requestId: str
-
-
 class TiktokHashtagResponseData(TypedDict):
-    videos: list[TiktokPostsResponseDataPostsItem]
+    results: list[TiktokProfileResponseDataPostsItem]
     cursor: NotRequired[str]
 
 
@@ -2028,17 +1488,21 @@ class TiktokHashtagResponse(TypedDict):
     requestId: str
 
 
-class TiktokCommentsResponseDataCommentsItem(TypedDict):
-    id: NotRequired[str]
+class TiktokCommentsResponseDataResultsItem(TypedDict):
+    commentId: NotRequired[str]
     text: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: str
+    authorAvatarUrl: NotRequired[str]
     likes: int
     replies: int
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
 
 
 class TiktokCommentsResponseData(TypedDict):
-    comments: list[TiktokCommentsResponseDataCommentsItem]
+    results: list[TiktokCommentsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -2049,34 +1513,20 @@ class TiktokCommentsResponse(TypedDict):
     requestId: str
 
 
-class TiktokCommentsRepliesResponseData(TypedDict):
-    replies: list[TiktokCommentsResponseDataCommentsItem]
-    cursor: NotRequired[str]
-
-
-class TiktokCommentsRepliesResponse(TypedDict):
-    success: Literal[True]
-    data: TiktokCommentsRepliesResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TiktokSearchResponseDataUsersItem(TypedDict):
-    id: NotRequired[str]
-    secUid: NotRequired[str]
+class TiktokSearchResponseDataResultsItemOption1(TypedDict):
+    userId: NotRequired[str]
     username: NotRequired[str]
-    url: str
+    userUrl: str
     name: NotRequired[str]
     bio: NotRequired[str]
-    avatar: NotRequired[str]
+    avatarUrl: NotRequired[str]
     isVerified: bool
     followers: NotRequired[int]
     likes: NotRequired[int]
 
 
 class TiktokSearchResponseData(TypedDict):
-    videos: list[TiktokPostsResponseDataPostsItem]
-    users: list[TiktokSearchResponseDataUsersItem]
+    results: list[TiktokProfileResponseDataPostsItem | TiktokSearchResponseDataResultsItemOption1]
     cursor: NotRequired[str]
 
 
@@ -2087,25 +1537,51 @@ class TiktokSearchResponse(TypedDict):
     requestId: str
 
 
-class BlueskyProfileResponseDataProfile(TypedDict):
-    id: NotRequired[str]
-    did: NotRequired[str]
-    username: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    bio: NotRequired[str]
-    avatar: NotRequired[str]
-    banner: NotRequired[str]
-    followers: NotRequired[int]
-    following: NotRequired[int]
-    posts: NotRequired[int]
-    isVerified: bool
-    pinnedPost: NotRequired[str]
-    createdAt: NotRequired[str]
+class BlueskyProfileResponseDataPostsItem(TypedDict):
+    postId: NotRequired[str]
+    postUrl: str
+    text: NotRequired[str]
+    language: NotRequired[str]
+    publishedAt: NotRequired[str]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    likes: int
+    reposts: int
+    replies: int
+    quotes: int
+    replyToId: NotRequired[str]
+    repostedByUsername: NotRequired[str]
+    hashtags: NotRequired[list[str]]
+    mentions: NotRequired[list[str]]
+    links: NotRequired[list[str]]
+    imageUrls: NotRequired[list[str]]
+    videoUrl: NotRequired[str]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    quotedUrl: NotRequired[str]
+    quotedText: NotRequired[str]
 
 
 class BlueskyProfileResponseData(TypedDict):
-    profile: BlueskyProfileResponseDataProfile
+    userId: NotRequired[str]
+    username: NotRequired[str]
+    userUrl: NotRequired[str]
+    name: NotRequired[str]
+    bio: NotRequired[str]
+    avatarUrl: NotRequired[str]
+    createdAt: NotRequired[str]
+    bannerUrl: NotRequired[str]
+    followers: NotRequired[int]
+    following: NotRequired[int]
+    postCount: NotRequired[int]
+    isVerified: NotRequired[bool]
+    pinnedPostId: NotRequired[str]
+    posts: list[BlueskyProfileResponseDataPostsItem]
+    cursor: NotRequired[str]
 
 
 class BlueskyProfileResponse(TypedDict):
@@ -2115,86 +1591,63 @@ class BlueskyProfileResponse(TypedDict):
     requestId: str
 
 
-class BlueskyPostsResponseDataPostsItemReplyTo(TypedDict):
-    id: NotRequired[str]
-    url: NotRequired[str]
-    username: NotRequired[str]
-
-
-class BlueskyPostsResponseDataPostsItemImagesItem(TypedDict):
-    url: str
-    thumbnail: NotRequired[str]
-    alt: NotRequired[str]
-
-
-class BlueskyPostsResponseDataPostsItemQuoted(TypedDict):
-    id: NotRequired[str]
-    url: str
-    text: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-
-
-class BlueskyPostsResponseDataPostsItem(TypedDict):
-    id: NotRequired[str]
-    cid: NotRequired[str]
-    url: str
-    text: NotRequired[str]
-    language: NotRequired[str]
-    createdAt: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    likes: int
-    reposts: int
-    replies: int
-    quotes: int
-    replyTo: NotRequired[BlueskyPostsResponseDataPostsItemReplyTo]
-    repostedBy: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    hashtags: NotRequired[list[str]]
-    mentions: NotRequired[list[str]]
-    links: NotRequired[list[str]]
-    images: NotRequired[list[BlueskyPostsResponseDataPostsItemImagesItem]]
-    video: NotRequired[BlueskyPostsResponseDataPostsItemImagesItem]
-    link: NotRequired[RedditSearchResponseDataResultsItemOption0Link]
-    quoted: NotRequired[BlueskyPostsResponseDataPostsItemQuoted]
-
-
-class BlueskyPostsResponseData(TypedDict):
-    posts: list[BlueskyPostsResponseDataPostsItem]
-    cursor: NotRequired[str]
-
-
-class BlueskyPostsResponse(TypedDict):
-    success: Literal[True]
-    data: BlueskyPostsResponseData
-    creditsUsed: int
-    requestId: str
-
-
 class BlueskyPostResponseDataRepliesItem(TypedDict):
-    id: NotRequired[str]
-    cid: NotRequired[str]
-    url: str
+    postId: NotRequired[str]
+    postUrl: str
     text: NotRequired[str]
     language: NotRequired[str]
-    createdAt: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    publishedAt: NotRequired[str]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
     likes: int
     reposts: int
     replies: int
     quotes: int
-    replyTo: NotRequired[BlueskyPostsResponseDataPostsItemReplyTo]
-    repostedBy: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+    replyToId: NotRequired[str]
+    repostedByUsername: NotRequired[str]
     hashtags: NotRequired[list[str]]
     mentions: NotRequired[list[str]]
     links: NotRequired[list[str]]
-    images: NotRequired[list[BlueskyPostsResponseDataPostsItemImagesItem]]
-    video: NotRequired[BlueskyPostsResponseDataPostsItemImagesItem]
-    link: NotRequired[RedditSearchResponseDataResultsItemOption0Link]
-    quoted: NotRequired[BlueskyPostsResponseDataPostsItemQuoted]
+    imageUrls: NotRequired[list[str]]
+    videoUrl: NotRequired[str]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    quotedUrl: NotRequired[str]
+    quotedText: NotRequired[str]
     depth: int
 
 
 class BlueskyPostResponseData(TypedDict):
-    post: BlueskyPostsResponseDataPostsItem
+    postId: NotRequired[str]
+    postUrl: str
+    text: NotRequired[str]
+    language: NotRequired[str]
+    publishedAt: NotRequired[str]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    likes: int
+    reposts: int
+    quotes: int
+    replyToId: NotRequired[str]
+    repostedByUsername: NotRequired[str]
+    hashtags: list[str]
+    mentions: list[str]
+    links: list[str]
+    imageUrls: list[str]
+    videoUrl: NotRequired[str]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    quotedUrl: NotRequired[str]
+    quotedText: NotRequired[str]
+    replyCount: int
     replies: list[BlueskyPostResponseDataRepliesItem]
 
 
@@ -2205,19 +1658,18 @@ class BlueskyPostResponse(TypedDict):
     requestId: str
 
 
-class BlueskyFollowersResponseDataFollowersItem(TypedDict):
-    id: NotRequired[str]
-    did: NotRequired[str]
+class BlueskyFollowersResponseDataResultsItem(TypedDict):
+    userId: NotRequired[str]
     username: NotRequired[str]
-    url: str
+    userUrl: str
     name: NotRequired[str]
     bio: NotRequired[str]
-    avatar: NotRequired[str]
+    avatarUrl: NotRequired[str]
     createdAt: NotRequired[str]
 
 
 class BlueskyFollowersResponseData(TypedDict):
-    followers: list[BlueskyFollowersResponseDataFollowersItem]
+    results: list[BlueskyFollowersResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -2228,115 +1680,49 @@ class BlueskyFollowersResponse(TypedDict):
     requestId: str
 
 
-class MastodonProfileResponseDataProfileFieldsItem(TypedDict):
-    name: NotRequired[str]
-    value: NotRequired[str]
-    verifiedAt: NotRequired[str]
-
-
-class MastodonProfileResponseDataProfile(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    bio: NotRequired[str]
-    bioHtml: NotRequired[str]
-    avatar: NotRequired[str]
-    banner: NotRequired[str]
-    followers: NotRequired[int]
-    following: NotRequired[int]
-    posts: NotRequired[int]
-    isBot: bool
-    isLocked: bool
-    isGroup: bool
-    fields: NotRequired[list[MastodonProfileResponseDataProfileFieldsItem]]
-    createdAt: NotRequired[str]
-    lastPostAt: NotRequired[str]
-
-
-class MastodonProfileResponseData(TypedDict):
-    profile: MastodonProfileResponseDataProfile
-
-
-class MastodonProfileResponse(TypedDict):
-    success: Literal[True]
-    data: MastodonProfileResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class MastodonPostsResponseDataPostsItemMediaItem(TypedDict):
-    type: NotRequired[str]
-    url: str
-    thumbnail: NotRequired[str]
-    description: NotRequired[str]
-
-
-class MastodonPostsResponseDataPostsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    uri: NotRequired[str]
+class ThreadsProfileResponseDataPostsItem(TypedDict):
+    postId: NotRequired[str]
+    postCode: NotRequired[str]
+    postUrl: str
+    type: ThreadsProfileResponseDataPostsItemType
     text: NotRequired[str]
-    html: NotRequired[str]
-    spoiler: NotRequired[str]
-    language: NotRequired[str]
-    visibility: NotRequired[str]
-    isSensitive: bool
-    createdAt: NotRequired[str]
-    editedAt: NotRequired[str]
-    replyTo: NotRequired[BlueskyPostsResponseDataPostsItemReplyTo]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    replies: int
-    reposts: int
-    likes: int
-    quotes: int
-    repostedBy: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    hashtags: NotRequired[list[str]]
-    mentions: NotRequired[list[str]]
-    media: NotRequired[list[MastodonPostsResponseDataPostsItemMediaItem]]
-    link: NotRequired[RedditSearchResponseDataResultsItemOption0Link]
-
-
-class MastodonPostsResponseData(TypedDict):
-    posts: list[MastodonPostsResponseDataPostsItem]
-    cursor: NotRequired[str]
-
-
-class MastodonPostsResponse(TypedDict):
-    success: Literal[True]
-    data: MastodonPostsResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class MastodonPostResponseData(TypedDict):
-    post: MastodonPostsResponseDataPostsItem
-    ancestors: list[MastodonPostsResponseDataPostsItem]
-    replies: list[MastodonPostsResponseDataPostsItem]
-
-
-class MastodonPostResponse(TypedDict):
-    success: Literal[True]
-    data: MastodonPostResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class ThreadsProfileResponseDataProfile(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    bio: NotRequired[str]
-    bioLinks: NotRequired[list[YoutubeChannelResponseDataChannelAboutLinksItem]]
-    isVerified: bool
-    isPrivate: bool
-    followers: NotRequired[int]
-    avatar: NotRequired[str]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    publishedAt: NotRequired[str]
+    likes: NotRequired[int]
+    replies: NotRequired[int]
+    reposts: NotRequired[int]
+    quotes: NotRequired[int]
+    shares: NotRequired[int]
+    imageUrls: NotRequired[list[str]]
+    videoUrls: NotRequired[list[str]]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    isReply: bool
+    replyToUrl: NotRequired[str]
+    isPinned: bool
+    quotedUrl: NotRequired[str]
+    quotedText: NotRequired[str]
+    repostOfUrl: NotRequired[str]
 
 
 class ThreadsProfileResponseData(TypedDict):
-    profile: ThreadsProfileResponseDataProfile
+    userId: NotRequired[str]
+    username: NotRequired[str]
+    userUrl: str
+    name: NotRequired[str]
+    bio: NotRequired[str]
+    bioLinkUrls: list[str]
+    isVerified: bool
+    isPrivate: bool
+    followers: NotRequired[int]
+    avatarUrl: NotRequired[str]
+    posts: list[ThreadsProfileResponseDataPostsItem]
+    cursor: NotRequired[str]
 
 
 class ThreadsProfileResponse(TypedDict):
@@ -2346,66 +1732,36 @@ class ThreadsProfileResponse(TypedDict):
     requestId: str
 
 
-class ThreadsPostsResponseDataPostsItemQuoted(TypedDict):
-    id: NotRequired[str]
-    code: NotRequired[str]
-    url: str
-    type: ThreadsPostsResponseDataPostsItemType
-    text: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    createdAt: NotRequired[str]
-    likes: NotRequired[int]
-    replies: NotRequired[int]
-    reposts: NotRequired[int]
-    quotes: NotRequired[int]
-    shares: NotRequired[int]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    videos: NotRequired[list[InstagramProfileResponseDataPostsItemVideosItem]]
-    link: NotRequired[RedditSearchResponseDataResultsItemOption0Link]
-    isReply: bool
-    replyTo: NotRequired[BlueskyPostsResponseDataPostsItemReplyTo]
-    isPinned: bool
-
-
-class ThreadsPostsResponseDataPostsItem(TypedDict):
-    id: NotRequired[str]
-    code: NotRequired[str]
-    url: str
-    type: ThreadsPostsResponseDataPostsItemType
-    text: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    createdAt: NotRequired[str]
-    likes: NotRequired[int]
-    replies: NotRequired[int]
-    reposts: NotRequired[int]
-    quotes: NotRequired[int]
-    shares: NotRequired[int]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    videos: NotRequired[list[InstagramProfileResponseDataPostsItemVideosItem]]
-    link: NotRequired[RedditSearchResponseDataResultsItemOption0Link]
-    isReply: bool
-    replyTo: NotRequired[BlueskyPostsResponseDataPostsItemReplyTo]
-    isPinned: bool
-    quoted: NotRequired[ThreadsPostsResponseDataPostsItemQuoted]
-    repostOf: NotRequired[ThreadsPostsResponseDataPostsItemQuoted]
-
-
-class ThreadsPostsResponseData(TypedDict):
-    posts: list[ThreadsPostsResponseDataPostsItem]
-    cursor: NotRequired[str]
-
-
-class ThreadsPostsResponse(TypedDict):
-    success: Literal[True]
-    data: ThreadsPostsResponseData
-    creditsUsed: int
-    requestId: str
-
-
 class ThreadsPostResponseData(TypedDict):
-    post: ThreadsPostsResponseDataPostsItem
-    thread: list[ThreadsPostsResponseDataPostsItem]
-    replies: list[ThreadsPostsResponseDataPostsItem]
+    postId: NotRequired[str]
+    postCode: NotRequired[str]
+    postUrl: str
+    type: ThreadsProfileResponseDataPostsItemType
+    text: NotRequired[str]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    publishedAt: NotRequired[str]
+    likes: NotRequired[int]
+    reposts: NotRequired[int]
+    quotes: NotRequired[int]
+    shares: NotRequired[int]
+    imageUrls: list[str]
+    videoUrls: list[str]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    isReply: bool
+    replyToUrl: NotRequired[str]
+    isPinned: bool
+    quotedUrl: NotRequired[str]
+    quotedText: NotRequired[str]
+    repostOfUrl: NotRequired[str]
+    replyCount: NotRequired[int]
+    thread: list[ThreadsProfileResponseDataPostsItem]
+    replies: list[ThreadsProfileResponseDataPostsItem]
     cursor: NotRequired[str]
 
 
@@ -2417,7 +1773,7 @@ class ThreadsPostResponse(TypedDict):
 
 
 class ThreadsSearchResponseData(TypedDict):
-    posts: list[ThreadsPostsResponseDataPostsItem]
+    results: list[ThreadsProfileResponseDataPostsItem]
 
 
 class ThreadsSearchResponse(TypedDict):
@@ -2427,80 +1783,60 @@ class ThreadsSearchResponse(TypedDict):
     requestId: str
 
 
-class TelegramChannelResponseDataChannel(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    url: str
-    type: TelegramChannelResponseDataChannelType
-    name: NotRequired[str]
-    description: NotRequired[str]
-    avatar: NotRequired[str]
-    isVerified: bool
-    subscribers: NotRequired[int]
-    hasPreview: bool
-    photos: NotRequired[int]
-    videos: NotRequired[int]
-    files: NotRequired[int]
-    links: NotRequired[int]
-
-
-class TelegramChannelResponseData(TypedDict):
-    channel: TelegramChannelResponseDataChannel
-
-
-class TelegramChannelResponse(TypedDict):
-    success: Literal[True]
-    data: TelegramChannelResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TelegramPostsResponseDataPostsItemRepostOf(TypedDict):
+class TelegramPostsResponseDataResultsItemMediaItem(TypedDict):
+    type: TelegramPostsResponseDataResultsItemMediaItemType
     url: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-
-
-class TelegramPostsResponseDataPostsItemMediaItem(TypedDict):
-    type: TelegramPostsResponseDataPostsItemMediaItemType
-    url: NotRequired[str]
-    thumbnail: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
     durationSeconds: NotRequired[int]
 
 
-class TelegramPostsResponseDataPostsItemLink(TypedDict):
-    url: str
-    title: NotRequired[str]
-    description: NotRequired[str]
-    image: NotRequired[str]
-    siteName: NotRequired[str]
-
-
-class TelegramPostsResponseDataPostsItemReactionsItem(TypedDict):
+class TelegramPostsResponseDataResultsItemReactionsItem(TypedDict):
     emoji: NotRequired[str]
     customEmojiId: NotRequired[str]
     isPaid: bool
     count: int
 
 
-class TelegramPostsResponseDataPostsItem(TypedDict):
-    id: NotRequired[str]
-    channel: NotRequired[str]
-    url: str
+class TelegramPostsResponseDataResultsItem(TypedDict):
+    postId: NotRequired[str]
+    channelUsername: NotRequired[str]
+    postUrl: str
     text: NotRequired[str]
     links: NotRequired[list[str]]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     isEdited: bool
     views: NotRequired[int]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    repostOf: NotRequired[TelegramPostsResponseDataPostsItemRepostOf]
-    replyTo: NotRequired[BlueskyPostsResponseDataPostsItemReplyTo]
-    media: NotRequired[list[TelegramPostsResponseDataPostsItemMediaItem]]
-    link: NotRequired[TelegramPostsResponseDataPostsItemLink]
-    reactions: NotRequired[list[TelegramPostsResponseDataPostsItemReactionsItem]]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    repostOfUrl: NotRequired[str]
+    repostOfAuthorName: NotRequired[str]
+    replyToUrl: NotRequired[str]
+    media: NotRequired[list[TelegramPostsResponseDataResultsItemMediaItem]]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    linkSiteName: NotRequired[str]
+    reactions: NotRequired[list[TelegramPostsResponseDataResultsItemReactionsItem]]
 
 
 class TelegramPostsResponseData(TypedDict):
-    posts: list[TelegramPostsResponseDataPostsItem]
+    channelId: NotRequired[str]
+    channelUsername: NotRequired[str]
+    channelUrl: NotRequired[str]
+    channelType: NotRequired[TelegramPostsResponseDataChannelType]
+    channelName: NotRequired[str]
+    description: NotRequired[str]
+    avatarUrl: NotRequired[str]
+    isVerified: NotRequired[bool]
+    subscribers: NotRequired[int]
+    photos: NotRequired[int]
+    videos: NotRequired[int]
+    files: NotRequired[int]
+    links: NotRequired[int]
+    results: list[TelegramPostsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -2512,7 +1848,28 @@ class TelegramPostsResponse(TypedDict):
 
 
 class TelegramPostResponseData(TypedDict):
-    post: TelegramPostsResponseDataPostsItem
+    postId: NotRequired[str]
+    channelUsername: NotRequired[str]
+    postUrl: str
+    text: NotRequired[str]
+    links: list[str]
+    publishedAt: NotRequired[str]
+    isEdited: bool
+    views: NotRequired[int]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    repostOfUrl: NotRequired[str]
+    repostOfAuthorName: NotRequired[str]
+    replyToUrl: NotRequired[str]
+    media: list[TelegramPostsResponseDataResultsItemMediaItem]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    linkSiteName: NotRequired[str]
+    reactions: list[TelegramPostsResponseDataResultsItemReactionsItem]
 
 
 class TelegramPostResponse(TypedDict):
@@ -2522,165 +1879,78 @@ class TelegramPostResponse(TypedDict):
     requestId: str
 
 
-class MetaAdsSearchResponseDataAdsItemPage(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    categories: NotRequired[list[str]]
-    likes: NotRequired[int]
-
-
-class MetaAdsSearchResponseDataAdsItemLink(TypedDict):
-    url: NotRequired[str]
-    title: NotRequired[str]
-    description: NotRequired[str]
-    caption: NotRequired[str]
-
-
-class MetaAdsSearchResponseDataAdsItemCta(TypedDict):
+class MetaAdsPageResponseDataResultsItemCardsItem(TypedDict):
     text: NotRequired[str]
-    type: NotRequired[str]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    ctaText: NotRequired[str]
+    imageUrl: NotRequired[str]
+    videoUrl: NotRequired[str]
 
 
-class MetaAdsSearchResponseDataAdsItemVideosItem(TypedDict):
-    url: str
-    thumbnail: NotRequired[str]
-
-
-class MetaAdsSearchResponseDataAdsItemCardsItem(TypedDict):
-    text: NotRequired[str]
-    link: NotRequired[MetaAdsSearchResponseDataAdsItemLink]
-    cta: NotRequired[MetaAdsSearchResponseDataAdsItemCta]
-    image: NotRequired[str]
-    video: NotRequired[MetaAdsSearchResponseDataAdsItemVideosItem]
-
-
-class MetaAdsSearchResponseDataAdsItemSpend(TypedDict):
-    min: NotRequired[int]
-    max: NotRequired[int]
-
-
-class MetaAdsSearchResponseDataAdsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    page: NotRequired[MetaAdsSearchResponseDataAdsItemPage]
+class MetaAdsPageResponseDataResultsItem(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    pageId: NotRequired[str]
+    pageName: NotRequired[str]
+    pageUrl: NotRequired[str]
+    pageAvatarUrl: NotRequired[str]
+    pageCategories: NotRequired[list[str]]
+    pageLikes: NotRequired[int]
     isActive: bool
     firstShownAt: NotRequired[str]
     lastShownAt: NotRequired[str]
     platforms: NotRequired[list[str]]
     format: NotRequired[str]
     text: NotRequired[str]
-    link: NotRequired[MetaAdsSearchResponseDataAdsItemLink]
-    cta: NotRequired[MetaAdsSearchResponseDataAdsItemCta]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    videos: NotRequired[list[MetaAdsSearchResponseDataAdsItemVideosItem]]
-    cards: NotRequired[list[MetaAdsSearchResponseDataAdsItemCardsItem]]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    linkDescription: NotRequired[str]
+    ctaText: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+    videoUrls: NotRequired[list[str]]
+    cards: NotRequired[list[MetaAdsPageResponseDataResultsItemCardsItem]]
     versions: int
     categories: NotRequired[list[str]]
     paidBy: NotRequired[str]
-    spend: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    currency: NotRequired[str]
-    impressions: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    reach: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
+    spendMin: NotRequired[int]
+    spendMax: NotRequired[int]
+    spendCurrency: NotRequired[str]
+    impressionsMin: NotRequired[int]
+    impressionsMax: NotRequired[int]
+    reachMin: NotRequired[int]
+    reachMax: NotRequired[int]
     countries: NotRequired[list[str]]
 
 
-class MetaAdsSearchResponseData(TypedDict):
-    ads: list[MetaAdsSearchResponseDataAdsItem]
+class MetaAdsPageResponseData(TypedDict):
+    results: list[MetaAdsPageResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
-class MetaAdsSearchResponse(TypedDict):
+class MetaAdsPageResponse(TypedDict):
     success: Literal[True]
-    data: MetaAdsSearchResponseData
+    data: MetaAdsPageResponseData
     creditsUsed: int
     requestId: str
 
 
-class MetaAdsAdResponseDataDetailsAdvertiser(TypedDict):
-    description: NotRequired[str]
-    category: NotRequired[str]
-    likes: NotRequired[int]
-    verification: NotRequired[str]
-    instagram: NotRequired[str]
-    instagramFollowers: NotRequired[int]
-
-
-class MetaAdsAdResponseDataDetailsAudienceAgeGenderItem(TypedDict):
-    age: NotRequired[str]
-    female: float
-    male: float
-    unknown: float
-
-
-class MetaAdsAdResponseDataDetailsAudienceRegionsItem(TypedDict):
-    region: NotRequired[str]
-    share: float
-
-
-class MetaAdsAdResponseDataDetailsAudience(TypedDict):
-    ageGender: NotRequired[list[MetaAdsAdResponseDataDetailsAudienceAgeGenderItem]]
-    regions: NotRequired[list[MetaAdsAdResponseDataDetailsAudienceRegionsItem]]
-
-
-class MetaAdsAdResponseDataDetailsEuReachByCountryItem(TypedDict):
-    country: NotRequired[str]
-    age: NotRequired[str]
-    female: int
-    male: int
-    unknown: int
-
-
-class MetaAdsAdResponseDataDetailsEuReach(TypedDict):
-    total: NotRequired[int]
-    byCountry: NotRequired[list[MetaAdsAdResponseDataDetailsEuReachByCountryItem]]
-
-
-class MetaAdsAdResponseDataDetailsPayersItem(TypedDict):
-    paidBy: NotRequired[str]
-    beneficiary: NotRequired[str]
-
-
-class MetaAdsAdResponseDataDetails(TypedDict):
-    advertiser: NotRequired[MetaAdsAdResponseDataDetailsAdvertiser]
-    audience: NotRequired[MetaAdsAdResponseDataDetailsAudience]
-    euReach: NotRequired[MetaAdsAdResponseDataDetailsEuReach]
-    payers: NotRequired[list[MetaAdsAdResponseDataDetailsPayersItem]]
-
-
-class MetaAdsAdResponseData(TypedDict):
-    ad: MetaAdsSearchResponseDataAdsItem
-    details: NotRequired[MetaAdsAdResponseDataDetails]
-
-
-class MetaAdsAdResponse(TypedDict):
-    success: Literal[True]
-    data: MetaAdsAdResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class LinkedinJobsSearchResponseDataJobsItemCompany(TypedDict):
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-
-
-class LinkedinJobsSearchResponseDataJobsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
+class LinkedinJobsSearchResponseDataResultsItem(TypedDict):
+    jobId: NotRequired[str]
+    jobUrl: str
     title: NotRequired[str]
-    company: NotRequired[LinkedinJobsSearchResponseDataJobsItemCompany]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    createdAt: NotRequired[str]
+    companyName: NotRequired[str]
+    companyUrl: NotRequired[str]
+    companyAvatarUrl: NotRequired[str]
+    location: NotRequired[str]
+    publishedAt: NotRequired[str]
     salaryText: NotRequired[str]
     isEasyApply: NotRequired[bool]
     insight: NotRequired[str]
 
 
 class LinkedinJobsSearchResponseData(TypedDict):
-    jobs: list[LinkedinJobsSearchResponseDataJobsItem]
+    results: list[LinkedinJobsSearchResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -2691,32 +1961,24 @@ class LinkedinJobsSearchResponse(TypedDict):
     requestId: str
 
 
-class LinkedinJobsJobResponseDataJobDescription(TypedDict):
-    text: NotRequired[str]
-    html: NotRequired[str]
-
-
-class LinkedinJobsJobResponseDataJob(TypedDict):
-    id: NotRequired[str]
-    url: str
+class LinkedinJobsJobResponseData(TypedDict):
+    jobId: NotRequired[str]
+    jobUrl: str
     title: NotRequired[str]
-    company: NotRequired[LinkedinJobsSearchResponseDataJobsItemCompany]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    createdAt: NotRequired[str]
-    applicants: NotRequired[int]
-    applicantsText: NotRequired[str]
+    companyName: NotRequired[str]
+    companyUrl: NotRequired[str]
+    companyAvatarUrl: NotRequired[str]
+    location: NotRequired[str]
+    publishedAt: NotRequired[str]
     salaryText: NotRequired[str]
     isEasyApply: NotRequired[bool]
+    applicants: NotRequired[int]
     applyUrl: NotRequired[str]
     seniority: NotRequired[str]
     employmentType: NotRequired[str]
     jobFunction: NotRequired[str]
     industries: NotRequired[str]
-    description: NotRequired[LinkedinJobsJobResponseDataJobDescription]
-
-
-class LinkedinJobsJobResponseData(TypedDict):
-    job: LinkedinJobsJobResponseDataJob
+    description: NotRequired[str]
 
 
 class LinkedinJobsJobResponse(TypedDict):
@@ -2726,82 +1988,9 @@ class LinkedinJobsJobResponse(TypedDict):
     requestId: str
 
 
-class LinkedinAdsSearchResponseDataAdsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    creativeType: NotRequired[str]
-    format: NotRequired[str]
-    advertiser: NotRequired[LinkedinJobsSearchResponseDataJobsItemCompany]
-    postedBy: NotRequired[str]
-    text: NotRequired[str]
-    headline: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-
-
-class LinkedinAdsSearchResponseData(TypedDict):
-    ads: list[LinkedinAdsSearchResponseDataAdsItem]
-    total: NotRequired[int]
-    cursor: NotRequired[str]
-
-
-class LinkedinAdsSearchResponse(TypedDict):
-    success: Literal[True]
-    data: LinkedinAdsSearchResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class LinkedinAdsAdResponseDataAdCountriesItem(TypedDict):
-    country: NotRequired[str]
-    share: NotRequired[float]
-
-
-class LinkedinAdsAdResponseDataAdTargetingItem(TypedDict):
-    parameter: NotRequired[str]
-    description: NotRequired[str]
-
-
-class LinkedinAdsAdResponseDataAdTargetingUsedItem(TypedDict):
-    parameter: NotRequired[str]
-    isTargeted: bool
-    isExcluded: bool
-
-
-class LinkedinAdsAdResponseDataAd(TypedDict):
-    id: NotRequired[str]
-    url: str
-    creativeType: NotRequired[str]
-    format: NotRequired[str]
-    advertiser: NotRequired[LinkedinJobsSearchResponseDataJobsItemCompany]
-    postedBy: NotRequired[str]
-    text: NotRequired[str]
-    headline: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    paidBy: NotRequired[str]
-    cta: NotRequired[MetaAdsSearchResponseDataAdsItemCta]
-    videos: NotRequired[list[InstagramProfileResponseDataPostsItemVideosItem]]
-    firstShownAt: NotRequired[str]
-    lastShownAt: NotRequired[str]
-    impressions: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    countries: NotRequired[list[LinkedinAdsAdResponseDataAdCountriesItem]]
-    targeting: NotRequired[list[LinkedinAdsAdResponseDataAdTargetingItem]]
-    targetingUsed: NotRequired[list[LinkedinAdsAdResponseDataAdTargetingUsedItem]]
-
-
-class LinkedinAdsAdResponseData(TypedDict):
-    ad: LinkedinAdsAdResponseDataAd
-
-
-class LinkedinAdsAdResponse(TypedDict):
-    success: Literal[True]
-    data: LinkedinAdsAdResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class LinkedinCompanyResponseDataCompany(TypedDict):
-    id: NotRequired[str]
-    url: str
+class LinkedinCompanyResponseData(TypedDict):
+    companyId: NotRequired[str]
+    companyUrl: str
     name: NotRequired[str]
     industry: NotRequired[str]
     size: NotRequired[str]
@@ -2810,12 +1999,8 @@ class LinkedinCompanyResponseDataCompany(TypedDict):
     website: NotRequired[str]
     followers: NotRequired[int]
     description: NotRequired[str]
-    specialties: NotRequired[list[str]]
+    specialties: list[str]
     founded: NotRequired[str]
-
-
-class LinkedinCompanyResponseData(TypedDict):
-    company: LinkedinCompanyResponseDataCompany
 
 
 class LinkedinCompanyResponse(TypedDict):
@@ -2825,21 +2010,16 @@ class LinkedinCompanyResponse(TypedDict):
     requestId: str
 
 
-class LinkedinProfileResponseDataProfile(TypedDict):
-    id: NotRequired[str]
-    url: str
+class LinkedinProfileResponseData(TypedDict):
+    profileId: NotRequired[str]
+    profileUrl: str
     name: NotRequired[str]
     headline: NotRequired[str]
     location: NotRequired[str]
     about: NotRequired[str]
-    isAboutTruncated: bool
     followers: NotRequired[int]
-    roles: NotRequired[list[LinkedinProfileResponseDataProfileRolesItem]]
-    education: NotRequired[list[LinkedinProfileResponseDataProfileEducationItem]]
-
-
-class LinkedinProfileResponseData(TypedDict):
-    profile: LinkedinProfileResponseDataProfile
+    roles: list[LinkedinProfileResponseDataRolesItem]
+    education: list[LinkedinProfileResponseDataEducationItem]
 
 
 class LinkedinProfileResponse(TypedDict):
@@ -2849,17 +2029,18 @@ class LinkedinProfileResponse(TypedDict):
     requestId: str
 
 
-class LinkedinPostsResponseDataPostsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
+class LinkedinPostsResponseDataResultsItem(TypedDict):
+    postId: NotRequired[str]
+    postUrl: str
     text: NotRequired[str]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     likes: NotRequired[int]
-    author: NotRequired[WebNewsResponseDataArticlesItemPublisher]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
 
 
 class LinkedinPostsResponseData(TypedDict):
-    posts: list[LinkedinPostsResponseDataPostsItem]
+    results: list[LinkedinPostsResponseDataResultsItem]
 
 
 class LinkedinPostsResponse(TypedDict):
@@ -2869,48 +2050,25 @@ class LinkedinPostsResponse(TypedDict):
     requestId: str
 
 
-class ZillowSearchBounds(TypedDict):
-    west: float
-    east: float
-    south: float
-    north: float
-
-
-class ZillowSearchPrice(TypedDict):
-    min: NotRequired[float]
-    max: NotRequired[float]
-
-
-class ZillowSearchHoa(TypedDict):
-    max: float
-
-
-class ZillowSearchResponseDataListingsItemBroker(TypedDict):
-    name: NotRequired[str]
-
-
-class ZillowSearchResponseDataListingsItemBuildingUnitsItem(TypedDict):
+class ZillowSearchResponseDataResultsItemUnitsItem(TypedDict):
     bedrooms: NotRequired[float]
     price: NotRequired[float]
 
 
-class ZillowSearchResponseDataListingsItemBuilding(TypedDict):
-    name: NotRequired[str]
-    minRent: NotRequired[float]
-    maxRent: NotRequired[float]
-    availableUnits: NotRequired[int]
-    units: NotRequired[list[ZillowSearchResponseDataListingsItemBuildingUnitsItem]]
-
-
-class ZillowSearchResponseDataListingsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    status: ZillowSearchResponseDataListingsItemStatus
+class ZillowSearchResponseDataResultsItem(TypedDict):
+    propertyId: NotRequired[str]
+    propertyUrl: str
+    status: ZillowSearchResponseDataResultsItemStatus
     statusText: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
+    priceCurrency: Literal["USD"]
+    addressFull: NotRequired[str]
+    addressStreet: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressRegion: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
     bedrooms: NotRequired[float]
     bathrooms: NotRequired[float]
     sqft: NotRequired[float]
@@ -2919,13 +2077,17 @@ class ZillowSearchResponseDataListingsItem(TypedDict):
     lastSoldAt: NotRequired[str]
     zestimate: NotRequired[float]
     rentZestimate: NotRequired[float]
-    broker: NotRequired[ZillowSearchResponseDataListingsItemBroker]
-    image: NotRequired[str]
-    building: NotRequired[ZillowSearchResponseDataListingsItemBuilding]
+    brokerName: NotRequired[str]
+    imageUrl: NotRequired[str]
+    buildingName: NotRequired[str]
+    buildingMinRent: NotRequired[float]
+    buildingMaxRent: NotRequired[float]
+    buildingAvailableUnits: NotRequired[int]
+    units: NotRequired[list[ZillowSearchResponseDataResultsItemUnitsItem]]
 
 
 class ZillowSearchResponseData(TypedDict):
-    listings: list[ZillowSearchResponseDataListingsItem]
+    results: list[ZillowSearchResponseDataResultsItem]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
@@ -2937,67 +2099,57 @@ class ZillowSearchResponse(TypedDict):
     requestId: str
 
 
-class ZillowPropertyResponseDataPropertyLotSize(TypedDict):
-    value: float
-    unit: NotRequired[str]
-
-
-class ZillowPropertyResponseDataPropertyPriceHistoryItem(TypedDict):
+class ZillowPropertyResponseDataPriceHistoryItem(TypedDict):
     date: str
     price: NotRequired[float]
     event: NotRequired[str]
 
 
-class ZillowPropertyResponseDataPropertyMls(TypedDict):
-    id: NotRequired[str]
+class ZillowPropertyResponseDataFactsItem(TypedDict):
     name: NotRequired[str]
+    value: NotRequired[str]
 
 
-class ZillowPropertyResponseDataPropertyBroker(TypedDict):
-    name: NotRequired[str]
-    phone: NotRequired[str]
-
-
-class ZillowPropertyResponseDataPropertyAgent(TypedDict):
-    name: NotRequired[str]
-    phone: NotRequired[str]
-    email: NotRequired[str]
-
-
-class ZillowPropertyResponseDataProperty(TypedDict):
-    id: NotRequired[str]
-    url: str
+class ZillowPropertyResponseData(TypedDict):
+    propertyId: NotRequired[str]
+    propertyUrl: str
     status: NotRequired[str]
     homeType: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: Literal["USD"]
     zestimate: NotRequired[float]
     rentZestimate: NotRequired[float]
     lastSoldPrice: NotRequired[float]
     lastSoldAt: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
+    addressFull: NotRequired[str]
+    addressStreet: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressRegion: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
     bedrooms: NotRequired[float]
     bathrooms: NotRequired[float]
     sqft: NotRequired[float]
-    lotSize: NotRequired[ZillowPropertyResponseDataPropertyLotSize]
+    lotSize: NotRequired[float]
+    lotSizeUnit: NotRequired[str]
     yearBuilt: NotRequired[int]
     description: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    priceHistory: NotRequired[list[ZillowPropertyResponseDataPropertyPriceHistoryItem]]
+    imageUrls: list[str]
+    priceHistory: list[ZillowPropertyResponseDataPriceHistoryItem]
     daysOnZillow: NotRequired[int]
     views: NotRequired[int]
     saves: NotRequired[int]
     monthlyHoa: NotRequired[float]
     propertyTaxRate: NotRequired[float]
-    mls: NotRequired[ZillowPropertyResponseDataPropertyMls]
-    broker: NotRequired[ZillowPropertyResponseDataPropertyBroker]
-    agent: NotRequired[ZillowPropertyResponseDataPropertyAgent]
-    facts: NotRequired[dict[str, str | float | bool | list[str]]]
-
-
-class ZillowPropertyResponseData(TypedDict):
-    property: ZillowPropertyResponseDataProperty
+    mlsId: NotRequired[str]
+    mlsName: NotRequired[str]
+    brokerName: NotRequired[str]
+    brokerPhone: NotRequired[str]
+    agentName: NotRequired[str]
+    agentPhone: NotRequired[str]
+    agentEmail: NotRequired[str]
+    facts: list[ZillowPropertyResponseDataFactsItem]
 
 
 class ZillowPropertyResponse(TypedDict):
@@ -3007,251 +2159,24 @@ class ZillowPropertyResponse(TypedDict):
     requestId: str
 
 
-class GoogleAdsAdvertisersResponseDataAdvertisersItemAds(TypedDict):
-    min: int
-    max: NotRequired[int]
-
-
-class GoogleAdsAdvertisersResponseDataAdvertisersItem(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    country: NotRequired[str]
-    isVerified: bool
-    ads: NotRequired[GoogleAdsAdvertisersResponseDataAdvertisersItemAds]
-    url: str
-
-
-class GoogleAdsAdvertisersResponseData(TypedDict):
-    advertisers: list[GoogleAdsAdvertisersResponseDataAdvertisersItem]
-    domains: list[str]
-
-
-class GoogleAdsAdvertisersResponse(TypedDict):
-    success: Literal[True]
-    data: GoogleAdsAdvertisersResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class GoogleAdsSearchResponseDataAdsItemAdvertiser(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    url: str
-    country: NotRequired[str]
-    isVerified: NotRequired[bool]
-
-
-class GoogleAdsSearchResponseDataAdsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    advertiser: GoogleAdsSearchResponseDataAdsItemAdvertiser
-    domain: NotRequired[str]
-    format: GoogleAdsSearchResponseDataAdsItemFormat
-    firstShownAt: NotRequired[str]
-    lastShownAt: NotRequired[str]
-    daysShown: NotRequired[int]
-    preview: NotRequired[str]
-    image: NotRequired[str]
-
-
-class GoogleAdsSearchResponseDataTotal(TypedDict):
-    min: int
-    max: int
-
-
-class GoogleAdsSearchResponseData(TypedDict):
-    ads: list[GoogleAdsSearchResponseDataAdsItem]
-    total: NotRequired[GoogleAdsSearchResponseDataTotal]
-    cursor: NotRequired[str]
-
-
-class GoogleAdsSearchResponse(TypedDict):
-    success: Literal[True]
-    data: GoogleAdsSearchResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class GoogleAdsAdResponseDataAdVariationsItem(TypedDict):
-    preview: NotRequired[str]
-    image: NotRequired[str]
-    video: NotRequired[str]
-
-
-class GoogleAdsAdResponseDataAdRegionsItemPlatformsItem(TypedDict):
-    platform: GoogleAdsAdResponseDataAdRegionsItemPlatformsItemPlatform
-    impressions: GoogleAdsAdvertisersResponseDataAdvertisersItemAds
-
-
-class GoogleAdsAdResponseDataAdRegionsItem(TypedDict):
-    country: NotRequired[str]
-    firstShownAt: NotRequired[str]
-    lastShownAt: NotRequired[str]
-    impressions: NotRequired[GoogleAdsAdvertisersResponseDataAdvertisersItemAds]
-    platforms: NotRequired[list[GoogleAdsAdResponseDataAdRegionsItemPlatformsItem]]
-
-
-class GoogleAdsAdResponseDataAdTargetingDemographics(TypedDict):
-    isIncluded: bool
-    isExcluded: bool
-
-
-class GoogleAdsAdResponseDataAdTargeting(TypedDict):
-    demographics: GoogleAdsAdResponseDataAdTargetingDemographics
-    geography: GoogleAdsAdResponseDataAdTargetingDemographics
-    contextual: GoogleAdsAdResponseDataAdTargetingDemographics
-    interests: GoogleAdsAdResponseDataAdTargetingDemographics
-    customerLists: GoogleAdsAdResponseDataAdTargetingDemographics
-
-
-class GoogleAdsAdResponseDataAd(TypedDict):
-    id: NotRequired[str]
-    url: str
-    advertiser: GoogleAdsSearchResponseDataAdsItemAdvertiser
-    domain: NotRequired[str]
-    format: GoogleAdsSearchResponseDataAdsItemFormat
-    firstShownAt: NotRequired[str]
-    lastShownAt: NotRequired[str]
-    daysShown: NotRequired[int]
-    preview: NotRequired[str]
-    image: NotRequired[str]
-    paidBy: NotRequired[str]
-    variations: NotRequired[list[GoogleAdsAdResponseDataAdVariationsItem]]
-    impressions: NotRequired[GoogleAdsAdvertisersResponseDataAdvertisersItemAds]
-    regions: NotRequired[list[GoogleAdsAdResponseDataAdRegionsItem]]
-    targeting: NotRequired[GoogleAdsAdResponseDataAdTargeting]
-
-
-class GoogleAdsAdResponseData(TypedDict):
-    ad: GoogleAdsAdResponseDataAd
-
-
-class GoogleAdsAdResponse(TypedDict):
-    success: Literal[True]
-    data: GoogleAdsAdResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TiktokAdsSearchResponseDataAdsItemAdvertiser(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    country: NotRequired[str]
-
-
-class TiktokAdsSearchResponseDataAdsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    advertiser: NotRequired[TiktokAdsSearchResponseDataAdsItemAdvertiser]
-    headline: NotRequired[str]
-    firstShownAt: NotRequired[str]
-    lastShownAt: NotRequired[str]
-    reach: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    video: NotRequired[str]
-    thumbnail: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-
-
-class TiktokAdsSearchResponseData(TypedDict):
-    ads: list[TiktokAdsSearchResponseDataAdsItem]
-    advertiser: NotRequired[ZillowPropertyResponseDataPropertyMls]
-    total: NotRequired[int]
-    cursor: NotRequired[str]
-
-
-class TiktokAdsSearchResponse(TypedDict):
-    success: Literal[True]
-    data: TiktokAdsSearchResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TiktokAdsAdResponseDataAdTargetingRegionsItemBreakdownItem(TypedDict):
-    age: NotRequired[str]
-    gender: NotRequired[str]
-    impressions: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-
-
-class TiktokAdsAdResponseDataAdTargetingRegionsItem(TypedDict):
-    country: NotRequired[str]
-    impressions: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    ages: NotRequired[list[str]]
-    genders: NotRequired[list[str]]
-    breakdown: NotRequired[list[TiktokAdsAdResponseDataAdTargetingRegionsItemBreakdownItem]]
-
-
-class TiktokAdsAdResponseDataAdTargeting(TypedDict):
-    audienceSize: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    impressions: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    countries: NotRequired[list[str]]
-    languages: NotRequired[list[str]]
-    interests: NotRequired[str]
-    regions: NotRequired[list[TiktokAdsAdResponseDataAdTargetingRegionsItem]]
-
-
-class TiktokAdsAdResponseDataAd(TypedDict):
-    id: NotRequired[str]
-    url: str
-    advertiser: NotRequired[TiktokAdsSearchResponseDataAdsItemAdvertiser]
-    headline: NotRequired[str]
-    firstShownAt: NotRequired[str]
-    lastShownAt: NotRequired[str]
-    reach: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    video: NotRequired[str]
-    thumbnail: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    paidBy: NotRequired[str]
-    link: NotRequired[MetaAdsSearchResponseDataAdsItemLink]
-    cta: NotRequired[MetaAdsSearchResponseDataAdsItemCta]
-    objective: NotRequired[str]
-    category: NotRequired[str]
-    targeting: NotRequired[TiktokAdsAdResponseDataAdTargeting]
-
-
-class TiktokAdsAdResponseData(TypedDict):
-    ad: TiktokAdsAdResponseDataAd
-
-
-class TiktokAdsAdResponse(TypedDict):
-    success: Literal[True]
-    data: TiktokAdsAdResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class UpworkSearchHourlyRate(TypedDict):
-    min: NotRequired[int]
-    max: NotRequired[int]
-
-
-class UpworkSearchResponseDataJobsItemHourlyRate(TypedDict):
-    min: NotRequired[float]
-    max: NotRequired[float]
-
-
-class UpworkSearchResponseDataJobsItemFixedBudget(TypedDict):
-    amount: float
-
-
-class UpworkSearchResponseDataJobsItem(TypedDict):
-    id: NotRequired[str]
-    ciphertext: NotRequired[str]
-    url: str
+class UpworkSearchResponseDataResultsItem(TypedDict):
+    jobId: NotRequired[str]
+    jobUrl: str
     title: NotRequired[str]
     description: NotRequired[str]
     skills: NotRequired[list[str]]
     type: NotRequired[UpworkSearchJobType]
-    experience: NotRequired[UpworkSearchExperienceItem]
-    hourlyRate: NotRequired[UpworkSearchResponseDataJobsItemHourlyRate]
-    fixedBudget: NotRequired[UpworkSearchResponseDataJobsItemFixedBudget]
-    currency: NotRequired[str]
+    experience: NotRequired[UpworkSearchExperience]
+    hourlyRateMin: NotRequired[float]
+    hourlyRateMax: NotRequired[float]
+    fixedBudget: NotRequired[float]
+    budgetCurrency: NotRequired[str]
     durationWeeks: NotRequired[int]
-    createdAt: NotRequired[str]
     publishedAt: NotRequired[str]
 
 
 class UpworkSearchResponseData(TypedDict):
-    jobs: list[UpworkSearchResponseDataJobsItem]
+    results: list[UpworkSearchResponseDataResultsItem]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
@@ -3263,7 +2188,25 @@ class UpworkSearchResponse(TypedDict):
     requestId: str
 
 
-class UpworkJobResponseDataJobActivity(TypedDict):
+class UpworkJobResponseData(TypedDict):
+    jobId: NotRequired[str]
+    jobUrl: str
+    title: NotRequired[str]
+    description: NotRequired[str]
+    skills: list[str]
+    type: NotRequired[UpworkSearchJobType]
+    experience: NotRequired[UpworkSearchExperience]
+    hourlyRateMin: NotRequired[float]
+    hourlyRateMax: NotRequired[float]
+    fixedBudget: NotRequired[float]
+    budgetCurrency: NotRequired[str]
+    durationWeeks: NotRequired[int]
+    publishedAt: NotRequired[str]
+    createdAt: NotRequired[str]
+    status: NotRequired[str]
+    category: NotRequired[str]
+    categoryGroup: NotRequired[str]
+    durationText: NotRequired[str]
     applicants: NotRequired[int]
     hired: NotRequired[int]
     interviewing: NotRequired[int]
@@ -3271,49 +2214,20 @@ class UpworkJobResponseDataJobActivity(TypedDict):
     unansweredInvites: NotRequired[int]
     positions: NotRequired[int]
     lastClientActivityAt: NotRequired[str]
-
-
-class UpworkJobResponseDataJobClient(TypedDict):
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    timezone: NotRequired[str]
-    totalSpent: NotRequired[float]
-    hires: NotRequired[int]
-    jobsWithHires: NotRequired[int]
-    activeContracts: NotRequired[int]
-    reviews: NotRequired[int]
-    rating: NotRequired[float]
-    openJobs: NotRequired[int]
-    postedJobs: NotRequired[int]
-    joinedAt: NotRequired[str]
-    industry: NotRequired[str]
-    companySizeText: NotRequired[str]
-
-
-class UpworkJobResponseDataJob(TypedDict):
-    id: NotRequired[str]
-    ciphertext: NotRequired[str]
-    url: str
-    title: NotRequired[str]
-    description: NotRequired[str]
-    skills: NotRequired[list[str]]
-    type: NotRequired[UpworkSearchJobType]
-    experience: NotRequired[UpworkSearchExperienceItem]
-    hourlyRate: NotRequired[UpworkSearchResponseDataJobsItemHourlyRate]
-    fixedBudget: NotRequired[UpworkSearchResponseDataJobsItemFixedBudget]
-    currency: NotRequired[str]
-    durationWeeks: NotRequired[int]
-    createdAt: NotRequired[str]
-    publishedAt: NotRequired[str]
-    status: NotRequired[str]
-    category: NotRequired[str]
-    categoryGroup: NotRequired[str]
-    durationText: NotRequired[str]
-    activity: NotRequired[UpworkJobResponseDataJobActivity]
-    client: NotRequired[UpworkJobResponseDataJobClient]
-
-
-class UpworkJobResponseData(TypedDict):
-    job: UpworkJobResponseDataJob
+    clientCity: NotRequired[str]
+    clientCountry: NotRequired[str]
+    clientTimezone: NotRequired[str]
+    clientTotalSpent: NotRequired[float]
+    clientHires: NotRequired[int]
+    clientJobsWithHires: NotRequired[int]
+    clientActiveContracts: NotRequired[int]
+    clientReviews: NotRequired[int]
+    clientRating: NotRequired[float]
+    clientOpenJobs: NotRequired[int]
+    clientPostedJobs: NotRequired[int]
+    clientJoinedAt: NotRequired[str]
+    clientIndustry: NotRequired[str]
+    clientCompanySize: NotRequired[str]
 
 
 class UpworkJobResponse(TypedDict):
@@ -3323,69 +2237,13 @@ class UpworkJobResponse(TypedDict):
     requestId: str
 
 
-class GoogleSuggestResponseDataKeywordsItem(TypedDict):
-    keyword: str
-    seed: NotRequired[str]
-    rank: int
-
-
-class GoogleSuggestResponseData(TypedDict):
-    query: NotRequired[str]
-    keywords: list[GoogleSuggestResponseDataKeywordsItem]
-
-
-class GoogleSuggestResponse(TypedDict):
-    success: Literal[True]
-    data: GoogleSuggestResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class GoogleTrendsInterestResponseDataPointsItem(TypedDict):
-    recordedAt: str
-    values: NotRequired[list[float]]
-    isPartial: bool
-
-
-class GoogleTrendsInterestResponseData(TypedDict):
-    queries: list[str]
-    points: list[GoogleTrendsInterestResponseDataPointsItem]
-    averages: list[float]
-
-
-class GoogleTrendsInterestResponse(TypedDict):
-    success: Literal[True]
-    data: GoogleTrendsInterestResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class GoogleTrendsRegionsResponseDataRegionsItem(TypedDict):
-    code: NotRequired[str]
-    name: NotRequired[str]
-    values: NotRequired[list[float]]
-
-
-class GoogleTrendsRegionsResponseData(TypedDict):
-    queries: list[str]
-    regions: list[GoogleTrendsRegionsResponseDataRegionsItem]
-
-
-class GoogleTrendsRegionsResponse(TypedDict):
-    success: Literal[True]
-    data: GoogleTrendsRegionsResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class GoogleTrendsRelatedResponseDataQueriesItem(TypedDict):
+class GoogleTrendsRelatedResponseDataResultsItem(TypedDict):
     query: NotRequired[str]
     value: float
 
 
 class GoogleTrendsRelatedResponseData(TypedDict):
-    query: NotRequired[str]
-    queries: list[GoogleTrendsRelatedResponseDataQueriesItem]
+    results: list[GoogleTrendsRelatedResponseDataResultsItem]
 
 
 class GoogleTrendsRelatedResponse(TypedDict):
@@ -3395,7 +2253,7 @@ class GoogleTrendsRelatedResponse(TypedDict):
     requestId: str
 
 
-class GoogleTrendsTrendingResponseDataTrendsItem(TypedDict):
+class GoogleTrendsTrendingResponseDataResultsItem(TypedDict):
     query: NotRequired[str]
     volume: NotRequired[float]
     increasePercent: NotRequired[float]
@@ -3408,7 +2266,7 @@ class GoogleTrendsTrendingResponseDataTrendsItem(TypedDict):
 
 
 class GoogleTrendsTrendingResponseData(TypedDict):
-    trends: list[GoogleTrendsTrendingResponseDataTrendsItem]
+    results: list[GoogleTrendsTrendingResponseDataResultsItem]
 
 
 class GoogleTrendsTrendingResponse(TypedDict):
@@ -3418,51 +2276,9 @@ class GoogleTrendsTrendingResponse(TypedDict):
     requestId: str
 
 
-class SiteMapResponseDataUrlsItem(TypedDict):
-    url: str
-    lastModifiedAt: NotRequired[str]
-
-
-class SiteMapResponseData(TypedDict):
-    urls: list[SiteMapResponseDataUrlsItem]
-    source: SiteMapResponseDataSource
-    sitemaps: list[str]
-    cursor: NotRequired[str]
-
-
-class SiteMapResponse(TypedDict):
-    success: Literal[True]
-    data: SiteMapResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class SiteSeoResponseDataTitle(TypedDict):
-    text: NotRequired[str]
-    length: int
-
-
-class SiteSeoResponseDataCanonical(TypedDict):
-    url: NotRequired[str]
-    isSelf: bool
-
-
-class SiteSeoResponseDataRobots(TypedDict):
-    meta: NotRequired[str]
-    isNoindex: bool
-    isNofollow: bool
-    isAllowedByRobotsTxt: NotRequired[bool]
-
-
-class SiteSeoResponseDataHeadingsOutlineItem(TypedDict):
+class SiteSeoResponseDataOutlineItem(TypedDict):
     level: int
     text: NotRequired[str]
-
-
-class SiteSeoResponseDataHeadings(TypedDict):
-    h1: NotRequired[list[str]]
-    h2: NotRequired[list[str]]
-    outline: NotRequired[list[SiteSeoResponseDataHeadingsOutlineItem]]
 
 
 class SiteSeoResponseDataHreflangItem(TypedDict):
@@ -3470,47 +2286,51 @@ class SiteSeoResponseDataHreflangItem(TypedDict):
     url: str
 
 
-class SiteSeoResponseDataJsonLd(TypedDict):
-    blocks: int
-    invalid: int
-    types: NotRequired[list[str]]
-
-
-class SiteSeoResponseDataImages(TypedDict):
-    total: int
-    missingAlt: int
-    emptyAlt: int
-    missingAltExamples: NotRequired[list[str]]
-
-
 class SiteSeoResponseDataLinksCheckedItem(TypedDict):
     url: str
     status: NotRequired[int]
 
 
-class SiteSeoResponseDataLinks(TypedDict):
-    internal: int
-    external: int
-    nofollow: int
-    checked: NotRequired[list[SiteSeoResponseDataLinksCheckedItem]]
-    broken: NotRequired[list[SiteSeoResponseDataLinksCheckedItem]]
-
-
 class SiteSeoResponseData(TypedDict):
-    url: str
-    title: SiteSeoResponseDataTitle
-    description: SiteSeoResponseDataTitle
+    title: NotRequired[str]
+    titleLength: int
+    description: NotRequired[str]
+    descriptionLength: int
     language: NotRequired[str]
     hasViewport: bool
-    canonical: SiteSeoResponseDataCanonical
-    robots: SiteSeoResponseDataRobots
-    headings: NotRequired[SiteSeoResponseDataHeadings]
+    canonicalUrl: NotRequired[str]
+    canonicalIsSelf: bool
+    robotsMeta: NotRequired[str]
+    isNoindex: bool
+    isNofollow: bool
+    isAllowedByRobotsTxt: NotRequired[bool]
+    h1: list[str]
+    h2: list[str]
+    outline: list[SiteSeoResponseDataOutlineItem]
     hreflang: list[SiteSeoResponseDataHreflangItem]
-    openGraph: NotRequired[dict[str, str]]
-    twitter: NotRequired[dict[str, str]]
-    jsonLd: SiteSeoResponseDataJsonLd
-    images: SiteSeoResponseDataImages
-    links: SiteSeoResponseDataLinks
+    ogTitle: NotRequired[str]
+    ogDescription: NotRequired[str]
+    ogImage: NotRequired[str]
+    ogUrl: NotRequired[str]
+    ogType: NotRequired[str]
+    ogSiteName: NotRequired[str]
+    twitterCard: NotRequired[str]
+    twitterTitle: NotRequired[str]
+    twitterDescription: NotRequired[str]
+    twitterImage: NotRequired[str]
+    twitterSite: NotRequired[str]
+    jsonLdBlocks: int
+    jsonLdInvalid: int
+    jsonLdTypes: list[str]
+    imagesTotal: int
+    imagesMissingAlt: int
+    imagesEmptyAlt: int
+    imagesMissingAltExamples: list[str]
+    linksInternal: int
+    linksExternal: int
+    linksNofollow: int
+    linksChecked: list[SiteSeoResponseDataLinksCheckedItem]
+    linksBroken: list[SiteSeoResponseDataLinksCheckedItem]
     words: int
     issues: list[str]
 
@@ -3518,96 +2338,6 @@ class SiteSeoResponseData(TypedDict):
 class SiteSeoResponse(TypedDict):
     success: Literal[True]
     data: SiteSeoResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class DomainWhoisResponseDataRegistrar(TypedDict):
-    name: NotRequired[str]
-    ianaId: NotRequired[str]
-    url: NotRequired[str]
-    abuseEmail: NotRequired[str]
-    abusePhone: NotRequired[str]
-
-
-class DomainWhoisResponseDataRegistrant(TypedDict):
-    name: NotRequired[str]
-    organization: NotRequired[str]
-    email: NotRequired[str]
-    phone: NotRequired[str]
-    country: NotRequired[str]
-
-
-class DomainWhoisResponseData(TypedDict):
-    domain: NotRequired[str]
-    registryId: NotRequired[str]
-    status: list[str]
-    createdAt: NotRequired[str]
-    updatedAt: NotRequired[str]
-    expiresAt: NotRequired[str]
-    registrar: NotRequired[DomainWhoisResponseDataRegistrar]
-    registrant: NotRequired[DomainWhoisResponseDataRegistrant]
-    nameservers: list[str]
-    hasDnssec: NotRequired[bool]
-    rdap: str
-
-
-class DomainWhoisResponse(TypedDict):
-    success: Literal[True]
-    data: DomainWhoisResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class DomainDnsResponseDataRecordsItem(TypedDict):
-    type: DomainDnsTypesItem
-    name: NotRequired[str]
-    value: NotRequired[str]
-    ttlSeconds: int
-
-
-class DomainDnsResponseDataMxItem(TypedDict):
-    priority: int
-    exchange: NotRequired[str]
-
-
-class DomainDnsResponseDataDmarc(TypedDict):
-    record: NotRequired[str]
-    policy: NotRequired[str]
-
-
-class DomainDnsResponseData(TypedDict):
-    domain: NotRequired[str]
-    isResolvable: bool
-    records: list[DomainDnsResponseDataRecordsItem]
-    mx: list[DomainDnsResponseDataMxItem]
-    spf: NotRequired[str]
-    dmarc: NotRequired[DomainDnsResponseDataDmarc]
-
-
-class DomainDnsResponse(TypedDict):
-    success: Literal[True]
-    data: DomainDnsResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class DomainTechResponseDataTechnologiesItem(TypedDict):
-    name: NotRequired[str]
-    category: NotRequired[str]
-    version: NotRequired[str]
-    evidence: DomainTechResponseDataTechnologiesItemEvidence
-
-
-class DomainTechResponseData(TypedDict):
-    url: str
-    generator: NotRequired[str]
-    technologies: list[DomainTechResponseDataTechnologiesItem]
-
-
-class DomainTechResponse(TypedDict):
-    success: Literal[True]
-    data: DomainTechResponseData
     creditsUsed: int
     requestId: str
 
@@ -3635,15 +2365,29 @@ class EmailCheckResponse(TypedDict):
     requestId: str
 
 
-class CryptoCoinsResponseDataCoinsItem(TypedDict):
-    id: NotRequired[str]
-    source: CryptoCoinsResponseDataCoinsItemSource
+class EmailFindResponseData(TypedDict):
+    email: NotRequired[str]
+    status: EmailFindResponseDataStatus
+    domain: NotRequired[str]
+    isCatchAll: NotRequired[bool]
+    pattern: NotRequired[str]
+
+
+class EmailFindResponse(TypedDict):
+    success: Literal[True]
+    data: EmailFindResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class CryptoCoinsResponseDataResultsItem(TypedDict):
+    coinId: NotRequired[str]
     symbol: NotRequired[str]
     name: NotRequired[str]
-    url: str
-    image: NotRequired[str]
+    coinUrl: str
+    imageUrl: NotRequired[str]
     rank: NotRequired[int]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     price: NotRequired[float]
     marketCap: NotRequired[float]
     fullyDilutedValue: NotRequired[float]
@@ -3665,7 +2409,7 @@ class CryptoCoinsResponseDataCoinsItem(TypedDict):
 
 
 class CryptoCoinsResponseData(TypedDict):
-    coins: list[CryptoCoinsResponseDataCoinsItem]
+    results: list[CryptoCoinsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -3676,26 +2420,25 @@ class CryptoCoinsResponse(TypedDict):
     requestId: str
 
 
-class CryptoCoinResponseDataCoinSocialsItem(TypedDict):
+class CryptoCoinResponseDataSocialsItem(TypedDict):
     type: NotRequired[str]
     url: str
 
 
-class CryptoCoinResponseDataCoinContractsItem(TypedDict):
+class CryptoCoinResponseDataContractsItem(TypedDict):
     chain: NotRequired[str]
     address: NotRequired[str]
     decimals: NotRequired[int]
 
 
-class CryptoCoinResponseDataCoin(TypedDict):
-    id: NotRequired[str]
-    source: CryptoCoinsResponseDataCoinsItemSource
+class CryptoCoinResponseData(TypedDict):
+    coinId: NotRequired[str]
     symbol: NotRequired[str]
     name: NotRequired[str]
-    url: str
-    image: NotRequired[str]
+    coinUrl: str
+    imageUrl: NotRequired[str]
     rank: NotRequired[int]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     price: NotRequired[float]
     marketCap: NotRequired[float]
     fullyDilutedValue: NotRequired[float]
@@ -3713,23 +2456,19 @@ class CryptoCoinResponseDataCoin(TypedDict):
     athAt: NotRequired[str]
     atl: NotRequired[float]
     atlAt: NotRequired[str]
-    chains: NotRequired[list[str]]
+    chains: list[str]
     addedAt: NotRequired[str]
     updatedAt: NotRequired[str]
     description: NotRequired[str]
-    categories: NotRequired[list[str]]
+    categories: list[str]
     change1y: NotRequired[float]
-    websites: NotRequired[list[str]]
-    whitepaper: NotRequired[str]
-    explorers: NotRequired[list[str]]
-    socials: NotRequired[list[CryptoCoinResponseDataCoinSocialsItem]]
-    contracts: NotRequired[list[CryptoCoinResponseDataCoinContractsItem]]
+    websites: list[str]
+    whitepaperUrl: NotRequired[str]
+    explorers: list[str]
+    socials: list[CryptoCoinResponseDataSocialsItem]
+    contracts: list[CryptoCoinResponseDataContractsItem]
     launchedAt: NotRequired[str]
     watchlists: NotRequired[int]
-
-
-class CryptoCoinResponseData(TypedDict):
-    coin: CryptoCoinResponseDataCoin
 
 
 class CryptoCoinResponse(TypedDict):
@@ -3739,26 +2478,15 @@ class CryptoCoinResponse(TypedDict):
     requestId: str
 
 
-class CryptoHistoryResponseDataPricesItem(TypedDict):
+class CryptoHistoryResponseDataResultsItem(TypedDict):
     recordedAt: str
     price: NotRequired[float]
     marketCap: NotRequired[float]
     volume: NotRequired[float]
 
 
-class CryptoHistoryResponseDataCandlesItem(TypedDict):
-    openedAt: str
-    open: float
-    high: float
-    low: float
-    close: float
-
-
 class CryptoHistoryResponseData(TypedDict):
-    coin: NotRequired[str]
-    currency: NotRequired[str]
-    prices: list[CryptoHistoryResponseDataPricesItem]
-    candles: list[CryptoHistoryResponseDataCandlesItem]
+    results: list[CryptoHistoryResponseDataResultsItem]
 
 
 class CryptoHistoryResponse(TypedDict):
@@ -3768,189 +2496,51 @@ class CryptoHistoryResponse(TypedDict):
     requestId: str
 
 
-class CryptoTrendingResponseDataCoinsItem(TypedDict):
-    id: NotRequired[str]
-    source: CryptoCoinsResponseDataCoinsItemSource
-    symbol: NotRequired[str]
-    name: NotRequired[str]
-    url: str
-    image: NotRequired[str]
-    rank: NotRequired[int]
-    currency: NotRequired[str]
-    price: NotRequired[float]
-    marketCap: NotRequired[float]
-    volume24h: NotRequired[float]
-    change24h: NotRequired[float]
-
-
-class CryptoTrendingResponseDataCategoriesItem(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    url: str
-    marketCap: NotRequired[float]
-    change24h: NotRequired[float]
-    volume24h: NotRequired[float]
-    coins: NotRequired[int]
-    topCoins: NotRequired[list[str]]
-    updatedAt: NotRequired[str]
-
-
-class CryptoTrendingResponseDataNftsItem(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    symbol: NotRequired[str]
-    url: str
-    image: NotRequired[str]
-    floorPriceText: NotRequired[str]
-    floorChange24h: NotRequired[float]
-
-
-class CryptoTrendingResponseData(TypedDict):
-    coins: list[CryptoTrendingResponseDataCoinsItem]
-    categories: list[CryptoTrendingResponseDataCategoriesItem]
-    nfts: list[CryptoTrendingResponseDataNftsItem]
-
-
-class CryptoTrendingResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoTrendingResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoCategoriesResponseData(TypedDict):
-    categories: list[CryptoTrendingResponseDataCategoriesItem]
-    total: int
-
-
-class CryptoCategoriesResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoCategoriesResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoMoversResponseDataGainersItem(TypedDict):
-    id: NotRequired[str]
-    source: CryptoCoinsResponseDataCoinsItemSource
-    symbol: NotRequired[str]
-    name: NotRequired[str]
-    url: str
-    image: NotRequired[str]
-    rank: NotRequired[int]
-    currency: NotRequired[str]
-    price: NotRequired[float]
-    marketCap: NotRequired[float]
-    volume24h: NotRequired[float]
-    change1h: NotRequired[float]
-    change24h: NotRequired[float]
-    change7d: NotRequired[float]
-    change30d: NotRequired[float]
-    updatedAt: NotRequired[str]
-
-
-class CryptoMoversResponseData(TypedDict):
-    gainers: list[CryptoMoversResponseDataGainersItem]
-    losers: list[CryptoMoversResponseDataGainersItem]
-
-
-class CryptoMoversResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoMoversResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoNewResponseDataCoinsItem(TypedDict):
-    id: NotRequired[str]
-    source: CryptoCoinsResponseDataCoinsItemSource
-    symbol: NotRequired[str]
-    name: NotRequired[str]
-    url: str
-    image: NotRequired[str]
-    rank: NotRequired[int]
-    currency: NotRequired[str]
-    price: NotRequired[float]
-    marketCap: NotRequired[float]
-    fullyDilutedValue: NotRequired[float]
-    volume24h: NotRequired[float]
-    change1h: NotRequired[float]
-    change24h: NotRequired[float]
-    change7d: NotRequired[float]
-    change30d: NotRequired[float]
-    chains: NotRequired[list[str]]
-    addedAt: NotRequired[str]
-    updatedAt: NotRequired[str]
-
-
-class CryptoNewResponseData(TypedDict):
-    coins: list[CryptoNewResponseDataCoinsItem]
-
-
-class CryptoNewResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoNewResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoDexSearchResponseDataPairsItemBaseToken(TypedDict):
-    address: NotRequired[str]
-    name: NotRequired[str]
-    symbol: NotRequired[str]
-
-
-class CryptoDexSearchResponseDataPairsItemTransactionsM5(TypedDict):
-    buys: int
-    sells: int
-
-
-class CryptoDexSearchResponseDataPairsItemTransactions(TypedDict):
-    m5: CryptoDexSearchResponseDataPairsItemTransactionsM5
-    h1: CryptoDexSearchResponseDataPairsItemTransactionsM5
-    h6: CryptoDexSearchResponseDataPairsItemTransactionsM5
-    h24: CryptoDexSearchResponseDataPairsItemTransactionsM5
-
-
-class CryptoDexSearchResponseDataPairsItemVolume(TypedDict):
-    m5: NotRequired[float]
-    h1: NotRequired[float]
-    h6: NotRequired[float]
-    h24: NotRequired[float]
-
-
-class CryptoDexSearchResponseDataPairsItemLiquidity(TypedDict):
-    usd: NotRequired[float]
-    base: NotRequired[float]
-    quote: NotRequired[float]
-
-
-class CryptoDexSearchResponseDataPairsItem(TypedDict):
-    id: NotRequired[str]
+class CryptoDexSearchResponseDataResultsItem(TypedDict):
+    pairId: NotRequired[str]
     chain: NotRequired[str]
     dex: NotRequired[str]
-    url: str
+    pairUrl: str
     labels: NotRequired[list[str]]
-    baseToken: NotRequired[CryptoDexSearchResponseDataPairsItemBaseToken]
-    quoteToken: NotRequired[CryptoDexSearchResponseDataPairsItemBaseToken]
+    baseTokenAddress: NotRequired[str]
+    baseTokenName: NotRequired[str]
+    baseTokenSymbol: NotRequired[str]
+    quoteTokenAddress: NotRequired[str]
+    quoteTokenName: NotRequired[str]
+    quoteTokenSymbol: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     priceNative: NotRequired[float]
-    transactions: CryptoDexSearchResponseDataPairsItemTransactions
-    volume: NotRequired[CryptoDexSearchResponseDataPairsItemVolume]
-    priceChange: NotRequired[CryptoDexSearchResponseDataPairsItemVolume]
-    liquidity: NotRequired[CryptoDexSearchResponseDataPairsItemLiquidity]
+    buys5m: int
+    sells5m: int
+    buys1h: int
+    sells1h: int
+    buys6h: int
+    sells6h: int
+    buys24h: int
+    sells24h: int
+    volume5m: NotRequired[float]
+    volume1h: NotRequired[float]
+    volume6h: NotRequired[float]
+    volume24h: NotRequired[float]
+    priceChange5m: NotRequired[float]
+    priceChange1h: NotRequired[float]
+    priceChange6h: NotRequired[float]
+    priceChange24h: NotRequired[float]
+    liquidityUsd: NotRequired[float]
+    liquidityBase: NotRequired[float]
+    liquidityQuote: NotRequired[float]
     fullyDilutedValue: NotRequired[float]
     marketCap: NotRequired[float]
     createdAt: NotRequired[str]
-    image: NotRequired[str]
+    imageUrl: NotRequired[str]
     websites: NotRequired[list[str]]
-    socials: NotRequired[list[CryptoCoinResponseDataCoinSocialsItem]]
+    socials: NotRequired[list[CryptoCoinResponseDataSocialsItem]]
     boosts: NotRequired[int]
 
 
 class CryptoDexSearchResponseData(TypedDict):
-    pairs: list[CryptoDexSearchResponseDataPairsItem]
+    results: list[CryptoDexSearchResponseDataResultsItem]
 
 
 class CryptoDexSearchResponse(TypedDict):
@@ -3960,137 +2550,27 @@ class CryptoDexSearchResponse(TypedDict):
     requestId: str
 
 
-class CryptoDexTokenResponseDataToken(TypedDict):
-    id: NotRequired[str]
+class CryptoDexTokenResponseData(TypedDict):
+    tokenAddress: NotRequired[str]
     chain: NotRequired[str]
     name: NotRequired[str]
     symbol: NotRequired[str]
-    url: str
-    image: NotRequired[str]
+    tokenUrl: str
+    imageUrl: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     marketCap: NotRequired[float]
     fullyDilutedValue: NotRequired[float]
     liquidity: float
     volume24h: float
-    pairs: int
-    websites: NotRequired[list[str]]
-    socials: NotRequired[list[CryptoCoinResponseDataCoinSocialsItem]]
-
-
-class CryptoDexTokenResponseData(TypedDict):
-    token: CryptoDexTokenResponseDataToken
-    pairs: list[CryptoDexSearchResponseDataPairsItem]
+    websites: list[str]
+    socials: list[CryptoCoinResponseDataSocialsItem]
+    pairs: list[CryptoDexSearchResponseDataResultsItem]
 
 
 class CryptoDexTokenResponse(TypedDict):
     success: Literal[True]
     data: CryptoDexTokenResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoDexNewResponseDataTokensItemLinksItem(TypedDict):
-    type: NotRequired[str]
-    label: NotRequired[str]
-    url: str
-
-
-class CryptoDexNewResponseDataTokensItem(TypedDict):
-    id: NotRequired[str]
-    chain: NotRequired[str]
-    url: str
-    description: NotRequired[str]
-    image: NotRequired[str]
-    banner: NotRequired[str]
-    links: NotRequired[list[CryptoDexNewResponseDataTokensItemLinksItem]]
-    boosts: NotRequired[int]
-    totalBoosts: NotRequired[int]
-    claimedAt: NotRequired[str]
-    pair: NotRequired[CryptoDexSearchResponseDataPairsItem]
-
-
-class CryptoDexNewResponseData(TypedDict):
-    tokens: list[CryptoDexNewResponseDataTokensItem]
-
-
-class CryptoDexNewResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoDexNewResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoPumpCoinsResponseDataCoinsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    symbol: NotRequired[str]
-    description: NotRequired[str]
-    image: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    createdAt: NotRequired[str]
-    lastTradeAt: NotRequired[str]
-    marketCap: NotRequired[float]
-    athMarketCap: NotRequired[float]
-    currency: NotRequired[str]
-    athAt: NotRequired[str]
-    isGraduated: bool
-    bondingCurveProgress: NotRequired[float]
-    pool: NotRequired[str]
-    replies: NotRequired[int]
-    isLive: bool
-    isNsfw: bool
-    website: NotRequired[str]
-    twitter: NotRequired[str]
-    telegram: NotRequired[str]
-
-
-class CryptoPumpCoinsResponseData(TypedDict):
-    coins: list[CryptoPumpCoinsResponseDataCoinsItem]
-    cursor: NotRequired[str]
-
-
-class CryptoPumpCoinsResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoPumpCoinsResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoPumpCoinResponseData(TypedDict):
-    coin: CryptoPumpCoinsResponseDataCoinsItem
-
-
-class CryptoPumpCoinResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoPumpCoinResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoPumpTradesResponseDataTradesItem(TypedDict):
-    id: NotRequired[str]
-    createdAt: NotRequired[str]
-    type: CryptoPumpTradesResponseDataTradesItemType
-    wallet: NotRequired[str]
-    price: NotRequired[float]
-    priceSol: NotRequired[float]
-    value: NotRequired[float]
-    currency: NotRequired[str]
-    amountSol: NotRequired[float]
-    tokenAmount: NotRequired[float]
-    program: NotRequired[str]
-
-
-class CryptoPumpTradesResponseData(TypedDict):
-    trades: list[CryptoPumpTradesResponseDataTradesItem]
-    cursor: NotRequired[str]
-
-
-class CryptoPumpTradesResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoPumpTradesResponseData
     creditsUsed: int
     requestId: str
 
@@ -4102,17 +2582,15 @@ class CryptoWalletResponseDataTokensItem(TypedDict):
     decimals: NotRequired[int]
     amount: NotRequired[str]
     value: NotRequired[float]
-    currency: NotRequired[str]
+    valueCurrency: NotRequired[str]
 
 
 class CryptoWalletResponseData(TypedDict):
-    chain: NotRequired[str]
-    address: NotRequired[str]
     symbol: NotRequired[str]
     balance: NotRequired[str]
     balanceValue: NotRequired[float]
-    currency: NotRequired[str]
-    tokens: NotRequired[list[CryptoWalletResponseDataTokensItem]]
+    valueCurrency: NotRequired[str]
+    tokens: list[CryptoWalletResponseDataTokensItem]
     transactions: list[CryptoWalletResponseDataTransactionsItem]
     cursor: NotRequired[str]
 
@@ -4124,95 +2602,34 @@ class CryptoWalletResponse(TypedDict):
     requestId: str
 
 
-class CryptoTokenHoldersResponseDataToken(TypedDict):
-    address: NotRequired[str]
-    name: NotRequired[str]
-    symbol: NotRequired[str]
-    decimals: NotRequired[int]
-    holders: NotRequired[int]
-    totalSupply: NotRequired[str]
-    price: NotRequired[float]
-    currency: NotRequired[str]
-
-
-class CryptoTokenHoldersResponseDataHoldersItem(TypedDict):
-    address: NotRequired[str]
-    amount: NotRequired[str]
-    percent: NotRequired[float]
-    isContract: NotRequired[bool]
-    label: NotRequired[str]
-
-
-class CryptoTokenHoldersResponseData(TypedDict):
-    token: NotRequired[CryptoTokenHoldersResponseDataToken]
-    holders: list[CryptoTokenHoldersResponseDataHoldersItem]
-    cursor: NotRequired[str]
-
-
-class CryptoTokenHoldersResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoTokenHoldersResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class CryptoBinanceAnnouncementsResponseDataAnnouncementsItem(TypedDict):
-    id: NotRequired[str]
-    code: NotRequired[str]
+class IndeedSearchResponseDataResultsItem(TypedDict):
+    jobId: NotRequired[str]
+    jobUrl: str
     title: NotRequired[str]
-    url: str
-    createdAt: NotRequired[str]
-    symbols: NotRequired[list[str]]
-
-
-class CryptoBinanceAnnouncementsResponseData(TypedDict):
-    announcements: list[CryptoBinanceAnnouncementsResponseDataAnnouncementsItem]
-    total: NotRequired[int]
-    cursor: NotRequired[str]
-
-
-class CryptoBinanceAnnouncementsResponse(TypedDict):
-    success: Literal[True]
-    data: CryptoBinanceAnnouncementsResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class IndeedSearchSalary(TypedDict):
-    min: int
-
-
-class IndeedSearchResponseDataJobsItemCompany(TypedDict):
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    website: NotRequired[str]
-    industry: NotRequired[str]
-    employeesText: NotRequired[str]
-    revenueText: NotRequired[str]
-    description: NotRequired[str]
-
-
-class IndeedSearchResponseDataJobsItemSalary(TypedDict):
-    min: NotRequired[float]
-    max: NotRequired[float]
-    period: NotRequired[IndeedSearchResponseDataJobsItemSalaryPeriod]
-    currency: NotRequired[str]
-    isEstimate: bool
-
-
-class IndeedSearchResponseDataJobsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    title: NotRequired[str]
-    company: NotRequired[IndeedSearchResponseDataJobsItemCompany]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
-    salary: NotRequired[IndeedSearchResponseDataJobsItemSalary]
-    jobTypes: NotRequired[list[IndeedSearchJobType]]
+    companyName: NotRequired[str]
+    companyUrl: NotRequired[str]
+    companyAvatarUrl: NotRequired[str]
+    companyWebsite: NotRequired[str]
+    companyIndustry: NotRequired[str]
+    companyEmployeesText: NotRequired[str]
+    companyRevenueText: NotRequired[str]
+    companyDescription: NotRequired[str]
+    addressFull: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressRegion: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    addressCountry: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    salaryMin: NotRequired[float]
+    salaryMax: NotRequired[float]
+    salaryPeriod: NotRequired[IndeedSearchResponseDataResultsItemSalaryPeriod]
+    salaryCurrency: NotRequired[str]
+    salaryIsEstimate: bool
+    jobTypes: NotRequired[list[IndeedSearchResponseDataResultsItemJobTypesItem]]
     isRemote: bool
     attributes: NotRequired[list[str]]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     indexedAt: NotRequired[str]
     applyUrl: NotRequired[str]
     isEasyApply: bool
@@ -4222,7 +2639,7 @@ class IndeedSearchResponseDataJobsItem(TypedDict):
 
 
 class IndeedSearchResponseData(TypedDict):
-    jobs: list[IndeedSearchResponseDataJobsItem]
+    results: list[IndeedSearchResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -4233,18 +2650,34 @@ class IndeedSearchResponse(TypedDict):
     requestId: str
 
 
-class IndeedJobResponseDataJob(TypedDict):
-    id: NotRequired[str]
-    url: str
+class IndeedJobResponseData(TypedDict):
+    jobId: NotRequired[str]
+    jobUrl: str
     title: NotRequired[str]
-    company: NotRequired[IndeedSearchResponseDataJobsItemCompany]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
-    salary: NotRequired[IndeedSearchResponseDataJobsItemSalary]
-    jobTypes: NotRequired[list[IndeedSearchJobType]]
+    companyName: NotRequired[str]
+    companyUrl: NotRequired[str]
+    companyAvatarUrl: NotRequired[str]
+    companyWebsite: NotRequired[str]
+    companyIndustry: NotRequired[str]
+    companyEmployeesText: NotRequired[str]
+    companyRevenueText: NotRequired[str]
+    companyDescription: NotRequired[str]
+    addressFull: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressRegion: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    addressCountry: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    salaryMin: NotRequired[float]
+    salaryMax: NotRequired[float]
+    salaryPeriod: NotRequired[IndeedSearchResponseDataResultsItemSalaryPeriod]
+    salaryCurrency: NotRequired[str]
+    salaryIsEstimate: bool
+    jobTypes: list[IndeedSearchResponseDataResultsItemJobTypesItem]
     isRemote: bool
-    attributes: NotRequired[list[str]]
-    createdAt: NotRequired[str]
+    attributes: list[str]
+    publishedAt: NotRequired[str]
     indexedAt: NotRequired[str]
     applyUrl: NotRequired[str]
     isEasyApply: bool
@@ -4256,10 +2689,6 @@ class IndeedJobResponseDataJob(TypedDict):
     language: NotRequired[str]
 
 
-class IndeedJobResponseData(TypedDict):
-    job: IndeedJobResponseDataJob
-
-
 class IndeedJobResponse(TypedDict):
     success: Literal[True]
     data: IndeedJobResponseData
@@ -4267,20 +2696,16 @@ class IndeedJobResponse(TypedDict):
     requestId: str
 
 
-class TripadvisorSearchResponseDataResultsItemLocation(TypedDict):
-    lat: float
-    lng: float
-
-
 class TripadvisorSearchResponseDataResultsItem(TypedDict):
-    id: NotRequired[str]
+    placeId: NotRequired[str]
+    placeUrl: NotRequired[str]
     name: NotRequired[str]
     type: NotRequired[str]
-    url: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
+    address: NotRequired[str]
     parent: NotRequired[str]
-    location: NotRequired[TripadvisorSearchResponseDataResultsItemLocation]
-    image: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    imageUrl: NotRequired[str]
 
 
 class TripadvisorSearchResponseData(TypedDict):
@@ -4294,48 +2719,51 @@ class TripadvisorSearchResponse(TypedDict):
     requestId: str
 
 
-class TripadvisorPlaceResponseDataPlaceRanking(TypedDict):
-    text: NotRequired[str]
-    position: NotRequired[int]
-    of: NotRequired[int]
-    geo: NotRequired[str]
+class TripadvisorPlaceResponseDataParentsItem(TypedDict):
+    placeId: NotRequired[str]
+    name: NotRequired[str]
 
 
-class TripadvisorPlaceResponseDataPlaceHoursItem(TypedDict):
+class TripadvisorPlaceResponseDataHoursItem(TypedDict):
     days: NotRequired[str]
     times: NotRequired[list[str]]
 
 
-class TripadvisorPlaceResponseDataPlace(TypedDict):
-    id: NotRequired[str]
+class TripadvisorPlaceResponseData(TypedDict):
+    placeId: NotRequired[str]
+    placeUrl: NotRequired[str]
     name: NotRequired[str]
     type: NotRequired[str]
-    subtypes: NotRequired[list[str]]
-    url: NotRequired[str]
+    subtypes: list[str]
     rating: NotRequired[float]
     reviews: NotRequired[int]
-    ranking: NotRequired[TripadvisorPlaceResponseDataPlaceRanking]
+    rankingText: NotRequired[str]
+    rankingPosition: NotRequired[int]
+    rankingOf: NotRequired[int]
+    rankingGeo: NotRequired[str]
     priceLevel: NotRequired[str]
     priceRangeText: NotRequired[str]
     hotelClass: NotRequired[float]
     description: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    location: NotRequired[TripadvisorSearchResponseDataResultsItemLocation]
+    addressFull: NotRequired[str]
+    addressStreet: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressRegion: NotRequired[str]
+    addressCountry: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
     phone: NotRequired[str]
     website: NotRequired[str]
     email: NotRequired[str]
-    neighborhoods: NotRequired[list[str]]
-    parents: NotRequired[list[ZillowPropertyResponseDataPropertyMls]]
-    cuisines: NotRequired[list[str]]
-    hours: NotRequired[list[TripadvisorPlaceResponseDataPlaceHoursItem]]
-    tags: NotRequired[list[str]]
-    image: NotRequired[str]
+    neighborhoods: list[str]
+    parents: list[TripadvisorPlaceResponseDataParentsItem]
+    cuisines: list[str]
+    hours: list[TripadvisorPlaceResponseDataHoursItem]
+    tags: list[str]
+    imageUrl: NotRequired[str]
     timezone: NotRequired[str]
     isClosed: bool
-
-
-class TripadvisorPlaceResponseData(TypedDict):
-    place: TripadvisorPlaceResponseDataPlace
 
 
 class TripadvisorPlaceResponse(TypedDict):
@@ -4345,38 +2773,14 @@ class TripadvisorPlaceResponse(TypedDict):
     requestId: str
 
 
-class TripadvisorReviewsResponseDataPlace(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    type: NotRequired[str]
-    url: NotRequired[str]
-
-
-class TripadvisorReviewsResponseDataReviewsItemSubRatingsItem(TypedDict):
+class TripadvisorReviewsResponseDataResultsItemSubRatingsItem(TypedDict):
     name: NotRequired[str]
     rating: float
 
 
-class TripadvisorReviewsResponseDataReviewsItemAuthor(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    isVerified: NotRequired[bool]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    contributions: NotRequired[int]
-
-
-class TripadvisorReviewsResponseDataReviewsItemOwnerReply(TypedDict):
-    text: NotRequired[str]
-    publishedDate: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-
-
-class TripadvisorReviewsResponseDataReviewsItem(TypedDict):
-    id: NotRequired[str]
-    url: NotRequired[str]
+class TripadvisorReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
+    reviewUrl: NotRequired[str]
     rating: NotRequired[float]
     title: NotRequired[str]
     text: NotRequired[str]
@@ -4386,15 +2790,24 @@ class TripadvisorReviewsResponseDataReviewsItem(TypedDict):
     stayDate: NotRequired[str]
     tripType: NotRequired[str]
     helpful: int
-    subRatings: NotRequired[list[TripadvisorReviewsResponseDataReviewsItemSubRatingsItem]]
-    author: NotRequired[TripadvisorReviewsResponseDataReviewsItemAuthor]
-    ownerReply: NotRequired[TripadvisorReviewsResponseDataReviewsItemOwnerReply]
+    subRatings: NotRequired[list[TripadvisorReviewsResponseDataResultsItemSubRatingsItem]]
+    authorName: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAddress: NotRequired[str]
+    authorContributions: NotRequired[int]
+    ownerReplyText: NotRequired[str]
+    ownerReplyDate: NotRequired[str]
+    ownerReplyAuthor: NotRequired[str]
 
 
 class TripadvisorReviewsResponseData(TypedDict):
-    place: NotRequired[TripadvisorReviewsResponseDataPlace]
+    placeId: NotRequired[str]
+    placeName: NotRequired[str]
+    placeType: NotRequired[str]
+    placeUrl: NotRequired[str]
     total: NotRequired[int]
-    reviews: list[TripadvisorReviewsResponseDataReviewsItem]
+    results: list[TripadvisorReviewsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -4405,16 +2818,13 @@ class TripadvisorReviewsResponse(TypedDict):
     requestId: str
 
 
-class GoogletravelFlightsResponseDataFlightsItemLegsItemOrigin(TypedDict):
-    code: NotRequired[str]
-    name: NotRequired[str]
-
-
-class GoogletravelFlightsResponseDataFlightsItemLegsItem(TypedDict):
+class GoogletravelFlightsResponseDataResultsItemLegsItem(TypedDict):
     flightNumber: NotRequired[str]
     airline: NotRequired[str]
-    origin: NotRequired[GoogletravelFlightsResponseDataFlightsItemLegsItemOrigin]
-    destination: NotRequired[GoogletravelFlightsResponseDataFlightsItemLegsItemOrigin]
+    originCode: NotRequired[str]
+    originName: NotRequired[str]
+    destinationCode: NotRequired[str]
+    destinationName: NotRequired[str]
     departureLocalTime: NotRequired[str]
     arrivalLocalTime: NotRequired[str]
     durationSeconds: NotRequired[int]
@@ -4422,31 +2832,30 @@ class GoogletravelFlightsResponseDataFlightsItemLegsItem(TypedDict):
     legroom: NotRequired[str]
 
 
-class GoogletravelFlightsResponseDataFlightsItemLayoversItem(TypedDict):
+class GoogletravelFlightsResponseDataResultsItemLayoversItem(TypedDict):
     airport: NotRequired[str]
     name: NotRequired[str]
     city: NotRequired[str]
     durationSeconds: NotRequired[int]
 
 
-class GoogletravelFlightsResponseDataFlightsItem(TypedDict):
+class GoogletravelFlightsResponseDataResultsItem(TypedDict):
     isBest: bool
     price: NotRequired[float]
+    priceCurrency: Literal["USD"]
     airlines: NotRequired[list[str]]
     stops: int
     durationSeconds: NotRequired[int]
     departureLocalTime: NotRequired[str]
     arrivalLocalTime: NotRequired[str]
-    legs: NotRequired[list[GoogletravelFlightsResponseDataFlightsItemLegsItem]]
-    layovers: NotRequired[list[GoogletravelFlightsResponseDataFlightsItemLayoversItem]]
+    legs: NotRequired[list[GoogletravelFlightsResponseDataResultsItemLegsItem]]
+    layovers: NotRequired[list[GoogletravelFlightsResponseDataResultsItemLayoversItem]]
     emissionsGrams: NotRequired[int]
     typicalEmissionsGrams: NotRequired[int]
 
 
 class GoogletravelFlightsResponseData(TypedDict):
-    url: str
-    currency: NotRequired[str]
-    flights: list[GoogletravelFlightsResponseDataFlightsItem]
+    results: list[GoogletravelFlightsResponseDataResultsItem]
 
 
 class GoogletravelFlightsResponse(TypedDict):
@@ -4456,15 +2865,14 @@ class GoogletravelFlightsResponse(TypedDict):
     requestId: str
 
 
-class AmazonSearchResponseDataProductsItem(TypedDict):
-    position: int
-    id: NotRequired[str]
-    url: str
+class AmazonSearchResponseDataResultsItem(TypedDict):
+    productId: NotRequired[str]
+    productUrl: str
     title: NotRequired[str]
-    image: NotRequired[str]
+    imageUrl: NotRequired[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     rating: NotRequired[float]
     reviews: NotRequired[int]
     boughtPastMonth: NotRequired[int]
@@ -4472,7 +2880,7 @@ class AmazonSearchResponseDataProductsItem(TypedDict):
 
 
 class AmazonSearchResponseData(TypedDict):
-    products: list[AmazonSearchResponseDataProductsItem]
+    results: list[AmazonSearchResponseDataResultsItem]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
@@ -4484,59 +2892,51 @@ class AmazonSearchResponse(TypedDict):
     requestId: str
 
 
-class AmazonProductResponseDataProductVariantsItem(TypedDict):
-    id: NotRequired[str]
-    attributes: NotRequired[dict[str, str]]
+class AmazonProductResponseDataVariantsItem(TypedDict):
+    productId: NotRequired[str]
+    options: NotRequired[str]
 
 
-class AmazonProductResponseDataProductSeller(TypedDict):
-    name: NotRequired[str]
-    id: NotRequired[str]
-    shipsFrom: NotRequired[str]
-
-
-class AmazonProductResponseDataProductBestSellersRankItem(TypedDict):
+class AmazonProductResponseDataBestSellersRankItem(TypedDict):
     rank: int
     category: NotRequired[str]
 
 
-class AmazonProductResponseDataProductTopReviewsItem(TypedDict):
-    id: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+class AmazonProductResponseDataTopReviewsItem(TypedDict):
+    reviewId: NotRequired[str]
+    authorName: NotRequired[str]
     rating: NotRequired[float]
     title: NotRequired[str]
     text: NotRequired[str]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     isVerified: bool
     variant: NotRequired[str]
-    helpful: NotRequired[int]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    helpfulVotes: NotRequired[int]
+    imageUrls: NotRequired[list[str]]
 
 
-class AmazonProductResponseDataProduct(TypedDict):
-    id: NotRequired[str]
-    url: str
+class AmazonProductResponseData(TypedDict):
+    productId: NotRequired[str]
+    productUrl: str
     title: NotRequired[str]
     brand: NotRequired[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     availability: NotRequired[str]
     rating: NotRequired[float]
     reviews: NotRequired[int]
-    bullets: NotRequired[list[str]]
+    bullets: list[str]
     description: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    variants: NotRequired[list[AmazonProductResponseDataProductVariantsItem]]
-    seller: NotRequired[AmazonProductResponseDataProductSeller]
-    categories: NotRequired[list[str]]
-    bestSellersRank: NotRequired[list[AmazonProductResponseDataProductBestSellersRankItem]]
-    specs: NotRequired[dict[str, str]]
-    topReviews: NotRequired[list[AmazonProductResponseDataProductTopReviewsItem]]
-
-
-class AmazonProductResponseData(TypedDict):
-    product: AmazonProductResponseDataProduct
+    imageUrls: list[str]
+    variants: list[AmazonProductResponseDataVariantsItem]
+    sellerName: NotRequired[str]
+    sellerId: NotRequired[str]
+    sellerShipsFrom: NotRequired[str]
+    categories: list[str]
+    bestSellersRank: list[AmazonProductResponseDataBestSellersRankItem]
+    specs: list[ZillowPropertyResponseDataFactsItem]
+    topReviews: list[AmazonProductResponseDataTopReviewsItem]
 
 
 class AmazonProductResponse(TypedDict):
@@ -4546,21 +2946,21 @@ class AmazonProductResponse(TypedDict):
     requestId: str
 
 
-class AmazonBestsellersResponseDataProductsItem(TypedDict):
+class AmazonBestsellersResponseDataResultsItem(TypedDict):
     rank: int
-    id: NotRequired[str]
-    url: str
+    productId: NotRequired[str]
+    productUrl: str
     title: NotRequired[str]
-    image: NotRequired[str]
+    imageUrl: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     rating: NotRequired[float]
     reviews: NotRequired[int]
 
 
 class AmazonBestsellersResponseData(TypedDict):
     category: NotRequired[str]
-    products: list[AmazonBestsellersResponseDataProductsItem]
+    results: list[AmazonBestsellersResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -4571,13 +2971,13 @@ class AmazonBestsellersResponse(TypedDict):
     requestId: str
 
 
-class ShopifyProductsResponseDataProductsItemOptionsItem(TypedDict):
+class ShopifyProductsResponseDataResultsItemOptionsItem(TypedDict):
     name: NotRequired[str]
     values: NotRequired[list[str]]
 
 
-class ShopifyProductsResponseDataProductsItemVariantsItem(TypedDict):
-    id: NotRequired[str]
+class ShopifyProductsResponseDataResultsItemVariantsItem(TypedDict):
+    variantId: NotRequired[str]
     title: NotRequired[str]
     sku: NotRequired[str]
     price: NotRequired[float]
@@ -4587,10 +2987,10 @@ class ShopifyProductsResponseDataProductsItemVariantsItem(TypedDict):
     weightGrams: NotRequired[float]
 
 
-class ShopifyProductsResponseDataProductsItem(TypedDict):
-    id: NotRequired[str]
+class ShopifyProductsResponseDataResultsItem(TypedDict):
+    productId: NotRequired[str]
     slug: NotRequired[str]
-    url: str
+    productUrl: str
     title: NotRequired[str]
     vendor: NotRequired[str]
     productType: NotRequired[str]
@@ -4600,16 +3000,16 @@ class ShopifyProductsResponseDataProductsItem(TypedDict):
     maxPrice: NotRequired[float]
     originalPrice: NotRequired[float]
     isAvailable: bool
-    options: NotRequired[list[ShopifyProductsResponseDataProductsItemOptionsItem]]
-    variants: NotRequired[list[ShopifyProductsResponseDataProductsItemVariantsItem]]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    options: NotRequired[list[ShopifyProductsResponseDataResultsItemOptionsItem]]
+    variants: NotRequired[list[ShopifyProductsResponseDataResultsItemVariantsItem]]
+    imageUrls: NotRequired[list[str]]
     publishedAt: NotRequired[str]
     createdAt: NotRequired[str]
     updatedAt: NotRequired[str]
 
 
 class ShopifyProductsResponseData(TypedDict):
-    products: list[ShopifyProductsResponseDataProductsItem]
+    results: list[ShopifyProductsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -4620,20 +3020,20 @@ class ShopifyProductsResponse(TypedDict):
     requestId: str
 
 
-class ShopifyCollectionsResponseDataCollectionsItem(TypedDict):
-    id: NotRequired[str]
+class ShopifyCollectionsResponseDataResultsItem(TypedDict):
+    collectionId: NotRequired[str]
     slug: NotRequired[str]
-    url: str
+    collectionUrl: str
     title: NotRequired[str]
     description: NotRequired[str]
-    image: NotRequired[str]
+    imageUrl: NotRequired[str]
     products: NotRequired[int]
     publishedAt: NotRequired[str]
     updatedAt: NotRequired[str]
 
 
 class ShopifyCollectionsResponseData(TypedDict):
-    collections: list[ShopifyCollectionsResponseDataCollectionsItem]
+    results: list[ShopifyCollectionsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -4644,23 +3044,21 @@ class ShopifyCollectionsResponse(TypedDict):
     requestId: str
 
 
-class ShopifyStoreResponseDataStore(TypedDict):
-    id: NotRequired[str]
-    url: str
+class ShopifyStoreResponseData(TypedDict):
+    storeId: NotRequired[str]
+    storeUrl: str
     isShopify: bool
     name: NotRequired[str]
     description: NotRequired[str]
     myshopifyDomain: NotRequired[str]
     domain: NotRequired[str]
     currency: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    shipsTo: NotRequired[list[str]]
+    addressCity: NotRequired[str]
+    addressRegion: NotRequired[str]
+    addressCountry: NotRequired[str]
+    shipsTo: list[str]
     products: NotRequired[int]
     collections: NotRequired[int]
-
-
-class ShopifyStoreResponseData(TypedDict):
-    store: ShopifyStoreResponseDataStore
 
 
 class ShopifyStoreResponse(TypedDict):
@@ -4670,24 +3068,23 @@ class ShopifyStoreResponse(TypedDict):
     requestId: str
 
 
-class WalmartSearchResponseDataProductsItem(TypedDict):
-    position: int
-    id: NotRequired[str]
-    url: str
+class WalmartSearchResponseDataResultsItem(TypedDict):
+    productId: NotRequired[str]
+    productUrl: str
     title: NotRequired[str]
-    image: NotRequired[str]
+    imageUrl: NotRequired[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     rating: NotRequired[float]
     reviews: NotRequired[int]
-    seller: NotRequired[ZillowSearchResponseDataListingsItemBroker]
+    sellerName: NotRequired[str]
     availability: NotRequired[str]
     isSponsored: bool
 
 
 class WalmartSearchResponseData(TypedDict):
-    products: list[WalmartSearchResponseDataProductsItem]
+    results: list[WalmartSearchResponseDataResultsItem]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
@@ -4699,41 +3096,38 @@ class WalmartSearchResponse(TypedDict):
     requestId: str
 
 
-class WalmartProductResponseDataProductTopReviewsItem(TypedDict):
-    id: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
+class WalmartProductResponseDataTopReviewsItem(TypedDict):
+    reviewId: NotRequired[str]
+    authorName: NotRequired[str]
     rating: NotRequired[float]
     title: NotRequired[str]
     text: NotRequired[str]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     helpful: NotRequired[int]
 
 
-class WalmartProductResponseDataProduct(TypedDict):
-    id: NotRequired[str]
-    url: str
+class WalmartProductResponseData(TypedDict):
+    productId: NotRequired[str]
+    productUrl: str
     title: NotRequired[str]
     brand: NotRequired[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     availability: NotRequired[str]
     rating: NotRequired[float]
     reviews: NotRequired[int]
-    seller: NotRequired[ZillowPropertyResponseDataPropertyMls]
-    categories: NotRequired[list[str]]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    sellerName: NotRequired[str]
+    sellerId: NotRequired[str]
+    categories: list[str]
+    imageUrls: list[str]
     description: NotRequired[str]
     highlights: NotRequired[str]
-    specs: NotRequired[dict[str, str]]
-    variants: NotRequired[list[ShopifyProductsResponseDataProductsItemOptionsItem]]
+    specs: list[ZillowPropertyResponseDataFactsItem]
+    variants: list[ShopifyProductsResponseDataResultsItemOptionsItem]
     upc: NotRequired[str]
     model: NotRequired[str]
-    topReviews: NotRequired[list[WalmartProductResponseDataProductTopReviewsItem]]
-
-
-class WalmartProductResponseData(TypedDict):
-    product: WalmartProductResponseDataProduct
+    topReviews: list[WalmartProductResponseDataTopReviewsItem]
 
 
 class WalmartProductResponse(TypedDict):
@@ -4743,22 +3137,21 @@ class WalmartProductResponse(TypedDict):
     requestId: str
 
 
-class AliexpressSearchResponseDataProductsItem(TypedDict):
-    position: int
-    id: NotRequired[str]
-    url: str
+class AliexpressSearchResponseDataResultsItem(TypedDict):
+    productId: NotRequired[str]
+    productUrl: str
     title: NotRequired[str]
-    image: NotRequired[str]
+    imageUrl: NotRequired[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     rating: NotRequired[float]
     sold: NotRequired[int]
     isSponsored: bool
 
 
 class AliexpressSearchResponseData(TypedDict):
-    products: list[AliexpressSearchResponseDataProductsItem]
+    results: list[AliexpressSearchResponseDataResultsItem]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
@@ -4770,15 +3163,8 @@ class AliexpressSearchResponse(TypedDict):
     requestId: str
 
 
-class AliexpressProductResponseDataProductStore(TypedDict):
-    name: NotRequired[str]
-    id: NotRequired[str]
-    sellerId: NotRequired[str]
-    positivePercent: NotRequired[float]
-
-
-class AliexpressProductResponseDataProductSkusItem(TypedDict):
-    id: NotRequired[str]
+class AliexpressProductResponseDataSkusItem(TypedDict):
+    skuId: NotRequired[str]
     attributes: NotRequired[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
@@ -4786,26 +3172,25 @@ class AliexpressProductResponseDataProductSkusItem(TypedDict):
     isAvailable: bool
 
 
-class AliexpressProductResponseDataProduct(TypedDict):
-    id: NotRequired[str]
-    url: str
+class AliexpressProductResponseData(TypedDict):
+    productId: NotRequired[str]
+    productUrl: str
     title: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    imageUrls: list[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     rating: NotRequired[float]
     reviews: NotRequired[int]
     sold: NotRequired[int]
-    store: NotRequired[AliexpressProductResponseDataProductStore]
-    options: NotRequired[list[ShopifyProductsResponseDataProductsItemOptionsItem]]
-    skus: NotRequired[list[AliexpressProductResponseDataProductSkusItem]]
-    specs: NotRequired[dict[str, str]]
+    storeName: NotRequired[str]
+    storeId: NotRequired[str]
+    sellerId: NotRequired[str]
+    storePositivePercent: NotRequired[float]
+    options: list[ShopifyProductsResponseDataResultsItemOptionsItem]
+    skus: list[AliexpressProductResponseDataSkusItem]
+    specs: list[ZillowPropertyResponseDataFactsItem]
     categoryId: NotRequired[str]
-
-
-class AliexpressProductResponseData(TypedDict):
-    product: AliexpressProductResponseDataProduct
 
 
 class AliexpressProductResponse(TypedDict):
@@ -4815,41 +3200,24 @@ class AliexpressProductResponse(TypedDict):
     requestId: str
 
 
-class AppstoreAppResponseDataAppDeveloper(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-
-
-class AppstoreAppResponseDataAppHistogram(TypedDict):
-    one: int
-    two: int
-    three: int
-    four: int
-    five: int
-
-
-class AppstoreAppResponseDataAppChart(TypedDict):
-    name: NotRequired[str]
-    genre: NotRequired[str]
-    position: int
-
-
-class AppstoreAppResponseDataApp(TypedDict):
-    id: NotRequired[str]
+class AppstoreAppResponseData(TypedDict):
+    appId: NotRequired[str]
+    appUrl: str
     bundleId: NotRequired[str]
     name: NotRequired[str]
     subtitle: NotRequired[str]
-    url: str
-    developer: NotRequired[AppstoreAppResponseDataAppDeveloper]
+    developerId: NotRequired[str]
+    developerName: NotRequired[str]
+    developerUrl: NotRequired[str]
     seller: NotRequired[str]
     website: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     priceText: NotRequired[str]
     hasInAppPurchases: NotRequired[bool]
-    genres: NotRequired[list[str]]
-    primaryGenre: NotRequired[ZillowPropertyResponseDataPropertyMls]
+    genres: list[str]
+    primaryGenreId: NotRequired[str]
+    primaryGenre: NotRequired[str]
     contentRating: NotRequired[str]
     description: NotRequired[str]
     releaseNotes: NotRequired[str]
@@ -4858,18 +3226,20 @@ class AppstoreAppResponseDataApp(TypedDict):
     updatedAt: NotRequired[str]
     minimumOsVersion: NotRequired[str]
     sizeBytes: NotRequired[int]
-    languages: NotRequired[list[str]]
+    languages: list[str]
     rating: NotRequired[float]
     ratings: NotRequired[int]
-    histogram: NotRequired[AppstoreAppResponseDataAppHistogram]
-    chart: NotRequired[AppstoreAppResponseDataAppChart]
-    icon: NotRequired[str]
-    screenshots: NotRequired[list[str]]
-    ipadScreenshots: NotRequired[list[str]]
-
-
-class AppstoreAppResponseData(TypedDict):
-    app: AppstoreAppResponseDataApp
+    ratingsOne: NotRequired[int]
+    ratingsTwo: NotRequired[int]
+    ratingsThree: NotRequired[int]
+    ratingsFour: NotRequired[int]
+    ratingsFive: NotRequired[int]
+    chartName: NotRequired[str]
+    chartGenre: NotRequired[str]
+    chartPosition: NotRequired[int]
+    iconUrl: NotRequired[str]
+    screenshotUrls: list[str]
+    ipadScreenshotUrls: list[str]
 
 
 class AppstoreAppResponse(TypedDict):
@@ -4879,19 +3249,22 @@ class AppstoreAppResponse(TypedDict):
     requestId: str
 
 
-class AppstoreSearchResponseDataAppsItem(TypedDict):
-    id: NotRequired[str]
+class AppstoreSearchResponseDataResultsItem(TypedDict):
+    appId: NotRequired[str]
+    appUrl: str
     bundleId: NotRequired[str]
     name: NotRequired[str]
-    url: str
-    developer: NotRequired[AppstoreAppResponseDataAppDeveloper]
+    developerId: NotRequired[str]
+    developerName: NotRequired[str]
+    developerUrl: NotRequired[str]
     seller: NotRequired[str]
     website: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     priceText: NotRequired[str]
     genres: NotRequired[list[str]]
-    primaryGenre: NotRequired[ZillowPropertyResponseDataPropertyMls]
+    primaryGenreId: NotRequired[str]
+    primaryGenre: NotRequired[str]
     contentRating: NotRequired[str]
     description: NotRequired[str]
     releaseNotes: NotRequired[str]
@@ -4903,13 +3276,13 @@ class AppstoreSearchResponseDataAppsItem(TypedDict):
     languages: NotRequired[list[str]]
     rating: NotRequired[float]
     ratings: NotRequired[int]
-    icon: NotRequired[str]
-    screenshots: NotRequired[list[str]]
-    ipadScreenshots: NotRequired[list[str]]
+    iconUrl: NotRequired[str]
+    screenshotUrls: NotRequired[list[str]]
+    ipadScreenshotUrls: NotRequired[list[str]]
 
 
 class AppstoreSearchResponseData(TypedDict):
-    apps: list[AppstoreSearchResponseDataAppsItem]
+    results: list[AppstoreSearchResponseDataResultsItem]
 
 
 class AppstoreSearchResponse(TypedDict):
@@ -4919,18 +3292,18 @@ class AppstoreSearchResponse(TypedDict):
     requestId: str
 
 
-class AppstoreReviewsResponseDataReviewsItem(TypedDict):
-    id: NotRequired[str]
+class AppstoreReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
     rating: int
     title: NotRequired[str]
     text: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    createdAt: NotRequired[str]
+    authorName: NotRequired[str]
+    publishedAt: NotRequired[str]
     isEdited: bool
 
 
 class AppstoreReviewsResponseData(TypedDict):
-    reviews: list[AppstoreReviewsResponseDataReviewsItem]
+    results: list[AppstoreReviewsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -4941,23 +3314,26 @@ class AppstoreReviewsResponse(TypedDict):
     requestId: str
 
 
-class AppstoreTopResponseDataAppsItem(TypedDict):
+class AppstoreTopResponseDataResultsItem(TypedDict):
     rank: int
-    id: NotRequired[str]
+    appId: NotRequired[str]
+    appUrl: str
     bundleId: NotRequired[str]
     name: NotRequired[str]
-    url: str
-    developer: NotRequired[AppstoreAppResponseDataAppDeveloper]
+    developerId: NotRequired[str]
+    developerName: NotRequired[str]
+    developerUrl: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
-    genre: NotRequired[ZillowPropertyResponseDataPropertyMls]
+    priceCurrency: NotRequired[str]
+    genreId: NotRequired[str]
+    genre: NotRequired[str]
     releasedAt: NotRequired[str]
     summary: NotRequired[str]
-    icon: NotRequired[str]
+    iconUrl: NotRequired[str]
 
 
 class AppstoreTopResponseData(TypedDict):
-    apps: list[AppstoreTopResponseDataAppsItem]
+    results: list[AppstoreTopResponseDataResultsItem]
 
 
 class AppstoreTopResponse(TypedDict):
@@ -4967,37 +3343,34 @@ class AppstoreTopResponse(TypedDict):
     requestId: str
 
 
-class GoogleplayAppResponseDataAppDeveloper(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    email: NotRequired[str]
-    website: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-
-
-class GoogleplayAppResponseDataAppInstalls(TypedDict):
-    text: NotRequired[str]
-    min: NotRequired[int]
-    exact: NotRequired[int]
-
-
-class GoogleplayAppResponseDataApp(TypedDict):
-    id: NotRequired[str]
-    url: str
+class GoogleplayAppResponseData(TypedDict):
+    appId: NotRequired[str]
+    appUrl: str
     name: NotRequired[str]
     summary: NotRequired[str]
     description: NotRequired[str]
-    developer: NotRequired[GoogleplayAppResponseDataAppDeveloper]
-    privacyPolicy: NotRequired[str]
-    genre: NotRequired[ZillowPropertyResponseDataPropertyMls]
+    developerId: NotRequired[str]
+    developerName: NotRequired[str]
+    developerEmail: NotRequired[str]
+    developerWebsite: NotRequired[str]
+    developerAddress: NotRequired[str]
+    privacyPolicyUrl: NotRequired[str]
+    genreId: NotRequired[str]
+    genre: NotRequired[str]
     contentRating: NotRequired[str]
-    installs: NotRequired[GoogleplayAppResponseDataAppInstalls]
+    installsText: NotRequired[str]
+    installsMin: NotRequired[int]
+    installsExact: NotRequired[int]
     rating: NotRequired[float]
     ratings: NotRequired[int]
     reviews: NotRequired[int]
-    histogram: NotRequired[AppstoreAppResponseDataAppHistogram]
+    ratingsOne: NotRequired[int]
+    ratingsTwo: NotRequired[int]
+    ratingsThree: NotRequired[int]
+    ratingsFour: NotRequired[int]
+    ratingsFive: NotRequired[int]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     hasInAppPurchases: bool
     inAppPriceText: NotRequired[str]
     hasAds: bool
@@ -5005,13 +3378,9 @@ class GoogleplayAppResponseDataApp(TypedDict):
     recentChanges: NotRequired[str]
     releasedAt: NotRequired[str]
     updatedAt: NotRequired[str]
-    icon: NotRequired[str]
-    banner: NotRequired[str]
-    screenshots: NotRequired[list[str]]
-
-
-class GoogleplayAppResponseData(TypedDict):
-    app: GoogleplayAppResponseDataApp
+    iconUrl: NotRequired[str]
+    bannerUrl: NotRequired[str]
+    screenshotUrls: list[str]
 
 
 class GoogleplayAppResponse(TypedDict):
@@ -5021,27 +3390,23 @@ class GoogleplayAppResponse(TypedDict):
     requestId: str
 
 
-class GoogleplaySearchResponseDataAppsItemInstalls(TypedDict):
-    text: NotRequired[str]
-    min: NotRequired[int]
-
-
-class GoogleplaySearchResponseDataAppsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
+class GoogleplaySearchResponseDataResultsItem(TypedDict):
+    appId: NotRequired[str]
+    appUrl: str
     name: NotRequired[str]
-    developer: NotRequired[ZillowSearchResponseDataListingsItemBroker]
+    developerName: NotRequired[str]
     summary: NotRequired[str]
-    genre: NotRequired[ZillowSearchResponseDataListingsItemBroker]
-    installs: NotRequired[GoogleplaySearchResponseDataAppsItemInstalls]
+    genre: NotRequired[str]
+    installsText: NotRequired[str]
+    installsMin: NotRequired[int]
     rating: NotRequired[float]
     price: NotRequired[float]
-    currency: NotRequired[str]
-    icon: NotRequired[str]
+    priceCurrency: NotRequired[str]
+    iconUrl: NotRequired[str]
 
 
 class GoogleplaySearchResponseData(TypedDict):
-    apps: list[GoogleplaySearchResponseDataAppsItem]
+    results: list[GoogleplaySearchResponseDataResultsItem]
 
 
 class GoogleplaySearchResponse(TypedDict):
@@ -5051,20 +3416,22 @@ class GoogleplaySearchResponse(TypedDict):
     requestId: str
 
 
-class GoogleplayReviewsResponseDataReviewsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
+class GoogleplayReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
+    reviewUrl: str
     rating: int
     text: NotRequired[str]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    createdAt: NotRequired[str]
+    authorName: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    publishedAt: NotRequired[str]
     likes: int
     appVersion: NotRequired[str]
-    ownerReply: NotRequired[MapsReviewsResponseDataReviewsItemOwnerReply]
+    ownerReplyText: NotRequired[str]
+    ownerReplyAt: NotRequired[str]
 
 
 class GoogleplayReviewsResponseData(TypedDict):
-    reviews: list[GoogleplayReviewsResponseDataReviewsItem]
+    results: list[GoogleplayReviewsResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -5075,36 +3442,29 @@ class GoogleplayReviewsResponse(TypedDict):
     requestId: str
 
 
-class AirbnbSearchBedrooms(TypedDict):
-    min: int
-
-
-class AirbnbSearchBathrooms(TypedDict):
-    min: float
-
-
-class AirbnbSearchResponseDataListingsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
+class AirbnbSearchResponseDataResultsItem(TypedDict):
+    listingId: NotRequired[str]
+    listingUrl: str
     name: NotRequired[str]
     title: NotRequired[str]
     subtitle: NotRequired[str]
     price: NotRequired[float]
     originalPrice: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     priceText: NotRequired[str]
     rating: NotRequired[float]
     reviews: NotRequired[int]
     bedrooms: NotRequired[float]
     beds: NotRequired[float]
     bathrooms: NotRequired[float]
-    location: NotRequired[TripadvisorSearchResponseDataResultsItemLocation]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
     badges: NotRequired[list[str]]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    imageUrls: NotRequired[list[str]]
 
 
 class AirbnbSearchResponseData(TypedDict):
-    listings: list[AirbnbSearchResponseDataListingsItem]
+    results: list[AirbnbSearchResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -5115,30 +3475,25 @@ class AirbnbSearchResponse(TypedDict):
     requestId: str
 
 
-class AirbnbListingResponseDataListingHost(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    isSuperhost: bool
-    isVerified: bool
-    rating: NotRequired[float]
-    reviews: NotRequired[int]
-    yearsHosting: NotRequired[int]
-    bio: NotRequired[str]
-    responsePercent: NotRequired[float]
-    responseTime: NotRequired[str]
-    highlights: NotRequired[list[str]]
-    avatar: NotRequired[str]
+class AirbnbListingResponseDataRatingCategoriesItem(TypedDict):
+    category: NotRequired[str]
+    rating: float
 
 
-class AirbnbListingResponseDataListingAmenitiesItem(TypedDict):
+class AirbnbListingResponseDataRatingDistributionItem(TypedDict):
+    stars: NotRequired[str]
+    percent: float
+
+
+class AirbnbListingResponseDataAmenitiesItem(TypedDict):
     group: NotRequired[str]
     name: NotRequired[str]
     isAvailable: bool
 
 
-class AirbnbListingResponseDataListing(TypedDict):
-    id: NotRequired[str]
-    url: str
+class AirbnbListingResponseData(TypedDict):
+    listingId: NotRequired[str]
+    listingUrl: str
     name: NotRequired[str]
     headline: NotRequired[str]
     description: NotRequired[str]
@@ -5152,22 +3507,30 @@ class AirbnbListingResponseDataListing(TypedDict):
     isGuestFavorite: bool
     rating: NotRequired[float]
     reviews: NotRequired[int]
-    ratingCategories: NotRequired[dict[str, float]]
-    ratingDistribution: NotRequired[dict[str, float]]
-    host: AirbnbListingResponseDataListingHost
-    highlights: NotRequired[list[RedditSearchResponseDataResultsItemOption1RulesItem]]
-    amenities: NotRequired[list[AirbnbListingResponseDataListingAmenitiesItem]]
-    houseRules: NotRequired[list[str]]
-    safety: NotRequired[list[str]]
-    location: NotRequired[TripadvisorSearchResponseDataResultsItemLocation]
+    ratingCategories: list[AirbnbListingResponseDataRatingCategoriesItem]
+    ratingDistribution: list[AirbnbListingResponseDataRatingDistributionItem]
+    hostId: NotRequired[str]
+    hostName: NotRequired[str]
+    hostIsSuperhost: bool
+    hostIsVerified: bool
+    hostRating: NotRequired[float]
+    hostReviews: NotRequired[int]
+    hostYearsHosting: NotRequired[int]
+    hostBio: NotRequired[str]
+    hostResponsePercent: NotRequired[float]
+    hostResponseTime: NotRequired[str]
+    hostHighlights: list[str]
+    hostAvatarUrl: NotRequired[str]
+    highlights: list[RedditSubredditResponseDataRulesItem]
+    amenities: list[AirbnbListingResponseDataAmenitiesItem]
+    houseRules: list[str]
+    safety: list[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
     isLocationExact: bool
     area: NotRequired[str]
     neighborhood: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-
-
-class AirbnbListingResponseData(TypedDict):
-    listing: AirbnbListingResponseDataListing
+    imageUrls: list[str]
 
 
 class AirbnbListingResponse(TypedDict):
@@ -5177,7 +3540,7 @@ class AirbnbListingResponse(TypedDict):
     requestId: str
 
 
-class AirbnbCalendarResponseDataDaysItem(TypedDict):
+class AirbnbCalendarResponseDataResultsItem(TypedDict):
     date: str
     isAvailable: bool
     isBookable: bool
@@ -5189,7 +3552,7 @@ class AirbnbCalendarResponseDataDaysItem(TypedDict):
 
 
 class AirbnbCalendarResponseData(TypedDict):
-    days: list[AirbnbCalendarResponseDataDaysItem]
+    results: list[AirbnbCalendarResponseDataResultsItem]
 
 
 class AirbnbCalendarResponse(TypedDict):
@@ -5199,33 +3562,22 @@ class AirbnbCalendarResponse(TypedDict):
     requestId: str
 
 
-class AirbnbReviewsResponseDataReviewsItemAuthor(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    isVerified: NotRequired[bool]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-
-
-class AirbnbReviewsResponseDataReviewsItemOwnerReply(TypedDict):
-    text: NotRequired[str]
-
-
-class AirbnbReviewsResponseDataReviewsItem(TypedDict):
-    id: NotRequired[str]
+class AirbnbReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
     text: NotRequired[str]
     rating: NotRequired[float]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     language: NotRequired[str]
     stayLength: NotRequired[str]
-    author: NotRequired[AirbnbReviewsResponseDataReviewsItemAuthor]
-    ownerReply: NotRequired[AirbnbReviewsResponseDataReviewsItemOwnerReply]
+    authorId: NotRequired[str]
+    authorName: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorAddress: NotRequired[str]
+    ownerReplyText: NotRequired[str]
 
 
 class AirbnbReviewsResponseData(TypedDict):
-    reviews: list[AirbnbReviewsResponseDataReviewsItem]
+    results: list[AirbnbReviewsResponseDataResultsItem]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
@@ -5237,364 +3589,37 @@ class AirbnbReviewsResponse(TypedDict):
     requestId: str
 
 
-class RedfinSearchBathrooms(TypedDict):
-    min: float
-
-
-class RedfinSearchResponseDataListingsItemAddress(TypedDict):
-    full: NotRequired[str]
-    street: NotRequired[str]
-    city: NotRequired[str]
-    state: NotRequired[str]
-    postalCode: NotRequired[str]
-    country: NotRequired[str]
-    unit: NotRequired[str]
-
-
-class RedfinSearchResponseDataListingsItem(TypedDict):
-    id: NotRequired[str]
-    listingId: NotRequired[str]
-    url: str
-    status: NotRequired[str]
-    price: NotRequired[float]
-    currency: NotRequired[str]
-    bedrooms: NotRequired[float]
-    bathrooms: NotRequired[float]
-    sqft: NotRequired[float]
-    lotSqft: NotRequired[float]
-    pricePerSqft: NotRequired[float]
-    yearBuilt: NotRequired[int]
-    hoa: NotRequired[float]
-    daysOnMarket: NotRequired[int]
-    lastSoldAt: NotRequired[str]
-    homeType: NotRequired[str]
-    mlsId: NotRequired[str]
-    neighborhood: NotRequired[str]
-    address: NotRequired[RedfinSearchResponseDataListingsItemAddress]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
-    remarks: NotRequired[str]
-    tags: NotRequired[list[str]]
-
-
-class RedfinSearchResponseDataMedian(TypedDict):
-    price: NotRequired[float]
-    sqft: NotRequired[float]
-    pricePerSqft: NotRequired[float]
-    daysOnMarket: NotRequired[float]
-
-
-class RedfinSearchResponseData(TypedDict):
-    listings: list[RedfinSearchResponseDataListingsItem]
-    median: NotRequired[RedfinSearchResponseDataMedian]
-    cursor: NotRequired[str]
-
-
-class RedfinSearchResponse(TypedDict):
-    success: Literal[True]
-    data: RedfinSearchResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class RedfinPropertyResponseDataPropertyPriceHistoryItem(TypedDict):
-    date: str
-    event: NotRequired[str]
-    price: NotRequired[float]
-    source: NotRequired[str]
-    mlsId: NotRequired[str]
-
-
-class RedfinPropertyResponseDataPropertyTaxHistoryItem(TypedDict):
-    year: int
-    landValue: NotRequired[float]
-    improvementValue: NotRequired[float]
-    taxes: NotRequired[float]
-
-
-class RedfinPropertyResponseDataPropertyFactsItem(TypedDict):
-    group: NotRequired[str]
-    name: NotRequired[str]
-    values: NotRequired[list[str]]
-
-
-class RedfinPropertyResponseDataPropertySchoolsItem(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    type: NotRequired[str]
-    grades: NotRequired[str]
-    rating: NotRequired[float]
-    parentRating: NotRequired[float]
-    distanceMiles: NotRequired[float]
-    students: NotRequired[int]
-    isServingHome: bool
-    district: NotRequired[str]
-    url: str
-
-
-class RedfinPropertyResponseDataPropertyComparablesItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    status: NotRequired[str]
-    price: NotRequired[float]
-    bedrooms: NotRequired[float]
-    bathrooms: NotRequired[float]
-    sqft: NotRequired[float]
-    lastSoldAt: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-
-
-class RedfinPropertyResponseDataProperty(TypedDict):
-    id: NotRequired[str]
-    url: str
-    status: NotRequired[str]
-    price: NotRequired[float]
-    currency: NotRequired[str]
-    priceText: NotRequired[str]
-    estimate: NotRequired[float]
-    lastSoldPrice: NotRequired[float]
-    lastSoldAt: NotRequired[str]
-    bedrooms: NotRequired[float]
-    bathrooms: NotRequired[float]
-    sqft: NotRequired[float]
-    lotSqft: NotRequired[float]
-    yearBuilt: NotRequired[int]
-    stories: NotRequired[float]
-    propertyType: NotRequired[str]
-    apn: NotRequired[str]
-    county: NotRequired[str]
-    description: NotRequired[str]
-    address: NotRequired[RedfinSearchResponseDataListingsItemAddress]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
-    priceHistory: NotRequired[list[RedfinPropertyResponseDataPropertyPriceHistoryItem]]
-    taxHistory: NotRequired[list[RedfinPropertyResponseDataPropertyTaxHistoryItem]]
-    facts: NotRequired[list[RedfinPropertyResponseDataPropertyFactsItem]]
-    schools: NotRequired[list[RedfinPropertyResponseDataPropertySchoolsItem]]
-    comparables: NotRequired[list[RedfinPropertyResponseDataPropertyComparablesItem]]
-
-
-class RedfinPropertyResponseData(TypedDict):
-    property: RedfinPropertyResponseDataProperty
-
-
-class RedfinPropertyResponse(TypedDict):
-    success: Literal[True]
-    data: RedfinPropertyResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class RealtorSearchResponseDataListingsItemPriceRange(TypedDict):
-    min: NotRequired[float]
-    max: NotRequired[float]
-
-
-class RealtorSearchResponseDataListingsItemFlags(TypedDict):
-    isPending: bool
-    isContingent: bool
-    isNewConstruction: bool
-    isForeclosure: bool
-
-
-class RealtorSearchResponseDataListingsItemAddress(TypedDict):
-    full: NotRequired[str]
-    street: NotRequired[str]
-    city: NotRequired[str]
-    state: NotRequired[str]
-    postalCode: NotRequired[str]
-    country: NotRequired[str]
-    unit: NotRequired[str]
-    county: NotRequired[str]
-
-
-class RealtorSearchResponseDataListingsItem(TypedDict):
-    id: NotRequired[str]
-    listingId: NotRequired[str]
-    url: NotRequired[str]
-    status: NotRequired[str]
-    price: NotRequired[float]
-    currency: NotRequired[str]
-    priceRange: NotRequired[RealtorSearchResponseDataListingsItemPriceRange]
-    bedrooms: NotRequired[float]
-    bedroomsMax: NotRequired[float]
-    bathrooms: NotRequired[float]
-    sqft: NotRequired[float]
-    lotSqft: NotRequired[float]
-    yearBuilt: NotRequired[int]
-    homeType: NotRequired[str]
-    pricePerSqft: NotRequired[float]
-    hoa: NotRequired[float]
-    createdAt: NotRequired[str]
-    lastSoldPrice: NotRequired[float]
-    lastSoldAt: NotRequired[str]
-    flags: RealtorSearchResponseDataListingsItemFlags
-    address: NotRequired[RealtorSearchResponseDataListingsItemAddress]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
-    image: NotRequired[str]
-    totalImages: NotRequired[int]
-    broker: NotRequired[ZillowSearchResponseDataListingsItemBroker]
-    tags: NotRequired[list[str]]
-
-
-class RealtorSearchResponseData(TypedDict):
-    listings: list[RealtorSearchResponseDataListingsItem]
-    total: NotRequired[int]
-    cursor: NotRequired[str]
-
-
-class RealtorSearchResponse(TypedDict):
-    success: Literal[True]
-    data: RealtorSearchResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class RealtorPropertyResponseDataPropertyMls(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    listingId: NotRequired[str]
-
-
-class RealtorPropertyResponseDataPropertyDetailsItem(TypedDict):
-    category: NotRequired[str]
-    items: NotRequired[list[str]]
-
-
-class RealtorPropertyResponseDataPropertyEstimatesItem(TypedDict):
-    source: NotRequired[str]
-    estimate: NotRequired[float]
-    low: NotRequired[float]
-    high: NotRequired[float]
-    date: NotRequired[str]
-
-
-class RealtorPropertyResponseDataPropertyPriceHistoryItem(TypedDict):
-    date: str
-    event: NotRequired[str]
-    price: NotRequired[float]
-    source: NotRequired[str]
-
-
-class RealtorPropertyResponseDataPropertyTaxHistoryItem(TypedDict):
-    year: int
-    tax: NotRequired[float]
-    assessedTotal: NotRequired[float]
-    assessedLand: NotRequired[float]
-    assessedBuilding: NotRequired[float]
-
-
-class RealtorPropertyResponseDataPropertySchoolsItem(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    rating: NotRequired[float]
-    parentRating: NotRequired[float]
-    distanceMiles: NotRequired[float]
-    levels: NotRequired[list[str]]
-    grades: NotRequired[list[str]]
-    funding: NotRequired[str]
-    students: NotRequired[int]
-    district: NotRequired[str]
-
-
-class RealtorPropertyResponseDataPropertyAgentsItem(TypedDict):
-    name: NotRequired[str]
-    type: NotRequired[str]
-    email: NotRequired[str]
-    phones: NotRequired[list[str]]
-    office: NotRequired[str]
-
-
-class RealtorPropertyResponseDataProperty(TypedDict):
-    id: NotRequired[str]
-    listingId: NotRequired[str]
-    url: NotRequired[str]
-    status: NotRequired[str]
-    price: NotRequired[float]
-    currency: NotRequired[str]
-    priceRange: NotRequired[RealtorSearchResponseDataListingsItemPriceRange]
-    bedrooms: NotRequired[float]
-    bedroomsMax: NotRequired[float]
-    bathrooms: NotRequired[float]
-    sqft: NotRequired[float]
-    lotSqft: NotRequired[float]
-    yearBuilt: NotRequired[int]
-    homeType: NotRequired[str]
-    pricePerSqft: NotRequired[float]
-    hoa: NotRequired[float]
-    createdAt: NotRequired[str]
-    lastSoldPrice: NotRequired[float]
-    lastSoldAt: NotRequired[str]
-    flags: RealtorSearchResponseDataListingsItemFlags
-    address: NotRequired[RealtorSearchResponseDataListingsItemAddress]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
-    image: NotRequired[str]
-    totalImages: NotRequired[int]
-    broker: NotRequired[ZillowSearchResponseDataListingsItemBroker]
-    tags: NotRequired[list[str]]
-    description: NotRequired[str]
-    stories: NotRequired[float]
-    garage: NotRequired[float]
-    daysOnMarket: NotRequired[int]
-    mls: NotRequired[RealtorPropertyResponseDataPropertyMls]
-    neighborhoods: NotRequired[list[str]]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    details: NotRequired[list[RealtorPropertyResponseDataPropertyDetailsItem]]
-    estimates: NotRequired[list[RealtorPropertyResponseDataPropertyEstimatesItem]]
-    priceHistory: NotRequired[list[RealtorPropertyResponseDataPropertyPriceHistoryItem]]
-    taxHistory: NotRequired[list[RealtorPropertyResponseDataPropertyTaxHistoryItem]]
-    schools: NotRequired[list[RealtorPropertyResponseDataPropertySchoolsItem]]
-    agents: NotRequired[list[RealtorPropertyResponseDataPropertyAgentsItem]]
-
-
-class RealtorPropertyResponseData(TypedDict):
-    property: RealtorPropertyResponseDataProperty
-
-
-class RealtorPropertyResponse(TypedDict):
-    success: Literal[True]
-    data: RealtorPropertyResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class RightmoveSearchResponseDataListingsItemTenure(TypedDict):
-    type: NotRequired[str]
-    yearsRemaining: NotRequired[float]
-
-
-class RightmoveSearchResponseDataListingsItemAgent(TypedDict):
-    name: NotRequired[str]
-    branchId: NotRequired[str]
-    phone: NotRequired[str]
-
-
-class RightmoveSearchResponseDataListingsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
+class RightmoveSearchResponseDataResultsItem(TypedDict):
+    propertyId: NotRequired[str]
+    propertyUrl: str
+    addressFull: NotRequired[str]
     summary: NotRequired[str]
     price: NotRequired[float]
     priceText: NotRequired[str]
     priceQualifier: NotRequired[str]
-    frequency: NotRequired[str]
-    currency: NotRequired[str]
+    priceFrequency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     bedrooms: NotRequired[int]
     bathrooms: NotRequired[int]
     propertyType: NotRequired[str]
     sizeText: NotRequired[str]
-    tenure: NotRequired[RightmoveSearchResponseDataListingsItemTenure]
+    tenureType: NotRequired[str]
     firstListedAt: NotRequired[str]
     updateReason: NotRequired[str]
     updatedAt: NotRequired[str]
     isFeatured: bool
     isAuction: bool
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
-    agent: NotRequired[RightmoveSearchResponseDataListingsItemAgent]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    agentName: NotRequired[str]
+    agentBranchId: NotRequired[str]
+    agentPhone: NotRequired[str]
     keyFeatures: NotRequired[list[str]]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    imageUrls: NotRequired[list[str]]
 
 
 class RightmoveSearchResponseData(TypedDict):
-    listings: list[RightmoveSearchResponseDataListingsItem]
+    results: list[RightmoveSearchResponseDataResultsItem]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
@@ -5606,32 +3631,26 @@ class RightmoveSearchResponse(TypedDict):
     requestId: str
 
 
-class RightmovePropertyResponseDataPropertyImagesItem(TypedDict):
-    url: str
-    caption: NotRequired[str]
+class RightmovePropertyResponseDataSizesItem(TypedDict):
+    value: float
+    unit: NotRequired[str]
 
 
-class RightmovePropertyResponseDataPropertyNearestStationsItem(TypedDict):
+class RightmovePropertyResponseDataNearestStationsItem(TypedDict):
     name: NotRequired[str]
     types: NotRequired[list[str]]
     distanceMiles: NotRequired[float]
 
 
-class RightmovePropertyResponseDataPropertyAgent(TypedDict):
-    name: NotRequired[str]
-    branchId: NotRequired[str]
-    phone: NotRequired[str]
-    company: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-
-
-class RightmovePropertyResponseDataProperty(TypedDict):
-    id: NotRequired[str]
-    url: str
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
+class RightmovePropertyResponseData(TypedDict):
+    propertyId: NotRequired[str]
+    propertyUrl: str
+    addressFull: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    addressCountry: NotRequired[str]
     description: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     priceText: NotRequired[str]
     priceQualifier: NotRequired[str]
     pricePerSqft: NotRequired[float]
@@ -5639,23 +3658,25 @@ class RightmovePropertyResponseDataProperty(TypedDict):
     bedrooms: NotRequired[int]
     bathrooms: NotRequired[int]
     propertyType: NotRequired[str]
-    tenure: NotRequired[RightmoveSearchResponseDataListingsItemTenure]
-    sizes: NotRequired[list[ZillowPropertyResponseDataPropertyLotSize]]
+    tenureType: NotRequired[str]
+    tenureYearsRemaining: NotRequired[float]
+    sizes: list[RightmovePropertyResponseDataSizesItem]
     councilTaxBand: NotRequired[str]
     annualServiceCharge: NotRequired[float]
     annualGroundRent: NotRequired[float]
     updateReason: NotRequired[str]
-    tags: NotRequired[list[str]]
-    keyFeatures: NotRequired[list[str]]
-    images: NotRequired[list[RightmovePropertyResponseDataPropertyImagesItem]]
-    floorplans: NotRequired[list[str]]
-    location: NotRequired[MapsSearchResponseDataPlacesItemLocation]
-    nearestStations: NotRequired[list[RightmovePropertyResponseDataPropertyNearestStationsItem]]
-    agent: NotRequired[RightmovePropertyResponseDataPropertyAgent]
-
-
-class RightmovePropertyResponseData(TypedDict):
-    property: RightmovePropertyResponseDataProperty
+    tags: list[str]
+    keyFeatures: list[str]
+    imageUrls: list[str]
+    floorplanUrls: list[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    nearestStations: list[RightmovePropertyResponseDataNearestStationsItem]
+    agentName: NotRequired[str]
+    agentBranchId: NotRequired[str]
+    agentPhone: NotRequired[str]
+    agentCompany: NotRequired[str]
+    agentAddress: NotRequired[str]
 
 
 class RightmovePropertyResponse(TypedDict):
@@ -5665,27 +3686,29 @@ class RightmovePropertyResponse(TypedDict):
     requestId: str
 
 
-class ImmoscoutSearchResponseDataListingsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
+class ImmoscoutSearchResponseDataResultsItem(TypedDict):
+    listingId: NotRequired[str]
+    listingUrl: str
     title: NotRequired[str]
     type: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
+    addressFull: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    addressCountry: NotRequired[str]
     price: NotRequired[float]
-    currency: NotRequired[str]
+    priceCurrency: NotRequired[str]
     priceText: NotRequired[str]
     livingSpace: NotRequired[float]
     rooms: NotRequired[float]
     energyClass: NotRequired[str]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     isPrivate: bool
     isProject: bool
     isNew: bool
-    image: NotRequired[str]
+    imageUrl: NotRequired[str]
 
 
 class ImmoscoutSearchResponseData(TypedDict):
-    listings: list[ImmoscoutSearchResponseDataListingsItem]
+    results: list[ImmoscoutSearchResponseDataResultsItem]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
@@ -5697,44 +3720,29 @@ class ImmoscoutSearchResponse(TypedDict):
     requestId: str
 
 
-class ImmoscoutListingResponseDataListingAddress(TypedDict):
-    full: NotRequired[str]
-    street: NotRequired[str]
-    city: NotRequired[str]
-    state: NotRequired[str]
-    postalCode: NotRequired[str]
-    country: NotRequired[str]
-    district: NotRequired[str]
-
-
-class ImmoscoutListingResponseDataListingAttributesItem(TypedDict):
+class ImmoscoutListingResponseDataAttributesItem(TypedDict):
     group: NotRequired[str]
     label: NotRequired[str]
     value: NotRequired[str]
 
 
-class ImmoscoutListingResponseDataListingTextsItem(TypedDict):
+class ImmoscoutListingResponseDataTextsItem(TypedDict):
     title: NotRequired[str]
     text: NotRequired[str]
 
 
-class ImmoscoutListingResponseDataListingAgent(TypedDict):
-    name: NotRequired[str]
-    company: NotRequired[str]
-    phone: NotRequired[str]
-    rating: NotRequired[float]
-    url: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-
-
-class ImmoscoutListingResponseDataListing(TypedDict):
-    id: NotRequired[str]
-    url: str
+class ImmoscoutListingResponseData(TypedDict):
+    listingId: NotRequired[str]
+    listingUrl: str
     title: NotRequired[str]
     type: NotRequired[str]
     status: NotRequired[str]
-    address: NotRequired[ImmoscoutListingResponseDataListingAddress]
-    currency: NotRequired[str]
+    addressFull: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressDistrict: NotRequired[str]
+    addressCountry: NotRequired[str]
+    priceCurrency: NotRequired[str]
     baseRent: NotRequired[float]
     totalRent: NotRequired[float]
     serviceCharge: NotRequired[float]
@@ -5743,14 +3751,15 @@ class ImmoscoutListingResponseDataListing(TypedDict):
     rooms: NotRequired[float]
     yearBuilt: NotRequired[int]
     energyClass: NotRequired[str]
-    attributes: NotRequired[list[ImmoscoutListingResponseDataListingAttributesItem]]
-    texts: NotRequired[list[ImmoscoutListingResponseDataListingTextsItem]]
-    images: NotRequired[list[RightmovePropertyResponseDataPropertyImagesItem]]
-    agent: NotRequired[ImmoscoutListingResponseDataListingAgent]
-
-
-class ImmoscoutListingResponseData(TypedDict):
-    listing: ImmoscoutListingResponseDataListing
+    attributes: list[ImmoscoutListingResponseDataAttributesItem]
+    texts: list[ImmoscoutListingResponseDataTextsItem]
+    imageUrls: list[str]
+    agentName: NotRequired[str]
+    agentCompany: NotRequired[str]
+    agentPhone: NotRequired[str]
+    agentRating: NotRequired[float]
+    agentUrl: NotRequired[str]
+    agentAddress: NotRequired[str]
 
 
 class ImmoscoutListingResponse(TypedDict):
@@ -5760,52 +3769,36 @@ class ImmoscoutListingResponse(TypedDict):
     requestId: str
 
 
-class PinterestSearchResponseDataPinsItemVideo(TypedDict):
-    url: str
-    durationSeconds: NotRequired[float]
-
-
-class PinterestSearchResponseDataPinsItemAuthor(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    isVerified: NotRequired[bool]
-    followers: NotRequired[int]
-
-
-class PinterestSearchResponseDataPinsItemBoard(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    url: str
-
-
-class PinterestSearchResponseDataPinsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
+class PinterestSearchResponseDataResultsItem(TypedDict):
+    pinId: NotRequired[str]
+    pinUrl: str
     title: NotRequired[str]
     text: NotRequired[str]
     altText: NotRequired[str]
-    link: NotRequired[RedditSearchResponseDataResultsItemOption0Link]
+    linkUrl: NotRequired[str]
     domain: NotRequired[str]
-    createdAt: NotRequired[str]
-    image: NotRequired[str]
-    width: NotRequired[int]
-    height: NotRequired[int]
-    dominantColor: NotRequired[str]
-    video: NotRequired[PinterestSearchResponseDataPinsItemVideo]
+    publishedAt: NotRequired[str]
+    imageUrl: NotRequired[str]
+    videoUrl: NotRequired[str]
+    videoDurationSeconds: NotRequired[float]
     saves: NotRequired[int]
     reposts: NotRequired[int]
     comments: NotRequired[int]
     reactions: NotRequired[int]
     isPromoted: bool
-    author: NotRequired[PinterestSearchResponseDataPinsItemAuthor]
-    board: NotRequired[PinterestSearchResponseDataPinsItemBoard]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    boardId: NotRequired[str]
+    boardName: NotRequired[str]
+    boardUrl: NotRequired[str]
 
 
 class PinterestSearchResponseData(TypedDict):
-    pins: list[PinterestSearchResponseDataPinsItem]
+    results: list[PinterestSearchResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -5816,33 +3809,30 @@ class PinterestSearchResponse(TypedDict):
     requestId: str
 
 
-class PinterestPinResponseData(TypedDict):
-    pin: PinterestSearchResponseDataPinsItem
-
-
 class PinterestPinResponse(TypedDict):
     success: Literal[True]
-    data: PinterestPinResponseData
+    data: PinterestSearchResponseDataResultsItem
     creditsUsed: int
     requestId: str
 
 
-class PinterestBoardResponseDataBoard(TypedDict):
-    id: NotRequired[str]
+class PinterestBoardResponseData(TypedDict):
+    boardId: NotRequired[str]
+    boardUrl: str
     name: NotRequired[str]
-    url: str
     description: NotRequired[str]
     category: NotRequired[str]
     pins: NotRequired[int]
     followers: NotRequired[int]
     sections: NotRequired[int]
-    thumbnail: NotRequired[str]
-    author: NotRequired[PinterestSearchResponseDataPinsItemAuthor]
-
-
-class PinterestBoardResponseData(TypedDict):
-    board: PinterestBoardResponseDataBoard
-    pins: list[PinterestSearchResponseDataPinsItem]
+    thumbnailUrl: NotRequired[str]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    results: list[PinterestSearchResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -5853,12 +3843,12 @@ class PinterestBoardResponse(TypedDict):
     requestId: str
 
 
-class PinterestUserResponseDataProfile(TypedDict):
-    id: NotRequired[str]
+class PinterestUserResponseData(TypedDict):
+    userId: NotRequired[str]
     username: NotRequired[str]
+    userUrl: str
     name: NotRequired[str]
-    url: str
-    avatar: NotRequired[str]
+    avatarUrl: NotRequired[str]
     followers: NotRequired[int]
     bio: NotRequired[str]
     website: NotRequired[str]
@@ -5868,11 +3858,7 @@ class PinterestUserResponseDataProfile(TypedDict):
     isVerified: bool
     isPrivate: bool
     createdAt: NotRequired[str]
-
-
-class PinterestUserResponseData(TypedDict):
-    profile: PinterestUserResponseDataProfile
-    pins: list[PinterestSearchResponseDataPinsItem]
+    results: list[PinterestSearchResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -5883,224 +3869,47 @@ class PinterestUserResponse(TypedDict):
     requestId: str
 
 
-class PinterestAdsSearchResponseDataAdsItemReachByCountryItem(TypedDict):
-    country: NotRequired[str]
-    reach: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-
-
-class PinterestAdsSearchResponseDataAdsItem(TypedDict):
-    id: NotRequired[str]
+class XPostResponseDataMediaItem(TypedDict):
+    type: XPostResponseDataMediaItemType
     url: str
-    headline: NotRequired[str]
-    text: NotRequired[str]
-    advertisers: NotRequired[list[str]]
-    image: NotRequired[str]
-    video: NotRequired[str]
-    links: NotRequired[list[str]]
-    firstShownAt: NotRequired[str]
-    lastShownAt: NotRequired[str]
-    euReach: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    reachByCountry: NotRequired[list[PinterestAdsSearchResponseDataAdsItemReachByCountryItem]]
-    countries: NotRequired[list[str]]
-    ageRanges: NotRequired[list[str]]
-    genders: NotRequired[list[str]]
-    interests: NotRequired[list[str]]
-    audienceTypes: NotRequired[list[str]]
-    isCommercial: bool
-
-
-class PinterestAdsSearchResponseData(TypedDict):
-    ads: list[PinterestAdsSearchResponseDataAdsItem]
-    cursor: NotRequired[str]
-
-
-class PinterestAdsSearchResponse(TypedDict):
-    success: Literal[True]
-    data: PinterestAdsSearchResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class PinterestAdsAdResponseData(TypedDict):
-    ad: PinterestAdsSearchResponseDataAdsItem
-
-
-class PinterestAdsAdResponse(TypedDict):
-    success: Literal[True]
-    data: PinterestAdsAdResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class XTweetResponseDataTweetAuthor(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    isVerified: NotRequired[bool]
-    verifiedType: NotRequired[str]
-
-
-class XTweetResponseDataTweetMediaItem(TypedDict):
-    type: XTweetResponseDataTweetMediaItemType
-    url: str
-    thumbnail: NotRequired[str]
-    width: NotRequired[int]
-    height: NotRequired[int]
+    thumbnailUrl: NotRequired[str]
     durationSeconds: NotRequired[float]
 
 
-class XTweetResponseDataTweetParent(TypedDict):
-    id: NotRequired[str]
-    url: str
+class XPostResponseData(TypedDict):
+    postId: NotRequired[str]
+    postUrl: str
     text: NotRequired[str]
-    createdAt: NotRequired[str]
+    publishedAt: NotRequired[str]
     language: NotRequired[str]
     likes: NotRequired[int]
     replies: NotRequired[int]
-    author: NotRequired[XTweetResponseDataTweetAuthor]
-    media: NotRequired[list[XTweetResponseDataTweetMediaItem]]
-    links: NotRequired[list[str]]
-    hashtags: NotRequired[list[str]]
-    mentions: NotRequired[list[str]]
-    replyTo: NotRequired[BlueskyPostsResponseDataPostsItemReplyTo]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    media: list[XPostResponseDataMediaItem]
+    links: list[str]
+    hashtags: list[str]
+    mentions: list[str]
+    replyToUrl: NotRequired[str]
+    parentText: NotRequired[str]
+    quotedUrl: NotRequired[str]
+    quotedText: NotRequired[str]
     isEdited: bool
     isSensitive: bool
 
 
-class XTweetResponseDataTweet(TypedDict):
-    id: NotRequired[str]
-    url: str
-    text: NotRequired[str]
-    createdAt: NotRequired[str]
-    language: NotRequired[str]
-    likes: NotRequired[int]
-    replies: NotRequired[int]
-    author: NotRequired[XTweetResponseDataTweetAuthor]
-    media: NotRequired[list[XTweetResponseDataTweetMediaItem]]
-    links: NotRequired[list[str]]
-    hashtags: NotRequired[list[str]]
-    mentions: NotRequired[list[str]]
-    replyTo: NotRequired[BlueskyPostsResponseDataPostsItemReplyTo]
-    isEdited: bool
-    isSensitive: bool
-    parent: NotRequired[XTweetResponseDataTweetParent]
-    quoted: NotRequired[XTweetResponseDataTweetParent]
-
-
-class XTweetResponseData(TypedDict):
-    tweet: XTweetResponseDataTweet
-
-
-class XTweetResponse(TypedDict):
+class XPostResponse(TypedDict):
     success: Literal[True]
-    data: XTweetResponseData
+    data: XPostResponseData
     creditsUsed: int
     requestId: str
 
 
-class KickChannelResponseDataChannelSocialsItem(TypedDict):
-    name: NotRequired[str]
-    username: NotRequired[str]
-
-
-class KickChannelResponseDataChannelRecentCategoriesItem(TypedDict):
-    name: NotRequired[str]
-    slug: NotRequired[str]
-
-
-class KickChannelResponseDataChannelLive(TypedDict):
-    id: NotRequired[str]
-    title: NotRequired[str]
-    viewers: NotRequired[int]
-    startedAt: NotRequired[str]
-    language: NotRequired[str]
-    isMature: bool
-    categories: NotRequired[list[KickChannelResponseDataChannelRecentCategoriesItem]]
-
-
-class KickChannelResponseDataChannel(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    bio: NotRequired[str]
-    avatar: NotRequired[str]
-    banner: NotRequired[str]
-    followers: NotRequired[int]
-    isVerified: bool
-    isAffiliate: bool
-    isBanned: bool
-    socials: NotRequired[list[KickChannelResponseDataChannelSocialsItem]]
-    recentCategories: NotRequired[list[KickChannelResponseDataChannelRecentCategoriesItem]]
-    live: NotRequired[KickChannelResponseDataChannelLive]
-
-
-class KickChannelResponseData(TypedDict):
-    channel: KickChannelResponseDataChannel
-
-
-class KickChannelResponse(TypedDict):
-    success: Literal[True]
-    data: KickChannelResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class KickVideosResponseDataVideosItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    title: NotRequired[str]
-    startedAt: NotRequired[str]
-    durationSeconds: NotRequired[float]
-    views: NotRequired[int]
-    language: NotRequired[str]
-    isMature: bool
-    thumbnail: NotRequired[str]
-    stream: NotRequired[str]
-    categories: NotRequired[list[KickChannelResponseDataChannelRecentCategoriesItem]]
-
-
-class KickVideosResponseData(TypedDict):
-    videos: list[KickVideosResponseDataVideosItem]
-
-
-class KickVideosResponse(TypedDict):
-    success: Literal[True]
-    data: KickVideosResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class KickClipsResponseDataClipsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    title: NotRequired[str]
-    views: NotRequired[int]
-    likes: NotRequired[int]
-    durationSeconds: NotRequired[float]
-    createdAt: NotRequired[str]
-    isMature: bool
-    thumbnail: NotRequired[str]
-    video: NotRequired[str]
-    category: NotRequired[KickChannelResponseDataChannelRecentCategoriesItem]
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-
-
-class KickClipsResponseData(TypedDict):
-    clips: list[KickClipsResponseDataClipsItem]
-    cursor: NotRequired[str]
-
-
-class KickClipsResponse(TypedDict):
-    success: Literal[True]
-    data: KickClipsResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class FinanceQuoteResponseDataQuotesItem(TypedDict):
+class FinanceQuoteResponseDataResultsItem(TypedDict):
     symbol: NotRequired[str]
     name: NotRequired[str]
     type: NotRequired[str]
@@ -6129,7 +3938,7 @@ class FinanceQuoteResponseDataQuotesItem(TypedDict):
 
 
 class FinanceQuoteResponseData(TypedDict):
-    quotes: list[FinanceQuoteResponseDataQuotesItem]
+    results: list[FinanceQuoteResponseDataResultsItem]
 
 
 class FinanceQuoteResponse(TypedDict):
@@ -6139,7 +3948,7 @@ class FinanceQuoteResponse(TypedDict):
     requestId: str
 
 
-class FinanceHistoryResponseDataHistoryCandlesItem(TypedDict):
+class FinanceHistoryResponseDataResultsItem(TypedDict):
     openedAt: str
     open: NotRequired[float]
     high: NotRequired[float]
@@ -6149,28 +3958,22 @@ class FinanceHistoryResponseDataHistoryCandlesItem(TypedDict):
     volume: NotRequired[float]
 
 
-class FinanceHistoryResponseDataHistoryDividendsItem(TypedDict):
+class FinanceHistoryResponseDataDividendsItem(TypedDict):
     date: str
     amount: float
 
 
-class FinanceHistoryResponseDataHistorySplitsItem(TypedDict):
+class FinanceHistoryResponseDataSplitsItem(TypedDict):
     date: str
     ratio: NotRequired[str]
 
 
-class FinanceHistoryResponseDataHistory(TypedDict):
-    symbol: NotRequired[str]
+class FinanceHistoryResponseData(TypedDict):
     currency: NotRequired[str]
     timezone: NotRequired[str]
-    interval: NotRequired[str]
-    candles: NotRequired[list[FinanceHistoryResponseDataHistoryCandlesItem]]
-    dividends: NotRequired[list[FinanceHistoryResponseDataHistoryDividendsItem]]
-    splits: NotRequired[list[FinanceHistoryResponseDataHistorySplitsItem]]
-
-
-class FinanceHistoryResponseData(TypedDict):
-    history: NotRequired[FinanceHistoryResponseDataHistory]
+    results: list[FinanceHistoryResponseDataResultsItem]
+    dividends: list[FinanceHistoryResponseDataDividendsItem]
+    splits: list[FinanceHistoryResponseDataSplitsItem]
 
 
 class FinanceHistoryResponse(TypedDict):
@@ -6180,7 +3983,7 @@ class FinanceHistoryResponse(TypedDict):
     requestId: str
 
 
-class FinanceSearchResponseDataQuotesItem(TypedDict):
+class FinanceSearchResponseDataResultsItem(TypedDict):
     symbol: NotRequired[str]
     name: NotRequired[str]
     type: NotRequired[str]
@@ -6192,13 +3995,13 @@ class FinanceSearchResponseDataQuotesItem(TypedDict):
 class FinanceSearchResponseDataNewsItem(TypedDict):
     title: NotRequired[str]
     url: str
-    publisher: NotRequired[ZillowSearchResponseDataListingsItemBroker]
-    createdAt: NotRequired[str]
+    publisherName: NotRequired[str]
+    publishedAt: NotRequired[str]
     tickers: NotRequired[list[str]]
 
 
 class FinanceSearchResponseData(TypedDict):
-    quotes: list[FinanceSearchResponseDataQuotesItem]
+    results: list[FinanceSearchResponseDataResultsItem]
     news: list[FinanceSearchResponseDataNewsItem]
 
 
@@ -6209,356 +4012,441 @@ class FinanceSearchResponse(TypedDict):
     requestId: str
 
 
-class FinanceProfileResponseDataProfileOfficersItem(TypedDict):
-    name: NotRequired[str]
-    title: NotRequired[str]
-    age: NotRequired[int]
-    totalPay: NotRequired[float]
+class AdsSearchResponseDataOption0(TypedDict):
+    results: NotRequired[list[MetaAdsPageResponseDataResultsItem]]
+    cursor: NotRequired[str]
 
 
-class FinanceProfileResponseDataProfile(TypedDict):
-    symbol: NotRequired[str]
-    name: NotRequired[str]
-    type: NotRequired[str]
-    exchange: NotRequired[str]
-    currency: NotRequired[str]
-    sector: NotRequired[str]
-    industry: NotRequired[str]
-    employees: NotRequired[int]
-    website: NotRequired[str]
-    summary: NotRequired[str]
-    address: NotRequired[MapsSearchResponseDataPlacesItemAddress]
-    phone: NotRequired[str]
-    officers: NotRequired[list[FinanceProfileResponseDataProfileOfficersItem]]
-    recommendation: NotRequired[str]
-    stats: NotRequired[dict[str, float]]
+class AdsSearchResponseDataOption1ResultsItem(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    advertiserId: NotRequired[str]
+    advertiserName: NotRequired[str]
+    advertiserUrl: str
+    domain: NotRequired[str]
+    format: AdsSearchResponseDataOption1ResultsItemFormat
+    firstShownAt: NotRequired[str]
+    lastShownAt: NotRequired[str]
+    daysShown: NotRequired[int]
+    previewUrl: NotRequired[str]
+    imageUrl: NotRequired[str]
 
 
-class FinanceProfileResponseData(TypedDict):
-    profile: NotRequired[FinanceProfileResponseDataProfile]
+class AdsSearchResponseDataOption1(TypedDict):
+    results: NotRequired[list[AdsSearchResponseDataOption1ResultsItem]]
+    totalMin: NotRequired[int]
+    totalMax: NotRequired[int]
+    cursor: NotRequired[str]
 
 
-class FinanceProfileResponse(TypedDict):
-    success: Literal[True]
-    data: FinanceProfileResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class MicrosoftAdsSearchResponseDataAdsItemLink(TypedDict):
-    url: NotRequired[str]
-    caption: NotRequired[str]
-
-
-class MicrosoftAdsSearchResponseDataAdsItem(TypedDict):
-    id: NotRequired[str]
-    advertiser: NotRequired[ZillowPropertyResponseDataPropertyMls]
+class AdsSearchResponseDataOption2ResultsItem(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    advertiserName: NotRequired[str]
     headline: NotRequired[str]
-    text: NotRequired[str]
-    link: NotRequired[MicrosoftAdsSearchResponseDataAdsItemLink]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    firstShownAt: NotRequired[str]
+    lastShownAt: NotRequired[str]
+    reachMin: NotRequired[int]
+    reachMax: NotRequired[int]
+    videoUrl: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
 
 
-class MicrosoftAdsSearchResponseData(TypedDict):
-    ads: list[MicrosoftAdsSearchResponseDataAdsItem]
+class AdsSearchResponseDataOption2(TypedDict):
+    advertiserId: NotRequired[str]
+    advertiserName: NotRequired[str]
+    results: NotRequired[list[AdsSearchResponseDataOption2ResultsItem]]
     total: NotRequired[int]
     cursor: NotRequired[str]
 
 
-class MicrosoftAdsSearchResponse(TypedDict):
+class AdsSearchResponseDataOption3ResultsItem(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    creativeType: NotRequired[str]
+    format: NotRequired[str]
+    advertiserName: NotRequired[str]
+    advertiserUrl: NotRequired[str]
+    advertiserAvatarUrl: NotRequired[str]
+    postedBy: NotRequired[str]
+    text: NotRequired[str]
+    headline: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+
+
+class AdsSearchResponseDataOption3(TypedDict):
+    results: NotRequired[list[AdsSearchResponseDataOption3ResultsItem]]
+    total: NotRequired[int]
+    cursor: NotRequired[str]
+
+
+class AdsSearchResponseDataOption4ResultsItem(TypedDict):
+    adId: NotRequired[str]
+    advertiserId: NotRequired[str]
+    advertiserName: NotRequired[str]
+    headline: NotRequired[str]
+    text: NotRequired[str]
+    linkUrl: NotRequired[str]
+    linkCaption: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+
+
+class AdsSearchResponseDataOption4(TypedDict):
+    results: NotRequired[list[AdsSearchResponseDataOption4ResultsItem]]
+    total: NotRequired[int]
+    cursor: NotRequired[str]
+
+
+class AdsSearchResponseDataOption5ResultsItemReachByCountryItem(TypedDict):
+    country: NotRequired[str]
+    reachMin: NotRequired[int]
+    reachMax: NotRequired[int]
+
+
+class AdsSearchResponseDataOption5ResultsItem(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    headline: NotRequired[str]
+    text: NotRequired[str]
+    advertisers: NotRequired[list[str]]
+    imageUrl: NotRequired[str]
+    videoUrl: NotRequired[str]
+    links: NotRequired[list[str]]
+    firstShownAt: NotRequired[str]
+    lastShownAt: NotRequired[str]
+    reachMin: NotRequired[int]
+    reachMax: NotRequired[int]
+    reachByCountry: NotRequired[list[AdsSearchResponseDataOption5ResultsItemReachByCountryItem]]
+    countries: NotRequired[list[str]]
+    ageRanges: NotRequired[list[str]]
+    genders: NotRequired[list[str]]
+    interests: NotRequired[list[str]]
+    audienceTypes: NotRequired[list[str]]
+    isCommercial: bool
+
+
+class AdsSearchResponseDataOption5(TypedDict):
+    results: NotRequired[list[AdsSearchResponseDataOption5ResultsItem]]
+    cursor: NotRequired[str]
+
+
+class AdsSearchResponse(TypedDict):
     success: Literal[True]
-    data: MicrosoftAdsSearchResponseData
+    data: (
+        AdsSearchResponseDataOption0
+        | AdsSearchResponseDataOption1
+        | AdsSearchResponseDataOption2
+        | AdsSearchResponseDataOption3
+        | AdsSearchResponseDataOption4
+        | AdsSearchResponseDataOption5
+    )
     creditsUsed: int
     requestId: str
 
 
-class MicrosoftAdsAdResponseDataAdTargetingItem(TypedDict):
+class AdsAdResponseDataOption0AudienceAgeGenderItem(TypedDict):
+    age: NotRequired[str]
+    female: float
+    male: float
+    unknown: float
+
+
+class AdsAdResponseDataOption0AudienceRegionsItem(TypedDict):
+    region: NotRequired[str]
+    share: float
+
+
+class AdsAdResponseDataOption0EuReachByCountryItem(TypedDict):
+    country: NotRequired[str]
+    age: NotRequired[str]
+    female: int
+    male: int
+    unknown: int
+
+
+class AdsAdResponseDataOption0PayersItem(TypedDict):
+    paidBy: NotRequired[str]
+    beneficiary: NotRequired[str]
+
+
+class AdsAdResponseDataOption0(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    pageId: NotRequired[str]
+    pageName: NotRequired[str]
+    pageUrl: NotRequired[str]
+    pageAvatarUrl: NotRequired[str]
+    pageCategories: NotRequired[list[str]]
+    pageLikes: NotRequired[int]
+    isActive: bool
+    firstShownAt: NotRequired[str]
+    lastShownAt: NotRequired[str]
+    platforms: NotRequired[list[str]]
+    format: NotRequired[str]
+    text: NotRequired[str]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    linkDescription: NotRequired[str]
+    ctaText: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+    videoUrls: NotRequired[list[str]]
+    cards: NotRequired[list[MetaAdsPageResponseDataResultsItemCardsItem]]
+    versions: int
+    categories: NotRequired[list[str]]
+    paidBy: NotRequired[str]
+    spendMin: NotRequired[int]
+    spendMax: NotRequired[int]
+    spendCurrency: NotRequired[str]
+    impressionsMin: NotRequired[int]
+    impressionsMax: NotRequired[int]
+    reachMin: NotRequired[int]
+    reachMax: NotRequired[int]
+    countries: NotRequired[list[str]]
+    advertiserDescription: NotRequired[str]
+    advertiserCategory: NotRequired[str]
+    advertiserVerification: NotRequired[str]
+    advertiserInstagram: NotRequired[str]
+    advertiserInstagramFollowers: NotRequired[int]
+    audienceAgeGender: NotRequired[list[AdsAdResponseDataOption0AudienceAgeGenderItem]]
+    audienceRegions: NotRequired[list[AdsAdResponseDataOption0AudienceRegionsItem]]
+    euReachTotal: NotRequired[int]
+    euReachByCountry: NotRequired[list[AdsAdResponseDataOption0EuReachByCountryItem]]
+    payers: NotRequired[list[AdsAdResponseDataOption0PayersItem]]
+
+
+class AdsAdResponseDataOption1VariationsItem(TypedDict):
+    previewUrl: NotRequired[str]
+    imageUrl: NotRequired[str]
+    videoUrl: NotRequired[str]
+
+
+class AdsAdResponseDataOption1RegionsItem(TypedDict):
+    country: NotRequired[str]
+    firstShownAt: NotRequired[str]
+    lastShownAt: NotRequired[str]
+    impressionsMin: NotRequired[int]
+    impressionsMax: NotRequired[int]
+
+
+class AdsAdResponseDataOption1(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    advertiserId: NotRequired[str]
+    advertiserName: NotRequired[str]
+    advertiserUrl: str
+    domain: NotRequired[str]
+    format: AdsSearchResponseDataOption1ResultsItemFormat
+    firstShownAt: NotRequired[str]
+    lastShownAt: NotRequired[str]
+    daysShown: NotRequired[int]
+    previewUrl: NotRequired[str]
+    imageUrl: NotRequired[str]
+    advertiserCountry: NotRequired[str]
+    advertiserIsVerified: NotRequired[bool]
+    paidBy: NotRequired[str]
+    impressionsMin: NotRequired[int]
+    impressionsMax: NotRequired[int]
+    variations: NotRequired[list[AdsAdResponseDataOption1VariationsItem]]
+    regions: NotRequired[list[AdsAdResponseDataOption1RegionsItem]]
+    targetingIncluded: NotRequired[list[str]]
+    targetingExcluded: NotRequired[list[str]]
+
+
+class AdsAdResponseDataOption2RegionsItem(TypedDict):
+    country: NotRequired[str]
+    impressionsMin: NotRequired[int]
+    impressionsMax: NotRequired[int]
+    ages: NotRequired[list[str]]
+    genders: NotRequired[list[str]]
+
+
+class AdsAdResponseDataOption2(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    advertiserName: NotRequired[str]
+    headline: NotRequired[str]
+    firstShownAt: NotRequired[str]
+    lastShownAt: NotRequired[str]
+    reachMin: NotRequired[int]
+    reachMax: NotRequired[int]
+    videoUrl: NotRequired[str]
+    thumbnailUrl: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+    advertiserId: NotRequired[str]
+    advertiserCountry: NotRequired[str]
+    paidBy: NotRequired[str]
+    linkUrl: NotRequired[str]
+    ctaText: NotRequired[str]
+    objective: NotRequired[str]
+    category: NotRequired[str]
+    audienceSizeMin: NotRequired[int]
+    audienceSizeMax: NotRequired[int]
+    impressionsMin: NotRequired[int]
+    impressionsMax: NotRequired[int]
+    countries: NotRequired[list[str]]
+    languages: NotRequired[list[str]]
+    interests: NotRequired[str]
+    regions: NotRequired[list[AdsAdResponseDataOption2RegionsItem]]
+
+
+class AdsAdResponseDataOption3CountriesItem(TypedDict):
+    country: NotRequired[str]
+    share: NotRequired[float]
+
+
+class AdsAdResponseDataOption3TargetingItem(TypedDict):
+    parameter: NotRequired[str]
+    description: NotRequired[str]
+
+
+class AdsAdResponseDataOption3TargetingUsedItem(TypedDict):
+    parameter: NotRequired[str]
+    isTargeted: bool
+    isExcluded: bool
+
+
+class AdsAdResponseDataOption3(TypedDict):
+    adId: NotRequired[str]
+    adUrl: str
+    creativeType: NotRequired[str]
+    format: NotRequired[str]
+    advertiserName: NotRequired[str]
+    advertiserUrl: NotRequired[str]
+    advertiserAvatarUrl: NotRequired[str]
+    postedBy: NotRequired[str]
+    text: NotRequired[str]
+    headline: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
+    paidBy: NotRequired[str]
+    ctaText: NotRequired[str]
+    videoUrls: NotRequired[list[str]]
+    firstShownAt: NotRequired[str]
+    lastShownAt: NotRequired[str]
+    impressionsMin: NotRequired[int]
+    impressionsMax: NotRequired[int]
+    countries: NotRequired[list[AdsAdResponseDataOption3CountriesItem]]
+    targeting: NotRequired[list[AdsAdResponseDataOption3TargetingItem]]
+    targetingUsed: NotRequired[list[AdsAdResponseDataOption3TargetingUsedItem]]
+
+
+class AdsAdResponseDataOption4TargetingItem(TypedDict):
     type: NotRequired[str]
     isExcluded: bool
 
 
-class MicrosoftAdsAdResponseDataAd(TypedDict):
-    id: NotRequired[str]
-    advertiser: NotRequired[ZillowPropertyResponseDataPropertyMls]
+class AdsAdResponseDataOption4(TypedDict):
+    adId: NotRequired[str]
+    advertiserId: NotRequired[str]
+    advertiserName: NotRequired[str]
     headline: NotRequired[str]
     text: NotRequired[str]
-    link: NotRequired[MicrosoftAdsSearchResponseDataAdsItemLink]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
+    linkUrl: NotRequired[str]
+    linkCaption: NotRequired[str]
+    imageUrls: NotRequired[list[str]]
     paidBy: NotRequired[str]
     firstShownAt: NotRequired[str]
     lastShownAt: NotRequired[str]
-    impressions: NotRequired[MetaAdsSearchResponseDataAdsItemSpend]
-    countries: NotRequired[list[LinkedinAdsAdResponseDataAdCountriesItem]]
-    targeting: NotRequired[list[MicrosoftAdsAdResponseDataAdTargetingItem]]
+    impressionsMin: NotRequired[int]
+    impressionsMax: NotRequired[int]
+    countries: NotRequired[list[AdsAdResponseDataOption3CountriesItem]]
+    targeting: NotRequired[list[AdsAdResponseDataOption4TargetingItem]]
 
 
-class MicrosoftAdsAdResponseData(TypedDict):
-    ad: NotRequired[MicrosoftAdsAdResponseDataAd]
-
-
-class MicrosoftAdsAdResponse(TypedDict):
+class AdsAdResponse(TypedDict):
     success: Literal[True]
-    data: MicrosoftAdsAdResponseData
+    data: (
+        AdsAdResponseDataOption0
+        | AdsAdResponseDataOption1
+        | AdsAdResponseDataOption2
+        | AdsAdResponseDataOption3
+        | AdsAdResponseDataOption4
+        | AdsSearchResponseDataOption5ResultsItem
+    )
     creditsUsed: int
     requestId: str
 
 
-class MicrosoftAdsAdvertisersResponseDataAdvertisersItem(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    country: NotRequired[str]
+class AdsAdvertisersResponseDataOption0ResultsItem(TypedDict):
+    advertiserId: NotRequired[str]
+    advertiserName: NotRequired[str]
+    advertiserCountry: NotRequired[str]
+    advertiserUrl: str
+    isVerified: bool
+    adsMin: NotRequired[int]
+    adsMax: NotRequired[int]
+
+
+class AdsAdvertisersResponseDataOption0(TypedDict):
+    results: NotRequired[list[AdsAdvertisersResponseDataOption0ResultsItem]]
+    domains: NotRequired[list[str]]
+
+
+class AdsAdvertisersResponseDataOption1ResultsItem(TypedDict):
+    advertiserId: NotRequired[str]
+    advertiserName: NotRequired[str]
+    advertiserCountry: NotRequired[str]
     isVerified: bool
 
 
-class MicrosoftAdsAdvertisersResponseData(TypedDict):
-    advertisers: list[MicrosoftAdsAdvertisersResponseDataAdvertisersItem]
+class AdsAdvertisersResponseDataOption1(TypedDict):
+    results: NotRequired[list[AdsAdvertisersResponseDataOption1ResultsItem]]
     total: NotRequired[int]
 
 
-class MicrosoftAdsAdvertisersResponse(TypedDict):
+class AdsAdvertisersResponse(TypedDict):
     success: Literal[True]
-    data: MicrosoftAdsAdvertisersResponseData
+    data: AdsAdvertisersResponseDataOption0 | AdsAdvertisersResponseDataOption1
     creditsUsed: int
     requestId: str
 
 
-class SnapchatProfileResponseDataProfile(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    url: str
+class SuggestResponseDataOption0ResultsItem(TypedDict):
+    keyword: str
+    rank: int
+
+
+class SuggestResponseDataOption0(TypedDict):
+    results: NotRequired[list[SuggestResponseDataOption0ResultsItem]]
+
+
+class SuggestResponse(TypedDict):
+    success: Literal[True]
+    data: SuggestResponseDataOption0
+    creditsUsed: int
+    requestId: str
+
+
+class GoogleTrendsResponseDataOption0ResultsItem(TypedDict):
+    recordedAt: str
+    values: NotRequired[list[float]]
+    isPartial: bool
+
+
+class GoogleTrendsResponseDataOption0(TypedDict):
+    results: NotRequired[list[GoogleTrendsResponseDataOption0ResultsItem]]
+    averages: NotRequired[list[float]]
+
+
+class GoogleTrendsResponseDataOption1ResultsItem(TypedDict):
+    code: NotRequired[str]
     name: NotRequired[str]
-    bio: NotRequired[str]
-    website: NotRequired[str]
-    avatar: NotRequired[str]
-    banner: NotRequired[str]
-    subscribers: NotRequired[int]
-    category: NotRequired[str]
-    subcategory: NotRequired[str]
-    isVerified: bool
-    isBusiness: bool
-    createdAt: NotRequired[str]
-    updatedAt: NotRequired[str]
-    related: NotRequired[list[str]]
+    values: NotRequired[list[float]]
 
 
-class SnapchatProfileResponseDataSpotlightsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    video: NotRequired[str]
-    thumbnail: NotRequired[str]
-    views: NotRequired[int]
-    shares: NotRequired[int]
-    createdAt: NotRequired[str]
-    durationSeconds: NotRequired[float]
-    width: NotRequired[int]
-    height: NotRequired[int]
-    hashtags: NotRequired[list[str]]
+class GoogleTrendsResponseDataOption1(TypedDict):
+    results: NotRequired[list[GoogleTrendsResponseDataOption1ResultsItem]]
 
 
-class SnapchatProfileResponseDataStoriesItem(TypedDict):
-    id: NotRequired[str]
-    type: SnapchatProfileResponseDataStoriesItemType
-    url: NotRequired[str]
-    thumbnail: NotRequired[str]
-    createdAt: NotRequired[str]
-
-
-class SnapchatProfileResponseData(TypedDict):
-    profile: SnapchatProfileResponseDataProfile
-    spotlights: list[SnapchatProfileResponseDataSpotlightsItem]
-    stories: list[SnapchatProfileResponseDataStoriesItem]
-
-
-class SnapchatProfileResponse(TypedDict):
+class GoogleTrendsResponse(TypedDict):
     success: Literal[True]
-    data: SnapchatProfileResponseData
+    data: GoogleTrendsResponseDataOption0 | GoogleTrendsResponseDataOption1
     creditsUsed: int
     requestId: str
 
 
-class SnapchatAdsSearchResponseDataAdsItemMedia(TypedDict):
-    type: NotRequired[str]
-    url: NotRequired[str]
-
-
-class SnapchatAdsSearchResponseDataAdsItemCountriesItem(TypedDict):
-    country: NotRequired[str]
-    impressions: int
-
-
-class SnapchatAdsSearchResponseDataAdsItemTargeting(TypedDict):
-    ageRanges: NotRequired[list[str]]
-    hasRegulatedContent: bool
-
-
-class SnapchatAdsSearchResponseDataAdsItem(TypedDict):
-    id: NotRequired[str]
-    name: NotRequired[str]
-    paidBy: NotRequired[str]
-    brand: NotRequired[str]
-    profile: NotRequired[str]
-    account: NotRequired[str]
-    status: NotRequired[str]
-    type: NotRequired[str]
-    creativeType: NotRequired[str]
-    headline: NotRequired[str]
-    cta: NotRequired[MetaAdsSearchResponseDataAdsItemCta]
-    languages: NotRequired[list[str]]
-    media: NotRequired[SnapchatAdsSearchResponseDataAdsItemMedia]
-    link: NotRequired[MetaAdsSearchResponseDataAdsItemLink]
-    firstShownAt: NotRequired[str]
-    lastShownAt: NotRequired[str]
-    impressions: NotRequired[int]
-    countries: NotRequired[list[SnapchatAdsSearchResponseDataAdsItemCountriesItem]]
-    targeting: SnapchatAdsSearchResponseDataAdsItemTargeting
-
-
-class SnapchatAdsSearchResponseData(TypedDict):
-    ads: list[SnapchatAdsSearchResponseDataAdsItem]
-    cursor: NotRequired[str]
-
-
-class SnapchatAdsSearchResponse(TypedDict):
+class FinanceStockResponse(TypedDict):
     success: Literal[True]
-    data: SnapchatAdsSearchResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class SnapchatAdsAdResponseData(TypedDict):
-    ad: SnapchatAdsSearchResponseDataAdsItem
-
-
-class SnapchatAdsAdResponse(TypedDict):
-    success: Literal[True]
-    data: SnapchatAdsAdResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TumblrBlogResponseDataBlog(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    url: str
-    name: NotRequired[str]
-    description: NotRequired[str]
-    avatar: NotRequired[str]
-    posts: NotRequired[int]
-    updatedAt: NotRequired[str]
-    isNsfw: bool
-
-
-class TumblrBlogResponseData(TypedDict):
-    blog: TumblrBlogResponseDataBlog
-
-
-class TumblrBlogResponse(TypedDict):
-    success: Literal[True]
-    data: TumblrBlogResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TumblrPostsResponseDataPostsItemRepostOf(TypedDict):
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-
-
-class TumblrPostsResponseDataPostsItem(TypedDict):
-    id: NotRequired[str]
-    url: str
-    author: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    type: NotRequired[str]
-    createdAt: NotRequired[str]
-    summary: NotRequired[str]
-    text: NotRequired[str]
-    images: NotRequired[list[YoutubeChannelResponseDataItemsItemOption2ImagesItem]]
-    videos: NotRequired[list[InstagramProfileResponseDataPostsItemVideosItem]]
-    links: NotRequired[list[str]]
-    tags: NotRequired[list[str]]
-    notes: NotRequired[int]
-    likes: NotRequired[int]
-    reposts: NotRequired[int]
-    replies: NotRequired[int]
-    repostOf: NotRequired[TumblrPostsResponseDataPostsItemRepostOf]
-    repostedFrom: NotRequired[YoutubeSearchResponseDataResultsItemOption0Channel]
-    isNsfw: bool
-
-
-class TumblrPostsResponseData(TypedDict):
-    blog: TumblrBlogResponseDataBlog
-    posts: list[TumblrPostsResponseDataPostsItem]
-    total: NotRequired[int]
-    cursor: NotRequired[str]
-
-
-class TumblrPostsResponse(TypedDict):
-    success: Literal[True]
-    data: TumblrPostsResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TumblrPostResponseData(TypedDict):
-    post: TumblrPostsResponseDataPostsItem
-    blog: TumblrBlogResponseDataBlog
-
-
-class TumblrPostResponse(TypedDict):
-    success: Literal[True]
-    data: TumblrPostResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class TumblrSearchResponseData(TypedDict):
-    posts: list[TumblrPostsResponseDataPostsItem]
-    cursor: NotRequired[str]
-
-
-class TumblrSearchResponse(TypedDict):
-    success: Literal[True]
-    data: TumblrSearchResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class QuoraQuestionResponseDataQuestion(TypedDict):
-    id: NotRequired[str]
-    url: str
-    title: NotRequired[str]
-    answers: NotRequired[int]
-    topics: NotRequired[list[str]]
-
-
-class QuoraQuestionResponseDataAnswersItemAuthor(TypedDict):
-    id: NotRequired[str]
-    username: NotRequired[str]
-    name: NotRequired[str]
-    url: NotRequired[str]
-    avatar: NotRequired[str]
-    isVerified: NotRequired[bool]
-    credential: NotRequired[str]
-
-
-class QuoraQuestionResponseDataAnswersItem(TypedDict):
-    id: NotRequired[str]
-    url: NotRequired[str]
-    text: NotRequired[str]
-    author: NotRequired[QuoraQuestionResponseDataAnswersItemAuthor]
-    likes: NotRequired[int]
-    views: NotRequired[int]
-    shares: NotRequired[int]
-    comments: NotRequired[int]
-    createdAt: NotRequired[str]
-
-
-class QuoraQuestionResponseData(TypedDict):
-    question: QuoraQuestionResponseDataQuestion
-    answers: list[QuoraQuestionResponseDataAnswersItem]
-
-
-class QuoraQuestionResponse(TypedDict):
-    success: Literal[True]
-    data: QuoraQuestionResponseData
+    data: Any
     creditsUsed: int
     requestId: str

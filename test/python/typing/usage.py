@@ -3,7 +3,11 @@ from __future__ import annotations
 import asyncio
 
 from stophy import AsyncStophy, Stophy
-from stophy.generated.models import WebSearchResponse
+from stophy.generated.models import (
+    AdsSearchResponse,
+    TranscriptResponse,
+    WebSearchResponse,
+)
 
 
 def sync_search() -> WebSearchResponse:
@@ -11,9 +15,9 @@ def sync_search() -> WebSearchResponse:
         return stophy.web.search(query="bun runtime", limit=3)
 
 
-def sync_markdown() -> str:
+def sync_ads() -> AdsSearchResponse:
     with Stophy() as stophy:
-        return stophy.youtube.search(query="rust tutorial", format="markdown")
+        return stophy.ads.search(network="meta", query="shoes")
 
 
 async def async_search() -> WebSearchResponse:
@@ -21,9 +25,9 @@ async def async_search() -> WebSearchResponse:
         return await stophy.web.search(query="bun runtime", limit=3)
 
 
-async def async_markdown() -> str:
+async def async_transcript() -> TranscriptResponse:
     async with AsyncStophy() as stophy:
-        return await stophy.youtube.search(query="rust tutorial", format="markdown")
+        return await stophy.transcript(video="https://youtu.be/abc")
 
 
 def main() -> None:

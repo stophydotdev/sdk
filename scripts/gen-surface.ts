@@ -116,14 +116,16 @@ function requiredFields(operation: Record<string, unknown>): string[] {
 	const body = operation.requestBody;
 	if (!isRecord(body) || !isRecord(body.content)) return [];
 	const json = body.content["application/json"];
-	if (
-		!isRecord(json) ||
-		!isRecord(json.schema) ||
-		!Array.isArray(json.schema.required)
-	) {
-		return [];
-	}
-	return json.schema.required.filter(
+	if (!isRecord(json)) return [];
+	return requiredIn(json.schema);
+}
+
+function requiredIn(schema: unknown): string[] {
+	if (!isRecord(schema)) return [];
+	const branches = schema.oneOf ?? schema.anyOf;
+	if (Array.isArray(branches)) return branches.flatMap(requiredIn);
+	if (!Array.isArray(schema.required)) return [];
+	return schema.required.filter(
 		(item): item is string => typeof item === "string",
 	);
 }
