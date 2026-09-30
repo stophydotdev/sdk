@@ -1,6 +1,6 @@
 {
   "name": "stophy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Live data from 40+ sites for AI agents in TypeScript: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto.",
   "type": "module",
   "license": "MIT",
