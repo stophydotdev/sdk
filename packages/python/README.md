@@ -17,7 +17,7 @@ result = Stophy().web.search(query="bun runtime")
 print(result["data"]["results"])
 ```
 
-Web search, YouTube search, and YouTube transcripts work without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
+Web search, YouTube search, and transcripts work without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 
@@ -30,7 +30,9 @@ videos = stophy.youtube.search(query="bun runtime", limit=5)
 print(videos["data"]["results"])
 ```
 
-Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.youtube.comments.replies(...)`. Each result has `data`, `creditsUsed`, and `requestId`.
+Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.ads.search(network="meta", ...)`. Endpoints with a single name are methods on the client: `stophy.transcript(...)`, `stophy.suggest(...)`.
+
+Every response is a dict with `success`, `data`, `creditsUsed`, and `requestId`. `data` is one flat dict. Lists are in `data["results"]`.
 
 Arguments are keyword-only and snake_case. A field named `from` is passed as `from_`.
 
@@ -38,35 +40,31 @@ For async code, use `AsyncStophy`. It has the same methods, and you `await` each
 
 ## More sources
 
-A YouTube transcript, Reddit posts, Google Maps reviews and an Amazon product:
+A transcript, Reddit posts, Google Maps reviews, an Amazon product and Meta ads:
 
 ```python
 stophy = Stophy(api_key="st_...")
 
-transcript = stophy.youtube.transcript(video="dQw4w9WgXcQ", include_timestamps=True)
+transcript = stophy.transcript(video="https://youtu.be/dQw4w9WgXcQ", include_timestamps=True)
 print(transcript["data"].get("text"), transcript["data"].get("segments"))
 
 posts = stophy.reddit.search(query="bun runtime", sort="top", within="month")
 print(posts["data"]["results"])
 
-places = stophy.maps.search(query="coffee", near="Austin, TX", limit=5)
-place_id = places["data"]["places"][0].get("id")
+places = stophy.maps.search(query="coffee", location="Austin, TX", limit=5)
+place_id = places["data"]["results"][0].get("placeId")
 if place_id:
     reviews = stophy.maps.reviews(place=place_id, limit=20)
-    print(reviews["data"]["reviews"])
+    print(reviews["data"]["results"])
 
 product = stophy.amazon.product(product="B08N5WRWNW", country="us")
-item = product["data"]["product"]
-print(item.get("title"), item.get("price"))
+print(product["data"].get("title"), product["data"].get("price"))
+
+ads = stophy.ads.search(network="meta", query="running shoes")
+print(ads["data"]["results"])
 ```
 
-## Get markdown for a model
-
-```python
-markdown = stophy.youtube.search(query="bun runtime", limit=5, format="markdown")
-```
-
-With `format="markdown"`, the method returns a string.
+Some endpoints cover several sources. Pick one with a keyword: `network` for `ads.*`, `source` for `suggest`, `by` for `google.trends`. The type checker follows the choice.
 
 ## Get the next page
 

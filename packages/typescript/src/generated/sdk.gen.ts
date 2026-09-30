@@ -23,15 +23,12 @@ import type {
   YoutubeVideoData,
   YoutubeVideoResponse,
   YoutubeVideoError,
-  YoutubeTranscriptData,
-  YoutubeTranscriptResponse,
-  YoutubeTranscriptError,
+  TranscriptData,
+  TranscriptResponse,
+  TranscriptError,
   YoutubeCommentsData,
   YoutubeCommentsResponse,
   YoutubeCommentsError,
-  YoutubeCommentsRepliesData,
-  YoutubeCommentsRepliesResponse,
-  YoutubeCommentsRepliesError,
   YoutubeChannelData,
   YoutubeChannelResponse,
   YoutubeChannelError,
@@ -44,9 +41,6 @@ import type {
   RedditPostData,
   RedditPostResponse,
   RedditPostError,
-  RedditCommentsMoreData,
-  RedditCommentsMoreResponse,
-  RedditCommentsMoreError,
   RedditSubredditData,
   RedditSubredditResponse,
   RedditSubredditError,
@@ -68,120 +62,63 @@ import type {
   InstagramProfileData,
   InstagramProfileResponse,
   InstagramProfileError,
-  InstagramPostsData,
-  InstagramPostsResponse,
-  InstagramPostsError,
   InstagramPostData,
   InstagramPostResponse,
   InstagramPostError,
-  InstagramUrlData,
-  InstagramUrlResponse,
-  InstagramUrlError,
   InstagramSearchData,
   InstagramSearchResponse,
   InstagramSearchError,
-  InstagramTranscriptData,
-  InstagramTranscriptResponse,
-  InstagramTranscriptError,
   InstagramCommentsData,
   InstagramCommentsResponse,
   InstagramCommentsError,
-  InstagramCommentsRepliesData,
-  InstagramCommentsRepliesResponse,
-  InstagramCommentsRepliesError,
   TiktokProfileData,
   TiktokProfileResponse,
   TiktokProfileError,
   TiktokVideoData,
   TiktokVideoResponse,
   TiktokVideoError,
-  TiktokUrlData,
-  TiktokUrlResponse,
-  TiktokUrlError,
-  TiktokTranscriptData,
-  TiktokTranscriptResponse,
-  TiktokTranscriptError,
-  TiktokPostsData,
-  TiktokPostsResponse,
-  TiktokPostsError,
   TiktokHashtagData,
   TiktokHashtagResponse,
   TiktokHashtagError,
   TiktokCommentsData,
   TiktokCommentsResponse,
   TiktokCommentsError,
-  TiktokCommentsRepliesData,
-  TiktokCommentsRepliesResponse,
-  TiktokCommentsRepliesError,
   TiktokSearchData,
   TiktokSearchResponse,
   TiktokSearchError,
   BlueskyProfileData,
   BlueskyProfileResponse,
   BlueskyProfileError,
-  BlueskyPostsData,
-  BlueskyPostsResponse,
-  BlueskyPostsError,
   BlueskyPostData,
   BlueskyPostResponse,
   BlueskyPostError,
   BlueskyFollowersData,
   BlueskyFollowersResponse,
   BlueskyFollowersError,
-  MastodonProfileData,
-  MastodonProfileResponse,
-  MastodonProfileError,
-  MastodonPostsData,
-  MastodonPostsResponse,
-  MastodonPostsError,
-  MastodonPostData,
-  MastodonPostResponse,
-  MastodonPostError,
-  MastodonHashtagData,
-  MastodonHashtagResponse,
-  MastodonHashtagError,
   ThreadsProfileData,
   ThreadsProfileResponse,
   ThreadsProfileError,
-  ThreadsPostsData,
-  ThreadsPostsResponse,
-  ThreadsPostsError,
   ThreadsPostData,
   ThreadsPostResponse,
   ThreadsPostError,
   ThreadsSearchData,
   ThreadsSearchResponse,
   ThreadsSearchError,
-  TelegramChannelData,
-  TelegramChannelResponse,
-  TelegramChannelError,
   TelegramPostsData,
   TelegramPostsResponse,
   TelegramPostsError,
   TelegramPostData,
   TelegramPostResponse,
   TelegramPostError,
-  MetaAdsSearchData,
-  MetaAdsSearchResponse,
-  MetaAdsSearchError,
   MetaAdsPageData,
   MetaAdsPageResponse,
   MetaAdsPageError,
-  MetaAdsAdData,
-  MetaAdsAdResponse,
-  MetaAdsAdError,
   LinkedinJobsSearchData,
   LinkedinJobsSearchResponse,
   LinkedinJobsSearchError,
   LinkedinJobsJobData,
   LinkedinJobsJobResponse,
   LinkedinJobsJobError,
-  LinkedinAdsSearchData,
-  LinkedinAdsSearchResponse,
-  LinkedinAdsSearchError,
-  LinkedinAdsAdData,
-  LinkedinAdsAdResponse,
-  LinkedinAdsAdError,
   LinkedinCompanyData,
   LinkedinCompanyResponse,
   LinkedinCompanyError,
@@ -191,75 +128,33 @@ import type {
   LinkedinPostsData,
   LinkedinPostsResponse,
   LinkedinPostsError,
-  LinkedinCompanyPostsData,
-  LinkedinCompanyPostsResponse,
-  LinkedinCompanyPostsError,
   ZillowSearchData,
   ZillowSearchResponse,
   ZillowSearchError,
   ZillowPropertyData,
   ZillowPropertyResponse,
   ZillowPropertyError,
-  GoogleAdsAdvertisersData,
-  GoogleAdsAdvertisersResponse,
-  GoogleAdsAdvertisersError,
-  GoogleAdsSearchData,
-  GoogleAdsSearchResponse,
-  GoogleAdsSearchError,
-  GoogleAdsAdData,
-  GoogleAdsAdResponse,
-  GoogleAdsAdError,
-  TiktokAdsSearchData,
-  TiktokAdsSearchResponse,
-  TiktokAdsSearchError,
-  TiktokAdsAdData,
-  TiktokAdsAdResponse,
-  TiktokAdsAdError,
   UpworkSearchData,
   UpworkSearchResponse,
   UpworkSearchError,
   UpworkJobData,
   UpworkJobResponse,
   UpworkJobError,
-  GoogleSuggestData,
-  GoogleSuggestResponse,
-  GoogleSuggestError,
-  YoutubeSuggestData,
-  YoutubeSuggestResponse,
-  YoutubeSuggestError,
-  AmazonSuggestData,
-  AmazonSuggestResponse,
-  AmazonSuggestError,
-  GoogleTrendsInterestData,
-  GoogleTrendsInterestResponse,
-  GoogleTrendsInterestError,
-  GoogleTrendsRegionsData,
-  GoogleTrendsRegionsResponse,
-  GoogleTrendsRegionsError,
   GoogleTrendsRelatedData,
   GoogleTrendsRelatedResponse,
   GoogleTrendsRelatedError,
   GoogleTrendsTrendingData,
   GoogleTrendsTrendingResponse,
   GoogleTrendsTrendingError,
-  SiteMapData,
-  SiteMapResponse,
-  SiteMapError,
   SiteSeoData,
   SiteSeoResponse,
   SiteSeoError,
-  DomainWhoisData,
-  DomainWhoisResponse,
-  DomainWhoisError,
-  DomainDnsData,
-  DomainDnsResponse,
-  DomainDnsError,
-  DomainTechData,
-  DomainTechResponse,
-  DomainTechError,
   EmailCheckData,
   EmailCheckResponse,
   EmailCheckError,
+  EmailFindData,
+  EmailFindResponse,
+  EmailFindError,
   CryptoCoinsData,
   CryptoCoinsResponse,
   CryptoCoinsError,
@@ -269,48 +164,15 @@ import type {
   CryptoHistoryData,
   CryptoHistoryResponse,
   CryptoHistoryError,
-  CryptoTrendingData,
-  CryptoTrendingResponse,
-  CryptoTrendingError,
-  CryptoCategoriesData,
-  CryptoCategoriesResponse,
-  CryptoCategoriesError,
-  CryptoMoversData,
-  CryptoMoversResponse,
-  CryptoMoversError,
-  CryptoNewData,
-  CryptoNewResponse,
-  CryptoNewError,
   CryptoDexSearchData,
   CryptoDexSearchResponse,
   CryptoDexSearchError,
-  CryptoDexPairsData,
-  CryptoDexPairsResponse,
-  CryptoDexPairsError,
   CryptoDexTokenData,
   CryptoDexTokenResponse,
   CryptoDexTokenError,
-  CryptoDexNewData,
-  CryptoDexNewResponse,
-  CryptoDexNewError,
-  CryptoPumpCoinsData,
-  CryptoPumpCoinsResponse,
-  CryptoPumpCoinsError,
-  CryptoPumpCoinData,
-  CryptoPumpCoinResponse,
-  CryptoPumpCoinError,
-  CryptoPumpTradesData,
-  CryptoPumpTradesResponse,
-  CryptoPumpTradesError,
   CryptoWalletData,
   CryptoWalletResponse,
   CryptoWalletError,
-  CryptoTokenHoldersData,
-  CryptoTokenHoldersResponse,
-  CryptoTokenHoldersError,
-  CryptoBinanceAnnouncementsData,
-  CryptoBinanceAnnouncementsResponse,
-  CryptoBinanceAnnouncementsError,
   IndeedSearchData,
   IndeedSearchResponse,
   IndeedSearchError,
@@ -392,18 +254,6 @@ import type {
   AirbnbReviewsData,
   AirbnbReviewsResponse,
   AirbnbReviewsError,
-  RedfinSearchData,
-  RedfinSearchResponse,
-  RedfinSearchError,
-  RedfinPropertyData,
-  RedfinPropertyResponse,
-  RedfinPropertyError,
-  RealtorSearchData,
-  RealtorSearchResponse,
-  RealtorSearchError,
-  RealtorPropertyData,
-  RealtorPropertyResponse,
-  RealtorPropertyError,
   RightmoveSearchData,
   RightmoveSearchResponse,
   RightmoveSearchError,
@@ -428,24 +278,9 @@ import type {
   PinterestUserData,
   PinterestUserResponse,
   PinterestUserError,
-  PinterestAdsSearchData,
-  PinterestAdsSearchResponse,
-  PinterestAdsSearchError,
-  PinterestAdsAdData,
-  PinterestAdsAdResponse,
-  PinterestAdsAdError,
-  XTweetData,
-  XTweetResponse,
-  XTweetError,
-  KickChannelData,
-  KickChannelResponse,
-  KickChannelError,
-  KickVideosData,
-  KickVideosResponse,
-  KickVideosError,
-  KickClipsData,
-  KickClipsResponse,
-  KickClipsError,
+  XPostData,
+  XPostResponse,
+  XPostError,
   FinanceQuoteData,
   FinanceQuoteResponse,
   FinanceQuoteError,
@@ -455,42 +290,24 @@ import type {
   FinanceSearchData,
   FinanceSearchResponse,
   FinanceSearchError,
-  FinanceProfileData,
-  FinanceProfileResponse,
-  FinanceProfileError,
-  MicrosoftAdsSearchData,
-  MicrosoftAdsSearchResponse,
-  MicrosoftAdsSearchError,
-  MicrosoftAdsAdData,
-  MicrosoftAdsAdResponse,
-  MicrosoftAdsAdError,
-  MicrosoftAdsAdvertisersData,
-  MicrosoftAdsAdvertisersResponse,
-  MicrosoftAdsAdvertisersError,
-  SnapchatProfileData,
-  SnapchatProfileResponse,
-  SnapchatProfileError,
-  SnapchatAdsSearchData,
-  SnapchatAdsSearchResponse,
-  SnapchatAdsSearchError,
-  SnapchatAdsAdData,
-  SnapchatAdsAdResponse,
-  SnapchatAdsAdError,
-  TumblrBlogData,
-  TumblrBlogResponse,
-  TumblrBlogError,
-  TumblrPostsData,
-  TumblrPostsResponse,
-  TumblrPostsError,
-  TumblrPostData,
-  TumblrPostResponse,
-  TumblrPostError,
-  TumblrSearchData,
-  TumblrSearchResponse,
-  TumblrSearchError,
-  QuoraQuestionData,
-  QuoraQuestionResponse,
-  QuoraQuestionError,
+  AdsSearchData,
+  AdsSearchResponse,
+  AdsSearchError,
+  AdsAdData,
+  AdsAdResponse,
+  AdsAdError,
+  AdsAdvertisersData,
+  AdsAdvertisersResponse,
+  AdsAdvertisersError,
+  SuggestData,
+  SuggestResponse,
+  SuggestError,
+  GoogleTrendsData,
+  GoogleTrendsResponse,
+  GoogleTrendsError,
+  FinanceStockData,
+  FinanceStockResponse,
+  FinanceStockError,
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -529,7 +346,7 @@ export const listEndpoints = <ThrowOnError extends boolean = false>(
 
 /**
  * Search the web and get titles, links and snippets
- * Costs 1 credit per 10 items. Works without an API key, within free limits.
+ * Costs 1 credit per call. Works without an API key, within free limits.
  */
 export const webSearch = <ThrowOnError extends boolean = false>(
   options: Options<WebSearchData, ThrowOnError>
@@ -556,7 +373,7 @@ export const webSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Search news articles by topic, date and country
- * Costs 2 credits per 10 items.
+ * Costs 1 credit per call.
  */
 export const webNews = <ThrowOnError extends boolean = false>(
   options: Options<WebNewsData, ThrowOnError>
@@ -583,7 +400,7 @@ export const webNews = <ThrowOnError extends boolean = false>(
 
 /**
  * Find emails, phone numbers and social profiles on a website
- * Costs 2 credits per 5 items.
+ * Costs 2 credits per call.
  */
 export const webContacts = <ThrowOnError extends boolean = false>(
   options: Options<WebContactsData, ThrowOnError>
@@ -610,7 +427,7 @@ export const webContacts = <ThrowOnError extends boolean = false>(
 
 /**
  * Search YouTube videos, channels, playlists and shorts
- * Costs 1 credit per 20 items. Pages with cursor. Works without an API key, within free limits.
+ * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const youtubeSearch = <ThrowOnError extends boolean = false>(
   options: Options<YoutubeSearchData, ThrowOnError>
@@ -637,7 +454,7 @@ export const youtubeSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a video's title, channel, views, likes and description
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const youtubeVideo = <ThrowOnError extends boolean = false>(
   options: Options<YoutubeVideoData, ThrowOnError>
@@ -663,15 +480,15 @@ export const youtubeVideo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a video's transcript, with optional timestamps
- * Costs 3 credits. Works without an API key, within free limits.
+ * Get what is said in a YouTube, TikTok or Instagram video, with optional timestamps
+ * Costs 2 credits per call. Works without an API key, within free limits.
  */
-export const youtubeTranscript = <ThrowOnError extends boolean = false>(
-  options: Options<YoutubeTranscriptData, ThrowOnError>
+export const transcript = <ThrowOnError extends boolean = false>(
+  options: Options<TranscriptData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    YoutubeTranscriptResponse,
-    YoutubeTranscriptError,
+    TranscriptResponse,
+    TranscriptError,
     ThrowOnError
   >({
     security: [
@@ -680,7 +497,7 @@ export const youtubeTranscript = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/youtube/transcript",
+    url: "/v1/transcript",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -690,8 +507,8 @@ export const youtubeTranscript = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a video's comments
- * Costs 1 credit per 20 items. Pages with cursor.
+ * Get a video's comments, or the replies to one comment
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const youtubeComments = <ThrowOnError extends boolean = false>(
   options: Options<YoutubeCommentsData, ThrowOnError>
@@ -717,35 +534,8 @@ export const youtubeComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get the replies to a video comment
- * Costs 1 credit per 10 items. Pages with cursor.
- */
-export const youtubeCommentsReplies = <ThrowOnError extends boolean = false>(
-  options: Options<YoutubeCommentsRepliesData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    YoutubeCommentsRepliesResponse,
-    YoutubeCommentsRepliesError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/youtube/comments/replies",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a channel's videos, shorts, playlists and about info
- * Costs 1 credit per 30 items. Pages with cursor.
+ * Get a channel's profile and a page of its videos, shorts, playlists or posts
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const youtubeChannel = <ThrowOnError extends boolean = false>(
   options: Options<YoutubeChannelData, ThrowOnError>
@@ -771,8 +561,8 @@ export const youtubeChannel = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get the videos in a playlist
- * Costs 1 credit per 100 items. Pages with cursor.
+ * Get a playlist and a page of its videos
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const youtubePlaylist = <ThrowOnError extends boolean = false>(
   options: Options<YoutubePlaylistData, ThrowOnError>
@@ -799,7 +589,7 @@ export const youtubePlaylist = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Reddit posts, comments, subreddits and users
- * Costs 2 credits. Pages with cursor.
+ * Costs 2 credits per call. Pages with cursor.
  */
 export const redditSearch = <ThrowOnError extends boolean = false>(
   options: Options<RedditSearchData, ThrowOnError>
@@ -826,7 +616,7 @@ export const redditSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Read a post and its comment thread
- * Costs 2 credits.
+ * Costs 2 credits per call.
  */
 export const redditPost = <ThrowOnError extends boolean = false>(
   options: Options<RedditPostData, ThrowOnError>
@@ -852,35 +642,8 @@ export const redditPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Load more comments from a thread
- * Costs 2 credits. Pages with cursor.
- */
-export const redditCommentsMore = <ThrowOnError extends boolean = false>(
-  options: Options<RedditCommentsMoreData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    RedditCommentsMoreResponse,
-    RedditCommentsMoreError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/reddit/comments/more",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a subreddit's info and posts
- * Costs 2 credits. Pages with cursor.
+ * Get a subreddit's info and a page of its posts
+ * Costs 2 credits per call. Pages with cursor.
  */
 export const redditSubreddit = <ThrowOnError extends boolean = false>(
   options: Options<RedditSubredditData, ThrowOnError>
@@ -906,8 +669,8 @@ export const redditSubreddit = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a user's posts and comments
- * Costs 2 credits. Pages with cursor.
+ * Get a user's profile and a page of their posts and comments
+ * Costs 2 credits per call. Pages with cursor.
  */
 export const redditUser = <ThrowOnError extends boolean = false>(
   options: Options<RedditUserData, ThrowOnError>
@@ -934,7 +697,7 @@ export const redditUser = <ThrowOnError extends boolean = false>(
 
 /**
  * Get Reddit posts that link to a website
- * Costs 2 credits. Pages with cursor.
+ * Costs 2 credits per call. Pages with cursor.
  */
 export const redditDomain = <ThrowOnError extends boolean = false>(
   options: Options<RedditDomainData, ThrowOnError>
@@ -961,7 +724,7 @@ export const redditDomain = <ThrowOnError extends boolean = false>(
 
 /**
  * Search places on Google Maps by keyword and location
- * Costs 3 credits per 20 items.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const mapsSearch = <ThrowOnError extends boolean = false>(
   options: Options<MapsSearchData, ThrowOnError>
@@ -988,7 +751,7 @@ export const mapsSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a place's address, hours, rating and contact details
- * Costs 2 credits.
+ * Costs 1 credit per call.
  */
 export const mapsPlace = <ThrowOnError extends boolean = false>(
   options: Options<MapsPlaceData, ThrowOnError>
@@ -1015,7 +778,7 @@ export const mapsPlace = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a place's reviews
- * Costs 1 credit per 10 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const mapsReviews = <ThrowOnError extends boolean = false>(
   options: Options<MapsReviewsData, ThrowOnError>
@@ -1041,8 +804,8 @@ export const mapsReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's bio, stats and recent posts
- * Costs 1 credit.
+ * Get a profile's bio, stats and a page of its posts and reels
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const instagramProfile = <ThrowOnError extends boolean = false>(
   options: Options<InstagramProfileData, ThrowOnError>
@@ -1068,35 +831,8 @@ export const instagramProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's posts and reels
- * Costs 1 credit per 12 items. Pages with cursor.
- */
-export const instagramPosts = <ThrowOnError extends boolean = false>(
-  options: Options<InstagramPostsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    InstagramPostsResponse,
-    InstagramPostsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/instagram/posts",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a post or reel, with its comments
- * Costs 1 credit.
+ * Get a post or reel, with its top comments
+ * Costs 1 credit per call.
  */
 export const instagramPost = <ThrowOnError extends boolean = false>(
   options: Options<InstagramPostData, ThrowOnError>
@@ -1122,35 +858,8 @@ export const instagramPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get any Instagram profile, post or reel from its link
- * Costs 1 credit.
- */
-export const instagramUrl = <ThrowOnError extends boolean = false>(
-  options: Options<InstagramUrlData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    InstagramUrlResponse,
-    InstagramUrlError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/instagram/url",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Search Instagram posts and reels
- * Costs 3 credits per 10 items.
+ * Costs 1 credit per call.
  */
 export const instagramSearch = <ThrowOnError extends boolean = false>(
   options: Options<InstagramSearchData, ThrowOnError>
@@ -1176,35 +885,8 @@ export const instagramSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get the transcript of a reel or video post
- * Costs 5 credits per 1 items.
- */
-export const instagramTranscript = <ThrowOnError extends boolean = false>(
-  options: Options<InstagramTranscriptData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    InstagramTranscriptResponse,
-    InstagramTranscriptError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/instagram/transcript",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a post's comments
- * Costs 1 credit per 15 items. Pages with cursor.
+ * Get a post's comments, or the replies to one comment
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const instagramComments = <ThrowOnError extends boolean = false>(
   options: Options<InstagramCommentsData, ThrowOnError>
@@ -1230,35 +912,8 @@ export const instagramComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get the replies to a post comment
- * Costs 1 credit per 15 items. Pages with cursor.
- */
-export const instagramCommentsReplies = <ThrowOnError extends boolean = false>(
-  options: Options<InstagramCommentsRepliesData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    InstagramCommentsRepliesResponse,
-    InstagramCommentsRepliesError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/instagram/comments/replies",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a profile's bio and stats
- * Costs 1 credit.
+ * Get a profile's bio, stats and a page of its videos
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokProfile = <ThrowOnError extends boolean = false>(
   options: Options<TiktokProfileData, ThrowOnError>
@@ -1285,7 +940,7 @@ export const tiktokProfile = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a video's caption, stats and music
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const tiktokVideo = <ThrowOnError extends boolean = false>(
   options: Options<TiktokVideoData, ThrowOnError>
@@ -1311,89 +966,8 @@ export const tiktokVideo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get any TikTok profile or video from its link
- * Costs 1 credit.
- */
-export const tiktokUrl = <ThrowOnError extends boolean = false>(
-  options: Options<TiktokUrlData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TiktokUrlResponse,
-    TiktokUrlError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tiktok/url",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a video's transcript, with optional timestamps
- * Costs 5 credits.
- */
-export const tiktokTranscript = <ThrowOnError extends boolean = false>(
-  options: Options<TiktokTranscriptData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TiktokTranscriptResponse,
-    TiktokTranscriptError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tiktok/transcript",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a profile's videos
- * Costs 1 credit per 30 items. Pages with cursor.
- */
-export const tiktokPosts = <ThrowOnError extends boolean = false>(
-  options: Options<TiktokPostsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TiktokPostsResponse,
-    TiktokPostsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tiktok/posts",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get videos for a hashtag
- * Costs 1 credit per 30 items. Pages with cursor.
+ * Get a page of videos for a hashtag
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokHashtag = <ThrowOnError extends boolean = false>(
   options: Options<TiktokHashtagData, ThrowOnError>
@@ -1419,8 +993,8 @@ export const tiktokHashtag = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a video's comments
- * Costs 1 credit per 20 items. Pages with cursor.
+ * Get a video's comments, or the replies to one comment
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokComments = <ThrowOnError extends boolean = false>(
   options: Options<TiktokCommentsData, ThrowOnError>
@@ -1446,35 +1020,8 @@ export const tiktokComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get the replies to a video comment
- * Costs 1 credit per 20 items. Pages with cursor.
- */
-export const tiktokCommentsReplies = <ThrowOnError extends boolean = false>(
-  options: Options<TiktokCommentsRepliesData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TiktokCommentsRepliesResponse,
-    TiktokCommentsRepliesError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tiktok/comments/replies",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Search TikTok videos and users
- * Costs 1 credit per 12 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokSearch = <ThrowOnError extends boolean = false>(
   options: Options<TiktokSearchData, ThrowOnError>
@@ -1500,8 +1047,8 @@ export const tiktokSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's bio and stats
- * Costs 1 credit.
+ * Get a profile's bio, stats and a page of its posts
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const blueskyProfile = <ThrowOnError extends boolean = false>(
   options: Options<BlueskyProfileData, ThrowOnError>
@@ -1527,35 +1074,8 @@ export const blueskyProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's posts
- * Costs 1 credit per 25 items. Pages with cursor.
- */
-export const blueskyPosts = <ThrowOnError extends boolean = false>(
-  options: Options<BlueskyPostsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    BlueskyPostsResponse,
-    BlueskyPostsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/bluesky/posts",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Read a post and its replies
- * Costs 1 credit per 50 items.
+ * Costs 1 credit per call.
  */
 export const blueskyPost = <ThrowOnError extends boolean = false>(
   options: Options<BlueskyPostData, ThrowOnError>
@@ -1581,8 +1101,8 @@ export const blueskyPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's followers
- * Costs 1 credit per 50 items. Pages with cursor.
+ * Get a page of a profile's followers
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const blueskyFollowers = <ThrowOnError extends boolean = false>(
   options: Options<BlueskyFollowersData, ThrowOnError>
@@ -1608,116 +1128,8 @@ export const blueskyFollowers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's bio and stats
- * Costs 1 credit.
- */
-export const mastodonProfile = <ThrowOnError extends boolean = false>(
-  options: Options<MastodonProfileData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MastodonProfileResponse,
-    MastodonProfileError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/mastodon/profile",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a profile's posts
- * Costs 1 credit per 20 items. Pages with cursor.
- */
-export const mastodonPosts = <ThrowOnError extends boolean = false>(
-  options: Options<MastodonPostsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MastodonPostsResponse,
-    MastodonPostsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/mastodon/posts",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Read a post with its thread and replies
- * Costs 1 credit.
- */
-export const mastodonPost = <ThrowOnError extends boolean = false>(
-  options: Options<MastodonPostData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MastodonPostResponse,
-    MastodonPostError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/mastodon/post",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get posts for a hashtag
- * Costs 1 credit per 20 items. Pages with cursor.
- */
-export const mastodonHashtag = <ThrowOnError extends boolean = false>(
-  options: Options<MastodonHashtagData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MastodonHashtagResponse,
-    MastodonHashtagError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/mastodon/hashtag",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a profile's bio and stats
- * Costs 1 credit.
+ * Get a profile's bio, stats and a page of its posts
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const threadsProfile = <ThrowOnError extends boolean = false>(
   options: Options<ThreadsProfileData, ThrowOnError>
@@ -1743,35 +1155,8 @@ export const threadsProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's posts
- * Costs 1 credit per 20 items. Pages with cursor.
- */
-export const threadsPosts = <ThrowOnError extends boolean = false>(
-  options: Options<ThreadsPostsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    ThreadsPostsResponse,
-    ThreadsPostsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/threads/posts",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Read a post with its thread and replies
- * Costs 1 credit. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const threadsPost = <ThrowOnError extends boolean = false>(
   options: Options<ThreadsPostData, ThrowOnError>
@@ -1798,7 +1183,7 @@ export const threadsPost = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Threads posts
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const threadsSearch = <ThrowOnError extends boolean = false>(
   options: Options<ThreadsSearchData, ThrowOnError>
@@ -1824,35 +1209,8 @@ export const threadsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a public channel's info
- * Costs 1 credit.
- */
-export const telegramChannel = <ThrowOnError extends boolean = false>(
-  options: Options<TelegramChannelData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TelegramChannelResponse,
-    TelegramChannelError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/telegram/channel",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a public channel's posts
- * Costs 1 credit per 20 items. Pages with cursor.
+ * Get a public channel's info and a page of its posts
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const telegramPosts = <ThrowOnError extends boolean = false>(
   options: Options<TelegramPostsData, ThrowOnError>
@@ -1879,7 +1237,7 @@ export const telegramPosts = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a single channel post
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const telegramPost = <ThrowOnError extends boolean = false>(
   options: Options<TelegramPostData, ThrowOnError>
@@ -1905,35 +1263,8 @@ export const telegramPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the Meta ad library
- * Costs 2 credits per 10 items. Pages with cursor.
- */
-export const metaAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<MetaAdsSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MetaAdsSearchResponse,
-    MetaAdsSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/meta/ads/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Get the ads a Facebook page runs
- * Costs 2 credits per 10 items. Pages with cursor.
+ * Costs 2 credits per call. Pages with cursor.
  */
 export const metaAdsPage = <ThrowOnError extends boolean = false>(
   options: Options<MetaAdsPageData, ThrowOnError>
@@ -1959,35 +1290,8 @@ export const metaAdsPage = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Meta ad's details
- * Costs 2 credits.
- */
-export const metaAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<MetaAdsAdData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MetaAdsAdResponse,
-    MetaAdsAdError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/meta/ads/ad",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Search LinkedIn jobs
- * Costs 1 credit per 10 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinJobsSearchData, ThrowOnError>
@@ -2014,7 +1318,7 @@ export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a LinkedIn job's details
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const linkedinJobsJob = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinJobsJobData, ThrowOnError>
@@ -2040,62 +1344,8 @@ export const linkedinJobsJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the LinkedIn ad library
- * Costs 2 credits per 24 items. Pages with cursor.
- */
-export const linkedinAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<LinkedinAdsSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    LinkedinAdsSearchResponse,
-    LinkedinAdsSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/linkedin/ads/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a LinkedIn ad's details
- * Costs 2 credits.
- */
-export const linkedinAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<LinkedinAdsAdData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    LinkedinAdsAdResponse,
-    LinkedinAdsAdError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/linkedin/ads/ad",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Get a company's profile, size and industry
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const linkedinCompany = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinCompanyData, ThrowOnError>
@@ -2122,7 +1372,7 @@ export const linkedinCompany = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a person's profile
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const linkedinProfile = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinProfileData, ThrowOnError>
@@ -2149,7 +1399,7 @@ export const linkedinProfile = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a person's or company's posts
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const linkedinPosts = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinPostsData, ThrowOnError>
@@ -2175,35 +1425,8 @@ export const linkedinPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a company's posts
- * Costs 1 credit.
- */
-export const linkedinCompanyPosts = <ThrowOnError extends boolean = false>(
-  options: Options<LinkedinCompanyPostsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    LinkedinCompanyPostsResponse,
-    LinkedinCompanyPostsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/linkedin/company/posts",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Search homes for sale, for rent or sold
- * Costs 3 credits per 41 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const zillowSearch = <ThrowOnError extends boolean = false>(
   options: Options<ZillowSearchData, ThrowOnError>
@@ -2230,7 +1453,7 @@ export const zillowSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a home's details, price and Zestimate
- * Costs 3 credits.
+ * Costs 1 credit per call.
  */
 export const zillowProperty = <ThrowOnError extends boolean = false>(
   options: Options<ZillowPropertyData, ThrowOnError>
@@ -2256,143 +1479,8 @@ export const zillowProperty = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Find advertisers in the Google ads library
- * Costs 1 credit.
- */
-export const googleAdsAdvertisers = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleAdsAdvertisersData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleAdsAdvertisersResponse,
-    GoogleAdsAdvertisersError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/ads/advertisers",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Search ads in the Google ads library
- * Costs 1 credit per 25 items. Pages with cursor.
- */
-export const googleAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleAdsSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleAdsSearchResponse,
-    GoogleAdsSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/ads/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a Google ad's details
- * Costs 1 credit.
- */
-export const googleAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleAdsAdData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleAdsAdResponse,
-    GoogleAdsAdError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/ads/ad",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Search ads in the TikTok ad library
- * Costs 1 credit per 12 items. Pages with cursor.
- */
-export const tiktokAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<TiktokAdsSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TiktokAdsSearchResponse,
-    TiktokAdsSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tiktok/ads/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a TikTok ad's details and reach
- * Costs 1 credit.
- */
-export const tiktokAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<TiktokAdsAdData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TiktokAdsAdResponse,
-    TiktokAdsAdError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tiktok/ads/ad",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Search Upwork jobs
- * Costs 2 credits per 10 items. Pages with cursor.
+ * Costs 2 credits per call. Pages with cursor.
  */
 export const upworkSearch = <ThrowOnError extends boolean = false>(
   options: Options<UpworkSearchData, ThrowOnError>
@@ -2419,7 +1507,7 @@ export const upworkSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an Upwork job's details
- * Costs 3 credits.
+ * Costs 1 credit per call.
  */
 export const upworkJob = <ThrowOnError extends boolean = false>(
   options: Options<UpworkJobData, ThrowOnError>
@@ -2445,143 +1533,8 @@ export const upworkJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get Google search suggestions for a keyword
- * Costs 1 credit per 50 items.
- */
-export const googleSuggest = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleSuggestData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleSuggestResponse,
-    GoogleSuggestError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/suggest",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get YouTube search suggestions for a keyword
- * Costs 1 credit per 50 items.
- */
-export const youtubeSuggest = <ThrowOnError extends boolean = false>(
-  options: Options<YoutubeSuggestData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    YoutubeSuggestResponse,
-    YoutubeSuggestError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/youtube/suggest",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get Amazon search suggestions for a keyword
- * Costs 1 credit per 50 items.
- */
-export const amazonSuggest = <ThrowOnError extends boolean = false>(
-  options: Options<AmazonSuggestData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    AmazonSuggestResponse,
-    AmazonSuggestError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/amazon/suggest",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get search interest over time
- * Costs 1 credit.
- */
-export const googleTrendsInterest = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleTrendsInterestData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleTrendsInterestResponse,
-    GoogleTrendsInterestError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/trends/interest",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get search interest by region
- * Costs 1 credit.
- */
-export const googleTrendsRegions = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleTrendsRegionsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleTrendsRegionsResponse,
-    GoogleTrendsRegionsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/trends/regions",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Get related searches for a keyword
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const googleTrendsRelated = <ThrowOnError extends boolean = false>(
   options: Options<GoogleTrendsRelatedData, ThrowOnError>
@@ -2608,7 +1561,7 @@ export const googleTrendsRelated = <ThrowOnError extends boolean = false>(
 
 /**
  * Get what is trending on Google now
- * Costs 1 credit per 50 items.
+ * Costs 1 credit per call.
  */
 export const googleTrendsTrending = <ThrowOnError extends boolean = false>(
   options: Options<GoogleTrendsTrendingData, ThrowOnError>
@@ -2634,35 +1587,8 @@ export const googleTrendsTrending = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * List every page on a website
- * Costs 2 credits per 500 items. Pages with cursor.
- */
-export const siteMap = <ThrowOnError extends boolean = false>(
-  options: Options<SiteMapData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    SiteMapResponse,
-    SiteMapError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/site/map",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Check a page's SEO: titles, tags, headings and links
- * Costs 2 credits per 2 items.
+ * Costs 1 credit per call.
  */
 export const siteSeo = <ThrowOnError extends boolean = false>(
   options: Options<SiteSeoData, ThrowOnError>
@@ -2688,89 +1614,8 @@ export const siteSeo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a domain's registrar and key dates
- * Costs 1 credit.
- */
-export const domainWhois = <ThrowOnError extends boolean = false>(
-  options: Options<DomainWhoisData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    DomainWhoisResponse,
-    DomainWhoisError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/domain/whois",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a domain's DNS records
- * Costs 1 credit.
- */
-export const domainDns = <ThrowOnError extends boolean = false>(
-  options: Options<DomainDnsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    DomainDnsResponse,
-    DomainDnsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/domain/dns",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Find the technologies a website uses
- * Costs 1 credit.
- */
-export const domainTech = <ThrowOnError extends boolean = false>(
-  options: Options<DomainTechData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    DomainTechResponse,
-    DomainTechError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/domain/tech",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Check if email addresses can receive mail
- * Costs 1 credit per 10 items.
+ * Costs 1 credit per call.
  */
 export const emailCheck = <ThrowOnError extends boolean = false>(
   options: Options<EmailCheckData, ThrowOnError>
@@ -2796,8 +1641,35 @@ export const emailCheck = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Find a person's most likely work email address
+ * Costs 1 credit per call.
+ */
+export const emailFind = <ThrowOnError extends boolean = false>(
+  options: Options<EmailFindData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    EmailFindResponse,
+    EmailFindError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/email/find",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
  * Get coin prices, market caps and volume
- * Costs 1 credit per 50 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const cryptoCoins = <ThrowOnError extends boolean = false>(
   options: Options<CryptoCoinsData, ThrowOnError>
@@ -2824,7 +1696,7 @@ export const cryptoCoins = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a coin's price, supply and details
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const cryptoCoin = <ThrowOnError extends boolean = false>(
   options: Options<CryptoCoinData, ThrowOnError>
@@ -2851,7 +1723,7 @@ export const cryptoCoin = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a coin's price history
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const cryptoHistory = <ThrowOnError extends boolean = false>(
   options: Options<CryptoHistoryData, ThrowOnError>
@@ -2877,116 +1749,8 @@ export const cryptoHistory = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get trending coins, categories and NFTs
- * Costs 1 credit.
- */
-export const cryptoTrending = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoTrendingData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoTrendingResponse,
-    CryptoTrendingError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/trending",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get crypto categories by market cap
- * Costs 1 credit.
- */
-export const cryptoCategories = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoCategoriesData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoCategoriesResponse,
-    CryptoCategoriesError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/categories",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get the top gaining and losing coins
- * Costs 1 credit.
- */
-export const cryptoMovers = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoMoversData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoMoversResponse,
-    CryptoMoversError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/movers",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get newly listed coins
- * Costs 1 credit per 50 items.
- */
-export const cryptoNew = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoNewData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoNewResponse,
-    CryptoNewError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/new",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Search DEX trading pairs
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const cryptoDexSearch = <ThrowOnError extends boolean = false>(
   options: Options<CryptoDexSearchData, ThrowOnError>
@@ -3012,35 +1776,8 @@ export const cryptoDexSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a DEX trading pair
- * Costs 1 credit.
- */
-export const cryptoDexPairs = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoDexPairsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoDexPairsResponse,
-    CryptoDexPairsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/dex/pairs",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Get a token and its DEX pairs
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const cryptoDexToken = <ThrowOnError extends boolean = false>(
   options: Options<CryptoDexTokenData, ThrowOnError>
@@ -3066,116 +1803,8 @@ export const cryptoDexToken = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get new and boosted tokens on DEXes
- * Costs 1 credit.
- */
-export const cryptoDexNew = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoDexNewData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoDexNewResponse,
-    CryptoDexNewError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/dex/new",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get pump.fun coins
- * Costs 1 credit per 50 items. Pages with cursor.
- */
-export const cryptoPumpCoins = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoPumpCoinsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoPumpCoinsResponse,
-    CryptoPumpCoinsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/pump/coins",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a pump.fun coin's details
- * Costs 1 credit.
- */
-export const cryptoPumpCoin = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoPumpCoinData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoPumpCoinResponse,
-    CryptoPumpCoinError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/pump/coin",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a pump.fun coin's trades
- * Costs 1 credit per 100 items. Pages with cursor.
- */
-export const cryptoPumpTrades = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoPumpTradesData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoPumpTradesResponse,
-    CryptoPumpTradesError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/pump/trades",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Get a wallet's balance, tokens and transactions
- * Costs 1 credit per 25 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const cryptoWallet = <ThrowOnError extends boolean = false>(
   options: Options<CryptoWalletData, ThrowOnError>
@@ -3201,64 +1830,8 @@ export const cryptoWallet = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a token's top holders
- * Costs 1 credit per 50 items. Pages with cursor.
- */
-export const cryptoTokenHolders = <ThrowOnError extends boolean = false>(
-  options: Options<CryptoTokenHoldersData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoTokenHoldersResponse,
-    CryptoTokenHoldersError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/token/holders",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get Binance announcements and listings
- * Costs 1 credit per 20 items. Pages with cursor.
- */
-export const cryptoBinanceAnnouncements = <
-  ThrowOnError extends boolean = false
->(
-  options: Options<CryptoBinanceAnnouncementsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    CryptoBinanceAnnouncementsResponse,
-    CryptoBinanceAnnouncementsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/crypto/binance/announcements",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Search Indeed jobs
- * Costs 1 credit per 20 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const indeedSearch = <ThrowOnError extends boolean = false>(
   options: Options<IndeedSearchData, ThrowOnError>
@@ -3285,7 +1858,7 @@ export const indeedSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an Indeed job's details
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const indeedJob = <ThrowOnError extends boolean = false>(
   options: Options<IndeedJobData, ThrowOnError>
@@ -3312,7 +1885,7 @@ export const indeedJob = <ThrowOnError extends boolean = false>(
 
 /**
  * Search hotels, restaurants and attractions
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const tripadvisorSearch = <ThrowOnError extends boolean = false>(
   options: Options<TripadvisorSearchData, ThrowOnError>
@@ -3339,7 +1912,7 @@ export const tripadvisorSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a place's rating, ranking and details
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const tripadvisorPlace = <ThrowOnError extends boolean = false>(
   options: Options<TripadvisorPlaceData, ThrowOnError>
@@ -3366,7 +1939,7 @@ export const tripadvisorPlace = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a place's reviews
- * Costs 1 credit per 20 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
   options: Options<TripadvisorReviewsData, ThrowOnError>
@@ -3393,7 +1966,7 @@ export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
 
 /**
  * Search flights with prices and times
- * Costs 3 credits.
+ * Costs 1 credit per call.
  */
 export const googletravelFlights = <ThrowOnError extends boolean = false>(
   options: Options<GoogletravelFlightsData, ThrowOnError>
@@ -3420,7 +1993,7 @@ export const googletravelFlights = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Amazon products
- * Costs 5 credits per 20 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const amazonSearch = <ThrowOnError extends boolean = false>(
   options: Options<AmazonSearchData, ThrowOnError>
@@ -3447,7 +2020,7 @@ export const amazonSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a product's price, details and rating
- * Costs 5 credits.
+ * Costs 1 credit per call.
  */
 export const amazonProduct = <ThrowOnError extends boolean = false>(
   options: Options<AmazonProductData, ThrowOnError>
@@ -3474,7 +2047,7 @@ export const amazonProduct = <ThrowOnError extends boolean = false>(
 
 /**
  * Get the best sellers in a category
- * Costs 2 credits per 50 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const amazonBestsellers = <ThrowOnError extends boolean = false>(
   options: Options<AmazonBestsellersData, ThrowOnError>
@@ -3501,7 +2074,7 @@ export const amazonBestsellers = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a Shopify store's products
- * Costs 1 credit per 25 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const shopifyProducts = <ThrowOnError extends boolean = false>(
   options: Options<ShopifyProductsData, ThrowOnError>
@@ -3528,7 +2101,7 @@ export const shopifyProducts = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a Shopify store's collections
- * Costs 1 credit per 100 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const shopifyCollections = <ThrowOnError extends boolean = false>(
   options: Options<ShopifyCollectionsData, ThrowOnError>
@@ -3555,7 +2128,7 @@ export const shopifyCollections = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a Shopify store's details
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const shopifyStore = <ThrowOnError extends boolean = false>(
   options: Options<ShopifyStoreData, ThrowOnError>
@@ -3582,7 +2155,7 @@ export const shopifyStore = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Walmart products
- * Costs 5 credits per 40 items. Pages with cursor.
+ * Costs 2 credits per call. Pages with cursor.
  */
 export const walmartSearch = <ThrowOnError extends boolean = false>(
   options: Options<WalmartSearchData, ThrowOnError>
@@ -3609,7 +2182,7 @@ export const walmartSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a Walmart product's price and details
- * Costs 3 credits.
+ * Costs 1 credit per call.
  */
 export const walmartProduct = <ThrowOnError extends boolean = false>(
   options: Options<WalmartProductData, ThrowOnError>
@@ -3636,7 +2209,7 @@ export const walmartProduct = <ThrowOnError extends boolean = false>(
 
 /**
  * Search AliExpress products
- * Costs 2 credits per 60 items. Pages with cursor.
+ * Costs 2 credits per call. Pages with cursor.
  */
 export const aliexpressSearch = <ThrowOnError extends boolean = false>(
   options: Options<AliexpressSearchData, ThrowOnError>
@@ -3663,7 +2236,7 @@ export const aliexpressSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an AliExpress product's price and details
- * Costs 2 credits.
+ * Costs 1 credit per call.
  */
 export const aliexpressProduct = <ThrowOnError extends boolean = false>(
   options: Options<AliexpressProductData, ThrowOnError>
@@ -3690,7 +2263,7 @@ export const aliexpressProduct = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an app's details from the App Store
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const appstoreApp = <ThrowOnError extends boolean = false>(
   options: Options<AppstoreAppData, ThrowOnError>
@@ -3717,7 +2290,7 @@ export const appstoreApp = <ThrowOnError extends boolean = false>(
 
 /**
  * Search App Store apps
- * Costs 1 credit per 20 items.
+ * Costs 1 credit per call.
  */
 export const appstoreSearch = <ThrowOnError extends boolean = false>(
   options: Options<AppstoreSearchData, ThrowOnError>
@@ -3744,7 +2317,7 @@ export const appstoreSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an app's App Store reviews
- * Costs 1 credit per 20 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const appstoreReviews = <ThrowOnError extends boolean = false>(
   options: Options<AppstoreReviewsData, ThrowOnError>
@@ -3771,7 +2344,7 @@ export const appstoreReviews = <ThrowOnError extends boolean = false>(
 
 /**
  * Get App Store top charts
- * Costs 1 credit per 100 items.
+ * Costs 1 credit per call.
  */
 export const appstoreTop = <ThrowOnError extends boolean = false>(
   options: Options<AppstoreTopData, ThrowOnError>
@@ -3798,7 +2371,7 @@ export const appstoreTop = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an app's details from Google Play
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const googleplayApp = <ThrowOnError extends boolean = false>(
   options: Options<GoogleplayAppData, ThrowOnError>
@@ -3825,7 +2398,7 @@ export const googleplayApp = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Google Play apps
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const googleplaySearch = <ThrowOnError extends boolean = false>(
   options: Options<GoogleplaySearchData, ThrowOnError>
@@ -3852,7 +2425,7 @@ export const googleplaySearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an app's Google Play reviews
- * Costs 1 credit per 20 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const googleplayReviews = <ThrowOnError extends boolean = false>(
   options: Options<GoogleplayReviewsData, ThrowOnError>
@@ -3879,7 +2452,7 @@ export const googleplayReviews = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Airbnb stays by place and dates
- * Costs 2 credits per 18 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const airbnbSearch = <ThrowOnError extends boolean = false>(
   options: Options<AirbnbSearchData, ThrowOnError>
@@ -3906,7 +2479,7 @@ export const airbnbSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a listing's details, amenities and host
- * Costs 2 credits.
+ * Costs 1 credit per call.
  */
 export const airbnbListing = <ThrowOnError extends boolean = false>(
   options: Options<AirbnbListingData, ThrowOnError>
@@ -3933,7 +2506,7 @@ export const airbnbListing = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a listing's available dates
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const airbnbCalendar = <ThrowOnError extends boolean = false>(
   options: Options<AirbnbCalendarData, ThrowOnError>
@@ -3960,7 +2533,7 @@ export const airbnbCalendar = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a listing's reviews
- * Costs 1 credit per 25 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const airbnbReviews = <ThrowOnError extends boolean = false>(
   options: Options<AirbnbReviewsData, ThrowOnError>
@@ -3986,116 +2559,8 @@ export const airbnbReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Redfin homes for sale or sold
- * Costs 1 credit per 20 items. Pages with cursor.
- */
-export const redfinSearch = <ThrowOnError extends boolean = false>(
-  options: Options<RedfinSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    RedfinSearchResponse,
-    RedfinSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/redfin/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a home's details and estimate
- * Costs 1 credit.
- */
-export const redfinProperty = <ThrowOnError extends boolean = false>(
-  options: Options<RedfinPropertyData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    RedfinPropertyResponse,
-    RedfinPropertyError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/redfin/property",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Search Realtor.com homes for sale or sold
- * Costs 1 credit per 20 items. Pages with cursor.
- */
-export const realtorSearch = <ThrowOnError extends boolean = false>(
-  options: Options<RealtorSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    RealtorSearchResponse,
-    RealtorSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/realtor/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a home's details and price
- * Costs 1 credit.
- */
-export const realtorProperty = <ThrowOnError extends boolean = false>(
-  options: Options<RealtorPropertyData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    RealtorPropertyResponse,
-    RealtorPropertyError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/realtor/property",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Search UK homes for sale or rent
- * Costs 1 credit per 24 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const rightmoveSearch = <ThrowOnError extends boolean = false>(
   options: Options<RightmoveSearchData, ThrowOnError>
@@ -4122,7 +2587,7 @@ export const rightmoveSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a Rightmove property's details
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const rightmoveProperty = <ThrowOnError extends boolean = false>(
   options: Options<RightmovePropertyData, ThrowOnError>
@@ -4149,7 +2614,7 @@ export const rightmoveProperty = <ThrowOnError extends boolean = false>(
 
 /**
  * Search German homes for rent or sale
- * Costs 1 credit per 25 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const immoscoutSearch = <ThrowOnError extends boolean = false>(
   options: Options<ImmoscoutSearchData, ThrowOnError>
@@ -4176,7 +2641,7 @@ export const immoscoutSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an ImmoScout listing's details
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const immoscoutListing = <ThrowOnError extends boolean = false>(
   options: Options<ImmoscoutListingData, ThrowOnError>
@@ -4203,7 +2668,7 @@ export const immoscoutListing = <ThrowOnError extends boolean = false>(
 
 /**
  * Search pins
- * Costs 1 credit per 25 items. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const pinterestSearch = <ThrowOnError extends boolean = false>(
   options: Options<PinterestSearchData, ThrowOnError>
@@ -4230,7 +2695,7 @@ export const pinterestSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a pin's details
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const pinterestPin = <ThrowOnError extends boolean = false>(
   options: Options<PinterestPinData, ThrowOnError>
@@ -4256,8 +2721,8 @@ export const pinterestPin = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a board and its pins
- * Costs 1 credit per 25 items. Pages with cursor.
+ * Get a board and a page of its pins
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const pinterestBoard = <ThrowOnError extends boolean = false>(
   options: Options<PinterestBoardData, ThrowOnError>
@@ -4283,8 +2748,8 @@ export const pinterestBoard = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile and its pins
- * Costs 1 credit per 25 items. Pages with cursor.
+ * Get a profile and a page of its pins
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const pinterestUser = <ThrowOnError extends boolean = false>(
   options: Options<PinterestUserData, ThrowOnError>
@@ -4310,69 +2775,15 @@ export const pinterestUser = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the Pinterest ads library
- * Costs 1 credit per 24 items. Pages with cursor.
- */
-export const pinterestAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<PinterestAdsSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    PinterestAdsSearchResponse,
-    PinterestAdsSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/pinterest/ads/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a Pinterest ad's details
- * Costs 1 credit.
- */
-export const pinterestAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<PinterestAdsAdData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    PinterestAdsAdResponse,
-    PinterestAdsAdError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/pinterest/ads/ad",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
  * Get a post's text, author and stats
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
-export const xTweet = <ThrowOnError extends boolean = false>(
-  options: Options<XTweetData, ThrowOnError>
+export const xPost = <ThrowOnError extends boolean = false>(
+  options: Options<XPostData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    XTweetResponse,
-    XTweetError,
+    XPostResponse,
+    XPostError,
     ThrowOnError
   >({
     security: [
@@ -4381,88 +2792,7 @@ export const xTweet = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/x/tweet",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a channel's info and stats
- * Costs 1 credit.
- */
-export const kickChannel = <ThrowOnError extends boolean = false>(
-  options: Options<KickChannelData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    KickChannelResponse,
-    KickChannelError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/kick/channel",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a channel's past streams
- * Costs 1 credit.
- */
-export const kickVideos = <ThrowOnError extends boolean = false>(
-  options: Options<KickVideosData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    KickVideosResponse,
-    KickVideosError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/kick/videos",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a channel's clips
- * Costs 1 credit per 20 items. Pages with cursor.
- */
-export const kickClips = <ThrowOnError extends boolean = false>(
-  options: Options<KickClipsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    KickClipsResponse,
-    KickClipsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/kick/clips",
+    url: "/v1/x/post",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -4473,7 +2803,7 @@ export const kickClips = <ThrowOnError extends boolean = false>(
 
 /**
  * Get live stock and ETF quotes
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const financeQuote = <ThrowOnError extends boolean = false>(
   options: Options<FinanceQuoteData, ThrowOnError>
@@ -4500,7 +2830,7 @@ export const financeQuote = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a stock's price history
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const financeHistory = <ThrowOnError extends boolean = false>(
   options: Options<FinanceHistoryData, ThrowOnError>
@@ -4527,7 +2857,7 @@ export const financeHistory = <ThrowOnError extends boolean = false>(
 
 /**
  * Search stocks and related news
- * Costs 1 credit.
+ * Costs 1 credit per call.
  */
 export const financeSearch = <ThrowOnError extends boolean = false>(
   options: Options<FinanceSearchData, ThrowOnError>
@@ -4553,15 +2883,15 @@ export const financeSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a company's profile and key stats
- * Costs 1 credit.
+ * Search a public ad library: Meta, Google, TikTok, LinkedIn, Microsoft or Pinterest
+ * Costs 2 credits per call. Pages with cursor.
  */
-export const financeProfile = <ThrowOnError extends boolean = false>(
-  options: Options<FinanceProfileData, ThrowOnError>
+export const adsSearch = <ThrowOnError extends boolean = false>(
+  options: Options<AdsSearchData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    FinanceProfileResponse,
-    FinanceProfileError,
+    AdsSearchResponse,
+    AdsSearchError,
     ThrowOnError
   >({
     security: [
@@ -4570,7 +2900,7 @@ export const financeProfile = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/finance/profile",
+    url: "/v1/ads/search",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -4580,15 +2910,15 @@ export const financeProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the Microsoft ads library
- * Costs 1 credit. Pages with cursor.
+ * Get one ad's details from Meta, Google, TikTok, LinkedIn, Microsoft or Pinterest
+ * Costs 2 credits per call.
  */
-export const microsoftAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<MicrosoftAdsSearchData, ThrowOnError>
+export const adsAd = <ThrowOnError extends boolean = false>(
+  options: Options<AdsAdData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    MicrosoftAdsSearchResponse,
-    MicrosoftAdsSearchError,
+    AdsAdResponse,
+    AdsAdError,
     ThrowOnError
   >({
     security: [
@@ -4597,7 +2927,7 @@ export const microsoftAdsSearch = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/microsoft/ads/search",
+    url: "/v1/ads/ad",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -4607,15 +2937,15 @@ export const microsoftAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Microsoft ad's details
- * Costs 1 credit.
+ * Find advertisers by name in the Google or Microsoft ad library
+ * Costs 2 credits per call.
  */
-export const microsoftAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<MicrosoftAdsAdData, ThrowOnError>
+export const adsAdvertisers = <ThrowOnError extends boolean = false>(
+  options: Options<AdsAdvertisersData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    MicrosoftAdsAdResponse,
-    MicrosoftAdsAdError,
+    AdsAdvertisersResponse,
+    AdsAdvertisersError,
     ThrowOnError
   >({
     security: [
@@ -4624,7 +2954,7 @@ export const microsoftAdsAd = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/microsoft/ads/ad",
+    url: "/v1/ads/advertisers",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -4634,15 +2964,15 @@ export const microsoftAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Find advertisers in the Microsoft ads library
- * Costs 1 credit.
+ * Get autocomplete phrases for a keyword from Google, YouTube or Amazon
+ * Costs 1 credit per call.
  */
-export const microsoftAdsAdvertisers = <ThrowOnError extends boolean = false>(
-  options: Options<MicrosoftAdsAdvertisersData, ThrowOnError>
+export const suggest = <ThrowOnError extends boolean = false>(
+  options: Options<SuggestData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    MicrosoftAdsAdvertisersResponse,
-    MicrosoftAdsAdvertisersError,
+    SuggestResponse,
+    SuggestError,
     ThrowOnError
   >({
     security: [
@@ -4651,7 +2981,7 @@ export const microsoftAdsAdvertisers = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/microsoft/ads/advertisers",
+    url: "/v1/suggest",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -4661,15 +2991,15 @@ export const microsoftAdsAdvertisers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile with its spotlights and stories
- * Costs 2 credits.
+ * Get Google search interest over time or by region
+ * Costs 1 credit per call.
  */
-export const snapchatProfile = <ThrowOnError extends boolean = false>(
-  options: Options<SnapchatProfileData, ThrowOnError>
+export const googleTrends = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleTrendsData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    SnapchatProfileResponse,
-    SnapchatProfileError,
+    GoogleTrendsResponse,
+    GoogleTrendsError,
     ThrowOnError
   >({
     security: [
@@ -4678,7 +3008,7 @@ export const snapchatProfile = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/snapchat/profile",
+    url: "/v1/google/trends",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -4688,15 +3018,15 @@ export const snapchatProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the Snapchat ads library
- * Costs 1 credit per 10 items. Pages with cursor.
+ * Get a stock's live price with its company profile and key stats
+ * Costs 1 credit per call.
  */
-export const snapchatAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<SnapchatAdsSearchData, ThrowOnError>
+export const financeStock = <ThrowOnError extends boolean = false>(
+  options: Options<FinanceStockData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    SnapchatAdsSearchResponse,
-    SnapchatAdsSearchError,
+    FinanceStockResponse,
+    FinanceStockError,
     ThrowOnError
   >({
     security: [
@@ -4705,169 +3035,7 @@ export const snapchatAdsSearch = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/snapchat/ads/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a Snapchat ad's details
- * Costs 1 credit.
- */
-export const snapchatAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<SnapchatAdsAdData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    SnapchatAdsAdResponse,
-    SnapchatAdsAdError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/snapchat/ads/ad",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a blog's info
- * Costs 1 credit.
- */
-export const tumblrBlog = <ThrowOnError extends boolean = false>(
-  options: Options<TumblrBlogData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TumblrBlogResponse,
-    TumblrBlogError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tumblr/blog",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a blog's posts
- * Costs 1 credit per 10 items. Pages with cursor.
- */
-export const tumblrPosts = <ThrowOnError extends boolean = false>(
-  options: Options<TumblrPostsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TumblrPostsResponse,
-    TumblrPostsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tumblr/posts",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a single post
- * Costs 1 credit.
- */
-export const tumblrPost = <ThrowOnError extends boolean = false>(
-  options: Options<TumblrPostData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TumblrPostResponse,
-    TumblrPostError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tumblr/post",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Search Tumblr posts
- * Costs 1 credit per 10 items. Pages with cursor.
- */
-export const tumblrSearch = <ThrowOnError extends boolean = false>(
-  options: Options<TumblrSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TumblrSearchResponse,
-    TumblrSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/tumblr/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a question and its answers
- * Costs 2 credits.
- */
-export const quoraQuestion = <ThrowOnError extends boolean = false>(
-  options: Options<QuoraQuestionData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    QuoraQuestionResponse,
-    QuoraQuestionError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/quora/question",
+    url: "/v1/finance/stock",
     ...options,
     headers: {
       "Content-Type": "application/json",

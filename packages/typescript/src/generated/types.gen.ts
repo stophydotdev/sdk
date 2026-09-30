@@ -4,6 +4,9 @@ export type _Error = {
   success: false;
   error: {
     code:
+      | "agentCodeCompleted"
+      | "agentCodeNotFound"
+      | "agentEmailMismatch"
       | "cliSessionCompleted"
       | "cliSessionExists"
       | "cliSessionNotFound"
@@ -26,12 +29,19 @@ export type _Error = {
     retryable: boolean;
     retryAfterSeconds?: number;
     requestId: string;
+    requiredCredits?: number;
+    availableCredits?: number;
+    billingUrl?: "https://stophy.dev/billing";
   };
 };
 
 export type EndpointCatalog = {
   sources: Array<{
     id: string;
+    /**
+     * The source's name, such as YouTube or Google Maps.
+     */
+    name: string;
     /**
      * What you can get from this source.
      */
@@ -40,14 +50,21 @@ export type EndpointCatalog = {
   endpoints: Array<{
     id: string;
     /**
+     * A short name for the endpoint within its source, such as Comment replies.
+     */
+    title: string;
+    /**
      * What this endpoint returns, in one line.
      */
     summary: string;
+    /**
+     * When this endpoint beats a similar one, such as another source with the same kind of data. Null when there is no overlap worth calling out.
+     */
+    bestWhen: string | null;
     method: "POST";
     path: string;
     credits: number;
     keyless: boolean;
-    perItems: number | null;
     cacheTtlSeconds: number;
     /**
      * The endpoint's input as JSON Schema.
@@ -62,48 +79,6 @@ export type EndpointCatalog = {
       [key: string]: unknown;
     } | null;
   }>;
-};
-
-export type RedditPostSchema0 = {
-  id?: string;
-  url: string;
-  author?: {
-    id?: string;
-    username?: string;
-    name?: string;
-    url?: string;
-    avatar?: string;
-    isVerified?: boolean;
-  };
-  text?: string;
-  score: number;
-  createdAt?: string;
-  depth: number;
-  isSubmitter: boolean;
-  isPinned: boolean;
-  children?: Array<RedditPostSchema0>;
-  repliesCursor?: string;
-};
-
-export type RedditCommentsMoreSchema0 = {
-  id?: string;
-  url: string;
-  author?: {
-    id?: string;
-    username?: string;
-    name?: string;
-    url?: string;
-    avatar?: string;
-    isVerified?: boolean;
-  };
-  text?: string;
-  score: number;
-  createdAt?: string;
-  depth: number;
-  isSubmitter: boolean;
-  isPinned: boolean;
-  children?: Array<RedditCommentsMoreSchema0>;
-  repliesCursor?: string;
 };
 
 export type ListEndpointsData = {
@@ -136,10 +111,11 @@ export type WebSearchData = {
     language?: string;
     includeDomains?: Array<string>;
     excludeDomains?: Array<string>;
-    from?: string;
-    to?: string;
-    limit?: number;
     within?: "day" | "week" | "month" | "year" | "all";
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -203,10 +179,11 @@ export type WebNewsData = {
     language?: string;
     includeDomains?: Array<string>;
     excludeDomains?: Array<string>;
-    from?: string;
-    to?: string;
-    limit?: number;
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -233,14 +210,12 @@ export type WebNewsResponses = {
   200: {
     success: true;
     data: {
-      articles: Array<{
+      results: Array<{
         title: string;
         url: string;
-        publisher?: {
-          name?: string;
-          url?: string;
-        };
-        createdAt?: string;
+        publisherName?: string;
+        publisherUrl?: string;
+        publishedAt?: string;
         domain?: string;
         position: number;
       }>;
@@ -255,7 +230,6 @@ export type WebNewsResponse = WebNewsResponses[keyof WebNewsResponses];
 export type WebContactsData = {
   body: {
     url: string;
-    maxPages?: number;
   };
   path?: never;
   query?: never;
@@ -297,7 +271,6 @@ export type WebContactsResponses = {
           | "threads";
         url: string;
       }>;
-      url: string;
       pages: Array<string>;
     };
     creditsUsed: number;
@@ -312,30 +285,13 @@ export type YoutubeSearchData = {
   body: {
     query: string;
     type?: "videos" | "all" | "channels" | "playlists" | "shorts";
-    duration?: "all" | "short" | "medium" | "long";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
     sort?: "relevance" | "top";
-    features?: Array<
-      | "360"
-      | "live"
-      | "4k"
-      | "hd"
-      | "subtitles"
-      | "creativeCommons"
-      | "vr180"
-      | "3d"
-      | "hdr"
-    >;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -365,49 +321,41 @@ export type YoutubeSearchResponses = {
       results: Array<
         | {
             type: "video";
-            id?: string;
-            url: string;
+            videoId?: string;
+            videoUrl: string;
             title?: string;
-            channel?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
+            channelId?: string;
+            channelName?: string;
+            channelUrl?: string;
+            channelUsername?: string;
             durationSeconds?: number;
             views?: number;
-            thumbnail?: string;
+            thumbnailUrl?: string;
             isShort: boolean;
             isLive: boolean;
-            createdAt?: string;
+            publishedAt?: string;
           }
         | {
             type: "channel";
-            id?: string;
-            url: string;
-            name?: string;
-            username?: string;
+            channelId?: string;
+            channelUrl: string;
+            channelName?: string;
+            channelUsername?: string;
             description?: string;
             subscribers?: number;
-            thumbnail?: string;
+            thumbnailUrl?: string;
           }
         | {
             type: "playlist";
-            id?: string;
-            url: string;
+            playlistId?: string;
+            playlistUrl: string;
             title?: string;
-            channel?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
+            channelId?: string;
+            channelName?: string;
+            channelUrl?: string;
+            channelUsername?: string;
             videos?: number;
-            thumbnail?: string;
+            thumbnailUrl?: string;
           }
       >;
       cursor?: string;
@@ -449,23 +397,19 @@ export type YoutubeVideoResponses = {
   200: {
     success: true;
     data: {
-      id?: string;
-      url: string;
+      videoId?: string;
+      videoUrl: string;
       title?: string;
-      channel?: {
-        id?: string;
-        username?: string;
-        name?: string;
-        url?: string;
-        avatar?: string;
-        isVerified?: boolean;
-      };
+      channelId?: string;
+      channelName?: string;
+      channelUrl?: string;
+      channelUsername?: string;
       durationSeconds?: number;
       views?: number;
-      thumbnail?: string;
+      thumbnailUrl?: string;
       isShort: boolean;
       isLive: boolean;
-      createdAt?: string;
+      publishedAt?: string;
       description?: string;
       likes?: number;
       category?: string;
@@ -479,7 +423,7 @@ export type YoutubeVideoResponses = {
 export type YoutubeVideoResponse =
   YoutubeVideoResponses[keyof YoutubeVideoResponses];
 
-export type YoutubeTranscriptData = {
+export type TranscriptData = {
   body: {
     video: string;
     /**
@@ -490,10 +434,10 @@ export type YoutubeTranscriptData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/youtube/transcript";
+  url: "/v1/transcript";
 };
 
-export type YoutubeTranscriptErrors = {
+export type TranscriptErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -504,18 +448,17 @@ export type YoutubeTranscriptErrors = {
   "5XX": _Error;
 };
 
-export type YoutubeTranscriptError =
-  YoutubeTranscriptErrors[keyof YoutubeTranscriptErrors];
+export type TranscriptError = TranscriptErrors[keyof TranscriptErrors];
 
-export type YoutubeTranscriptResponses = {
+export type TranscriptResponses = {
   /**
    * The data, and the credits this call used.
    */
   200: {
     success: true;
     data: {
-      id?: string;
-      url: string;
+      videoId?: string;
+      videoUrl: string;
       language?: string;
       isAutoGenerated: boolean;
       durationSeconds?: number;
@@ -531,15 +474,21 @@ export type YoutubeTranscriptResponses = {
   };
 };
 
-export type YoutubeTranscriptResponse =
-  YoutubeTranscriptResponses[keyof YoutubeTranscriptResponses];
+export type TranscriptResponse = TranscriptResponses[keyof TranscriptResponses];
 
 export type YoutubeCommentsData = {
   body: {
     video: string;
+    /**
+     * A comment's repliesCursor from an earlier response. Returns that comment's replies.
+     */
+    comment?: string;
     sort?: "top" | "newest";
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -567,21 +516,17 @@ export type YoutubeCommentsResponses = {
   200: {
     success: true;
     data: {
-      comments: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        commentId?: string;
+        commentUrl: string;
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        authorId?: string;
+        authorName?: string;
+        authorUsername?: string;
+        authorUrl?: string;
         likes: number;
         replies: number;
-        createdAt?: string;
+        publishedAt?: string;
         isPinned: boolean;
         isHearted: boolean;
         isChannelOwner: boolean;
@@ -597,76 +542,15 @@ export type YoutubeCommentsResponses = {
 export type YoutubeCommentsResponse =
   YoutubeCommentsResponses[keyof YoutubeCommentsResponses];
 
-export type YoutubeCommentsRepliesData = {
-  body: {
-    video: string;
-    limit?: number;
-    cursor: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/youtube/comments/replies";
-};
-
-export type YoutubeCommentsRepliesErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type YoutubeCommentsRepliesError =
-  YoutubeCommentsRepliesErrors[keyof YoutubeCommentsRepliesErrors];
-
-export type YoutubeCommentsRepliesResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      replies: Array<{
-        id?: string;
-        url: string;
-        text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        likes: number;
-        replies: number;
-        createdAt?: string;
-        isPinned: boolean;
-        isHearted: boolean;
-        isChannelOwner: boolean;
-        repliesCursor?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type YoutubeCommentsRepliesResponse =
-  YoutubeCommentsRepliesResponses[keyof YoutubeCommentsRepliesResponses];
-
 export type YoutubeChannelData = {
   body: {
     channel: string;
-    tab?: "videos" | "shorts" | "live" | "playlists" | "posts" | "search";
-    query?: string;
-    includeAbout?: boolean;
-    limit?: number;
+    tab?: "videos" | "shorts" | "live" | "playlists" | "posts";
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -694,84 +578,60 @@ export type YoutubeChannelResponses = {
   200: {
     success: true;
     data: {
-      channel?: {
-        id?: string;
-        url: string;
-        name?: string;
-        username?: string;
-        description?: string;
-        subscribers?: number;
-        videos?: number;
-        avatar?: string;
-        banner?: string;
-        about?: {
-          country?: string;
-          joinedDate?: string;
-          views?: number;
-          links?: Array<{
-            title?: string;
-            url: string;
-          }>;
-        };
-      };
-      items: Array<
+      channelId?: string;
+      channelUrl?: string;
+      channelName?: string;
+      channelUsername?: string;
+      description?: string;
+      subscribers?: number;
+      videos?: number;
+      avatarUrl?: string;
+      bannerUrl?: string;
+      country?: string;
+      joinedDate?: string;
+      totalViews?: number;
+      results: Array<
         | {
             type: "video";
-            id?: string;
-            url: string;
+            videoId?: string;
+            videoUrl: string;
             title?: string;
-            channel?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
+            channelId?: string;
+            channelName?: string;
+            channelUrl?: string;
+            channelUsername?: string;
             durationSeconds?: number;
             views?: number;
-            thumbnail?: string;
+            thumbnailUrl?: string;
             isShort: boolean;
             isLive: boolean;
-            createdAt?: string;
+            publishedAt?: string;
           }
         | {
             type: "playlist";
-            id?: string;
-            url: string;
+            playlistId?: string;
+            playlistUrl: string;
             title?: string;
-            channel?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
+            channelId?: string;
+            channelName?: string;
+            channelUrl?: string;
+            channelUsername?: string;
             videos?: number;
-            thumbnail?: string;
+            thumbnailUrl?: string;
           }
         | {
             type: "post";
-            id?: string;
-            url: string;
+            postId?: string;
+            postUrl: string;
             text?: string;
-            createdAt?: string;
+            publishedAt?: string;
             likes?: number;
             comments?: number;
-            images?: Array<{
-              url: string;
-              caption?: string;
-              alt?: string;
-            }>;
-            video?: {
-              id?: string;
-              title?: string;
-            };
-            poll?: {
-              choices?: Array<string>;
-              totalVotes?: number;
-            };
+            imageUrls?: Array<string>;
+            videoId?: string;
+            videoTitle?: string;
+            pollChoices?: Array<string>;
+            pollTotalVotes?: number;
           }
       >;
       cursor?: string;
@@ -787,8 +647,11 @@ export type YoutubeChannelResponse =
 export type YoutubePlaylistData = {
   body: {
     playlist: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -816,42 +679,32 @@ export type YoutubePlaylistResponses = {
   200: {
     success: true;
     data: {
-      playlist?: {
-        id?: string;
-        url: string;
-        title?: string;
-        description?: string;
-        channel?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        videos?: number;
-        views?: number;
-        thumbnail?: string;
-      };
-      videos: Array<{
+      playlistId?: string;
+      playlistUrl?: string;
+      title?: string;
+      description?: string;
+      channelId?: string;
+      channelName?: string;
+      channelUrl?: string;
+      channelUsername?: string;
+      videos?: number;
+      views?: number;
+      thumbnailUrl?: string;
+      results: Array<{
         type: "video";
-        id?: string;
-        url: string;
+        videoId?: string;
+        videoUrl: string;
         title?: string;
-        channel?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        channelId?: string;
+        channelName?: string;
+        channelUrl?: string;
+        channelUsername?: string;
         durationSeconds?: number;
         views?: number;
-        thumbnail?: string;
+        thumbnailUrl?: string;
         isShort: boolean;
         isLive: boolean;
-        createdAt?: string;
+        publishedAt?: string;
       }>;
       cursor?: string;
     };
@@ -870,9 +723,11 @@ export type RedditSearchData = {
     subreddit?: string;
     sort?: "relevance" | "hot" | "top" | "newest" | "mostComments";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
-    includeNsfw?: boolean;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -902,84 +757,57 @@ export type RedditSearchResponses = {
       results: Array<
         | {
             type: "post";
-            id?: string;
-            url: string;
+            postId?: string;
+            postUrl: string;
             title?: string;
             text?: string;
-            author?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
+            authorId?: string;
+            authorUsername?: string;
+            authorUrl?: string;
             subreddit?: string;
             score: number;
             upvotePercent?: number;
             comments: number;
-            createdAt?: string;
+            publishedAt?: string;
             flair?: string;
-            link?: {
-              url: string;
-              title?: string;
-              description?: string;
-              image?: string;
-            };
-            thumbnail?: string;
+            linkUrl?: string;
+            thumbnailUrl?: string;
             isNsfw: boolean;
             isVideo: boolean;
             isPinned: boolean;
-            images?: Array<{
-              url: string;
-              caption?: string;
-              alt?: string;
+            imageUrls?: Array<string>;
+            videoUrl?: string;
+            videoHlsUrl?: string;
+            videoDurationSeconds?: number;
+            pollOptions?: Array<{
+              text?: string;
+              votes?: number;
             }>;
-            video?: {
-              url: string;
-              hls?: string;
-              durationSeconds?: number;
-            };
-            poll?: {
-              options?: Array<{
-                text?: string;
-                votes?: number;
-              }>;
-              totalVotes?: number;
-              endsAt?: string;
-            };
-            repostOf?: {
-              id?: string;
-              url?: string;
-              subreddit?: string;
-              title?: string;
-            };
+            pollTotalVotes?: number;
+            pollEndsAt?: string;
+            repostOfUrl?: string;
           }
         | {
             type: "subreddit";
-            id?: string;
-            name?: string;
-            url: string;
+            subredditId?: string;
+            subredditName?: string;
+            subredditUrl: string;
             title?: string;
             description?: string;
             members?: number;
             createdAt?: string;
-            avatar?: string;
+            avatarUrl?: string;
             isNsfw: boolean;
-            rules?: Array<{
-              title?: string;
-              description?: string;
-            }>;
           }
         | {
             type: "user";
-            id?: string;
+            userId?: string;
             username?: string;
-            url: string;
+            userUrl: string;
             postKarma?: number;
             commentKarma?: number;
             createdAt?: string;
-            avatar?: string;
+            avatarUrl?: string;
             isVerified: boolean;
           }
       >;
@@ -996,9 +824,7 @@ export type RedditSearchResponse =
 export type RedditPostData = {
   body: {
     post: string;
-    sort?: "best" | "top" | "newest" | "controversial" | "oldest" | "qa";
-    depth?: number;
-    limit?: number;
+    sort?: "best" | "top" | "newest";
   };
   path?: never;
   query?: never;
@@ -1025,63 +851,49 @@ export type RedditPostResponses = {
   200: {
     success: true;
     data: {
-      post: {
-        type: "post";
-        id?: string;
-        url: string;
-        title?: string;
+      postId?: string;
+      postUrl: string;
+      title?: string;
+      text?: string;
+      authorId?: string;
+      authorUsername?: string;
+      authorUrl?: string;
+      subreddit?: string;
+      score: number;
+      upvotePercent?: number;
+      publishedAt?: string;
+      flair?: string;
+      linkUrl?: string;
+      thumbnailUrl?: string;
+      isNsfw: boolean;
+      isVideo: boolean;
+      isPinned: boolean;
+      imageUrls: Array<string>;
+      videoUrl?: string;
+      videoHlsUrl?: string;
+      videoDurationSeconds?: number;
+      pollOptions: Array<{
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        subreddit?: string;
+        votes?: number;
+      }>;
+      pollTotalVotes?: number;
+      pollEndsAt?: string;
+      repostOfUrl?: string;
+      commentCount: number;
+      comments: Array<{
+        commentId?: string;
+        commentUrl: string;
+        parentId?: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorUrl?: string;
+        text?: string;
         score: number;
-        upvotePercent?: number;
-        comments: number;
-        createdAt?: string;
-        flair?: string;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-        thumbnail?: string;
-        isNsfw: boolean;
-        isVideo: boolean;
+        publishedAt?: string;
+        depth: number;
+        isSubmitter: boolean;
         isPinned: boolean;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        video?: {
-          url: string;
-          hls?: string;
-          durationSeconds?: number;
-        };
-        poll?: {
-          options?: Array<{
-            text?: string;
-            votes?: number;
-          }>;
-          totalVotes?: number;
-          endsAt?: string;
-        };
-        repostOf?: {
-          id?: string;
-          url?: string;
-          subreddit?: string;
-          title?: string;
-        };
-      };
-      comments: Array<RedditPostSchema0>;
-      commentsCursor?: string;
+      }>;
     };
     creditsUsed: number;
     requestId: string;
@@ -1090,55 +902,16 @@ export type RedditPostResponses = {
 
 export type RedditPostResponse = RedditPostResponses[keyof RedditPostResponses];
 
-export type RedditCommentsMoreData = {
-  body: {
-    limit?: number;
-    cursor: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/reddit/comments/more";
-};
-
-export type RedditCommentsMoreErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type RedditCommentsMoreError =
-  RedditCommentsMoreErrors[keyof RedditCommentsMoreErrors];
-
-export type RedditCommentsMoreResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      comments: Array<RedditCommentsMoreSchema0>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type RedditCommentsMoreResponse =
-  RedditCommentsMoreResponses[keyof RedditCommentsMoreResponses];
-
 export type RedditSubredditData = {
   body: {
     subreddit: string;
-    sort?: "hot" | "newest" | "top" | "rising" | "controversial";
+    sort?: "hot" | "newest" | "top";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1166,76 +939,50 @@ export type RedditSubredditResponses = {
   200: {
     success: true;
     data: {
-      subreddit?: {
-        type: "subreddit";
-        id?: string;
-        name?: string;
-        url: string;
+      subredditId?: string;
+      subredditName?: string;
+      subredditUrl?: string;
+      title?: string;
+      description?: string;
+      members?: number;
+      createdAt?: string;
+      avatarUrl?: string;
+      isNsfw?: boolean;
+      rules?: Array<{
         title?: string;
         description?: string;
-        members?: number;
-        createdAt?: string;
-        avatar?: string;
-        isNsfw: boolean;
-        rules?: Array<{
-          title?: string;
-          description?: string;
-        }>;
-      };
-      posts: Array<{
+      }>;
+      results: Array<{
         type: "post";
-        id?: string;
-        url: string;
+        postId?: string;
+        postUrl: string;
         title?: string;
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorUrl?: string;
         subreddit?: string;
         score: number;
         upvotePercent?: number;
         comments: number;
-        createdAt?: string;
+        publishedAt?: string;
         flair?: string;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-        thumbnail?: string;
+        linkUrl?: string;
+        thumbnailUrl?: string;
         isNsfw: boolean;
         isVideo: boolean;
         isPinned: boolean;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
+        imageUrls?: Array<string>;
+        videoUrl?: string;
+        videoHlsUrl?: string;
+        videoDurationSeconds?: number;
+        pollOptions?: Array<{
+          text?: string;
+          votes?: number;
         }>;
-        video?: {
-          url: string;
-          hls?: string;
-          durationSeconds?: number;
-        };
-        poll?: {
-          options?: Array<{
-            text?: string;
-            votes?: number;
-          }>;
-          totalVotes?: number;
-          endsAt?: string;
-        };
-        repostOf?: {
-          id?: string;
-          url?: string;
-          subreddit?: string;
-          title?: string;
-        };
+        pollTotalVotes?: number;
+        pollEndsAt?: string;
+        repostOfUrl?: string;
       }>;
       cursor?: string;
     };
@@ -1249,12 +996,14 @@ export type RedditSubredditResponse =
 
 export type RedditUserData = {
   body: {
-    user: string;
+    profile: string;
     tab?: "overview" | "posts" | "comments";
-    sort?: "newest" | "hot" | "top" | "controversial";
-    within?: "hour" | "day" | "week" | "month" | "year" | "all";
-    limit?: number;
+    sort?: "newest" | "hot" | "top";
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1281,80 +1030,54 @@ export type RedditUserResponses = {
   200: {
     success: true;
     data: {
-      user?: {
-        type: "user";
-        id?: string;
-        username?: string;
-        url: string;
-        postKarma?: number;
-        commentKarma?: number;
-        createdAt?: string;
-        avatar?: string;
-        isVerified: boolean;
-      };
-      items: Array<
+      userId?: string;
+      username?: string;
+      userUrl?: string;
+      postKarma?: number;
+      commentKarma?: number;
+      createdAt?: string;
+      avatarUrl?: string;
+      isVerified?: boolean;
+      results: Array<
         | {
             type: "post";
-            id?: string;
-            url: string;
+            postId?: string;
+            postUrl: string;
             title?: string;
             text?: string;
-            author?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
+            authorId?: string;
+            authorUsername?: string;
+            authorUrl?: string;
             subreddit?: string;
             score: number;
             upvotePercent?: number;
             comments: number;
-            createdAt?: string;
+            publishedAt?: string;
             flair?: string;
-            link?: {
-              url: string;
-              title?: string;
-              description?: string;
-              image?: string;
-            };
-            thumbnail?: string;
+            linkUrl?: string;
+            thumbnailUrl?: string;
             isNsfw: boolean;
             isVideo: boolean;
             isPinned: boolean;
-            images?: Array<{
-              url: string;
-              caption?: string;
-              alt?: string;
+            imageUrls?: Array<string>;
+            videoUrl?: string;
+            videoHlsUrl?: string;
+            videoDurationSeconds?: number;
+            pollOptions?: Array<{
+              text?: string;
+              votes?: number;
             }>;
-            video?: {
-              url: string;
-              hls?: string;
-              durationSeconds?: number;
-            };
-            poll?: {
-              options?: Array<{
-                text?: string;
-                votes?: number;
-              }>;
-              totalVotes?: number;
-              endsAt?: string;
-            };
-            repostOf?: {
-              id?: string;
-              url?: string;
-              subreddit?: string;
-              title?: string;
-            };
+            pollTotalVotes?: number;
+            pollEndsAt?: string;
+            repostOfUrl?: string;
           }
         | {
             type: "comment";
-            id?: string;
-            url: string;
+            commentId?: string;
+            commentUrl: string;
             text?: string;
             score: number;
-            createdAt?: string;
+            publishedAt?: string;
             subreddit?: string;
             postId?: string;
             postTitle?: string;
@@ -1372,10 +1095,12 @@ export type RedditUserResponse = RedditUserResponses[keyof RedditUserResponses];
 export type RedditDomainData = {
   body: {
     domain: string;
-    sort?: "hot" | "newest" | "top" | "rising" | "controversial";
-    within?: "hour" | "day" | "week" | "month" | "year" | "all";
-    limit?: number;
+    sort?: "hot" | "newest" | "top";
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1402,60 +1127,37 @@ export type RedditDomainResponses = {
   200: {
     success: true;
     data: {
-      posts: Array<{
+      results: Array<{
         type: "post";
-        id?: string;
-        url: string;
+        postId?: string;
+        postUrl: string;
         title?: string;
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorUrl?: string;
         subreddit?: string;
         score: number;
         upvotePercent?: number;
         comments: number;
-        createdAt?: string;
+        publishedAt?: string;
         flair?: string;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-        thumbnail?: string;
+        linkUrl?: string;
+        thumbnailUrl?: string;
         isNsfw: boolean;
         isVideo: boolean;
         isPinned: boolean;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
+        imageUrls?: Array<string>;
+        videoUrl?: string;
+        videoHlsUrl?: string;
+        videoDurationSeconds?: number;
+        pollOptions?: Array<{
+          text?: string;
+          votes?: number;
         }>;
-        video?: {
-          url: string;
-          hls?: string;
-          durationSeconds?: number;
-        };
-        poll?: {
-          options?: Array<{
-            text?: string;
-            votes?: number;
-          }>;
-          totalVotes?: number;
-          endsAt?: string;
-        };
-        repostOf?: {
-          id?: string;
-          url?: string;
-          subreddit?: string;
-          title?: string;
-        };
+        pollTotalVotes?: number;
+        pollEndsAt?: string;
+        repostOfUrl?: string;
       }>;
       cursor?: string;
     };
@@ -1470,13 +1172,8 @@ export type RedditDomainResponse =
 export type MapsSearchData = {
   body: {
     query: string;
-    near?: string;
-    center?: {
-      lat: number;
-      lng: number;
-    };
-    radiusKm?: number;
-    limit?: number;
+    location: string;
+    cursor?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -1485,6 +1182,10 @@ export type MapsSearchData = {
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
     language?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1511,24 +1212,15 @@ export type MapsSearchResponses = {
   200: {
     success: true;
     data: {
-      places: Array<{
-        id?: string;
+      results: Array<{
         placeId?: string;
-        url: string;
+        googlePlaceId?: string;
+        placeUrl: string;
         name?: string;
         categories?: Array<string>;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        location: {
-          lat: number;
-          lng: number;
-        };
+        address?: string;
+        latitude: number;
+        longitude: number;
         rating?: number;
         photos?: number;
         phone?: string;
@@ -1538,10 +1230,11 @@ export type MapsSearchResponses = {
         openStatus?: string;
         timezone?: string;
         plusCode?: string;
-        thumbnail?: string;
-        reservation?: string;
+        thumbnailUrl?: string;
+        reservationUrl?: string;
         attributes?: Array<string>;
       }>;
+      cursor?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -1587,37 +1280,26 @@ export type MapsPlaceResponses = {
   200: {
     success: true;
     data: {
-      place: {
-        id?: string;
-        placeId?: string;
-        url: string;
-        name?: string;
-        categories?: Array<string>;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        location: {
-          lat: number;
-          lng: number;
-        };
-        rating?: number;
-        photos?: number;
-        phone?: string;
-        website?: string;
-        description?: string;
-        hoursToday?: string;
-        openStatus?: string;
-        timezone?: string;
-        plusCode?: string;
-        thumbnail?: string;
-        reservation?: string;
-        attributes?: Array<string>;
-      };
+      placeId?: string;
+      googlePlaceId?: string;
+      placeUrl: string;
+      name?: string;
+      categories: Array<string>;
+      address?: string;
+      latitude: number;
+      longitude: number;
+      rating?: number;
+      photos?: number;
+      phone?: string;
+      website?: string;
+      description?: string;
+      hoursToday?: string;
+      openStatus?: string;
+      timezone?: string;
+      plusCode?: string;
+      thumbnailUrl?: string;
+      reservationUrl?: string;
+      attributes: Array<string>;
     };
     creditsUsed: number;
     requestId: string;
@@ -1630,13 +1312,15 @@ export type MapsReviewsData = {
   body: {
     place: string;
     sort?: "relevance" | "newest" | "highest" | "lowest";
-    limit?: number;
     cursor?: string;
-    from?: string;
     /**
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
     language?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1663,38 +1347,27 @@ export type MapsReviewsResponses = {
   200: {
     success: true;
     data: {
-      reviews: Array<{
-        id?: string;
-        url?: string;
+      results: Array<{
+        reviewId?: string;
+        reviewUrl?: string;
         rating: number;
         text?: string;
         language?: string;
-        createdAt?: string;
-        author: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          reviews?: number;
-          photos?: number;
-          isLocalGuide: boolean;
-        };
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
+        publishedAt?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorReviews?: number;
+        authorPhotos?: number;
+        authorIsLocalGuide: boolean;
+        imageUrls?: Array<string>;
         details?: Array<{
           label?: string;
           value?: string;
           rating?: number;
         }>;
-        ownerReply?: {
-          text?: string;
-          createdAt?: string;
-        };
+        ownerReplyText?: string;
+        ownerReplyAt?: string;
       }>;
       cursor?: string;
     };
@@ -1708,8 +1381,8 @@ export type MapsReviewsResponse =
 
 export type InstagramProfileData = {
   body: {
-    user: string;
-    includePosts?: boolean;
+    profile: string;
+    cursor?: string;
   };
   path?: never;
   query?: never;
@@ -1737,160 +1410,53 @@ export type InstagramProfileResponses = {
   200: {
     success: true;
     data: {
-      profile: {
-        id?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        bio?: string;
-        bioLinks?: Array<{
-          url: string;
-          title?: string;
-        }>;
-        pronouns?: Array<string>;
-        isVerified: boolean;
-        isPrivate: boolean;
-        followers?: number;
-        following?: number;
-        posts?: number;
-        avatar?: string;
-      };
-      stats?: {
-        postsAnalyzed: number;
-        averageLikes?: number;
-        averageComments?: number;
-        engagementRate?: number;
-        postsPerWeek?: number;
-        lastPostAt?: string;
-      };
+      userId?: string;
+      username?: string;
+      userUrl?: string;
+      name?: string;
+      bio?: string;
+      bioLinkUrls?: Array<string>;
+      pronouns?: Array<string>;
+      isVerified?: boolean;
+      isPrivate?: boolean;
+      followers?: number;
+      following?: number;
+      postCount?: number;
+      avatarUrl?: string;
+      postsAnalyzed?: number;
+      averageLikes?: number;
+      averageComments?: number;
+      engagementRate?: number;
+      postsPerWeek?: number;
+      lastPostAt?: string;
       posts: Array<{
-        id?: string;
-        code?: string;
-        url: string;
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
         type: "photo" | "video" | "reel" | "carousel";
         text?: string;
         hashtags?: Array<string>;
         mentions?: Array<string>;
-        createdAt?: string;
+        publishedAt?: string;
         likes?: number;
         comments?: number;
         views?: number;
-        width?: number;
-        height?: number;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
+        thumbnailUrl?: string;
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
         imageDescription?: string;
         isPinned: boolean;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
         taggedUsers?: Array<string>;
         coauthors?: Array<string>;
-        audio?: {
-          title?: string;
-          artist?: string;
-          isOriginal: boolean;
-        };
-        isPaidPartnership: boolean;
-        sponsors?: Array<string>;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type InstagramProfileResponse =
-  InstagramProfileResponses[keyof InstagramProfileResponses];
-
-export type InstagramPostsData = {
-  body: {
-    user: string;
-    type?: "all" | "reels" | "videos" | "photos";
-    limit?: number;
-    cursor?: string;
-    from?: string;
-    to?: string;
-    includeViews?: boolean;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/instagram/posts";
-};
-
-export type InstagramPostsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type InstagramPostsError =
-  InstagramPostsErrors[keyof InstagramPostsErrors];
-
-export type InstagramPostsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      posts: Array<{
-        id?: string;
-        code?: string;
-        url: string;
-        type: "photo" | "video" | "reel" | "carousel";
-        text?: string;
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        createdAt?: string;
-        likes?: number;
-        comments?: number;
-        views?: number;
-        width?: number;
-        height?: number;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        imageDescription?: string;
-        isPinned: boolean;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        taggedUsers?: Array<string>;
-        coauthors?: Array<string>;
-        audio?: {
-          title?: string;
-          artist?: string;
-          isOriginal: boolean;
-        };
+        audioTitle?: string;
+        audioArtist?: string;
+        audioIsOriginal?: boolean;
         isPaidPartnership: boolean;
         sponsors?: Array<string>;
       }>;
@@ -1901,13 +1467,12 @@ export type InstagramPostsResponses = {
   };
 };
 
-export type InstagramPostsResponse =
-  InstagramPostsResponses[keyof InstagramPostsResponses];
+export type InstagramProfileResponse =
+  InstagramProfileResponses[keyof InstagramProfileResponses];
 
 export type InstagramPostData = {
   body: {
     post: string;
-    includeComments?: boolean;
   };
   path?: never;
   query?: never;
@@ -1934,64 +1499,48 @@ export type InstagramPostResponses = {
   200: {
     success: true;
     data: {
-      post: {
-        id?: string;
-        code?: string;
-        url: string;
-        type: "photo" | "video" | "reel" | "carousel";
-        text?: string;
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        createdAt?: string;
-        likes?: number;
-        comments?: number;
-        views?: number;
-        width?: number;
-        height?: number;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        imageDescription?: string;
-        isPinned: boolean;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        taggedUsers?: Array<string>;
-        coauthors?: Array<string>;
-        audio?: {
-          title?: string;
-          artist?: string;
-          isOriginal: boolean;
-        };
-        isPaidPartnership: boolean;
-        sponsors?: Array<string>;
-      };
+      postId?: string;
+      postCode?: string;
+      postUrl: string;
+      type: "photo" | "video" | "reel" | "carousel";
+      text?: string;
+      hashtags: Array<string>;
+      mentions: Array<string>;
+      publishedAt?: string;
+      likes?: number;
+      views?: number;
+      thumbnailUrl?: string;
+      imageUrls: Array<string>;
+      videoUrls: Array<string>;
+      imageDescription?: string;
+      isPinned: boolean;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl?: string;
+      authorAvatarUrl?: string;
+      authorIsVerified: boolean;
+      taggedUsers: Array<string>;
+      coauthors: Array<string>;
+      audioTitle?: string;
+      audioArtist?: string;
+      audioIsOriginal?: boolean;
+      isPaidPartnership: boolean;
+      sponsors: Array<string>;
+      commentCount?: number;
       comments: Array<{
-        id?: string;
-        url: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        commentId?: string;
+        commentUrl: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
         text?: string;
         likes: number;
         replies: number;
-        createdAt?: string;
+        publishedAt?: string;
       }>;
     };
     creditsUsed: number;
@@ -2002,182 +1551,14 @@ export type InstagramPostResponses = {
 export type InstagramPostResponse =
   InstagramPostResponses[keyof InstagramPostResponses];
 
-export type InstagramUrlData = {
-  body: {
-    url: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/instagram/url";
-};
-
-export type InstagramUrlErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type InstagramUrlError = InstagramUrlErrors[keyof InstagramUrlErrors];
-
-export type InstagramUrlResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data:
-      | {
-          kind: "profile";
-          profile: {
-            id?: string;
-            username?: string;
-            url: string;
-            name?: string;
-            bio?: string;
-            bioLinks?: Array<{
-              url: string;
-              title?: string;
-            }>;
-            pronouns?: Array<string>;
-            isVerified: boolean;
-            isPrivate: boolean;
-            followers?: number;
-            following?: number;
-            posts?: number;
-            avatar?: string;
-          };
-          stats?: {
-            postsAnalyzed: number;
-            averageLikes?: number;
-            averageComments?: number;
-            engagementRate?: number;
-            postsPerWeek?: number;
-            lastPostAt?: string;
-          };
-          posts?: Array<{
-            id?: string;
-            code?: string;
-            url: string;
-            type: "photo" | "video" | "reel" | "carousel";
-            text?: string;
-            hashtags?: Array<string>;
-            mentions?: Array<string>;
-            createdAt?: string;
-            likes?: number;
-            comments?: number;
-            views?: number;
-            width?: number;
-            height?: number;
-            thumbnail?: string;
-            images?: Array<{
-              url: string;
-              caption?: string;
-              alt?: string;
-            }>;
-            videos?: Array<{
-              url: string;
-            }>;
-            imageDescription?: string;
-            isPinned: boolean;
-            author?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
-            taggedUsers?: Array<string>;
-            coauthors?: Array<string>;
-            audio?: {
-              title?: string;
-              artist?: string;
-              isOriginal: boolean;
-            };
-            isPaidPartnership: boolean;
-            sponsors?: Array<string>;
-          }>;
-        }
-      | {
-          kind: "post";
-          post: {
-            id?: string;
-            code?: string;
-            url: string;
-            type: "photo" | "video" | "reel" | "carousel";
-            text?: string;
-            hashtags?: Array<string>;
-            mentions?: Array<string>;
-            createdAt?: string;
-            likes?: number;
-            comments?: number;
-            views?: number;
-            width?: number;
-            height?: number;
-            thumbnail?: string;
-            images?: Array<{
-              url: string;
-              caption?: string;
-              alt?: string;
-            }>;
-            videos?: Array<{
-              url: string;
-            }>;
-            imageDescription?: string;
-            isPinned: boolean;
-            author?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
-            taggedUsers?: Array<string>;
-            coauthors?: Array<string>;
-            audio?: {
-              title?: string;
-              artist?: string;
-              isOriginal: boolean;
-            };
-            isPaidPartnership: boolean;
-            sponsors?: Array<string>;
-          };
-          comments?: Array<{
-            id?: string;
-            url: string;
-            author?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
-            text?: string;
-            likes: number;
-            replies: number;
-            createdAt?: string;
-          }>;
-        };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type InstagramUrlResponse =
-  InstagramUrlResponses[keyof InstagramUrlResponses];
-
 export type InstagramSearchData = {
   body: {
     query: string;
     type?: "all" | "posts" | "reels";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
   };
   path?: never;
@@ -2206,46 +1587,34 @@ export type InstagramSearchResponses = {
   200: {
     success: true;
     data: {
-      posts: Array<{
-        id?: string;
-        code?: string;
-        url: string;
+      results: Array<{
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
         type: "photo" | "video" | "reel" | "carousel";
         text?: string;
         hashtags?: Array<string>;
         mentions?: Array<string>;
-        createdAt?: string;
+        publishedAt?: string;
         likes?: number;
         comments?: number;
         views?: number;
-        width?: number;
-        height?: number;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
+        thumbnailUrl?: string;
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
         imageDescription?: string;
         isPinned: boolean;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
         taggedUsers?: Array<string>;
         coauthors?: Array<string>;
-        audio?: {
-          title?: string;
-          artist?: string;
-          isOriginal: boolean;
-        };
+        audioTitle?: string;
+        audioArtist?: string;
+        audioIsOriginal?: boolean;
         isPaidPartnership: boolean;
         sponsors?: Array<string>;
       }>;
@@ -2258,71 +1627,15 @@ export type InstagramSearchResponses = {
 export type InstagramSearchResponse =
   InstagramSearchResponses[keyof InstagramSearchResponses];
 
-export type InstagramTranscriptData = {
-  body: {
-    post: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    includeTimestamps?: boolean;
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/instagram/transcript";
-};
-
-export type InstagramTranscriptErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type InstagramTranscriptError =
-  InstagramTranscriptErrors[keyof InstagramTranscriptErrors];
-
-export type InstagramTranscriptResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      id?: string;
-      url: string;
-      transcripts: Array<{
-        id?: string;
-        url: string;
-        language?: string;
-        isAutoGenerated: boolean;
-        durationSeconds?: number;
-        text?: string;
-        segments?: Array<{
-          startSeconds: number;
-          endSeconds: number;
-          text?: string;
-        }>;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type InstagramTranscriptResponse =
-  InstagramTranscriptResponses[keyof InstagramTranscriptResponses];
-
 export type InstagramCommentsData = {
   body: {
     post: string;
-    limit?: number;
+    comment?: string;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -2350,21 +1663,19 @@ export type InstagramCommentsResponses = {
   200: {
     success: true;
     data: {
-      comments: Array<{
-        id?: string;
-        url: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+      results: Array<{
+        commentId?: string;
+        commentUrl: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
         text?: string;
         likes: number;
         replies: number;
-        createdAt?: string;
+        publishedAt?: string;
       }>;
       cursor?: string;
     };
@@ -2376,68 +1687,10 @@ export type InstagramCommentsResponses = {
 export type InstagramCommentsResponse =
   InstagramCommentsResponses[keyof InstagramCommentsResponses];
 
-export type InstagramCommentsRepliesData = {
-  body: {
-    post: string;
-    comment: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/instagram/comments/replies";
-};
-
-export type InstagramCommentsRepliesErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type InstagramCommentsRepliesError =
-  InstagramCommentsRepliesErrors[keyof InstagramCommentsRepliesErrors];
-
-export type InstagramCommentsRepliesResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      replies: Array<{
-        id?: string;
-        url: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        text?: string;
-        likes: number;
-        replies: number;
-        createdAt?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type InstagramCommentsRepliesResponse =
-  InstagramCommentsRepliesResponses[keyof InstagramCommentsRepliesResponses];
-
 export type TiktokProfileData = {
   body: {
-    user: string;
+    profile: string;
+    cursor?: string;
   };
   path?: never;
   query?: never;
@@ -2464,27 +1717,52 @@ export type TiktokProfileResponses = {
   200: {
     success: true;
     data: {
-      profile: {
-        id?: string;
-        secUid?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        bio?: string;
-        bioLinks?: Array<{
-          url: string;
-        }>;
-        avatar?: string;
-        isVerified: boolean;
-        isPrivate: boolean;
-        isOrganization: boolean;
-        language?: string;
-        createdAt?: string;
-        followers?: number;
-        following?: number;
+      userId?: string;
+      username?: string;
+      userUrl?: string;
+      name?: string;
+      bio?: string;
+      bioLinkUrl?: string;
+      avatarUrl?: string;
+      isVerified?: boolean;
+      isPrivate?: boolean;
+      isOrganization?: boolean;
+      language?: string;
+      createdAt?: string;
+      followers?: number;
+      following?: number;
+      likes?: number;
+      videos?: number;
+      posts: Array<{
+        videoId?: string;
+        videoUrl: string;
+        type: "video" | "photo";
+        text?: string;
+        hashtags?: Array<string>;
+        mentions?: Array<string>;
+        publishedAt?: string;
+        durationSeconds?: number;
+        thumbnailUrl?: string;
+        imageUrls?: Array<string>;
+        views?: number;
         likes?: number;
-        videos?: number;
-      };
+        comments?: number;
+        shares?: number;
+        saves?: number;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
+        audioId?: string;
+        audioTitle?: string;
+        audioArtist?: string;
+        audioIsOriginal?: boolean;
+        isAd: boolean;
+        isAiGenerated: boolean;
+      }>;
+      cursor?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -2523,46 +1801,34 @@ export type TiktokVideoResponses = {
   200: {
     success: true;
     data: {
-      video: {
-        id?: string;
-        url: string;
-        type: "video" | "photo";
-        text?: string;
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        createdAt?: string;
-        durationSeconds?: number;
-        width?: number;
-        height?: number;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        views?: number;
-        likes?: number;
-        comments?: number;
-        shares?: number;
-        saves?: number;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        audio?: {
-          id?: string;
-          title?: string;
-          artist?: string;
-          isOriginal: boolean;
-        };
-        country?: string;
-        isAd: boolean;
-        isAiGenerated: boolean;
-      };
+      videoId?: string;
+      videoUrl: string;
+      type: "video" | "photo";
+      text?: string;
+      hashtags: Array<string>;
+      mentions: Array<string>;
+      publishedAt?: string;
+      durationSeconds?: number;
+      thumbnailUrl?: string;
+      imageUrls: Array<string>;
+      views?: number;
+      likes?: number;
+      comments?: number;
+      shares?: number;
+      saves?: number;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl: string;
+      authorAvatarUrl?: string;
+      authorIsVerified: boolean;
+      audioId?: string;
+      audioTitle?: string;
+      audioArtist?: string;
+      audioIsOriginal?: boolean;
+      country?: string;
+      isAd: boolean;
+      isAiGenerated: boolean;
     };
     creditsUsed: number;
     requestId: string;
@@ -2572,249 +1838,14 @@ export type TiktokVideoResponses = {
 export type TiktokVideoResponse =
   TiktokVideoResponses[keyof TiktokVideoResponses];
 
-export type TiktokUrlData = {
-  body: {
-    url: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tiktok/url";
-};
-
-export type TiktokUrlErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TiktokUrlError = TiktokUrlErrors[keyof TiktokUrlErrors];
-
-export type TiktokUrlResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data:
-      | {
-          kind: "profile";
-          profile: {
-            id?: string;
-            secUid?: string;
-            username?: string;
-            url: string;
-            name?: string;
-            bio?: string;
-            bioLinks?: Array<{
-              url: string;
-            }>;
-            avatar?: string;
-            isVerified: boolean;
-            isPrivate: boolean;
-            isOrganization: boolean;
-            language?: string;
-            createdAt?: string;
-            followers?: number;
-            following?: number;
-            likes?: number;
-            videos?: number;
-          };
-        }
-      | {
-          kind: "video";
-          video: {
-            id?: string;
-            url: string;
-            type: "video" | "photo";
-            text?: string;
-            hashtags?: Array<string>;
-            mentions?: Array<string>;
-            createdAt?: string;
-            durationSeconds?: number;
-            width?: number;
-            height?: number;
-            thumbnail?: string;
-            images?: Array<{
-              url: string;
-              caption?: string;
-              alt?: string;
-            }>;
-            views?: number;
-            likes?: number;
-            comments?: number;
-            shares?: number;
-            saves?: number;
-            author?: {
-              id?: string;
-              username?: string;
-              name?: string;
-              url?: string;
-              avatar?: string;
-              isVerified?: boolean;
-            };
-            audio?: {
-              id?: string;
-              title?: string;
-              artist?: string;
-              isOriginal: boolean;
-            };
-            country?: string;
-            isAd: boolean;
-            isAiGenerated: boolean;
-          };
-        };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TiktokUrlResponse = TiktokUrlResponses[keyof TiktokUrlResponses];
-
-export type TiktokTranscriptData = {
-  body: {
-    video: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    includeTimestamps?: boolean;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tiktok/transcript";
-};
-
-export type TiktokTranscriptErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TiktokTranscriptError =
-  TiktokTranscriptErrors[keyof TiktokTranscriptErrors];
-
-export type TiktokTranscriptResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      id?: string;
-      url: string;
-      language?: string;
-      isAutoGenerated: boolean;
-      durationSeconds?: number;
-      text?: string;
-      segments?: Array<{
-        startSeconds: number;
-        endSeconds: number;
-        text?: string;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TiktokTranscriptResponse =
-  TiktokTranscriptResponses[keyof TiktokTranscriptResponses];
-
-export type TiktokPostsData = {
-  body: {
-    user: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tiktok/posts";
-};
-
-export type TiktokPostsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TiktokPostsError = TiktokPostsErrors[keyof TiktokPostsErrors];
-
-export type TiktokPostsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      posts: Array<{
-        id?: string;
-        url: string;
-        type: "video" | "photo";
-        text?: string;
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        createdAt?: string;
-        durationSeconds?: number;
-        width?: number;
-        height?: number;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        views?: number;
-        likes?: number;
-        comments?: number;
-        shares?: number;
-        saves?: number;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        audio?: {
-          id?: string;
-          title?: string;
-          artist?: string;
-          isOriginal: boolean;
-        };
-        isAd: boolean;
-        isAiGenerated: boolean;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TiktokPostsResponse =
-  TiktokPostsResponses[keyof TiktokPostsResponses];
-
 export type TiktokHashtagData = {
   body: {
     hashtag: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -2841,42 +1872,32 @@ export type TiktokHashtagResponses = {
   200: {
     success: true;
     data: {
-      videos: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        videoId?: string;
+        videoUrl: string;
         type: "video" | "photo";
         text?: string;
         hashtags?: Array<string>;
         mentions?: Array<string>;
-        createdAt?: string;
+        publishedAt?: string;
         durationSeconds?: number;
-        width?: number;
-        height?: number;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
+        thumbnailUrl?: string;
+        imageUrls?: Array<string>;
         views?: number;
         likes?: number;
         comments?: number;
         shares?: number;
         saves?: number;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        audio?: {
-          id?: string;
-          title?: string;
-          artist?: string;
-          isOriginal: boolean;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
+        audioId?: string;
+        audioTitle?: string;
+        audioArtist?: string;
+        audioIsOriginal?: boolean;
         isAd: boolean;
         isAiGenerated: boolean;
       }>;
@@ -2893,8 +1914,12 @@ export type TiktokHashtagResponse =
 export type TiktokCommentsData = {
   body: {
     video: string;
-    limit?: number;
+    comment?: string;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -2922,20 +1947,17 @@ export type TiktokCommentsResponses = {
   200: {
     success: true;
     data: {
-      comments: Array<{
-        id?: string;
+      results: Array<{
+        commentId?: string;
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl: string;
+        authorAvatarUrl?: string;
         likes: number;
         replies: number;
-        createdAt?: string;
+        publishedAt?: string;
       }>;
       cursor?: string;
     };
@@ -2947,70 +1969,15 @@ export type TiktokCommentsResponses = {
 export type TiktokCommentsResponse =
   TiktokCommentsResponses[keyof TiktokCommentsResponses];
 
-export type TiktokCommentsRepliesData = {
-  body: {
-    video: string;
-    comment: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tiktok/comments/replies";
-};
-
-export type TiktokCommentsRepliesErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TiktokCommentsRepliesError =
-  TiktokCommentsRepliesErrors[keyof TiktokCommentsRepliesErrors];
-
-export type TiktokCommentsRepliesResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      replies: Array<{
-        id?: string;
-        text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        likes: number;
-        replies: number;
-        createdAt?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TiktokCommentsRepliesResponse =
-  TiktokCommentsRepliesResponses[keyof TiktokCommentsRepliesResponses];
-
 export type TiktokSearchData = {
   body: {
     query: string;
     type?: "videos" | "users";
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3037,57 +2004,48 @@ export type TiktokSearchResponses = {
   200: {
     success: true;
     data: {
-      videos: Array<{
-        id?: string;
-        url: string;
-        type: "video" | "photo";
-        text?: string;
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        createdAt?: string;
-        durationSeconds?: number;
-        width?: number;
-        height?: number;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        views?: number;
-        likes?: number;
-        comments?: number;
-        shares?: number;
-        saves?: number;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        audio?: {
-          id?: string;
-          title?: string;
-          artist?: string;
-          isOriginal: boolean;
-        };
-        isAd: boolean;
-        isAiGenerated: boolean;
-      }>;
-      users: Array<{
-        id?: string;
-        secUid?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        bio?: string;
-        avatar?: string;
-        isVerified: boolean;
-        followers?: number;
-        likes?: number;
-      }>;
+      results: Array<
+        | {
+            videoId?: string;
+            videoUrl: string;
+            type: "video" | "photo";
+            text?: string;
+            hashtags?: Array<string>;
+            mentions?: Array<string>;
+            publishedAt?: string;
+            durationSeconds?: number;
+            thumbnailUrl?: string;
+            imageUrls?: Array<string>;
+            views?: number;
+            likes?: number;
+            comments?: number;
+            shares?: number;
+            saves?: number;
+            authorId?: string;
+            authorUsername?: string;
+            authorName?: string;
+            authorUrl: string;
+            authorAvatarUrl?: string;
+            authorIsVerified: boolean;
+            audioId?: string;
+            audioTitle?: string;
+            audioArtist?: string;
+            audioIsOriginal?: boolean;
+            isAd: boolean;
+            isAiGenerated: boolean;
+          }
+        | {
+            userId?: string;
+            username?: string;
+            userUrl: string;
+            name?: string;
+            bio?: string;
+            avatarUrl?: string;
+            isVerified: boolean;
+            followers?: number;
+            likes?: number;
+          }
+      >;
       cursor?: string;
     };
     creditsUsed: number;
@@ -3100,7 +2058,8 @@ export type TiktokSearchResponse =
 
 export type BlueskyProfileData = {
   body: {
-    user: string;
+    profile: string;
+    cursor?: string;
   };
   path?: never;
   query?: never;
@@ -3128,22 +2087,48 @@ export type BlueskyProfileResponses = {
   200: {
     success: true;
     data: {
-      profile: {
-        id?: string;
-        did?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        bio?: string;
-        avatar?: string;
-        banner?: string;
-        followers?: number;
-        following?: number;
-        posts?: number;
-        isVerified: boolean;
-        pinnedPost?: string;
-        createdAt?: string;
-      };
+      userId?: string;
+      username?: string;
+      userUrl?: string;
+      name?: string;
+      bio?: string;
+      avatarUrl?: string;
+      createdAt?: string;
+      bannerUrl?: string;
+      followers?: number;
+      following?: number;
+      postCount?: number;
+      isVerified?: boolean;
+      pinnedPostId?: string;
+      posts: Array<{
+        postId?: string;
+        postUrl: string;
+        text?: string;
+        language?: string;
+        publishedAt?: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        likes: number;
+        reposts: number;
+        replies: number;
+        quotes: number;
+        replyToId?: string;
+        repostedByUsername?: string;
+        hashtags?: Array<string>;
+        mentions?: Array<string>;
+        links?: Array<string>;
+        imageUrls?: Array<string>;
+        videoUrl?: string;
+        linkUrl?: string;
+        linkTitle?: string;
+        quotedUrl?: string;
+        quotedText?: string;
+      }>;
+      cursor?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -3153,118 +2138,9 @@ export type BlueskyProfileResponses = {
 export type BlueskyProfileResponse =
   BlueskyProfileResponses[keyof BlueskyProfileResponses];
 
-export type BlueskyPostsData = {
-  body: {
-    user: string;
-    type?: "all" | "posts" | "media" | "video" | "threads";
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/bluesky/posts";
-};
-
-export type BlueskyPostsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type BlueskyPostsError = BlueskyPostsErrors[keyof BlueskyPostsErrors];
-
-export type BlueskyPostsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      posts: Array<{
-        id?: string;
-        cid?: string;
-        url: string;
-        text?: string;
-        language?: string;
-        createdAt?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        likes: number;
-        reposts: number;
-        replies: number;
-        quotes: number;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        repostedBy?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        links?: Array<string>;
-        images?: Array<{
-          url: string;
-          thumbnail?: string;
-          alt?: string;
-        }>;
-        video?: {
-          url: string;
-          thumbnail?: string;
-          alt?: string;
-        };
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-        quoted?: {
-          id?: string;
-          url: string;
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type BlueskyPostsResponse =
-  BlueskyPostsResponses[keyof BlueskyPostsResponses];
-
 export type BlueskyPostData = {
   body: {
     post: string;
-    depth?: number;
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3291,135 +2167,59 @@ export type BlueskyPostResponses = {
   200: {
     success: true;
     data: {
-      post: {
-        id?: string;
-        cid?: string;
-        url: string;
-        text?: string;
-        language?: string;
-        createdAt?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        likes: number;
-        reposts: number;
-        replies: number;
-        quotes: number;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        repostedBy?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        links?: Array<string>;
-        images?: Array<{
-          url: string;
-          thumbnail?: string;
-          alt?: string;
-        }>;
-        video?: {
-          url: string;
-          thumbnail?: string;
-          alt?: string;
-        };
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-        quoted?: {
-          id?: string;
-          url: string;
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
-      };
+      postId?: string;
+      postUrl: string;
+      text?: string;
+      language?: string;
+      publishedAt?: string;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl?: string;
+      authorAvatarUrl?: string;
+      authorIsVerified?: boolean;
+      likes: number;
+      reposts: number;
+      quotes: number;
+      replyToId?: string;
+      repostedByUsername?: string;
+      hashtags: Array<string>;
+      mentions: Array<string>;
+      links: Array<string>;
+      imageUrls: Array<string>;
+      videoUrl?: string;
+      linkUrl?: string;
+      linkTitle?: string;
+      quotedUrl?: string;
+      quotedText?: string;
+      replyCount: number;
       replies: Array<{
-        id?: string;
-        cid?: string;
-        url: string;
+        postId?: string;
+        postUrl: string;
         text?: string;
         language?: string;
-        createdAt?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        publishedAt?: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
         likes: number;
         reposts: number;
         replies: number;
         quotes: number;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        repostedBy?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
+        replyToId?: string;
+        repostedByUsername?: string;
         hashtags?: Array<string>;
         mentions?: Array<string>;
         links?: Array<string>;
-        images?: Array<{
-          url: string;
-          thumbnail?: string;
-          alt?: string;
-        }>;
-        video?: {
-          url: string;
-          thumbnail?: string;
-          alt?: string;
-        };
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-        quoted?: {
-          id?: string;
-          url: string;
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
+        imageUrls?: Array<string>;
+        videoUrl?: string;
+        linkUrl?: string;
+        linkTitle?: string;
+        quotedUrl?: string;
+        quotedText?: string;
         depth: number;
       }>;
     };
@@ -3433,9 +2233,12 @@ export type BlueskyPostResponse =
 
 export type BlueskyFollowersData = {
   body: {
-    user: string;
-    limit?: number;
+    profile: string;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3463,14 +2266,13 @@ export type BlueskyFollowersResponses = {
   200: {
     success: true;
     data: {
-      followers: Array<{
-        id?: string;
-        did?: string;
+      results: Array<{
+        userId?: string;
         username?: string;
-        url: string;
+        userUrl: string;
         name?: string;
         bio?: string;
-        avatar?: string;
+        avatarUrl?: string;
         createdAt?: string;
       }>;
       cursor?: string;
@@ -3483,455 +2285,10 @@ export type BlueskyFollowersResponses = {
 export type BlueskyFollowersResponse =
   BlueskyFollowersResponses[keyof BlueskyFollowersResponses];
 
-export type MastodonProfileData = {
-  body: {
-    user: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/mastodon/profile";
-};
-
-export type MastodonProfileErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MastodonProfileError =
-  MastodonProfileErrors[keyof MastodonProfileErrors];
-
-export type MastodonProfileResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      profile: {
-        id?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        bio?: string;
-        bioHtml?: string;
-        avatar?: string;
-        banner?: string;
-        followers?: number;
-        following?: number;
-        posts?: number;
-        isBot: boolean;
-        isLocked: boolean;
-        isGroup: boolean;
-        fields?: Array<{
-          name?: string;
-          value?: string;
-          verifiedAt?: string;
-        }>;
-        createdAt?: string;
-        lastPostAt?: string;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MastodonProfileResponse =
-  MastodonProfileResponses[keyof MastodonProfileResponses];
-
-export type MastodonPostsData = {
-  body: {
-    user: string;
-    excludeReplies?: boolean;
-    excludeReposts?: boolean;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/mastodon/posts";
-};
-
-export type MastodonPostsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MastodonPostsError = MastodonPostsErrors[keyof MastodonPostsErrors];
-
-export type MastodonPostsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      posts: Array<{
-        id?: string;
-        url: string;
-        uri?: string;
-        text?: string;
-        html?: string;
-        spoiler?: string;
-        language?: string;
-        visibility?: string;
-        isSensitive: boolean;
-        createdAt?: string;
-        editedAt?: string;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        replies: number;
-        reposts: number;
-        likes: number;
-        quotes: number;
-        repostedBy?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        media?: Array<{
-          type?: string;
-          url: string;
-          thumbnail?: string;
-          description?: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MastodonPostsResponse =
-  MastodonPostsResponses[keyof MastodonPostsResponses];
-
-export type MastodonPostData = {
-  body: {
-    post: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/mastodon/post";
-};
-
-export type MastodonPostErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MastodonPostError = MastodonPostErrors[keyof MastodonPostErrors];
-
-export type MastodonPostResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      post: {
-        id?: string;
-        url: string;
-        uri?: string;
-        text?: string;
-        html?: string;
-        spoiler?: string;
-        language?: string;
-        visibility?: string;
-        isSensitive: boolean;
-        createdAt?: string;
-        editedAt?: string;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        replies: number;
-        reposts: number;
-        likes: number;
-        quotes: number;
-        repostedBy?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        media?: Array<{
-          type?: string;
-          url: string;
-          thumbnail?: string;
-          description?: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-      };
-      ancestors: Array<{
-        id?: string;
-        url: string;
-        uri?: string;
-        text?: string;
-        html?: string;
-        spoiler?: string;
-        language?: string;
-        visibility?: string;
-        isSensitive: boolean;
-        createdAt?: string;
-        editedAt?: string;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        replies: number;
-        reposts: number;
-        likes: number;
-        quotes: number;
-        repostedBy?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        media?: Array<{
-          type?: string;
-          url: string;
-          thumbnail?: string;
-          description?: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-      }>;
-      replies: Array<{
-        id?: string;
-        url: string;
-        uri?: string;
-        text?: string;
-        html?: string;
-        spoiler?: string;
-        language?: string;
-        visibility?: string;
-        isSensitive: boolean;
-        createdAt?: string;
-        editedAt?: string;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        replies: number;
-        reposts: number;
-        likes: number;
-        quotes: number;
-        repostedBy?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        media?: Array<{
-          type?: string;
-          url: string;
-          thumbnail?: string;
-          description?: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MastodonPostResponse =
-  MastodonPostResponses[keyof MastodonPostResponses];
-
-export type MastodonHashtagData = {
-  body: {
-    hashtag: string;
-    instance?: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/mastodon/hashtag";
-};
-
-export type MastodonHashtagErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MastodonHashtagError =
-  MastodonHashtagErrors[keyof MastodonHashtagErrors];
-
-export type MastodonHashtagResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      posts: Array<{
-        id?: string;
-        url: string;
-        uri?: string;
-        text?: string;
-        html?: string;
-        spoiler?: string;
-        language?: string;
-        visibility?: string;
-        isSensitive: boolean;
-        createdAt?: string;
-        editedAt?: string;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        replies: number;
-        reposts: number;
-        likes: number;
-        quotes: number;
-        repostedBy?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        media?: Array<{
-          type?: string;
-          url: string;
-          thumbnail?: string;
-          description?: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MastodonHashtagResponse =
-  MastodonHashtagResponses[keyof MastodonHashtagResponses];
-
 export type ThreadsProfileData = {
   body: {
-    user: string;
+    profile: string;
+    cursor?: string;
   };
   path?: never;
   query?: never;
@@ -3959,186 +2316,44 @@ export type ThreadsProfileResponses = {
   200: {
     success: true;
     data: {
-      profile: {
-        id?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        bio?: string;
-        bioLinks?: Array<{
-          url: string;
-          title?: string;
-        }>;
-        isVerified: boolean;
-        isPrivate: boolean;
-        followers?: number;
-        avatar?: string;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type ThreadsProfileResponse =
-  ThreadsProfileResponses[keyof ThreadsProfileResponses];
-
-export type ThreadsPostsData = {
-  body: {
-    user: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/threads/posts";
-};
-
-export type ThreadsPostsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type ThreadsPostsError = ThreadsPostsErrors[keyof ThreadsPostsErrors];
-
-export type ThreadsPostsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
+      userId?: string;
+      username?: string;
+      userUrl: string;
+      name?: string;
+      bio?: string;
+      bioLinkUrls: Array<string>;
+      isVerified: boolean;
+      isPrivate: boolean;
+      followers?: number;
+      avatarUrl?: string;
       posts: Array<{
-        id?: string;
-        code?: string;
-        url: string;
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
         type: "text" | "photo" | "video" | "carousel";
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        publishedAt?: string;
         likes?: number;
         replies?: number;
         reposts?: number;
         quotes?: number;
         shares?: number;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+        linkUrl?: string;
+        linkTitle?: string;
         isReply: boolean;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
+        replyToUrl?: string;
         isPinned: boolean;
-        quoted?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
-        repostOf?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
+        quotedUrl?: string;
+        quotedText?: string;
+        repostOfUrl?: string;
       }>;
       cursor?: string;
     };
@@ -4147,8 +2362,8 @@ export type ThreadsPostsResponses = {
   };
 };
 
-export type ThreadsPostsResponse =
-  ThreadsPostsResponses[keyof ThreadsPostsResponses];
+export type ThreadsProfileResponse =
+  ThreadsProfileResponses[keyof ThreadsProfileResponses];
 
 export type ThreadsPostData = {
   body: {
@@ -4180,383 +2395,90 @@ export type ThreadsPostResponses = {
   200: {
     success: true;
     data: {
-      post: {
-        id?: string;
-        code?: string;
-        url: string;
-        type: "text" | "photo" | "video" | "carousel";
-        text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
-        likes?: number;
-        replies?: number;
-        reposts?: number;
-        quotes?: number;
-        shares?: number;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-        isReply: boolean;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        isPinned: boolean;
-        quoted?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
-        repostOf?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
-      };
+      postId?: string;
+      postCode?: string;
+      postUrl: string;
+      type: "text" | "photo" | "video" | "carousel";
+      text?: string;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl?: string;
+      authorAvatarUrl?: string;
+      authorIsVerified?: boolean;
+      publishedAt?: string;
+      likes?: number;
+      reposts?: number;
+      quotes?: number;
+      shares?: number;
+      imageUrls: Array<string>;
+      videoUrls: Array<string>;
+      linkUrl?: string;
+      linkTitle?: string;
+      isReply: boolean;
+      replyToUrl?: string;
+      isPinned: boolean;
+      quotedUrl?: string;
+      quotedText?: string;
+      repostOfUrl?: string;
+      replyCount?: number;
       thread: Array<{
-        id?: string;
-        code?: string;
-        url: string;
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
         type: "text" | "photo" | "video" | "carousel";
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        publishedAt?: string;
         likes?: number;
         replies?: number;
         reposts?: number;
         quotes?: number;
         shares?: number;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+        linkUrl?: string;
+        linkTitle?: string;
         isReply: boolean;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
+        replyToUrl?: string;
         isPinned: boolean;
-        quoted?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
-        repostOf?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
+        quotedUrl?: string;
+        quotedText?: string;
+        repostOfUrl?: string;
       }>;
       replies: Array<{
-        id?: string;
-        code?: string;
-        url: string;
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
         type: "text" | "photo" | "video" | "carousel";
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        publishedAt?: string;
         likes?: number;
         replies?: number;
         reposts?: number;
         quotes?: number;
         shares?: number;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+        linkUrl?: string;
+        linkTitle?: string;
         isReply: boolean;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
+        replyToUrl?: string;
         isPinned: boolean;
-        quoted?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
-        repostOf?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
+        quotedUrl?: string;
+        quotedText?: string;
+        repostOfUrl?: string;
       }>;
       cursor?: string;
     };
@@ -4571,6 +2493,9 @@ export type ThreadsPostResponse =
 export type ThreadsSearchData = {
   body: {
     query: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
   };
   path?: never;
@@ -4598,131 +2523,34 @@ export type ThreadsSearchResponses = {
   200: {
     success: true;
     data: {
-      posts: Array<{
-        id?: string;
-        code?: string;
-        url: string;
+      results: Array<{
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
         type: "text" | "photo" | "video" | "carousel";
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        publishedAt?: string;
         likes?: number;
         replies?: number;
         reposts?: number;
         quotes?: number;
         shares?: number;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+        linkUrl?: string;
+        linkTitle?: string;
         isReply: boolean;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
+        replyToUrl?: string;
         isPinned: boolean;
-        quoted?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
-        repostOf?: {
-          id?: string;
-          code?: string;
-          url: string;
-          type: "text" | "photo" | "video" | "carousel";
-          text?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          createdAt?: string;
-          likes?: number;
-          replies?: number;
-          reposts?: number;
-          quotes?: number;
-          shares?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-          videos?: Array<{
-            url: string;
-          }>;
-          link?: {
-            url: string;
-            title?: string;
-            description?: string;
-            image?: string;
-          };
-          isReply: boolean;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isPinned: boolean;
-        };
+        quotedUrl?: string;
+        quotedText?: string;
+        repostOfUrl?: string;
       }>;
     };
     creditsUsed: number;
@@ -4733,66 +2561,14 @@ export type ThreadsSearchResponses = {
 export type ThreadsSearchResponse =
   ThreadsSearchResponses[keyof ThreadsSearchResponses];
 
-export type TelegramChannelData = {
-  body: {
-    channel: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/telegram/channel";
-};
-
-export type TelegramChannelErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TelegramChannelError =
-  TelegramChannelErrors[keyof TelegramChannelErrors];
-
-export type TelegramChannelResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      channel: {
-        id?: string;
-        username?: string;
-        url: string;
-        type: "channel" | "group";
-        name?: string;
-        description?: string;
-        avatar?: string;
-        isVerified: boolean;
-        subscribers?: number;
-        hasPreview: boolean;
-        photos?: number;
-        videos?: number;
-        files?: number;
-        links?: number;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TelegramChannelResponse =
-  TelegramChannelResponses[keyof TelegramChannelResponses];
-
 export type TelegramPostsData = {
   body: {
     channel: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4819,39 +2595,37 @@ export type TelegramPostsResponses = {
   200: {
     success: true;
     data: {
-      posts: Array<{
-        id?: string;
-        channel?: string;
-        url: string;
+      channelId?: string;
+      channelUsername?: string;
+      channelUrl?: string;
+      channelType?: "channel" | "group";
+      channelName?: string;
+      description?: string;
+      avatarUrl?: string;
+      isVerified?: boolean;
+      subscribers?: number;
+      photos?: number;
+      videos?: number;
+      files?: number;
+      links?: number;
+      results: Array<{
+        postId?: string;
+        channelUsername?: string;
+        postUrl: string;
         text?: string;
         links?: Array<string>;
-        createdAt?: string;
+        publishedAt?: string;
         isEdited: boolean;
         views?: number;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        repostOf?: {
-          url?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        repostOfUrl?: string;
+        repostOfAuthorName?: string;
+        replyToUrl?: string;
         media?: Array<{
           type:
             | "photo"
@@ -4863,16 +2637,12 @@ export type TelegramPostsResponses = {
             | "document"
             | "poll";
           url?: string;
-          thumbnail?: string;
+          thumbnailUrl?: string;
           durationSeconds?: number;
         }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-          siteName?: string;
-        };
+        linkUrl?: string;
+        linkTitle?: string;
+        linkSiteName?: string;
         reactions?: Array<{
           emoji?: string;
           customEmojiId?: string;
@@ -4919,67 +2689,46 @@ export type TelegramPostResponses = {
   200: {
     success: true;
     data: {
-      post: {
-        id?: string;
-        channel?: string;
-        url: string;
-        text?: string;
-        links?: Array<string>;
-        createdAt?: string;
-        isEdited: boolean;
-        views?: number;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        repostOf?: {
-          url?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        media?: Array<{
-          type:
-            | "photo"
-            | "video"
-            | "roundVideo"
-            | "sticker"
-            | "voice"
-            | "audio"
-            | "document"
-            | "poll";
-          url?: string;
-          thumbnail?: string;
-          durationSeconds?: number;
-        }>;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-          siteName?: string;
-        };
-        reactions?: Array<{
-          emoji?: string;
-          customEmojiId?: string;
-          isPaid: boolean;
-          count: number;
-        }>;
-      };
+      postId?: string;
+      channelUsername?: string;
+      postUrl: string;
+      text?: string;
+      links: Array<string>;
+      publishedAt?: string;
+      isEdited: boolean;
+      views?: number;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl?: string;
+      authorAvatarUrl?: string;
+      authorIsVerified?: boolean;
+      repostOfUrl?: string;
+      repostOfAuthorName?: string;
+      replyToUrl?: string;
+      media: Array<{
+        type:
+          | "photo"
+          | "video"
+          | "roundVideo"
+          | "sticker"
+          | "voice"
+          | "audio"
+          | "document"
+          | "poll";
+        url?: string;
+        thumbnailUrl?: string;
+        durationSeconds?: number;
+      }>;
+      linkUrl?: string;
+      linkTitle?: string;
+      linkSiteName?: string;
+      reactions: Array<{
+        emoji?: string;
+        customEmojiId?: string;
+        isPaid: boolean;
+        count: number;
+      }>;
     };
     creditsUsed: number;
     requestId: string;
@@ -4989,138 +2738,6 @@ export type TelegramPostResponses = {
 export type TelegramPostResponse =
   TelegramPostResponses[keyof TelegramPostResponses];
 
-export type MetaAdsSearchData = {
-  body: {
-    query: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, or all. Any case is accepted.
-     */
-    country?: string;
-    adType?: "all" | "politicalAndIssue";
-    status?: "active" | "inactive" | "all";
-    mediaType?: "all" | "image" | "video" | "meme" | "none";
-    platforms?: Array<
-      "facebook" | "instagram" | "messenger" | "audienceNetwork"
-    >;
-    from?: string;
-    to?: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/meta/ads/search";
-};
-
-export type MetaAdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MetaAdsSearchError = MetaAdsSearchErrors[keyof MetaAdsSearchErrors];
-
-export type MetaAdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ads: Array<{
-        id?: string;
-        url: string;
-        page?: {
-          id?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          categories?: Array<string>;
-          likes?: number;
-        };
-        isActive: boolean;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        platforms?: Array<string>;
-        format?: string;
-        text?: string;
-        link?: {
-          url?: string;
-          title?: string;
-          description?: string;
-          caption?: string;
-        };
-        cta?: {
-          text?: string;
-          type?: string;
-        };
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-          thumbnail?: string;
-        }>;
-        cards?: Array<{
-          text?: string;
-          link?: {
-            url?: string;
-            title?: string;
-            description?: string;
-            caption?: string;
-          };
-          cta?: {
-            text?: string;
-            type?: string;
-          };
-          image?: string;
-          video?: {
-            url: string;
-            thumbnail?: string;
-          };
-        }>;
-        versions: number;
-        categories?: Array<string>;
-        paidBy?: string;
-        spend?: {
-          min?: number;
-          max?: number;
-        };
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        impressions?: {
-          min?: number;
-          max?: number;
-        };
-        reach?: {
-          min?: number;
-          max?: number;
-        };
-        countries?: Array<string>;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MetaAdsSearchResponse =
-  MetaAdsSearchResponses[keyof MetaAdsSearchResponses];
-
 export type MetaAdsPageData = {
   body: {
     page: string;
@@ -5128,20 +2745,12 @@ export type MetaAdsPageData = {
      * ISO 3166-1 alpha-2 country code, or all. Any case is accepted.
      */
     country?: string;
-    adType?: "all" | "politicalAndIssue";
     status?: "active" | "inactive" | "all";
-    mediaType?: "all" | "image" | "video" | "meme" | "none";
-    platforms?: Array<
-      "facebook" | "instagram" | "messenger" | "audienceNetwork"
-    >;
-    from?: string;
-    to?: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -5168,79 +2777,48 @@ export type MetaAdsPageResponses = {
   200: {
     success: true;
     data: {
-      ads: Array<{
-        id?: string;
-        url: string;
-        page?: {
-          id?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          categories?: Array<string>;
-          likes?: number;
-        };
+      results: Array<{
+        adId?: string;
+        adUrl: string;
+        pageId?: string;
+        pageName?: string;
+        pageUrl?: string;
+        pageAvatarUrl?: string;
+        pageCategories?: Array<string>;
+        pageLikes?: number;
         isActive: boolean;
         firstShownAt?: string;
         lastShownAt?: string;
         platforms?: Array<string>;
         format?: string;
         text?: string;
-        link?: {
-          url?: string;
-          title?: string;
-          description?: string;
-          caption?: string;
-        };
-        cta?: {
-          text?: string;
-          type?: string;
-        };
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-          thumbnail?: string;
-        }>;
+        linkUrl?: string;
+        linkTitle?: string;
+        linkDescription?: string;
+        ctaText?: string;
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
         cards?: Array<{
           text?: string;
-          link?: {
-            url?: string;
-            title?: string;
-            description?: string;
-            caption?: string;
-          };
-          cta?: {
-            text?: string;
-            type?: string;
-          };
-          image?: string;
-          video?: {
-            url: string;
-            thumbnail?: string;
-          };
+          linkUrl?: string;
+          linkTitle?: string;
+          ctaText?: string;
+          imageUrl?: string;
+          videoUrl?: string;
         }>;
         versions: number;
         categories?: Array<string>;
         paidBy?: string;
-        spend?: {
-          min?: number;
-          max?: number;
-        };
+        spendMin?: number;
+        spendMax?: number;
         /**
          * ISO 4217 currency code, e.g. USD.
          */
-        currency?: string;
-        impressions?: {
-          min?: number;
-          max?: number;
-        };
-        reach?: {
-          min?: number;
-          max?: number;
-        };
+        spendCurrency?: string;
+        impressionsMin?: number;
+        impressionsMax?: number;
+        reachMin?: number;
+        reachMax?: number;
         countries?: Array<string>;
       }>;
       cursor?: string;
@@ -5253,164 +2831,13 @@ export type MetaAdsPageResponses = {
 export type MetaAdsPageResponse =
   MetaAdsPageResponses[keyof MetaAdsPageResponses];
 
-export type MetaAdsAdData = {
-  body: {
-    ad: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/meta/ads/ad";
-};
-
-export type MetaAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MetaAdsAdError = MetaAdsAdErrors[keyof MetaAdsAdErrors];
-
-export type MetaAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ad: {
-        id?: string;
-        url: string;
-        page?: {
-          id?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          categories?: Array<string>;
-          likes?: number;
-        };
-        isActive: boolean;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        platforms?: Array<string>;
-        format?: string;
-        text?: string;
-        link?: {
-          url?: string;
-          title?: string;
-          description?: string;
-          caption?: string;
-        };
-        cta?: {
-          text?: string;
-          type?: string;
-        };
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-          thumbnail?: string;
-        }>;
-        cards?: Array<{
-          text?: string;
-          link?: {
-            url?: string;
-            title?: string;
-            description?: string;
-            caption?: string;
-          };
-          cta?: {
-            text?: string;
-            type?: string;
-          };
-          image?: string;
-          video?: {
-            url: string;
-            thumbnail?: string;
-          };
-        }>;
-        versions: number;
-        categories?: Array<string>;
-        paidBy?: string;
-        spend?: {
-          min?: number;
-          max?: number;
-        };
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        impressions?: {
-          min?: number;
-          max?: number;
-        };
-        reach?: {
-          min?: number;
-          max?: number;
-        };
-        countries?: Array<string>;
-      };
-      details?: {
-        advertiser?: {
-          description?: string;
-          category?: string;
-          likes?: number;
-          verification?: string;
-          instagram?: string;
-          instagramFollowers?: number;
-        };
-        audience?: {
-          ageGender?: Array<{
-            age?: string;
-            female: number;
-            male: number;
-            unknown: number;
-          }>;
-          regions?: Array<{
-            region?: string;
-            share: number;
-          }>;
-        };
-        euReach?: {
-          total?: number;
-          byCountry?: Array<{
-            country?: string;
-            age?: string;
-            female: number;
-            male: number;
-            unknown: number;
-          }>;
-        };
-        payers?: Array<{
-          paidBy?: string;
-          beneficiary?: string;
-        }>;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MetaAdsAdResponse = MetaAdsAdResponses[keyof MetaAdsAdResponses];
-
 export type LinkedinJobsSearchData = {
   body: {
     query?: string;
     location?: string;
-    geoId?: string;
     within?: "day" | "week" | "month" | "all";
-    jobTypes?: Array<
-      "fullTime" | "partTime" | "contract" | "temporary" | "internship"
-    >;
-    experience?: Array<
+    workplaces?: Array<"onsite" | "remote" | "hybrid">;
+    experiences?: Array<
       | "internship"
       | "entry"
       | "associate"
@@ -5418,12 +2845,11 @@ export type LinkedinJobsSearchData = {
       | "director"
       | "executive"
     >;
-    workplace?: Array<"onsite" | "remote" | "hybrid">;
-    companyIds?: Array<string>;
-    easyApply?: boolean;
-    sort?: "relevance" | "newest";
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -5451,24 +2877,15 @@ export type LinkedinJobsSearchResponses = {
   200: {
     success: true;
     data: {
-      jobs: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        jobId?: string;
+        jobUrl: string;
         title?: string;
-        company?: {
-          name?: string;
-          url?: string;
-          avatar?: string;
-        };
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        createdAt?: string;
+        companyName?: string;
+        companyUrl?: string;
+        companyAvatarUrl?: string;
+        location?: string;
+        publishedAt?: string;
         salaryText?: string;
         isEasyApply?: boolean;
         insight?: string;
@@ -5513,38 +2930,23 @@ export type LinkedinJobsJobResponses = {
   200: {
     success: true;
     data: {
-      job: {
-        id?: string;
-        url: string;
-        title?: string;
-        company?: {
-          name?: string;
-          url?: string;
-          avatar?: string;
-        };
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        createdAt?: string;
-        applicants?: number;
-        applicantsText?: string;
-        salaryText?: string;
-        isEasyApply?: boolean;
-        applyUrl?: string;
-        seniority?: string;
-        employmentType?: string;
-        jobFunction?: string;
-        industries?: string;
-        description?: {
-          text?: string;
-          html?: string;
-        };
-      };
+      jobId?: string;
+      jobUrl: string;
+      title?: string;
+      companyName?: string;
+      companyUrl?: string;
+      companyAvatarUrl?: string;
+      location?: string;
+      publishedAt?: string;
+      salaryText?: string;
+      isEasyApply?: boolean;
+      applicants?: number;
+      applyUrl?: string;
+      seniority?: string;
+      employmentType?: string;
+      jobFunction?: string;
+      industries?: string;
+      description?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -5553,158 +2955,6 @@ export type LinkedinJobsJobResponses = {
 
 export type LinkedinJobsJobResponse =
   LinkedinJobsJobResponses[keyof LinkedinJobsJobResponses];
-
-export type LinkedinAdsSearchData = {
-  body: {
-    query?: string;
-    advertiser?: string;
-    paidBy?: string;
-    countries?: Array<string>;
-    within?: "month" | "year" | "all";
-    from?: string;
-    to?: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/linkedin/ads/search";
-};
-
-export type LinkedinAdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type LinkedinAdsSearchError =
-  LinkedinAdsSearchErrors[keyof LinkedinAdsSearchErrors];
-
-export type LinkedinAdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ads: Array<{
-        id?: string;
-        url: string;
-        creativeType?: string;
-        format?: string;
-        advertiser?: {
-          name?: string;
-          url?: string;
-          avatar?: string;
-        };
-        postedBy?: string;
-        text?: string;
-        headline?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-      }>;
-      total?: number;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type LinkedinAdsSearchResponse =
-  LinkedinAdsSearchResponses[keyof LinkedinAdsSearchResponses];
-
-export type LinkedinAdsAdData = {
-  body: {
-    ad: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/linkedin/ads/ad";
-};
-
-export type LinkedinAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type LinkedinAdsAdError = LinkedinAdsAdErrors[keyof LinkedinAdsAdErrors];
-
-export type LinkedinAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ad: {
-        id?: string;
-        url: string;
-        creativeType?: string;
-        format?: string;
-        advertiser?: {
-          name?: string;
-          url?: string;
-          avatar?: string;
-        };
-        postedBy?: string;
-        text?: string;
-        headline?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        paidBy?: string;
-        cta?: {
-          text?: string;
-          type?: string;
-        };
-        videos?: Array<{
-          url: string;
-        }>;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        impressions?: {
-          min?: number;
-          max?: number;
-        };
-        countries?: Array<{
-          country?: string;
-          share?: number;
-        }>;
-        targeting?: Array<{
-          parameter?: string;
-          description?: string;
-        }>;
-        targetingUsed?: Array<{
-          parameter?: string;
-          isTargeted: boolean;
-          isExcluded: boolean;
-        }>;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type LinkedinAdsAdResponse =
-  LinkedinAdsAdResponses[keyof LinkedinAdsAdResponses];
 
 export type LinkedinCompanyData = {
   body: {
@@ -5736,20 +2986,18 @@ export type LinkedinCompanyResponses = {
   200: {
     success: true;
     data: {
-      company: {
-        id?: string;
-        url: string;
-        name?: string;
-        industry?: string;
-        size?: string;
-        employees?: number;
-        headquarters?: string;
-        website?: string;
-        followers?: number;
-        description?: string;
-        specialties?: Array<string>;
-        founded?: string;
-      };
+      companyId?: string;
+      companyUrl: string;
+      name?: string;
+      industry?: string;
+      size?: string;
+      employees?: number;
+      headquarters?: string;
+      website?: string;
+      followers?: number;
+      description?: string;
+      specialties: Array<string>;
+      founded?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -5789,31 +3037,28 @@ export type LinkedinProfileResponses = {
   200: {
     success: true;
     data: {
-      profile: {
-        id?: string;
-        url: string;
-        name?: string;
-        headline?: string;
-        location?: string;
-        about?: string;
-        isAboutTruncated: boolean;
-        followers?: number;
-        roles?: Array<{
-          title?: string;
-          company?: string;
-          url?: string;
-          from?: string;
-          to?: string;
-          isCurrent: boolean;
-        }>;
-        education?: Array<{
-          school?: string;
-          degree?: string;
-          url?: string;
-          from?: string;
-          to?: string;
-        }>;
-      };
+      profileId?: string;
+      profileUrl: string;
+      name?: string;
+      headline?: string;
+      location?: string;
+      about?: string;
+      followers?: number;
+      roles: Array<{
+        title?: string;
+        company?: string;
+        companyUrl?: string;
+        from?: string;
+        to?: string;
+        isCurrent: boolean;
+      }>;
+      education: Array<{
+        school?: string;
+        degree?: string;
+        schoolUrl?: string;
+        from?: string;
+        to?: string;
+      }>;
     };
     creditsUsed: number;
     requestId: string;
@@ -5827,6 +3072,9 @@ export type LinkedinPostsData = {
   body: {
     profile?: string;
     company?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
   };
   path?: never;
@@ -5854,16 +3102,14 @@ export type LinkedinPostsResponses = {
   200: {
     success: true;
     data: {
-      posts: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        postId?: string;
+        postUrl: string;
         text?: string;
-        createdAt?: string;
+        publishedAt?: string;
         likes?: number;
-        author?: {
-          name?: string;
-          url?: string;
-        };
+        authorName?: string;
+        authorUrl?: string;
       }>;
     };
     creditsUsed: number;
@@ -5874,103 +3120,14 @@ export type LinkedinPostsResponses = {
 export type LinkedinPostsResponse =
   LinkedinPostsResponses[keyof LinkedinPostsResponses];
 
-export type LinkedinCompanyPostsData = {
-  body: {
-    company: string;
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/linkedin/company/posts";
-};
-
-export type LinkedinCompanyPostsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type LinkedinCompanyPostsError =
-  LinkedinCompanyPostsErrors[keyof LinkedinCompanyPostsErrors];
-
-export type LinkedinCompanyPostsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      posts: Array<{
-        id?: string;
-        url: string;
-        text?: string;
-        createdAt?: string;
-        likes?: number;
-        author?: {
-          name?: string;
-          url?: string;
-        };
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type LinkedinCompanyPostsResponse =
-  LinkedinCompanyPostsResponses[keyof LinkedinCompanyPostsResponses];
-
 export type ZillowSearchData = {
   body: {
-    location?: string;
-    bounds?: {
-      west: number;
-      east: number;
-      south: number;
-      north: number;
-    };
+    location: string;
     status?: "forSale" | "forRent" | "sold";
-    sort?:
-      | "relevance"
-      | "newest"
-      | "priceHigh"
-      | "priceLow"
-      | "bedrooms"
-      | "bathrooms"
-      | "sqft"
-      | "lot";
-    price?: {
-      min?: number;
-      max?: number;
-    };
-    bedrooms?: {
-      min?: number;
-      max?: number;
-    };
-    bathrooms?: {
-      min?: number;
-      max?: number;
-    };
-    sqft?: {
-      min?: number;
-      max?: number;
-    };
-    lotSqft?: {
-      min?: number;
-      max?: number;
-    };
-    yearBuilt?: {
-      min?: number;
-      max?: number;
-    };
-    hoa?: {
-      max: number;
-    };
+    minPrice?: number;
+    maxPrice?: number;
+    minBedrooms?: number;
+    maxBedrooms?: number;
     homeTypes?: Array<
       | "house"
       | "townhouse"
@@ -5980,43 +3137,13 @@ export type ZillowSearchData = {
       | "apartment"
       | "manufactured"
     >;
-    listingTypes?: Array<
-      | "agent"
-      | "owner"
-      | "newConstruction"
-      | "comingSoon"
-      | "auction"
-      | "foreclosure"
-    >;
-    within?:
-      | "day"
-      | "week"
-      | "twoWeeks"
-      | "month"
-      | "threeMonths"
-      | "sixMonths"
-      | "year"
-      | "twoYears"
-      | "threeYears"
-      | "all";
+    sort?: "relevance" | "newest" | "priceHigh" | "priceLow";
     query?: string;
-    features?: Array<
-      | "garage"
-      | "pool"
-      | "airConditioning"
-      | "waterfront"
-      | "singleStory"
-      | "openHouse"
-      | "tour3d"
-      | "cityView"
-      | "parkView"
-      | "waterView"
-      | "mountainView"
-      | "catsAllowed"
-      | "furnished"
-    >;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -6043,28 +3170,20 @@ export type ZillowSearchResponses = {
   200: {
     success: true;
     data: {
-      listings: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        propertyId?: string;
+        propertyUrl: string;
         status: "forSale" | "forRent" | "sold" | "other";
         statusText?: string;
         price?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
+        priceCurrency: "USD";
+        addressFull?: string;
+        addressStreet?: string;
+        addressCity?: string;
+        addressRegion?: string;
+        addressPostalCode?: string;
+        latitude?: number;
+        longitude?: number;
         bedrooms?: number;
         bathrooms?: number;
         sqft?: number;
@@ -6073,20 +3192,16 @@ export type ZillowSearchResponses = {
         lastSoldAt?: string;
         zestimate?: number;
         rentZestimate?: number;
-        broker?: {
-          name?: string;
-        };
-        image?: string;
-        building?: {
-          name?: string;
-          minRent?: number;
-          maxRent?: number;
-          availableUnits?: number;
-          units?: Array<{
-            bedrooms?: number;
-            price?: number;
-          }>;
-        };
+        brokerName?: string;
+        imageUrl?: string;
+        buildingName?: string;
+        buildingMinRent?: number;
+        buildingMaxRent?: number;
+        buildingAvailableUnits?: number;
+        units?: Array<{
+          bedrooms?: number;
+          price?: number;
+        }>;
       }>;
       total?: number;
       cursor?: string;
@@ -6129,73 +3244,52 @@ export type ZillowPropertyResponses = {
   200: {
     success: true;
     data: {
-      property: {
-        id?: string;
-        url: string;
-        status?: string;
-        homeType?: string;
+      propertyId?: string;
+      propertyUrl: string;
+      status?: string;
+      homeType?: string;
+      price?: number;
+      priceCurrency: "USD";
+      zestimate?: number;
+      rentZestimate?: number;
+      lastSoldPrice?: number;
+      lastSoldAt?: string;
+      addressFull?: string;
+      addressStreet?: string;
+      addressCity?: string;
+      addressRegion?: string;
+      addressPostalCode?: string;
+      latitude?: number;
+      longitude?: number;
+      bedrooms?: number;
+      bathrooms?: number;
+      sqft?: number;
+      lotSize?: number;
+      lotSizeUnit?: string;
+      yearBuilt?: number;
+      description?: string;
+      imageUrls: Array<string>;
+      priceHistory: Array<{
+        date: string;
         price?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        zestimate?: number;
-        rentZestimate?: number;
-        lastSoldPrice?: number;
-        lastSoldAt?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        bedrooms?: number;
-        bathrooms?: number;
-        sqft?: number;
-        lotSize?: {
-          value: number;
-          unit?: string;
-        };
-        yearBuilt?: number;
-        description?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        priceHistory?: Array<{
-          date: string;
-          price?: number;
-          event?: string;
-        }>;
-        daysOnZillow?: number;
-        views?: number;
-        saves?: number;
-        monthlyHoa?: number;
-        propertyTaxRate?: number;
-        mls?: {
-          id?: string;
-          name?: string;
-        };
-        broker?: {
-          name?: string;
-          phone?: string;
-        };
-        agent?: {
-          name?: string;
-          phone?: string;
-          email?: string;
-        };
-        facts?: {
-          [key: string]: string | number | boolean | Array<string>;
-        };
-      };
+        event?: string;
+      }>;
+      daysOnZillow?: number;
+      views?: number;
+      saves?: number;
+      monthlyHoa?: number;
+      propertyTaxRate?: number;
+      mlsId?: string;
+      mlsName?: string;
+      brokerName?: string;
+      brokerPhone?: string;
+      agentName?: string;
+      agentPhone?: string;
+      agentEmail?: string;
+      facts: Array<{
+        name?: string;
+        value?: string;
+      }>;
     };
     creditsUsed: number;
     requestId: string;
@@ -6205,445 +3299,17 @@ export type ZillowPropertyResponses = {
 export type ZillowPropertyResponse =
   ZillowPropertyResponses[keyof ZillowPropertyResponses];
 
-export type GoogleAdsAdvertisersData = {
-  body: {
-    query: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/google/ads/advertisers";
-};
-
-export type GoogleAdsAdvertisersErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleAdsAdvertisersError =
-  GoogleAdsAdvertisersErrors[keyof GoogleAdsAdvertisersErrors];
-
-export type GoogleAdsAdvertisersResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      advertisers: Array<{
-        id?: string;
-        name?: string;
-        country?: string;
-        isVerified: boolean;
-        ads?: {
-          min: number;
-          max?: number;
-        };
-        url: string;
-      }>;
-      domains: Array<string>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleAdsAdvertisersResponse =
-  GoogleAdsAdvertisersResponses[keyof GoogleAdsAdvertisersResponses];
-
-export type GoogleAdsSearchData = {
-  body: {
-    advertiser?: string;
-    domain?: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    mediaType?: "text" | "image" | "video";
-    platform?: "play" | "maps" | "search" | "shopping" | "youtube";
-    from?: string;
-    to?: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/google/ads/search";
-};
-
-export type GoogleAdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleAdsSearchError =
-  GoogleAdsSearchErrors[keyof GoogleAdsSearchErrors];
-
-export type GoogleAdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ads: Array<{
-        id?: string;
-        url: string;
-        advertiser: {
-          id?: string;
-          name?: string;
-          url: string;
-          country?: string;
-          isVerified?: boolean;
-        };
-        domain?: string;
-        format: "text" | "image" | "video" | "unknown";
-        firstShownAt?: string;
-        lastShownAt?: string;
-        daysShown?: number;
-        preview?: string;
-        image?: string;
-      }>;
-      total?: {
-        min: number;
-        max: number;
-      };
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleAdsSearchResponse =
-  GoogleAdsSearchResponses[keyof GoogleAdsSearchResponses];
-
-export type GoogleAdsAdData = {
-  body: {
-    advertiser?: string;
-    ad: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/google/ads/ad";
-};
-
-export type GoogleAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleAdsAdError = GoogleAdsAdErrors[keyof GoogleAdsAdErrors];
-
-export type GoogleAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ad: {
-        id?: string;
-        url: string;
-        advertiser: {
-          id?: string;
-          name?: string;
-          url: string;
-          country?: string;
-          isVerified?: boolean;
-        };
-        domain?: string;
-        format: "text" | "image" | "video" | "unknown";
-        firstShownAt?: string;
-        lastShownAt?: string;
-        daysShown?: number;
-        preview?: string;
-        image?: string;
-        paidBy?: string;
-        variations?: Array<{
-          preview?: string;
-          image?: string;
-          video?: string;
-        }>;
-        impressions?: {
-          min: number;
-          max?: number;
-        };
-        regions?: Array<{
-          country?: string;
-          firstShownAt?: string;
-          lastShownAt?: string;
-          impressions?: {
-            min: number;
-            max?: number;
-          };
-          platforms?: Array<{
-            platform:
-              | "play"
-              | "maps"
-              | "search"
-              | "shopping"
-              | "youtube"
-              | "unknown";
-            impressions: {
-              min: number;
-              max?: number;
-            };
-          }>;
-        }>;
-        targeting?: {
-          demographics: {
-            isIncluded: boolean;
-            isExcluded: boolean;
-          };
-          geography: {
-            isIncluded: boolean;
-            isExcluded: boolean;
-          };
-          contextual: {
-            isIncluded: boolean;
-            isExcluded: boolean;
-          };
-          interests: {
-            isIncluded: boolean;
-            isExcluded: boolean;
-          };
-          customerLists: {
-            isIncluded: boolean;
-            isExcluded: boolean;
-          };
-        };
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleAdsAdResponse =
-  GoogleAdsAdResponses[keyof GoogleAdsAdResponses];
-
-export type TiktokAdsSearchData = {
-  body: {
-    query?: string;
-    advertiser?: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    from?: string;
-    to?: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tiktok/ads/search";
-};
-
-export type TiktokAdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TiktokAdsSearchError =
-  TiktokAdsSearchErrors[keyof TiktokAdsSearchErrors];
-
-export type TiktokAdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ads: Array<{
-        id?: string;
-        url: string;
-        advertiser?: {
-          id?: string;
-          name?: string;
-          country?: string;
-        };
-        headline?: string;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        reach?: {
-          min?: number;
-          max?: number;
-        };
-        video?: string;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-      }>;
-      advertiser?: {
-        id?: string;
-        name?: string;
-      };
-      total?: number;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TiktokAdsSearchResponse =
-  TiktokAdsSearchResponses[keyof TiktokAdsSearchResponses];
-
-export type TiktokAdsAdData = {
-  body: {
-    ad: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tiktok/ads/ad";
-};
-
-export type TiktokAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TiktokAdsAdError = TiktokAdsAdErrors[keyof TiktokAdsAdErrors];
-
-export type TiktokAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ad: {
-        id?: string;
-        url: string;
-        advertiser?: {
-          id?: string;
-          name?: string;
-          country?: string;
-        };
-        headline?: string;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        reach?: {
-          min?: number;
-          max?: number;
-        };
-        video?: string;
-        thumbnail?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        paidBy?: string;
-        link?: {
-          url?: string;
-          title?: string;
-          description?: string;
-          caption?: string;
-        };
-        cta?: {
-          text?: string;
-          type?: string;
-        };
-        objective?: string;
-        category?: string;
-        targeting?: {
-          audienceSize?: {
-            min?: number;
-            max?: number;
-          };
-          impressions?: {
-            min?: number;
-            max?: number;
-          };
-          countries?: Array<string>;
-          languages?: Array<string>;
-          interests?: string;
-          regions?: Array<{
-            country?: string;
-            impressions?: {
-              min?: number;
-              max?: number;
-            };
-            ages?: Array<string>;
-            genders?: Array<string>;
-            breakdown?: Array<{
-              age?: string;
-              gender?: string;
-              impressions?: {
-                min?: number;
-                max?: number;
-              };
-            }>;
-          }>;
-        };
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TiktokAdsAdResponse =
-  TiktokAdsAdResponses[keyof TiktokAdsAdResponses];
-
 export type UpworkSearchData = {
   body: {
     query?: string;
     sort?: "newest" | "relevance";
     jobType?: "hourly" | "fixed";
-    experience?: Array<"entry" | "intermediate" | "expert">;
-    duration?: Array<"week" | "month" | "semester" | "ongoing">;
-    workload?: Array<"asNeeded" | "partTime" | "fullTime">;
-    clientHires?: Array<"none" | "oneToNine" | "tenPlus">;
-    hourlyRate?: {
-      min?: number;
-      max?: number;
-    };
-    contractToHire?: boolean;
-    locations?: Array<string>;
-    timezones?: Array<string>;
-    limit?: number;
+    experience?: "entry" | "intermediate" | "expert";
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -6670,25 +3336,19 @@ export type UpworkSearchResponses = {
   200: {
     success: true;
     data: {
-      jobs: Array<{
-        id?: string;
-        ciphertext?: string;
-        url: string;
+      results: Array<{
+        jobId?: string;
+        jobUrl: string;
         title?: string;
         description?: string;
         skills?: Array<string>;
         type?: "hourly" | "fixed";
         experience?: "entry" | "intermediate" | "expert";
-        hourlyRate?: {
-          min?: number;
-          max?: number;
-        };
-        fixedBudget?: {
-          amount: number;
-        };
-        currency?: string;
+        hourlyRateMin?: number;
+        hourlyRateMax?: number;
+        fixedBudget?: number;
+        budgetCurrency?: string;
         durationWeeks?: number;
-        createdAt?: string;
         publishedAt?: string;
       }>;
       total?: number;
@@ -6731,62 +3391,45 @@ export type UpworkJobResponses = {
   200: {
     success: true;
     data: {
-      job: {
-        id?: string;
-        ciphertext?: string;
-        url: string;
-        title?: string;
-        description?: string;
-        skills?: Array<string>;
-        type?: "hourly" | "fixed";
-        experience?: "entry" | "intermediate" | "expert";
-        hourlyRate?: {
-          min?: number;
-          max?: number;
-        };
-        fixedBudget?: {
-          amount: number;
-        };
-        currency?: string;
-        durationWeeks?: number;
-        createdAt?: string;
-        publishedAt?: string;
-        status?: string;
-        category?: string;
-        categoryGroup?: string;
-        durationText?: string;
-        activity?: {
-          applicants?: number;
-          hired?: number;
-          interviewing?: number;
-          invitesSent?: number;
-          unansweredInvites?: number;
-          positions?: number;
-          lastClientActivityAt?: string;
-        };
-        client?: {
-          address?: {
-            full?: string;
-            street?: string;
-            city?: string;
-            state?: string;
-            postalCode?: string;
-            country?: string;
-          };
-          timezone?: string;
-          totalSpent?: number;
-          hires?: number;
-          jobsWithHires?: number;
-          activeContracts?: number;
-          reviews?: number;
-          rating?: number;
-          openJobs?: number;
-          postedJobs?: number;
-          joinedAt?: string;
-          industry?: string;
-          companySizeText?: string;
-        };
-      };
+      jobId?: string;
+      jobUrl: string;
+      title?: string;
+      description?: string;
+      skills: Array<string>;
+      type?: "hourly" | "fixed";
+      experience?: "entry" | "intermediate" | "expert";
+      hourlyRateMin?: number;
+      hourlyRateMax?: number;
+      fixedBudget?: number;
+      budgetCurrency?: string;
+      durationWeeks?: number;
+      publishedAt?: string;
+      createdAt?: string;
+      status?: string;
+      category?: string;
+      categoryGroup?: string;
+      durationText?: string;
+      applicants?: number;
+      hired?: number;
+      interviewing?: number;
+      invitesSent?: number;
+      unansweredInvites?: number;
+      positions?: number;
+      lastClientActivityAt?: string;
+      clientCity?: string;
+      clientCountry?: string;
+      clientTimezone?: string;
+      clientTotalSpent?: number;
+      clientHires?: number;
+      clientJobsWithHires?: number;
+      clientActiveContracts?: number;
+      clientReviews?: number;
+      clientRating?: number;
+      clientOpenJobs?: number;
+      clientPostedJobs?: number;
+      clientJoinedAt?: string;
+      clientIndustry?: string;
+      clientCompanySize?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -6795,311 +3438,6 @@ export type UpworkJobResponses = {
 
 export type UpworkJobResponse = UpworkJobResponses[keyof UpworkJobResponses];
 
-export type GoogleSuggestData = {
-  body: {
-    query: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    expand?: "none" | "alphabet" | "questions" | "all";
-    vertical?: "web" | "shopping";
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/google/suggest";
-};
-
-export type GoogleSuggestErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleSuggestError = GoogleSuggestErrors[keyof GoogleSuggestErrors];
-
-export type GoogleSuggestResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      query?: string;
-      keywords: Array<{
-        keyword: string;
-        seed?: string;
-        rank: number;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleSuggestResponse =
-  GoogleSuggestResponses[keyof GoogleSuggestResponses];
-
-export type YoutubeSuggestData = {
-  body: {
-    query: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    expand?: "none" | "alphabet" | "questions" | "all";
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/youtube/suggest";
-};
-
-export type YoutubeSuggestErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type YoutubeSuggestError =
-  YoutubeSuggestErrors[keyof YoutubeSuggestErrors];
-
-export type YoutubeSuggestResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      query?: string;
-      keywords: Array<{
-        keyword: string;
-        seed?: string;
-        rank: number;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type YoutubeSuggestResponse =
-  YoutubeSuggestResponses[keyof YoutubeSuggestResponses];
-
-export type AmazonSuggestData = {
-  body: {
-    query: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?:
-      | "us"
-      | "ca"
-      | "mx"
-      | "br"
-      | "gb"
-      | "de"
-      | "fr"
-      | "it"
-      | "es"
-      | "nl"
-      | "be"
-      | "se"
-      | "pl"
-      | "tr"
-      | "ae"
-      | "sa"
-      | "eg"
-      | "in"
-      | "jp"
-      | "au"
-      | "sg";
-    expand?: "none" | "alphabet" | "questions" | "all";
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/amazon/suggest";
-};
-
-export type AmazonSuggestErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type AmazonSuggestError = AmazonSuggestErrors[keyof AmazonSuggestErrors];
-
-export type AmazonSuggestResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      query?: string;
-      keywords: Array<{
-        keyword: string;
-        seed?: string;
-        rank: number;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type AmazonSuggestResponse =
-  AmazonSuggestResponses[keyof AmazonSuggestResponses];
-
-export type GoogleTrendsInterestData = {
-  body: {
-    queries: Array<string>;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * A state or metro inside country, e.g. CA for California in us.
-     */
-    subdivision?: string;
-    within?: "hour" | "day" | "week" | "month" | "year" | "all";
-    from?: string;
-    to?: string;
-    category?: number;
-    vertical?: "web" | "images" | "news" | "youtube" | "shopping";
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/google/trends/interest";
-};
-
-export type GoogleTrendsInterestErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleTrendsInterestError =
-  GoogleTrendsInterestErrors[keyof GoogleTrendsInterestErrors];
-
-export type GoogleTrendsInterestResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      queries: Array<string>;
-      points: Array<{
-        recordedAt: string;
-        values?: Array<number>;
-        isPartial: boolean;
-      }>;
-      averages: Array<number>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleTrendsInterestResponse =
-  GoogleTrendsInterestResponses[keyof GoogleTrendsInterestResponses];
-
-export type GoogleTrendsRegionsData = {
-  body: {
-    queries: Array<string>;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * A state or metro inside country, e.g. CA for California in us.
-     */
-    subdivision?: string;
-    within?: "hour" | "day" | "week" | "month" | "year" | "all";
-    from?: string;
-    to?: string;
-    category?: number;
-    vertical?: "web" | "images" | "news" | "youtube" | "shopping";
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    resolution?: "country" | "region" | "metro";
-    includeLowVolume?: boolean;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/google/trends/regions";
-};
-
-export type GoogleTrendsRegionsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleTrendsRegionsError =
-  GoogleTrendsRegionsErrors[keyof GoogleTrendsRegionsErrors];
-
-export type GoogleTrendsRegionsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      queries: Array<string>;
-      regions: Array<{
-        code?: string;
-        name?: string;
-        values?: Array<number>;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleTrendsRegionsResponse =
-  GoogleTrendsRegionsResponses[keyof GoogleTrendsRegionsResponses];
-
 export type GoogleTrendsRelatedData = {
   body: {
     query: string;
@@ -7107,19 +3445,11 @@ export type GoogleTrendsRelatedData = {
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
     country?: string;
-    /**
-     * A state or metro inside country, e.g. CA for California in us.
-     */
-    subdivision?: string;
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
-    from?: string;
-    to?: string;
-    category?: number;
-    vertical?: "web" | "images" | "news" | "youtube" | "shopping";
     /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     * Return at most this many results from the page. The price stays the same.
      */
-    language?: string;
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -7147,8 +3477,7 @@ export type GoogleTrendsRelatedResponses = {
   200: {
     success: true;
     data: {
-      query?: string;
-      queries: Array<{
+      results: Array<{
         query?: string;
         value: number;
       }>;
@@ -7167,10 +3496,6 @@ export type GoogleTrendsTrendingData = {
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
     country?: string;
-    /**
-     * A state or metro inside country, e.g. CA for California in us.
-     */
-    subdivision?: string;
     within?: "fourHours" | "day" | "twoDays" | "week";
     category?:
       | "autos"
@@ -7192,11 +3517,9 @@ export type GoogleTrendsTrendingData = {
       | "technology"
       | "travel"
       | "climate";
-    active?: boolean;
     /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     * Return at most this many results from the page. The price stays the same.
      */
-    language?: string;
     limit?: number;
   };
   path?: never;
@@ -7225,7 +3548,7 @@ export type GoogleTrendsTrendingResponses = {
   200: {
     success: true;
     data: {
-      trends: Array<{
+      results: Array<{
         query?: string;
         volume?: number;
         increasePercent?: number;
@@ -7265,58 +3588,9 @@ export type GoogleTrendsTrendingResponses = {
 export type GoogleTrendsTrendingResponse =
   GoogleTrendsTrendingResponses[keyof GoogleTrendsTrendingResponses];
 
-export type SiteMapData = {
-  body: {
-    url: string;
-    include?: Array<string>;
-    exclude?: Array<string>;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/site/map";
-};
-
-export type SiteMapErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type SiteMapError = SiteMapErrors[keyof SiteMapErrors];
-
-export type SiteMapResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      urls: Array<{
-        url: string;
-        lastModifiedAt?: string;
-      }>;
-      source: "sitemap" | "crawl";
-      sitemaps: Array<string>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type SiteMapResponse = SiteMapResponses[keyof SiteMapResponses];
-
 export type SiteSeoData = {
   body: {
     url: string;
-    checkLinks?: number;
   };
   path?: never;
   query?: never;
@@ -7343,69 +3617,57 @@ export type SiteSeoResponses = {
   200: {
     success: true;
     data: {
-      url: string;
-      title: {
-        text?: string;
-        length: number;
-      };
-      description: {
-        text?: string;
-        length: number;
-      };
+      title?: string;
+      titleLength: number;
+      description?: string;
+      descriptionLength: number;
       language?: string;
       hasViewport: boolean;
-      canonical: {
-        url?: string;
-        isSelf: boolean;
-      };
-      robots: {
-        meta?: string;
-        isNoindex: boolean;
-        isNofollow: boolean;
-        isAllowedByRobotsTxt?: boolean;
-      };
-      headings?: {
-        h1?: Array<string>;
-        h2?: Array<string>;
-        outline?: Array<{
-          level: number;
-          text?: string;
-        }>;
-      };
+      canonicalUrl?: string;
+      canonicalIsSelf: boolean;
+      robotsMeta?: string;
+      isNoindex: boolean;
+      isNofollow: boolean;
+      isAllowedByRobotsTxt?: boolean;
+      h1: Array<string>;
+      h2: Array<string>;
+      outline: Array<{
+        level: number;
+        text?: string;
+      }>;
       hreflang: Array<{
         language?: string;
         url: string;
       }>;
-      openGraph?: {
-        [key: string]: string;
-      };
-      twitter?: {
-        [key: string]: string;
-      };
-      jsonLd: {
-        blocks: number;
-        invalid: number;
-        types?: Array<string>;
-      };
-      images: {
-        total: number;
-        missingAlt: number;
-        emptyAlt: number;
-        missingAltExamples?: Array<string>;
-      };
-      links: {
-        internal: number;
-        external: number;
-        nofollow: number;
-        checked?: Array<{
-          url: string;
-          status?: number;
-        }>;
-        broken?: Array<{
-          url: string;
-          status?: number;
-        }>;
-      };
+      ogTitle?: string;
+      ogDescription?: string;
+      ogImage?: string;
+      ogUrl?: string;
+      ogType?: string;
+      ogSiteName?: string;
+      twitterCard?: string;
+      twitterTitle?: string;
+      twitterDescription?: string;
+      twitterImage?: string;
+      twitterSite?: string;
+      jsonLdBlocks: number;
+      jsonLdInvalid: number;
+      jsonLdTypes: Array<string>;
+      imagesTotal: number;
+      imagesMissingAlt: number;
+      imagesEmptyAlt: number;
+      imagesMissingAltExamples: Array<string>;
+      linksInternal: number;
+      linksExternal: number;
+      linksNofollow: number;
+      linksChecked: Array<{
+        url: string;
+        status?: number;
+      }>;
+      linksBroken: Array<{
+        url: string;
+        status?: number;
+      }>;
       words: number;
       issues: Array<string>;
     };
@@ -7415,167 +3677,6 @@ export type SiteSeoResponses = {
 };
 
 export type SiteSeoResponse = SiteSeoResponses[keyof SiteSeoResponses];
-
-export type DomainWhoisData = {
-  body: {
-    domain: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/domain/whois";
-};
-
-export type DomainWhoisErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type DomainWhoisError = DomainWhoisErrors[keyof DomainWhoisErrors];
-
-export type DomainWhoisResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      domain?: string;
-      registryId?: string;
-      status: Array<string>;
-      createdAt?: string;
-      updatedAt?: string;
-      expiresAt?: string;
-      registrar?: {
-        name?: string;
-        ianaId?: string;
-        url?: string;
-        abuseEmail?: string;
-        abusePhone?: string;
-      };
-      registrant?: {
-        name?: string;
-        organization?: string;
-        email?: string;
-        phone?: string;
-        country?: string;
-      };
-      nameservers: Array<string>;
-      hasDnssec?: boolean;
-      rdap: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type DomainWhoisResponse =
-  DomainWhoisResponses[keyof DomainWhoisResponses];
-
-export type DomainDnsData = {
-  body: {
-    domain: string;
-    types?: Array<"A" | "AAAA" | "CNAME" | "MX" | "NS" | "TXT" | "SOA" | "CAA">;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/domain/dns";
-};
-
-export type DomainDnsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type DomainDnsError = DomainDnsErrors[keyof DomainDnsErrors];
-
-export type DomainDnsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      domain?: string;
-      isResolvable: boolean;
-      records: Array<{
-        type: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "TXT" | "SOA" | "CAA";
-        name?: string;
-        value?: string;
-        ttlSeconds: number;
-      }>;
-      mx: Array<{
-        priority: number;
-        exchange?: string;
-      }>;
-      spf?: string;
-      dmarc?: {
-        record?: string;
-        policy?: string;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type DomainDnsResponse = DomainDnsResponses[keyof DomainDnsResponses];
-
-export type DomainTechData = {
-  body: {
-    url: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/domain/tech";
-};
-
-export type DomainTechErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type DomainTechError = DomainTechErrors[keyof DomainTechErrors];
-
-export type DomainTechResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      url: string;
-      generator?: string;
-      technologies: Array<{
-        name?: string;
-        category?: string;
-        version?: string;
-        evidence: "html" | "script" | "cookie" | "generator" | "dns";
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type DomainTechResponse = DomainTechResponses[keyof DomainTechResponses];
 
 export type EmailCheckData = {
   body: {
@@ -7625,6 +3726,51 @@ export type EmailCheckResponses = {
 
 export type EmailCheckResponse = EmailCheckResponses[keyof EmailCheckResponses];
 
+export type EmailFindData = {
+  body: {
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    company: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/email/find";
+};
+
+export type EmailFindErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type EmailFindError = EmailFindErrors[keyof EmailFindErrors];
+
+export type EmailFindResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      email?: string;
+      status: "ok" | "risky" | "invalid" | "unknown";
+      domain?: string;
+      isCatchAll?: boolean;
+      pattern?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type EmailFindResponse = EmailFindResponses[keyof EmailFindResponses];
+
 export type CryptoCoinsData = {
   body: {
     /**
@@ -7633,10 +3779,12 @@ export type CryptoCoinsData = {
     currency?: string;
     category?: string;
     coins?: Array<string>;
-    sort?: "marketCap" | "volume" | "id";
-    order?: "asc" | "desc";
-    limit?: number;
+    sort?: "marketCap" | "volume";
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -7663,15 +3811,14 @@ export type CryptoCoinsResponses = {
   200: {
     success: true;
     data: {
-      coins: Array<{
-        id?: string;
-        source: "coingecko" | "coinmarketcap";
+      results: Array<{
+        coinId?: string;
         symbol?: string;
         name?: string;
-        url: string;
-        image?: string;
+        coinUrl: string;
+        imageUrl?: string;
         rank?: number;
-        currency?: string;
+        priceCurrency?: string;
         price?: number;
         marketCap?: number;
         fullyDilutedValue?: number;
@@ -7704,7 +3851,6 @@ export type CryptoCoinsResponse =
 export type CryptoCoinData = {
   body: {
     coin: string;
-    source?: "coingecko" | "coinmarketcap";
     platform?: string;
     /**
      * Currency code, e.g. usd. Any case is accepted.
@@ -7736,53 +3882,50 @@ export type CryptoCoinResponses = {
   200: {
     success: true;
     data: {
-      coin: {
-        id?: string;
-        source: "coingecko" | "coinmarketcap";
-        symbol?: string;
-        name?: string;
+      coinId?: string;
+      symbol?: string;
+      name?: string;
+      coinUrl: string;
+      imageUrl?: string;
+      rank?: number;
+      priceCurrency?: string;
+      price?: number;
+      marketCap?: number;
+      fullyDilutedValue?: number;
+      volume24h?: number;
+      high24h?: number;
+      low24h?: number;
+      change1h?: number;
+      change24h?: number;
+      change7d?: number;
+      change30d?: number;
+      circulatingSupply?: number;
+      totalSupply?: number;
+      maxSupply?: number;
+      ath?: number;
+      athAt?: string;
+      atl?: number;
+      atlAt?: string;
+      chains: Array<string>;
+      addedAt?: string;
+      updatedAt?: string;
+      description?: string;
+      categories: Array<string>;
+      change1y?: number;
+      websites: Array<string>;
+      whitepaperUrl?: string;
+      explorers: Array<string>;
+      socials: Array<{
+        type?: string;
         url: string;
-        image?: string;
-        rank?: number;
-        currency?: string;
-        price?: number;
-        marketCap?: number;
-        fullyDilutedValue?: number;
-        volume24h?: number;
-        high24h?: number;
-        low24h?: number;
-        change1h?: number;
-        change24h?: number;
-        change7d?: number;
-        change30d?: number;
-        circulatingSupply?: number;
-        totalSupply?: number;
-        maxSupply?: number;
-        ath?: number;
-        athAt?: string;
-        atl?: number;
-        atlAt?: string;
-        chains?: Array<string>;
-        addedAt?: string;
-        updatedAt?: string;
-        description?: string;
-        categories?: Array<string>;
-        change1y?: number;
-        websites?: Array<string>;
-        whitepaper?: string;
-        explorers?: Array<string>;
-        socials?: Array<{
-          type?: string;
-          url: string;
-        }>;
-        contracts?: Array<{
-          chain?: string;
-          address?: string;
-          decimals?: number;
-        }>;
-        launchedAt?: string;
-        watchlists?: number;
-      };
+      }>;
+      contracts: Array<{
+        chain?: string;
+        address?: string;
+        decimals?: number;
+      }>;
+      launchedAt?: string;
+      watchlists?: number;
     };
     creditsUsed: number;
     requestId: string;
@@ -7798,17 +3941,12 @@ export type CryptoHistoryData = {
      * Currency code, e.g. usd. Any case is accepted.
      */
     currency?: string;
-    within?:
-      | "day"
-      | "week"
-      | "twoWeeks"
-      | "month"
-      | "threeMonths"
-      | "sixMonths"
-      | "year";
     from?: string;
     to?: string;
-    includeCandles?: boolean;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -7835,20 +3973,11 @@ export type CryptoHistoryResponses = {
   200: {
     success: true;
     data: {
-      coin?: string;
-      currency?: string;
-      prices: Array<{
+      results: Array<{
         recordedAt: string;
         price?: number;
         marketCap?: number;
         volume?: number;
-      }>;
-      candles: Array<{
-        openedAt: string;
-        open: number;
-        high: number;
-        low: number;
-        close: number;
       }>;
     };
     creditsUsed: number;
@@ -7859,269 +3988,12 @@ export type CryptoHistoryResponses = {
 export type CryptoHistoryResponse =
   CryptoHistoryResponses[keyof CryptoHistoryResponses];
 
-export type CryptoTrendingData = {
-  body: {
-    [key: string]: never;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/trending";
-};
-
-export type CryptoTrendingErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoTrendingError =
-  CryptoTrendingErrors[keyof CryptoTrendingErrors];
-
-export type CryptoTrendingResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      coins: Array<{
-        id?: string;
-        source: "coingecko" | "coinmarketcap";
-        symbol?: string;
-        name?: string;
-        url: string;
-        image?: string;
-        rank?: number;
-        currency?: string;
-        price?: number;
-        marketCap?: number;
-        volume24h?: number;
-        change24h?: number;
-      }>;
-      categories: Array<{
-        id?: string;
-        name?: string;
-        url: string;
-        marketCap?: number;
-        change24h?: number;
-        volume24h?: number;
-        coins?: number;
-        topCoins?: Array<string>;
-        updatedAt?: string;
-      }>;
-      nfts: Array<{
-        id?: string;
-        name?: string;
-        symbol?: string;
-        url: string;
-        image?: string;
-        floorPriceText?: string;
-        floorChange24h?: number;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoTrendingResponse =
-  CryptoTrendingResponses[keyof CryptoTrendingResponses];
-
-export type CryptoCategoriesData = {
-  body: {
-    sort?: "marketCap" | "change" | "name";
-    order?: "asc" | "desc";
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/categories";
-};
-
-export type CryptoCategoriesErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoCategoriesError =
-  CryptoCategoriesErrors[keyof CryptoCategoriesErrors];
-
-export type CryptoCategoriesResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      categories: Array<{
-        id?: string;
-        name?: string;
-        url: string;
-        marketCap?: number;
-        change24h?: number;
-        volume24h?: number;
-        coins?: number;
-        topCoins?: Array<string>;
-        updatedAt?: string;
-      }>;
-      total: number;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoCategoriesResponse =
-  CryptoCategoriesResponses[keyof CryptoCategoriesResponses];
-
-export type CryptoMoversData = {
-  body: {
-    within?: "hour" | "day" | "week" | "month";
-    rankUpTo?: 100 | 200 | 500;
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/movers";
-};
-
-export type CryptoMoversErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoMoversError = CryptoMoversErrors[keyof CryptoMoversErrors];
-
-export type CryptoMoversResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      gainers: Array<{
-        id?: string;
-        source: "coingecko" | "coinmarketcap";
-        symbol?: string;
-        name?: string;
-        url: string;
-        image?: string;
-        rank?: number;
-        currency?: string;
-        price?: number;
-        marketCap?: number;
-        volume24h?: number;
-        change1h?: number;
-        change24h?: number;
-        change7d?: number;
-        change30d?: number;
-        updatedAt?: string;
-      }>;
-      losers: Array<{
-        id?: string;
-        source: "coingecko" | "coinmarketcap";
-        symbol?: string;
-        name?: string;
-        url: string;
-        image?: string;
-        rank?: number;
-        currency?: string;
-        price?: number;
-        marketCap?: number;
-        volume24h?: number;
-        change1h?: number;
-        change24h?: number;
-        change7d?: number;
-        change30d?: number;
-        updatedAt?: string;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoMoversResponse =
-  CryptoMoversResponses[keyof CryptoMoversResponses];
-
-export type CryptoNewData = {
-  body: {
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/new";
-};
-
-export type CryptoNewErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoNewError = CryptoNewErrors[keyof CryptoNewErrors];
-
-export type CryptoNewResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      coins: Array<{
-        id?: string;
-        source: "coingecko" | "coinmarketcap";
-        symbol?: string;
-        name?: string;
-        url: string;
-        image?: string;
-        rank?: number;
-        currency?: string;
-        price?: number;
-        marketCap?: number;
-        fullyDilutedValue?: number;
-        volume24h?: number;
-        change1h?: number;
-        change24h?: number;
-        change7d?: number;
-        change30d?: number;
-        chains?: Array<string>;
-        addedAt?: string;
-        updatedAt?: string;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoNewResponse = CryptoNewResponses[keyof CryptoNewResponses];
-
 export type CryptoDexSearchData = {
   body: {
     query: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
   };
   path?: never;
@@ -8150,64 +4022,44 @@ export type CryptoDexSearchResponses = {
   200: {
     success: true;
     data: {
-      pairs: Array<{
-        id?: string;
+      results: Array<{
+        pairId?: string;
         chain?: string;
         dex?: string;
-        url: string;
+        pairUrl: string;
         labels?: Array<string>;
-        baseToken?: {
-          address?: string;
-          name?: string;
-          symbol?: string;
-        };
-        quoteToken?: {
-          address?: string;
-          name?: string;
-          symbol?: string;
-        };
+        baseTokenAddress?: string;
+        baseTokenName?: string;
+        baseTokenSymbol?: string;
+        quoteTokenAddress?: string;
+        quoteTokenName?: string;
+        quoteTokenSymbol?: string;
         price?: number;
-        currency?: string;
+        priceCurrency?: string;
         priceNative?: number;
-        transactions: {
-          m5: {
-            buys: number;
-            sells: number;
-          };
-          h1: {
-            buys: number;
-            sells: number;
-          };
-          h6: {
-            buys: number;
-            sells: number;
-          };
-          h24: {
-            buys: number;
-            sells: number;
-          };
-        };
-        volume?: {
-          m5?: number;
-          h1?: number;
-          h6?: number;
-          h24?: number;
-        };
-        priceChange?: {
-          m5?: number;
-          h1?: number;
-          h6?: number;
-          h24?: number;
-        };
-        liquidity?: {
-          usd?: number;
-          base?: number;
-          quote?: number;
-        };
+        buys5m: number;
+        sells5m: number;
+        buys1h: number;
+        sells1h: number;
+        buys6h: number;
+        sells6h: number;
+        buys24h: number;
+        sells24h: number;
+        volume5m?: number;
+        volume1h?: number;
+        volume6h?: number;
+        volume24h?: number;
+        priceChange5m?: number;
+        priceChange1h?: number;
+        priceChange6h?: number;
+        priceChange24h?: number;
+        liquidityUsd?: number;
+        liquidityBase?: number;
+        liquidityQuote?: number;
         fullyDilutedValue?: number;
         marketCap?: number;
         createdAt?: string;
-        image?: string;
+        imageUrl?: string;
         websites?: Array<string>;
         socials?: Array<{
           type?: string;
@@ -8224,116 +4076,10 @@ export type CryptoDexSearchResponses = {
 export type CryptoDexSearchResponse =
   CryptoDexSearchResponses[keyof CryptoDexSearchResponses];
 
-export type CryptoDexPairsData = {
-  body: {
-    chain?: string;
-    pair: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/dex/pairs";
-};
-
-export type CryptoDexPairsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoDexPairsError =
-  CryptoDexPairsErrors[keyof CryptoDexPairsErrors];
-
-export type CryptoDexPairsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      pairs: Array<{
-        id?: string;
-        chain?: string;
-        dex?: string;
-        url: string;
-        labels?: Array<string>;
-        baseToken?: {
-          address?: string;
-          name?: string;
-          symbol?: string;
-        };
-        quoteToken?: {
-          address?: string;
-          name?: string;
-          symbol?: string;
-        };
-        price?: number;
-        currency?: string;
-        priceNative?: number;
-        transactions: {
-          m5: {
-            buys: number;
-            sells: number;
-          };
-          h1: {
-            buys: number;
-            sells: number;
-          };
-          h6: {
-            buys: number;
-            sells: number;
-          };
-          h24: {
-            buys: number;
-            sells: number;
-          };
-        };
-        volume?: {
-          m5?: number;
-          h1?: number;
-          h6?: number;
-          h24?: number;
-        };
-        priceChange?: {
-          m5?: number;
-          h1?: number;
-          h6?: number;
-          h24?: number;
-        };
-        liquidity?: {
-          usd?: number;
-          base?: number;
-          quote?: number;
-        };
-        fullyDilutedValue?: number;
-        marketCap?: number;
-        createdAt?: string;
-        image?: string;
-        websites?: Array<string>;
-        socials?: Array<{
-          type?: string;
-          url: string;
-        }>;
-        boosts?: number;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoDexPairsResponse =
-  CryptoDexPairsResponses[keyof CryptoDexPairsResponses];
-
 export type CryptoDexTokenData = {
   body: {
     chain?: string;
     token: string;
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -8361,84 +4107,61 @@ export type CryptoDexTokenResponses = {
   200: {
     success: true;
     data: {
-      token: {
-        id?: string;
-        chain?: string;
-        name?: string;
-        symbol?: string;
+      tokenAddress?: string;
+      chain?: string;
+      name?: string;
+      symbol?: string;
+      tokenUrl: string;
+      imageUrl?: string;
+      price?: number;
+      priceCurrency?: string;
+      marketCap?: number;
+      fullyDilutedValue?: number;
+      liquidity: number;
+      volume24h: number;
+      websites: Array<string>;
+      socials: Array<{
+        type?: string;
         url: string;
-        image?: string;
-        price?: number;
-        currency?: string;
-        marketCap?: number;
-        fullyDilutedValue?: number;
-        liquidity: number;
-        volume24h: number;
-        pairs: number;
-        websites?: Array<string>;
-        socials?: Array<{
-          type?: string;
-          url: string;
-        }>;
-      };
+      }>;
       pairs: Array<{
-        id?: string;
+        pairId?: string;
         chain?: string;
         dex?: string;
-        url: string;
+        pairUrl: string;
         labels?: Array<string>;
-        baseToken?: {
-          address?: string;
-          name?: string;
-          symbol?: string;
-        };
-        quoteToken?: {
-          address?: string;
-          name?: string;
-          symbol?: string;
-        };
+        baseTokenAddress?: string;
+        baseTokenName?: string;
+        baseTokenSymbol?: string;
+        quoteTokenAddress?: string;
+        quoteTokenName?: string;
+        quoteTokenSymbol?: string;
         price?: number;
-        currency?: string;
+        priceCurrency?: string;
         priceNative?: number;
-        transactions: {
-          m5: {
-            buys: number;
-            sells: number;
-          };
-          h1: {
-            buys: number;
-            sells: number;
-          };
-          h6: {
-            buys: number;
-            sells: number;
-          };
-          h24: {
-            buys: number;
-            sells: number;
-          };
-        };
-        volume?: {
-          m5?: number;
-          h1?: number;
-          h6?: number;
-          h24?: number;
-        };
-        priceChange?: {
-          m5?: number;
-          h1?: number;
-          h6?: number;
-          h24?: number;
-        };
-        liquidity?: {
-          usd?: number;
-          base?: number;
-          quote?: number;
-        };
+        buys5m: number;
+        sells5m: number;
+        buys1h: number;
+        sells1h: number;
+        buys6h: number;
+        sells6h: number;
+        buys24h: number;
+        sells24h: number;
+        volume5m?: number;
+        volume1h?: number;
+        volume6h?: number;
+        volume24h?: number;
+        priceChange5m?: number;
+        priceChange1h?: number;
+        priceChange6h?: number;
+        priceChange24h?: number;
+        liquidityUsd?: number;
+        liquidityBase?: number;
+        liquidityQuote?: number;
         fullyDilutedValue?: number;
         marketCap?: number;
         createdAt?: string;
-        image?: string;
+        imageUrl?: string;
         websites?: Array<string>;
         socials?: Array<{
           type?: string;
@@ -8455,327 +4178,6 @@ export type CryptoDexTokenResponses = {
 export type CryptoDexTokenResponse =
   CryptoDexTokenResponses[keyof CryptoDexTokenResponses];
 
-export type CryptoDexNewData = {
-  body: {
-    type?: "profiles" | "boosts" | "topBoosts" | "takeovers";
-    chain?: string;
-    includePairs?: boolean;
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/dex/new";
-};
-
-export type CryptoDexNewErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoDexNewError = CryptoDexNewErrors[keyof CryptoDexNewErrors];
-
-export type CryptoDexNewResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      tokens: Array<{
-        id?: string;
-        chain?: string;
-        url: string;
-        description?: string;
-        image?: string;
-        banner?: string;
-        links?: Array<{
-          type?: string;
-          label?: string;
-          url: string;
-        }>;
-        boosts?: number;
-        totalBoosts?: number;
-        claimedAt?: string;
-        pair?: {
-          id?: string;
-          chain?: string;
-          dex?: string;
-          url: string;
-          labels?: Array<string>;
-          baseToken?: {
-            address?: string;
-            name?: string;
-            symbol?: string;
-          };
-          quoteToken?: {
-            address?: string;
-            name?: string;
-            symbol?: string;
-          };
-          price?: number;
-          currency?: string;
-          priceNative?: number;
-          transactions: {
-            m5: {
-              buys: number;
-              sells: number;
-            };
-            h1: {
-              buys: number;
-              sells: number;
-            };
-            h6: {
-              buys: number;
-              sells: number;
-            };
-            h24: {
-              buys: number;
-              sells: number;
-            };
-          };
-          volume?: {
-            m5?: number;
-            h1?: number;
-            h6?: number;
-            h24?: number;
-          };
-          priceChange?: {
-            m5?: number;
-            h1?: number;
-            h6?: number;
-            h24?: number;
-          };
-          liquidity?: {
-            usd?: number;
-            base?: number;
-            quote?: number;
-          };
-          fullyDilutedValue?: number;
-          marketCap?: number;
-          createdAt?: string;
-          image?: string;
-          websites?: Array<string>;
-          socials?: Array<{
-            type?: string;
-            url: string;
-          }>;
-          boosts?: number;
-        };
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoDexNewResponse =
-  CryptoDexNewResponses[keyof CryptoDexNewResponses];
-
-export type CryptoPumpCoinsData = {
-  body: {
-    sort?: "newest" | "lastTrade" | "marketCap" | "lastReply" | "live";
-    includeNsfw?: boolean;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/pump/coins";
-};
-
-export type CryptoPumpCoinsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoPumpCoinsError =
-  CryptoPumpCoinsErrors[keyof CryptoPumpCoinsErrors];
-
-export type CryptoPumpCoinsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      coins: Array<{
-        id?: string;
-        url: string;
-        name?: string;
-        symbol?: string;
-        description?: string;
-        image?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
-        lastTradeAt?: string;
-        marketCap?: number;
-        athMarketCap?: number;
-        currency?: string;
-        athAt?: string;
-        isGraduated: boolean;
-        bondingCurveProgress?: number;
-        pool?: string;
-        replies?: number;
-        isLive: boolean;
-        isNsfw: boolean;
-        website?: string;
-        twitter?: string;
-        telegram?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoPumpCoinsResponse =
-  CryptoPumpCoinsResponses[keyof CryptoPumpCoinsResponses];
-
-export type CryptoPumpCoinData = {
-  body: {
-    coin: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/pump/coin";
-};
-
-export type CryptoPumpCoinErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoPumpCoinError =
-  CryptoPumpCoinErrors[keyof CryptoPumpCoinErrors];
-
-export type CryptoPumpCoinResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      coin: {
-        id?: string;
-        url: string;
-        name?: string;
-        symbol?: string;
-        description?: string;
-        image?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
-        lastTradeAt?: string;
-        marketCap?: number;
-        athMarketCap?: number;
-        currency?: string;
-        athAt?: string;
-        isGraduated: boolean;
-        bondingCurveProgress?: number;
-        pool?: string;
-        replies?: number;
-        isLive: boolean;
-        isNsfw: boolean;
-        website?: string;
-        twitter?: string;
-        telegram?: string;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoPumpCoinResponse =
-  CryptoPumpCoinResponses[keyof CryptoPumpCoinResponses];
-
-export type CryptoPumpTradesData = {
-  body: {
-    coin: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/pump/trades";
-};
-
-export type CryptoPumpTradesErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoPumpTradesError =
-  CryptoPumpTradesErrors[keyof CryptoPumpTradesErrors];
-
-export type CryptoPumpTradesResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      trades: Array<{
-        id?: string;
-        createdAt?: string;
-        type: "buy" | "sell";
-        wallet?: string;
-        price?: number;
-        priceSol?: number;
-        value?: number;
-        currency?: string;
-        amountSol?: number;
-        tokenAmount?: number;
-        program?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoPumpTradesResponse =
-  CryptoPumpTradesResponses[keyof CryptoPumpTradesResponses];
-
 export type CryptoWalletData = {
   body: {
     chain:
@@ -8788,7 +4190,6 @@ export type CryptoWalletData = {
       | "bitcoin"
       | "solana";
     wallet: string;
-    limit?: number;
     cursor?: string;
   };
   path?: never;
@@ -8816,23 +4217,21 @@ export type CryptoWalletResponses = {
   200: {
     success: true;
     data: {
-      chain?: string;
-      address?: string;
       symbol?: string;
       balance?: string;
       balanceValue?: number;
-      currency?: string;
-      tokens?: Array<{
+      valueCurrency?: string;
+      tokens: Array<{
         address?: string;
         symbol?: string;
         name?: string;
         decimals?: number;
         amount?: string;
         value?: number;
-        currency?: string;
+        valueCurrency?: string;
       }>;
       transactions: Array<{
-        id?: string;
+        transactionId?: string;
         createdAt?: string;
         block?: number;
         from?: string;
@@ -8852,129 +4251,10 @@ export type CryptoWalletResponses = {
 export type CryptoWalletResponse =
   CryptoWalletResponses[keyof CryptoWalletResponses];
 
-export type CryptoTokenHoldersData = {
-  body: {
-    chain: "ethereum" | "base" | "arbitrum" | "optimism" | "polygon" | "gnosis";
-    token: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/token/holders";
-};
-
-export type CryptoTokenHoldersErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoTokenHoldersError =
-  CryptoTokenHoldersErrors[keyof CryptoTokenHoldersErrors];
-
-export type CryptoTokenHoldersResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      token?: {
-        address?: string;
-        name?: string;
-        symbol?: string;
-        decimals?: number;
-        holders?: number;
-        totalSupply?: string;
-        price?: number;
-        currency?: string;
-      };
-      holders: Array<{
-        address?: string;
-        amount?: string;
-        percent?: number;
-        isContract?: boolean;
-        label?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoTokenHoldersResponse =
-  CryptoTokenHoldersResponses[keyof CryptoTokenHoldersResponses];
-
-export type CryptoBinanceAnnouncementsData = {
-  body: {
-    category?:
-      | "listings"
-      | "delistings"
-      | "news"
-      | "activities"
-      | "airdrops"
-      | "maintenance"
-      | "api";
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/crypto/binance/announcements";
-};
-
-export type CryptoBinanceAnnouncementsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type CryptoBinanceAnnouncementsError =
-  CryptoBinanceAnnouncementsErrors[keyof CryptoBinanceAnnouncementsErrors];
-
-export type CryptoBinanceAnnouncementsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      announcements: Array<{
-        id?: string;
-        code?: string;
-        title?: string;
-        url: string;
-        createdAt?: string;
-        symbols?: Array<string>;
-      }>;
-      total?: number;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type CryptoBinanceAnnouncementsResponse =
-  CryptoBinanceAnnouncementsResponses[keyof CryptoBinanceAnnouncementsResponses];
-
 export type IndeedSearchData = {
   body: {
     query?: string;
     location?: string;
-    radiusKm?: number;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -9050,15 +4330,13 @@ export type IndeedSearchData = {
       | "ve"
       | "cr"
       | "pa";
-    jobType?: "fullTime" | "partTime" | "contract" | "internship";
     remote?: boolean;
-    within?: "day" | "threeDays" | "week" | "twoWeeks" | "month" | "all";
-    salary?: {
-      min: number;
-    };
-    sort?: "relevance" | "newest";
-    limit?: number;
+    within?: "day" | "week" | "month";
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -9085,43 +4363,34 @@ export type IndeedSearchResponses = {
   200: {
     success: true;
     data: {
-      jobs: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        jobId?: string;
+        jobUrl: string;
         title?: string;
-        company?: {
-          name?: string;
-          url?: string;
-          avatar?: string;
-          website?: string;
-          industry?: string;
-          employeesText?: string;
-          revenueText?: string;
-          description?: string;
-        };
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        salary?: {
-          min?: number;
-          max?: number;
-          period?: "hour" | "day" | "week" | "month" | "year";
-          currency?: string;
-          isEstimate: boolean;
-        };
+        companyName?: string;
+        companyUrl?: string;
+        companyAvatarUrl?: string;
+        companyWebsite?: string;
+        companyIndustry?: string;
+        companyEmployeesText?: string;
+        companyRevenueText?: string;
+        companyDescription?: string;
+        addressFull?: string;
+        addressCity?: string;
+        addressRegion?: string;
+        addressPostalCode?: string;
+        addressCountry?: string;
+        latitude?: number;
+        longitude?: number;
+        salaryMin?: number;
+        salaryMax?: number;
+        salaryPeriod?: "hour" | "day" | "week" | "month" | "year";
+        salaryCurrency?: string;
+        salaryIsEstimate: boolean;
         jobTypes?: Array<"fullTime" | "partTime" | "contract" | "internship">;
         isRemote: boolean;
         attributes?: Array<string>;
-        createdAt?: string;
+        publishedAt?: string;
         indexedAt?: string;
         applyUrl?: string;
         isEasyApply: boolean;
@@ -9243,53 +4512,42 @@ export type IndeedJobResponses = {
   200: {
     success: true;
     data: {
-      job: {
-        id?: string;
-        url: string;
-        title?: string;
-        company?: {
-          name?: string;
-          url?: string;
-          avatar?: string;
-          website?: string;
-          industry?: string;
-          employeesText?: string;
-          revenueText?: string;
-          description?: string;
-        };
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        salary?: {
-          min?: number;
-          max?: number;
-          period?: "hour" | "day" | "week" | "month" | "year";
-          currency?: string;
-          isEstimate: boolean;
-        };
-        jobTypes?: Array<"fullTime" | "partTime" | "contract" | "internship">;
-        isRemote: boolean;
-        attributes?: Array<string>;
-        createdAt?: string;
-        indexedAt?: string;
-        applyUrl?: string;
-        isEasyApply: boolean;
-        isUrgent: boolean;
-        source?: string;
-        description?: string;
-        descriptionHtml?: string;
-        isExpired: boolean;
-        language?: string;
-      };
+      jobId?: string;
+      jobUrl: string;
+      title?: string;
+      companyName?: string;
+      companyUrl?: string;
+      companyAvatarUrl?: string;
+      companyWebsite?: string;
+      companyIndustry?: string;
+      companyEmployeesText?: string;
+      companyRevenueText?: string;
+      companyDescription?: string;
+      addressFull?: string;
+      addressCity?: string;
+      addressRegion?: string;
+      addressPostalCode?: string;
+      addressCountry?: string;
+      latitude?: number;
+      longitude?: number;
+      salaryMin?: number;
+      salaryMax?: number;
+      salaryPeriod?: "hour" | "day" | "week" | "month" | "year";
+      salaryCurrency?: string;
+      salaryIsEstimate: boolean;
+      jobTypes: Array<"fullTime" | "partTime" | "contract" | "internship">;
+      isRemote: boolean;
+      attributes: Array<string>;
+      publishedAt?: string;
+      indexedAt?: string;
+      applyUrl?: string;
+      isEasyApply: boolean;
+      isUrgent: boolean;
+      source?: string;
+      description?: string;
+      descriptionHtml?: string;
+      isExpired: boolean;
+      language?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -9302,6 +4560,9 @@ export type TripadvisorSearchData = {
   body: {
     query: string;
     type?: "all" | "hotels" | "restaurants" | "attractions" | "geos";
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
   };
   path?: never;
@@ -9331,24 +4592,15 @@ export type TripadvisorSearchResponses = {
     success: true;
     data: {
       results: Array<{
-        id?: string;
+        placeId?: string;
+        placeUrl?: string;
         name?: string;
         type?: string;
-        url?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
+        address?: string;
         parent?: string;
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        image?: string;
+        latitude?: number;
+        longitude?: number;
+        imageUrl?: string;
       }>;
     };
     creditsUsed: number;
@@ -9389,54 +4641,46 @@ export type TripadvisorPlaceResponses = {
   200: {
     success: true;
     data: {
-      place: {
-        id?: string;
+      placeId?: string;
+      placeUrl?: string;
+      name?: string;
+      type?: string;
+      subtypes: Array<string>;
+      rating?: number;
+      reviews?: number;
+      rankingText?: string;
+      rankingPosition?: number;
+      rankingOf?: number;
+      rankingGeo?: string;
+      priceLevel?: string;
+      priceRangeText?: string;
+      hotelClass?: number;
+      description?: string;
+      addressFull?: string;
+      addressStreet?: string;
+      addressCity?: string;
+      addressRegion?: string;
+      addressCountry?: string;
+      addressPostalCode?: string;
+      latitude?: number;
+      longitude?: number;
+      phone?: string;
+      website?: string;
+      email?: string;
+      neighborhoods: Array<string>;
+      parents: Array<{
+        placeId?: string;
         name?: string;
-        type?: string;
-        subtypes?: Array<string>;
-        url?: string;
-        rating?: number;
-        reviews?: number;
-        ranking?: {
-          text?: string;
-          position?: number;
-          of?: number;
-          geo?: string;
-        };
-        priceLevel?: string;
-        priceRangeText?: string;
-        hotelClass?: number;
-        description?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          country?: string;
-          postalCode?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        phone?: string;
-        website?: string;
-        email?: string;
-        neighborhoods?: Array<string>;
-        parents?: Array<{
-          id?: string;
-          name?: string;
-        }>;
-        cuisines?: Array<string>;
-        hours?: Array<{
-          days?: string;
-          times?: Array<string>;
-        }>;
-        tags?: Array<string>;
-        image?: string;
-        timezone?: string;
-        isClosed: boolean;
-      };
+      }>;
+      cuisines: Array<string>;
+      hours: Array<{
+        days?: string;
+        times?: Array<string>;
+      }>;
+      tags: Array<string>;
+      imageUrl?: string;
+      timezone?: string;
+      isClosed: boolean;
     };
     creditsUsed: number;
     requestId: string;
@@ -9451,8 +4695,11 @@ export type TripadvisorReviewsData = {
     place: string;
     language?: string;
     ratings?: Array<number>;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -9480,16 +4727,14 @@ export type TripadvisorReviewsResponses = {
   200: {
     success: true;
     data: {
-      place?: {
-        id?: string;
-        name?: string;
-        type?: string;
-        url?: string;
-      };
+      placeId?: string;
+      placeName?: string;
+      placeType?: string;
+      placeUrl?: string;
       total?: number;
-      reviews: Array<{
-        id?: string;
-        url?: string;
+      results: Array<{
+        reviewId?: string;
+        reviewUrl?: string;
         rating?: number;
         title?: string;
         text?: string;
@@ -9503,35 +4748,14 @@ export type TripadvisorReviewsResponses = {
           name?: string;
           rating: number;
         }>;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          address?: {
-            full?: string;
-            street?: string;
-            city?: string;
-            state?: string;
-            postalCode?: string;
-            country?: string;
-          };
-          contributions?: number;
-        };
-        ownerReply?: {
-          text?: string;
-          publishedDate?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
+        authorName?: string;
+        authorUsername?: string;
+        authorUrl?: string;
+        authorAddress?: string;
+        authorContributions?: number;
+        ownerReplyText?: string;
+        ownerReplyDate?: string;
+        ownerReplyAuthor?: string;
       }>;
       cursor?: string;
     };
@@ -9556,14 +4780,11 @@ export type GoogletravelFlightsData = {
     departDate: string;
     returnDate?: string;
     adults?: number;
-    children?: number;
     cabin?: "economy" | "premiumEconomy" | "business" | "first";
-    maxStops?: number;
-    currency?: string;
     /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     * Return at most this many results from the page. The price stays the same.
      */
-    language?: string;
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -9591,11 +4812,10 @@ export type GoogletravelFlightsResponses = {
   200: {
     success: true;
     data: {
-      url: string;
-      currency?: string;
-      flights: Array<{
+      results: Array<{
         isBest: boolean;
         price?: number;
+        priceCurrency: "USD";
         airlines?: Array<string>;
         stops: number;
         durationSeconds?: number;
@@ -9610,14 +4830,10 @@ export type GoogletravelFlightsResponses = {
         legs?: Array<{
           flightNumber?: string;
           airline?: string;
-          origin?: {
-            code?: string;
-            name?: string;
-          };
-          destination?: {
-            code?: string;
-            name?: string;
-          };
+          originCode?: string;
+          originName?: string;
+          destinationCode?: string;
+          destinationName?: string;
           /**
            * Local time at the airport, YYYY-MM-DDTHH:mm, no time zone.
            */
@@ -9652,10 +4868,8 @@ export type AmazonSearchData = {
   body: {
     query?: string;
     category?: string;
-    price?: {
-      min?: number;
-      max?: number;
-    };
+    minPrice?: number;
+    maxPrice?: number;
     sort?:
       | "relevance"
       | "priceLow"
@@ -9663,7 +4877,6 @@ export type AmazonSearchData = {
       | "mostReviewed"
       | "newest"
       | "bestSelling";
-    prime?: boolean;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -9689,8 +4902,11 @@ export type AmazonSearchData = {
       | "tr"
       | "be"
       | "eg";
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -9717,18 +4933,17 @@ export type AmazonSearchResponses = {
   200: {
     success: true;
     data: {
-      products: Array<{
-        position: number;
-        id?: string;
-        url: string;
+      results: Array<{
+        productId?: string;
+        productUrl: string;
         title?: string;
-        image?: string;
+        imageUrl?: string;
         price?: number;
         originalPrice?: number;
         /**
          * ISO 4217 currency code, e.g. USD.
          */
-        currency?: string;
+        priceCurrency?: string;
         rating?: number;
         reviews?: number;
         boughtPastMonth?: number;
@@ -9799,70 +5014,50 @@ export type AmazonProductResponses = {
   200: {
     success: true;
     data: {
-      product: {
-        id?: string;
-        url: string;
-        title?: string;
-        brand?: string;
-        price?: number;
-        originalPrice?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        availability?: string;
+      productId?: string;
+      productUrl: string;
+      title?: string;
+      brand?: string;
+      price?: number;
+      originalPrice?: number;
+      /**
+       * ISO 4217 currency code, e.g. USD.
+       */
+      priceCurrency?: string;
+      availability?: string;
+      rating?: number;
+      reviews?: number;
+      bullets: Array<string>;
+      description?: string;
+      imageUrls: Array<string>;
+      variants: Array<{
+        productId?: string;
+        options?: string;
+      }>;
+      sellerName?: string;
+      sellerId?: string;
+      sellerShipsFrom?: string;
+      categories: Array<string>;
+      bestSellersRank: Array<{
+        rank: number;
+        category?: string;
+      }>;
+      specs: Array<{
+        name?: string;
+        value?: string;
+      }>;
+      topReviews: Array<{
+        reviewId?: string;
+        authorName?: string;
         rating?: number;
-        reviews?: number;
-        bullets?: Array<string>;
-        description?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        variants?: Array<{
-          id?: string;
-          attributes?: {
-            [key: string]: string;
-          };
-        }>;
-        seller?: {
-          name?: string;
-          id?: string;
-          shipsFrom?: string;
-        };
-        categories?: Array<string>;
-        bestSellersRank?: Array<{
-          rank: number;
-          category?: string;
-        }>;
-        specs?: {
-          [key: string]: string;
-        };
-        topReviews?: Array<{
-          id?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          rating?: number;
-          title?: string;
-          text?: string;
-          createdAt?: string;
-          isVerified: boolean;
-          variant?: string;
-          helpful?: number;
-          images?: Array<{
-            url: string;
-            caption?: string;
-            alt?: string;
-          }>;
-        }>;
-      };
+        title?: string;
+        text?: string;
+        publishedAt?: string;
+        isVerified: boolean;
+        variant?: string;
+        helpfulVotes?: number;
+        imageUrls?: Array<string>;
+      }>;
     };
     creditsUsed: number;
     requestId: string;
@@ -9900,8 +5095,11 @@ export type AmazonBestsellersData = {
       | "tr"
       | "be"
       | "eg";
+    cursor?: "2";
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
-    cursor?: string;
   };
   path?: never;
   query?: never;
@@ -9930,17 +5128,17 @@ export type AmazonBestsellersResponses = {
     success: true;
     data: {
       category?: string;
-      products: Array<{
+      results: Array<{
         rank: number;
-        id?: string;
-        url: string;
+        productId?: string;
+        productUrl: string;
         title?: string;
-        image?: string;
+        imageUrl?: string;
         price?: number;
         /**
          * ISO 4217 currency code, e.g. USD.
          */
-        currency?: string;
+        priceCurrency?: string;
         rating?: number;
         reviews?: number;
       }>;
@@ -9958,8 +5156,11 @@ export type ShopifyProductsData = {
   body: {
     store: string;
     collection?: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -9987,10 +5188,10 @@ export type ShopifyProductsResponses = {
   200: {
     success: true;
     data: {
-      products: Array<{
-        id?: string;
+      results: Array<{
+        productId?: string;
         slug?: string;
-        url: string;
+        productUrl: string;
         title?: string;
         vendor?: string;
         productType?: string;
@@ -10005,7 +5206,7 @@ export type ShopifyProductsResponses = {
           values?: Array<string>;
         }>;
         variants?: Array<{
-          id?: string;
+          variantId?: string;
           title?: string;
           sku?: string;
           price?: number;
@@ -10014,11 +5215,7 @@ export type ShopifyProductsResponses = {
           options?: Array<string>;
           weightGrams?: number;
         }>;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
+        imageUrls?: Array<string>;
         publishedAt?: string;
         createdAt?: string;
         updatedAt?: string;
@@ -10036,8 +5233,11 @@ export type ShopifyProductsResponse =
 export type ShopifyCollectionsData = {
   body: {
     store: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -10065,13 +5265,13 @@ export type ShopifyCollectionsResponses = {
   200: {
     success: true;
     data: {
-      collections: Array<{
-        id?: string;
+      results: Array<{
+        collectionId?: string;
         slug?: string;
-        url: string;
+        collectionUrl: string;
         title?: string;
         description?: string;
-        image?: string;
+        imageUrl?: string;
         products?: number;
         publishedAt?: string;
         updatedAt?: string;
@@ -10115,27 +5315,20 @@ export type ShopifyStoreResponses = {
   200: {
     success: true;
     data: {
-      store: {
-        id?: string;
-        url: string;
-        isShopify: boolean;
-        name?: string;
-        description?: string;
-        myshopifyDomain?: string;
-        domain?: string;
-        currency?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        shipsTo?: Array<string>;
-        products?: number;
-        collections?: number;
-      };
+      storeId?: string;
+      storeUrl: string;
+      isShopify: boolean;
+      name?: string;
+      description?: string;
+      myshopifyDomain?: string;
+      domain?: string;
+      currency?: string;
+      addressCity?: string;
+      addressRegion?: string;
+      addressCountry?: string;
+      shipsTo: Array<string>;
+      products?: number;
+      collections?: number;
     };
     creditsUsed: number;
     requestId: string;
@@ -10155,12 +5348,13 @@ export type WalmartSearchData = {
       | "bestSelling"
       | "highest"
       | "newest";
-    price?: {
-      min?: number;
-      max?: number;
-    };
-    limit?: number;
+    minPrice?: number;
+    maxPrice?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -10187,23 +5381,20 @@ export type WalmartSearchResponses = {
   200: {
     success: true;
     data: {
-      products: Array<{
-        position: number;
-        id?: string;
-        url: string;
+      results: Array<{
+        productId?: string;
+        productUrl: string;
         title?: string;
-        image?: string;
+        imageUrl?: string;
         price?: number;
         originalPrice?: number;
         /**
          * ISO 4217 currency code, e.g. USD.
          */
-        currency?: string;
+        priceCurrency?: string;
         rating?: number;
         reviews?: number;
-        seller?: {
-          name?: string;
-        };
+        sellerName?: string;
         availability?: string;
         isSponsored: boolean;
       }>;
@@ -10248,58 +5439,44 @@ export type WalmartProductResponses = {
   200: {
     success: true;
     data: {
-      product: {
-        id?: string;
-        url: string;
-        title?: string;
-        brand?: string;
-        price?: number;
-        originalPrice?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        availability?: string;
+      productId?: string;
+      productUrl: string;
+      title?: string;
+      brand?: string;
+      price?: number;
+      originalPrice?: number;
+      /**
+       * ISO 4217 currency code, e.g. USD.
+       */
+      priceCurrency?: string;
+      availability?: string;
+      rating?: number;
+      reviews?: number;
+      sellerName?: string;
+      sellerId?: string;
+      categories: Array<string>;
+      imageUrls: Array<string>;
+      description?: string;
+      highlights?: string;
+      specs: Array<{
+        name?: string;
+        value?: string;
+      }>;
+      variants: Array<{
+        name?: string;
+        values?: Array<string>;
+      }>;
+      upc?: string;
+      model?: string;
+      topReviews: Array<{
+        reviewId?: string;
+        authorName?: string;
         rating?: number;
-        reviews?: number;
-        seller?: {
-          name?: string;
-          id?: string;
-        };
-        categories?: Array<string>;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        description?: string;
-        highlights?: string;
-        specs?: {
-          [key: string]: string;
-        };
-        variants?: Array<{
-          name?: string;
-          values?: Array<string>;
-        }>;
-        upc?: string;
-        model?: string;
-        topReviews?: Array<{
-          id?: string;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-          rating?: number;
-          title?: string;
-          text?: string;
-          createdAt?: string;
-          helpful?: number;
-        }>;
-      };
+        title?: string;
+        text?: string;
+        publishedAt?: string;
+        helpful?: number;
+      }>;
     };
     creditsUsed: number;
     requestId: string;
@@ -10313,12 +5490,13 @@ export type AliexpressSearchData = {
   body: {
     query: string;
     sort?: "relevance" | "bestSelling" | "priceLow" | "priceHigh";
-    price?: {
-      min?: number;
-      max?: number;
-    };
-    limit?: number;
+    minPrice?: number;
+    maxPrice?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -10346,18 +5524,17 @@ export type AliexpressSearchResponses = {
   200: {
     success: true;
     data: {
-      products: Array<{
-        position: number;
-        id?: string;
-        url: string;
+      results: Array<{
+        productId?: string;
+        productUrl: string;
         title?: string;
-        image?: string;
+        imageUrl?: string;
         price?: number;
         originalPrice?: number;
         /**
          * ISO 4217 currency code, e.g. USD.
          */
-        currency?: string;
+        priceCurrency?: string;
         rating?: number;
         sold?: number;
         isSponsored: boolean;
@@ -10403,47 +5580,40 @@ export type AliexpressProductResponses = {
   200: {
     success: true;
     data: {
-      product: {
-        id?: string;
-        url: string;
-        title?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
+      productId?: string;
+      productUrl: string;
+      title?: string;
+      imageUrls: Array<string>;
+      price?: number;
+      originalPrice?: number;
+      /**
+       * ISO 4217 currency code, e.g. USD.
+       */
+      priceCurrency?: string;
+      rating?: number;
+      reviews?: number;
+      sold?: number;
+      storeName?: string;
+      storeId?: string;
+      sellerId?: string;
+      storePositivePercent?: number;
+      options: Array<{
+        name?: string;
+        values?: Array<string>;
+      }>;
+      skus: Array<{
+        skuId?: string;
+        attributes?: string;
         price?: number;
         originalPrice?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        rating?: number;
-        reviews?: number;
-        sold?: number;
-        store?: {
-          name?: string;
-          id?: string;
-          sellerId?: string;
-          positivePercent?: number;
-        };
-        options?: Array<{
-          name?: string;
-          values?: Array<string>;
-        }>;
-        skus?: Array<{
-          id?: string;
-          attributes?: string;
-          price?: number;
-          originalPrice?: number;
-          stock?: number;
-          isAvailable: boolean;
-        }>;
-        specs?: {
-          [key: string]: string;
-        };
-        categoryId?: string;
-      };
+        stock?: number;
+        isAvailable: boolean;
+      }>;
+      specs: Array<{
+        name?: string;
+        value?: string;
+      }>;
+      categoryId?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -10486,55 +5656,45 @@ export type AppstoreAppResponses = {
   200: {
     success: true;
     data: {
-      app: {
-        id?: string;
-        bundleId?: string;
-        name?: string;
-        subtitle?: string;
-        url: string;
-        developer?: {
-          id?: string;
-          name?: string;
-          url?: string;
-        };
-        seller?: string;
-        website?: string;
-        price?: number;
-        currency?: string;
-        priceText?: string;
-        hasInAppPurchases?: boolean;
-        genres?: Array<string>;
-        primaryGenre?: {
-          id?: string;
-          name?: string;
-        };
-        contentRating?: string;
-        description?: string;
-        releaseNotes?: string;
-        version?: string;
-        releasedAt?: string;
-        updatedAt?: string;
-        minimumOsVersion?: string;
-        sizeBytes?: number;
-        languages?: Array<string>;
-        rating?: number;
-        ratings?: number;
-        histogram?: {
-          one: number;
-          two: number;
-          three: number;
-          four: number;
-          five: number;
-        };
-        chart?: {
-          name?: string;
-          genre?: string;
-          position: number;
-        };
-        icon?: string;
-        screenshots?: Array<string>;
-        ipadScreenshots?: Array<string>;
-      };
+      appId?: string;
+      appUrl: string;
+      bundleId?: string;
+      name?: string;
+      subtitle?: string;
+      developerId?: string;
+      developerName?: string;
+      developerUrl?: string;
+      seller?: string;
+      website?: string;
+      price?: number;
+      priceCurrency?: string;
+      priceText?: string;
+      hasInAppPurchases?: boolean;
+      genres: Array<string>;
+      primaryGenreId?: string;
+      primaryGenre?: string;
+      contentRating?: string;
+      description?: string;
+      releaseNotes?: string;
+      version?: string;
+      releasedAt?: string;
+      updatedAt?: string;
+      minimumOsVersion?: string;
+      sizeBytes?: number;
+      languages: Array<string>;
+      rating?: number;
+      ratings?: number;
+      ratingsOne?: number;
+      ratingsTwo?: number;
+      ratingsThree?: number;
+      ratingsFour?: number;
+      ratingsFive?: number;
+      chartName?: string;
+      chartGenre?: string;
+      chartPosition?: number;
+      iconUrl?: string;
+      screenshotUrls: Array<string>;
+      ipadScreenshotUrls: Array<string>;
     };
     creditsUsed: number;
     requestId: string;
@@ -10552,6 +5712,9 @@ export type AppstoreSearchData = {
      */
     country?: string;
     device?: "iphone" | "ipad" | "mac";
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
   };
   path?: never;
@@ -10580,26 +5743,22 @@ export type AppstoreSearchResponses = {
   200: {
     success: true;
     data: {
-      apps: Array<{
-        id?: string;
+      results: Array<{
+        appId?: string;
+        appUrl: string;
         bundleId?: string;
         name?: string;
-        url: string;
-        developer?: {
-          id?: string;
-          name?: string;
-          url?: string;
-        };
+        developerId?: string;
+        developerName?: string;
+        developerUrl?: string;
         seller?: string;
         website?: string;
         price?: number;
-        currency?: string;
+        priceCurrency?: string;
         priceText?: string;
         genres?: Array<string>;
-        primaryGenre?: {
-          id?: string;
-          name?: string;
-        };
+        primaryGenreId?: string;
+        primaryGenre?: string;
         contentRating?: string;
         description?: string;
         releaseNotes?: string;
@@ -10611,9 +5770,9 @@ export type AppstoreSearchResponses = {
         languages?: Array<string>;
         rating?: number;
         ratings?: number;
-        icon?: string;
-        screenshots?: Array<string>;
-        ipadScreenshots?: Array<string>;
+        iconUrl?: string;
+        screenshotUrls?: Array<string>;
+        ipadScreenshotUrls?: Array<string>;
       }>;
     };
     creditsUsed: number;
@@ -10632,8 +5791,11 @@ export type AppstoreReviewsData = {
      */
     country?: string;
     sort?: "newest" | "helpful" | "highest" | "lowest";
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -10661,20 +5823,13 @@ export type AppstoreReviewsResponses = {
   200: {
     success: true;
     data: {
-      reviews: Array<{
-        id?: string;
+      results: Array<{
+        reviewId?: string;
         rating: number;
         title?: string;
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
+        authorName?: string;
+        publishedAt?: string;
         isEdited: boolean;
       }>;
       cursor?: string;
@@ -10691,11 +5846,38 @@ export type AppstoreTopData = {
   body: {
     chart?: "free" | "paid" | "grossing";
     device?: "iphone" | "ipad" | "mac";
-    genre?: number;
+    genre?:
+      | "business"
+      | "weather"
+      | "utilities"
+      | "travel"
+      | "sports"
+      | "socialNetworking"
+      | "reference"
+      | "productivity"
+      | "photoVideo"
+      | "news"
+      | "navigation"
+      | "music"
+      | "lifestyle"
+      | "healthFitness"
+      | "games"
+      | "finance"
+      | "entertainment"
+      | "education"
+      | "books"
+      | "medical"
+      | "foodDrink"
+      | "shopping"
+      | "developerTools"
+      | "graphicsDesign";
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
     country?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
   };
   path?: never;
@@ -10723,26 +5905,22 @@ export type AppstoreTopResponses = {
   200: {
     success: true;
     data: {
-      apps: Array<{
+      results: Array<{
         rank: number;
-        id?: string;
+        appId?: string;
+        appUrl: string;
         bundleId?: string;
         name?: string;
-        url: string;
-        developer?: {
-          id?: string;
-          name?: string;
-          url?: string;
-        };
+        developerId?: string;
+        developerName?: string;
+        developerUrl?: string;
         price?: number;
-        currency?: string;
-        genre?: {
-          id?: string;
-          name?: string;
-        };
+        priceCurrency?: string;
+        genreId?: string;
+        genre?: string;
         releasedAt?: string;
         summary?: string;
-        icon?: string;
+        iconUrl?: string;
       }>;
     };
     creditsUsed: number;
@@ -10790,60 +5968,43 @@ export type GoogleplayAppResponses = {
   200: {
     success: true;
     data: {
-      app: {
-        id?: string;
-        url: string;
-        name?: string;
-        summary?: string;
-        description?: string;
-        developer?: {
-          id?: string;
-          name?: string;
-          email?: string;
-          website?: string;
-          address?: {
-            full?: string;
-            street?: string;
-            city?: string;
-            state?: string;
-            postalCode?: string;
-            country?: string;
-          };
-        };
-        privacyPolicy?: string;
-        genre?: {
-          id?: string;
-          name?: string;
-        };
-        contentRating?: string;
-        installs?: {
-          text?: string;
-          min?: number;
-          exact?: number;
-        };
-        rating?: number;
-        ratings?: number;
-        reviews?: number;
-        histogram?: {
-          one: number;
-          two: number;
-          three: number;
-          four: number;
-          five: number;
-        };
-        price?: number;
-        currency?: string;
-        hasInAppPurchases: boolean;
-        inAppPriceText?: string;
-        hasAds: boolean;
-        version?: string;
-        recentChanges?: string;
-        releasedAt?: string;
-        updatedAt?: string;
-        icon?: string;
-        banner?: string;
-        screenshots?: Array<string>;
-      };
+      appId?: string;
+      appUrl: string;
+      name?: string;
+      summary?: string;
+      description?: string;
+      developerId?: string;
+      developerName?: string;
+      developerEmail?: string;
+      developerWebsite?: string;
+      developerAddress?: string;
+      privacyPolicyUrl?: string;
+      genreId?: string;
+      genre?: string;
+      contentRating?: string;
+      installsText?: string;
+      installsMin?: number;
+      installsExact?: number;
+      rating?: number;
+      ratings?: number;
+      reviews?: number;
+      ratingsOne?: number;
+      ratingsTwo?: number;
+      ratingsThree?: number;
+      ratingsFour?: number;
+      ratingsFive?: number;
+      price?: number;
+      priceCurrency?: string;
+      hasInAppPurchases: boolean;
+      inAppPriceText?: string;
+      hasAds: boolean;
+      version?: string;
+      recentChanges?: string;
+      releasedAt?: string;
+      updatedAt?: string;
+      iconUrl?: string;
+      bannerUrl?: string;
+      screenshotUrls: Array<string>;
     };
     creditsUsed: number;
     requestId: string;
@@ -10864,6 +6025,9 @@ export type GoogleplaySearchData = {
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
     language?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
     limit?: number;
   };
   path?: never;
@@ -10892,25 +6056,19 @@ export type GoogleplaySearchResponses = {
   200: {
     success: true;
     data: {
-      apps: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        appId?: string;
+        appUrl: string;
         name?: string;
-        developer?: {
-          name?: string;
-        };
+        developerName?: string;
         summary?: string;
-        genre?: {
-          name?: string;
-        };
-        installs?: {
-          text?: string;
-          min?: number;
-        };
+        genre?: string;
+        installsText?: string;
+        installsMin?: number;
         rating?: number;
         price?: number;
-        currency?: string;
-        icon?: string;
+        priceCurrency?: string;
+        iconUrl?: string;
       }>;
     };
     creditsUsed: number;
@@ -10934,8 +6092,11 @@ export type GoogleplayReviewsData = {
     language?: string;
     sort?: "newest" | "relevance" | "highest";
     rating?: number;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -10963,26 +6124,18 @@ export type GoogleplayReviewsResponses = {
   200: {
     success: true;
     data: {
-      reviews: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        reviewId?: string;
+        reviewUrl: string;
         rating: number;
         text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        createdAt?: string;
+        authorName?: string;
+        authorAvatarUrl?: string;
+        publishedAt?: string;
         likes: number;
         appVersion?: string;
-        ownerReply?: {
-          text?: string;
-          createdAt?: string;
-        };
+        ownerReplyText?: string;
+        ownerReplyAt?: string;
       }>;
       cursor?: string;
     };
@@ -11000,51 +6153,13 @@ export type AirbnbSearchData = {
     checkIn?: string;
     checkOut?: string;
     adults?: number;
-    children?: number;
-    infants?: number;
-    pets?: number;
-    price?: {
-      min?: number;
-      max?: number;
-    };
-    currency?: string;
-    roomType?: "entireHome" | "privateRoom" | "sharedRoom" | "hotelRoom";
-    bedrooms?: {
-      min: number;
-    };
-    bathrooms?: {
-      min: number;
-    };
-    amenities?: Array<
-      | "wifi"
-      | "kitchen"
-      | "washer"
-      | "dryer"
-      | "airConditioning"
-      | "heating"
-      | "workspace"
-      | "tv"
-      | "hairDryer"
-      | "iron"
-      | "pool"
-      | "hotTub"
-      | "freeParking"
-      | "evCharger"
-      | "crib"
-      | "gym"
-      | "bbqGrill"
-      | "breakfast"
-      | "fireplace"
-      | "smokingAllowed"
-      | "smokeAlarm"
-      | "carbonMonoxideAlarm"
-      | "selfCheckIn"
-    >;
-    superhost?: boolean;
-    instantBook?: boolean;
-    guestFavorite?: boolean;
-    limit?: number;
+    minPrice?: number;
+    maxPrice?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -11071,9 +6186,9 @@ export type AirbnbSearchResponses = {
   200: {
     success: true;
     data: {
-      listings: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        listingId?: string;
+        listingUrl: string;
         name?: string;
         title?: string;
         subtitle?: string;
@@ -11082,23 +6197,17 @@ export type AirbnbSearchResponses = {
         /**
          * ISO 4217 currency code, e.g. USD.
          */
-        currency?: string;
+        priceCurrency?: string;
         priceText?: string;
         rating?: number;
         reviews?: number;
         bedrooms?: number;
         beds?: number;
         bathrooms?: number;
-        location?: {
-          lat: number;
-          lng: number;
-        };
+        latitude?: number;
+        longitude?: number;
         badges?: Array<string>;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
+        imageUrls?: Array<string>;
       }>;
       cursor?: string;
     };
@@ -11139,66 +6248,58 @@ export type AirbnbListingResponses = {
   200: {
     success: true;
     data: {
-      listing: {
-        id?: string;
-        url: string;
-        name?: string;
-        headline?: string;
+      listingId?: string;
+      listingUrl: string;
+      name?: string;
+      headline?: string;
+      description?: string;
+      propertyType?: string;
+      roomType?: string;
+      guests?: number;
+      bedrooms?: number;
+      beds?: number;
+      bathrooms?: number;
+      isPetFriendly?: boolean;
+      isGuestFavorite: boolean;
+      rating?: number;
+      reviews?: number;
+      ratingCategories: Array<{
+        category?: string;
+        rating: number;
+      }>;
+      ratingDistribution: Array<{
+        stars?: string;
+        percent: number;
+      }>;
+      hostId?: string;
+      hostName?: string;
+      hostIsSuperhost: boolean;
+      hostIsVerified: boolean;
+      hostRating?: number;
+      hostReviews?: number;
+      hostYearsHosting?: number;
+      hostBio?: string;
+      hostResponsePercent?: number;
+      hostResponseTime?: string;
+      hostHighlights: Array<string>;
+      hostAvatarUrl?: string;
+      highlights: Array<{
+        title?: string;
         description?: string;
-        propertyType?: string;
-        roomType?: string;
-        guests?: number;
-        bedrooms?: number;
-        beds?: number;
-        bathrooms?: number;
-        isPetFriendly?: boolean;
-        isGuestFavorite: boolean;
-        rating?: number;
-        reviews?: number;
-        ratingCategories?: {
-          [key: string]: number;
-        };
-        ratingDistribution?: {
-          [key: string]: number;
-        };
-        host: {
-          id?: string;
-          name?: string;
-          isSuperhost: boolean;
-          isVerified: boolean;
-          rating?: number;
-          reviews?: number;
-          yearsHosting?: number;
-          bio?: string;
-          responsePercent?: number;
-          responseTime?: string;
-          highlights?: Array<string>;
-          avatar?: string;
-        };
-        highlights?: Array<{
-          title?: string;
-          description?: string;
-        }>;
-        amenities?: Array<{
-          group?: string;
-          name?: string;
-          isAvailable: boolean;
-        }>;
-        houseRules?: Array<string>;
-        safety?: Array<string>;
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        isLocationExact: boolean;
-        area?: string;
-        neighborhood?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-      };
+      }>;
+      amenities: Array<{
+        group?: string;
+        name?: string;
+        isAvailable: boolean;
+      }>;
+      houseRules: Array<string>;
+      safety: Array<string>;
+      latitude?: number;
+      longitude?: number;
+      isLocationExact: boolean;
+      area?: string;
+      neighborhood?: string;
+      imageUrls: Array<string>;
     };
     creditsUsed: number;
     requestId: string;
@@ -11212,7 +6313,10 @@ export type AirbnbCalendarData = {
   body: {
     listing: string;
     month?: string;
-    months?: number;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -11240,7 +6344,7 @@ export type AirbnbCalendarResponses = {
   200: {
     success: true;
     data: {
-      days: Array<{
+      results: Array<{
         date: string;
         isAvailable: boolean;
         isBookable: boolean;
@@ -11263,8 +6367,11 @@ export type AirbnbReviewsData = {
   body: {
     listing: string;
     sort?: "relevance" | "newest" | "highest" | "lowest";
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -11291,32 +6398,18 @@ export type AirbnbReviewsResponses = {
   200: {
     success: true;
     data: {
-      reviews: Array<{
-        id?: string;
+      results: Array<{
+        reviewId?: string;
         text?: string;
         rating?: number;
-        createdAt?: string;
+        publishedAt?: string;
         language?: string;
         stayLength?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          address?: {
-            full?: string;
-            street?: string;
-            city?: string;
-            state?: string;
-            postalCode?: string;
-            country?: string;
-          };
-        };
-        ownerReply?: {
-          text?: string;
-        };
+        authorId?: string;
+        authorName?: string;
+        authorAvatarUrl?: string;
+        authorAddress?: string;
+        ownerReplyText?: string;
       }>;
       total?: number;
       cursor?: string;
@@ -11329,609 +6422,20 @@ export type AirbnbReviewsResponses = {
 export type AirbnbReviewsResponse =
   AirbnbReviewsResponses[keyof AirbnbReviewsResponses];
 
-export type RedfinSearchData = {
-  body: {
-    location: string;
-    status?: "forSale" | "sold";
-    soldWithin?:
-      | "week"
-      | "month"
-      | "threeMonths"
-      | "sixMonths"
-      | "year"
-      | "twoYears"
-      | "threeYears"
-      | "fiveYears";
-    sort?:
-      | "relevance"
-      | "newest"
-      | "priceLow"
-      | "priceHigh"
-      | "sqft"
-      | "pricePerSqft";
-    price?: {
-      min?: number;
-      max?: number;
-    };
-    bedrooms?: {
-      min?: number;
-      max?: number;
-    };
-    bathrooms?: {
-      min: number;
-    };
-    homeTypes?: Array<
-      | "house"
-      | "condo"
-      | "townhouse"
-      | "multiFamily"
-      | "land"
-      | "other"
-      | "manufactured"
-      | "coop"
-    >;
-    sqft?: {
-      min?: number;
-      max?: number;
-    };
-    lotSqft?: {
-      min?: number;
-      max?: number;
-    };
-    yearBuilt?: {
-      min?: number;
-      max?: number;
-    };
-    daysOnMarket?: {
-      min?: number;
-      max?: number;
-    };
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/redfin/search";
-};
-
-export type RedfinSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type RedfinSearchError = RedfinSearchErrors[keyof RedfinSearchErrors];
-
-export type RedfinSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      listings: Array<{
-        id?: string;
-        listingId?: string;
-        url: string;
-        status?: string;
-        price?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        bedrooms?: number;
-        bathrooms?: number;
-        sqft?: number;
-        lotSqft?: number;
-        pricePerSqft?: number;
-        yearBuilt?: number;
-        hoa?: number;
-        daysOnMarket?: number;
-        lastSoldAt?: string;
-        homeType?: string;
-        mlsId?: string;
-        neighborhood?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-          unit?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        remarks?: string;
-        tags?: Array<string>;
-      }>;
-      median?: {
-        price?: number;
-        sqft?: number;
-        pricePerSqft?: number;
-        daysOnMarket?: number;
-      };
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type RedfinSearchResponse =
-  RedfinSearchResponses[keyof RedfinSearchResponses];
-
-export type RedfinPropertyData = {
-  body: {
-    property: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/redfin/property";
-};
-
-export type RedfinPropertyErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type RedfinPropertyError =
-  RedfinPropertyErrors[keyof RedfinPropertyErrors];
-
-export type RedfinPropertyResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      property: {
-        id?: string;
-        url: string;
-        status?: string;
-        price?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        priceText?: string;
-        estimate?: number;
-        lastSoldPrice?: number;
-        lastSoldAt?: string;
-        bedrooms?: number;
-        bathrooms?: number;
-        sqft?: number;
-        lotSqft?: number;
-        yearBuilt?: number;
-        stories?: number;
-        propertyType?: string;
-        apn?: string;
-        county?: string;
-        description?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-          unit?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        priceHistory?: Array<{
-          date: string;
-          event?: string;
-          price?: number;
-          source?: string;
-          mlsId?: string;
-        }>;
-        taxHistory?: Array<{
-          year: number;
-          landValue?: number;
-          improvementValue?: number;
-          taxes?: number;
-        }>;
-        facts?: Array<{
-          group?: string;
-          name?: string;
-          values?: Array<string>;
-        }>;
-        schools?: Array<{
-          id?: string;
-          name?: string;
-          type?: string;
-          grades?: string;
-          rating?: number;
-          parentRating?: number;
-          distanceMiles?: number;
-          students?: number;
-          isServingHome: boolean;
-          district?: string;
-          url: string;
-        }>;
-        comparables?: Array<{
-          id?: string;
-          url: string;
-          status?: string;
-          price?: number;
-          bedrooms?: number;
-          bathrooms?: number;
-          sqft?: number;
-          lastSoldAt?: string;
-          address?: {
-            full?: string;
-            street?: string;
-            city?: string;
-            state?: string;
-            postalCode?: string;
-            country?: string;
-          };
-        }>;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type RedfinPropertyResponse =
-  RedfinPropertyResponses[keyof RedfinPropertyResponses];
-
-export type RealtorSearchData = {
-  body: {
-    location: string;
-    status?: "forSale" | "forRent" | "sold" | "pending";
-    soldWithin?:
-      | "week"
-      | "month"
-      | "threeMonths"
-      | "sixMonths"
-      | "year"
-      | "twoYears"
-      | "threeYears"
-      | "fiveYears";
-    sort?:
-      | "relevance"
-      | "newest"
-      | "priceLow"
-      | "priceHigh"
-      | "sqft"
-      | "recentlySold";
-    price?: {
-      min?: number;
-      max?: number;
-    };
-    bedrooms?: {
-      min?: number;
-      max?: number;
-    };
-    bathrooms?: {
-      min?: number;
-      max?: number;
-    };
-    sqft?: {
-      min?: number;
-      max?: number;
-    };
-    lotSqft?: {
-      min?: number;
-      max?: number;
-    };
-    yearBuilt?: {
-      min?: number;
-      max?: number;
-    };
-    hoa?: {
-      max: number;
-    };
-    homeTypes?: Array<
-      | "house"
-      | "condo"
-      | "townhouse"
-      | "multiFamily"
-      | "duplex"
-      | "apartment"
-      | "mobile"
-      | "land"
-      | "farm"
-    >;
-    newConstruction?: boolean;
-    foreclosure?: boolean;
-    queries?: Array<string>;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/realtor/search";
-};
-
-export type RealtorSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type RealtorSearchError = RealtorSearchErrors[keyof RealtorSearchErrors];
-
-export type RealtorSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      listings: Array<{
-        id?: string;
-        listingId?: string;
-        url?: string;
-        status?: string;
-        price?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        priceRange?: {
-          min?: number;
-          max?: number;
-        };
-        bedrooms?: number;
-        bedroomsMax?: number;
-        bathrooms?: number;
-        sqft?: number;
-        lotSqft?: number;
-        yearBuilt?: number;
-        homeType?: string;
-        pricePerSqft?: number;
-        hoa?: number;
-        createdAt?: string;
-        lastSoldPrice?: number;
-        lastSoldAt?: string;
-        flags: {
-          isPending: boolean;
-          isContingent: boolean;
-          isNewConstruction: boolean;
-          isForeclosure: boolean;
-        };
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-          unit?: string;
-          county?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        image?: string;
-        totalImages?: number;
-        broker?: {
-          name?: string;
-        };
-        tags?: Array<string>;
-      }>;
-      total?: number;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type RealtorSearchResponse =
-  RealtorSearchResponses[keyof RealtorSearchResponses];
-
-export type RealtorPropertyData = {
-  body: {
-    property: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/realtor/property";
-};
-
-export type RealtorPropertyErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type RealtorPropertyError =
-  RealtorPropertyErrors[keyof RealtorPropertyErrors];
-
-export type RealtorPropertyResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      property: {
-        id?: string;
-        listingId?: string;
-        url?: string;
-        status?: string;
-        price?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        priceRange?: {
-          min?: number;
-          max?: number;
-        };
-        bedrooms?: number;
-        bedroomsMax?: number;
-        bathrooms?: number;
-        sqft?: number;
-        lotSqft?: number;
-        yearBuilt?: number;
-        homeType?: string;
-        pricePerSqft?: number;
-        hoa?: number;
-        createdAt?: string;
-        lastSoldPrice?: number;
-        lastSoldAt?: string;
-        flags: {
-          isPending: boolean;
-          isContingent: boolean;
-          isNewConstruction: boolean;
-          isForeclosure: boolean;
-        };
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-          unit?: string;
-          county?: string;
-        };
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        image?: string;
-        totalImages?: number;
-        broker?: {
-          name?: string;
-        };
-        tags?: Array<string>;
-        description?: string;
-        stories?: number;
-        garage?: number;
-        daysOnMarket?: number;
-        mls?: {
-          id?: string;
-          name?: string;
-          listingId?: string;
-        };
-        neighborhoods?: Array<string>;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        details?: Array<{
-          category?: string;
-          items?: Array<string>;
-        }>;
-        estimates?: Array<{
-          source?: string;
-          estimate?: number;
-          low?: number;
-          high?: number;
-          date?: string;
-        }>;
-        priceHistory?: Array<{
-          date: string;
-          event?: string;
-          price?: number;
-          source?: string;
-        }>;
-        taxHistory?: Array<{
-          year: number;
-          tax?: number;
-          assessedTotal?: number;
-          assessedLand?: number;
-          assessedBuilding?: number;
-        }>;
-        schools?: Array<{
-          id?: string;
-          name?: string;
-          rating?: number;
-          parentRating?: number;
-          distanceMiles?: number;
-          levels?: Array<string>;
-          grades?: Array<string>;
-          funding?: string;
-          students?: number;
-          district?: string;
-        }>;
-        agents?: Array<{
-          name?: string;
-          type?: string;
-          email?: string;
-          phones?: Array<string>;
-          office?: string;
-        }>;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type RealtorPropertyResponse =
-  RealtorPropertyResponses[keyof RealtorPropertyResponses];
-
 export type RightmoveSearchData = {
   body: {
     location: string;
     status?: "forSale" | "forRent";
+    minPrice?: number;
+    maxPrice?: number;
+    minBedrooms?: number;
+    maxBedrooms?: number;
     sort?: "newest" | "oldest" | "priceHigh" | "priceLow";
-    radiusKm?: number;
-    price?: {
-      min?: number;
-      max?: number;
-    };
-    bedrooms?: {
-      min?: number;
-      max?: number;
-    };
-    propertyTypes?: Array<
-      | "detached"
-      | "semiDetached"
-      | "terraced"
-      | "flat"
-      | "bungalow"
-      | "land"
-      | "parkHome"
-    >;
-    mustHave?: Array<
-      | "garden"
-      | "parking"
-      | "newHome"
-      | "retirement"
-      | "sharedOwnership"
-      | "auction"
-    >;
-    within?: "day" | "threeDays" | "week" | "twoWeeks" | "all";
-    includeUnderOffer?: boolean;
-    queries?: Array<string>;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -11959,54 +6463,36 @@ export type RightmoveSearchResponses = {
   200: {
     success: true;
     data: {
-      listings: Array<{
-        id?: string;
-        url: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
+      results: Array<{
+        propertyId?: string;
+        propertyUrl: string;
+        addressFull?: string;
         summary?: string;
         price?: number;
         priceText?: string;
         priceQualifier?: string;
-        frequency?: string;
+        priceFrequency?: string;
         /**
          * ISO 4217 currency code, e.g. USD.
          */
-        currency?: string;
+        priceCurrency?: string;
         bedrooms?: number;
         bathrooms?: number;
         propertyType?: string;
         sizeText?: string;
-        tenure?: {
-          type?: string;
-          yearsRemaining?: number;
-        };
+        tenureType?: string;
         firstListedAt?: string;
         updateReason?: string;
         updatedAt?: string;
         isFeatured: boolean;
         isAuction: boolean;
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        agent?: {
-          name?: string;
-          branchId?: string;
-          phone?: string;
-        };
+        latitude?: number;
+        longitude?: number;
+        agentName?: string;
+        agentBranchId?: string;
+        agentPhone?: string;
         keyFeatures?: Array<string>;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
+        imageUrls?: Array<string>;
       }>;
       total?: number;
       cursor?: string;
@@ -12049,73 +6535,50 @@ export type RightmovePropertyResponses = {
   200: {
     success: true;
     data: {
-      property: {
-        id?: string;
-        url: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        description?: string;
-        price?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        priceText?: string;
-        priceQualifier?: string;
-        pricePerSqft?: number;
-        channel?: string;
-        bedrooms?: number;
-        bathrooms?: number;
-        propertyType?: string;
-        tenure?: {
-          type?: string;
-          yearsRemaining?: number;
-        };
-        sizes?: Array<{
-          value: number;
-          unit?: string;
-        }>;
-        councilTaxBand?: string;
-        annualServiceCharge?: number;
-        annualGroundRent?: number;
-        updateReason?: string;
-        tags?: Array<string>;
-        keyFeatures?: Array<string>;
-        images?: Array<{
-          url: string;
-          caption?: string;
-        }>;
-        floorplans?: Array<string>;
-        location?: {
-          lat: number;
-          lng: number;
-        };
-        nearestStations?: Array<{
-          name?: string;
-          types?: Array<string>;
-          distanceMiles?: number;
-        }>;
-        agent?: {
-          name?: string;
-          branchId?: string;
-          phone?: string;
-          company?: string;
-          address?: {
-            full?: string;
-            street?: string;
-            city?: string;
-            state?: string;
-            postalCode?: string;
-            country?: string;
-          };
-        };
-      };
+      propertyId?: string;
+      propertyUrl: string;
+      addressFull?: string;
+      addressPostalCode?: string;
+      addressCountry?: string;
+      description?: string;
+      price?: number;
+      /**
+       * ISO 4217 currency code, e.g. USD.
+       */
+      priceCurrency?: string;
+      priceText?: string;
+      priceQualifier?: string;
+      pricePerSqft?: number;
+      channel?: string;
+      bedrooms?: number;
+      bathrooms?: number;
+      propertyType?: string;
+      tenureType?: string;
+      tenureYearsRemaining?: number;
+      sizes: Array<{
+        value: number;
+        unit?: string;
+      }>;
+      councilTaxBand?: string;
+      annualServiceCharge?: number;
+      annualGroundRent?: number;
+      updateReason?: string;
+      tags: Array<string>;
+      keyFeatures: Array<string>;
+      imageUrls: Array<string>;
+      floorplanUrls: Array<string>;
+      latitude?: number;
+      longitude?: number;
+      nearestStations: Array<{
+        name?: string;
+        types?: Array<string>;
+        distanceMiles?: number;
+      }>;
+      agentName?: string;
+      agentBranchId?: string;
+      agentPhone?: string;
+      agentCompany?: string;
+      agentAddress?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -12136,33 +6599,15 @@ export type ImmoscoutSearchData = {
       | "land"
       | "flatShare"
       | "shortTerm";
+    minPrice?: number;
+    maxPrice?: number;
+    minRooms?: number;
     sort?: "newest" | "priceLow" | "priceHigh" | "largest";
-    price?: {
-      min?: number;
-      max?: number;
-    };
-    rooms?: {
-      min?: number;
-      max?: number;
-    };
-    livingSpace?: {
-      min?: number;
-      max?: number;
-    };
-    equipment?: Array<
-      | "balcony"
-      | "builtInKitchen"
-      | "garden"
-      | "cellar"
-      | "parking"
-      | "lift"
-      | "stepFree"
-      | "guestToilet"
-    >;
-    newConstruction?: boolean;
-    query?: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -12190,33 +6635,28 @@ export type ImmoscoutSearchResponses = {
   200: {
     success: true;
     data: {
-      listings: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        listingId?: string;
+        listingUrl: string;
         title?: string;
         type?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
+        addressFull?: string;
+        addressPostalCode?: string;
+        addressCountry?: string;
         price?: number;
         /**
          * ISO 4217 currency code, e.g. USD.
          */
-        currency?: string;
+        priceCurrency?: string;
         priceText?: string;
         livingSpace?: number;
         rooms?: number;
         energyClass?: string;
-        createdAt?: string;
+        publishedAt?: string;
         isPrivate: boolean;
         isProject: boolean;
         isNew: boolean;
-        image?: string;
+        imageUrl?: string;
       }>;
       total?: number;
       cursor?: string;
@@ -12259,62 +6699,44 @@ export type ImmoscoutListingResponses = {
   200: {
     success: true;
     data: {
-      listing: {
-        id?: string;
-        url: string;
+      listingId?: string;
+      listingUrl: string;
+      title?: string;
+      type?: string;
+      status?: string;
+      addressFull?: string;
+      addressPostalCode?: string;
+      addressCity?: string;
+      addressDistrict?: string;
+      addressCountry?: string;
+      /**
+       * ISO 4217 currency code, e.g. USD.
+       */
+      priceCurrency?: string;
+      baseRent?: number;
+      totalRent?: number;
+      serviceCharge?: number;
+      price?: number;
+      livingSpace?: number;
+      rooms?: number;
+      yearBuilt?: number;
+      energyClass?: string;
+      attributes: Array<{
+        group?: string;
+        label?: string;
+        value?: string;
+      }>;
+      texts: Array<{
         title?: string;
-        type?: string;
-        status?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-          district?: string;
-        };
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        currency?: string;
-        baseRent?: number;
-        totalRent?: number;
-        serviceCharge?: number;
-        price?: number;
-        livingSpace?: number;
-        rooms?: number;
-        yearBuilt?: number;
-        energyClass?: string;
-        attributes?: Array<{
-          group?: string;
-          label?: string;
-          value?: string;
-        }>;
-        texts?: Array<{
-          title?: string;
-          text?: string;
-        }>;
-        images?: Array<{
-          url: string;
-          caption?: string;
-        }>;
-        agent?: {
-          name?: string;
-          company?: string;
-          phone?: string;
-          rating?: number;
-          url?: string;
-          address?: {
-            full?: string;
-            street?: string;
-            city?: string;
-            state?: string;
-            postalCode?: string;
-            country?: string;
-          };
-        };
-      };
+        text?: string;
+      }>;
+      imageUrls: Array<string>;
+      agentName?: string;
+      agentCompany?: string;
+      agentPhone?: string;
+      agentRating?: number;
+      agentUrl?: string;
+      agentAddress?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -12328,8 +6750,11 @@ export type PinterestSearchData = {
   body: {
     query: string;
     type?: "pins" | "videos";
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -12357,47 +6782,32 @@ export type PinterestSearchResponses = {
   200: {
     success: true;
     data: {
-      pins: Array<{
-        id?: string;
-        url: string;
+      results: Array<{
+        pinId?: string;
+        pinUrl: string;
         title?: string;
         text?: string;
         altText?: string;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
+        linkUrl?: string;
         domain?: string;
-        createdAt?: string;
-        image?: string;
-        width?: number;
-        height?: number;
-        dominantColor?: string;
-        video?: {
-          url: string;
-          durationSeconds?: number;
-        };
+        publishedAt?: string;
+        imageUrl?: string;
+        videoUrl?: string;
+        videoDurationSeconds?: number;
         saves?: number;
         reposts?: number;
         comments?: number;
         reactions?: number;
         isPromoted: boolean;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          followers?: number;
-        };
-        board?: {
-          id?: string;
-          name?: string;
-          url: string;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        boardId?: string;
+        boardName?: string;
+        boardUrl?: string;
       }>;
       cursor?: string;
     };
@@ -12438,48 +6848,31 @@ export type PinterestPinResponses = {
   200: {
     success: true;
     data: {
-      pin: {
-        id?: string;
-        url: string;
-        title?: string;
-        text?: string;
-        altText?: string;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
-        domain?: string;
-        createdAt?: string;
-        image?: string;
-        width?: number;
-        height?: number;
-        dominantColor?: string;
-        video?: {
-          url: string;
-          durationSeconds?: number;
-        };
-        saves?: number;
-        reposts?: number;
-        comments?: number;
-        reactions?: number;
-        isPromoted: boolean;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          followers?: number;
-        };
-        board?: {
-          id?: string;
-          name?: string;
-          url: string;
-        };
-      };
+      pinId?: string;
+      pinUrl: string;
+      title?: string;
+      text?: string;
+      altText?: string;
+      linkUrl?: string;
+      domain?: string;
+      publishedAt?: string;
+      imageUrl?: string;
+      videoUrl?: string;
+      videoDurationSeconds?: number;
+      saves?: number;
+      reposts?: number;
+      comments?: number;
+      reactions?: number;
+      isPromoted: boolean;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl?: string;
+      authorAvatarUrl?: string;
+      authorIsVerified?: boolean;
+      boardId?: string;
+      boardName?: string;
+      boardUrl?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -12492,8 +6885,11 @@ export type PinterestPinResponse =
 export type PinterestBoardData = {
   body: {
     board: string;
-    limit?: number;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -12521,67 +6917,47 @@ export type PinterestBoardResponses = {
   200: {
     success: true;
     data: {
-      board: {
-        id?: string;
-        name?: string;
-        url: string;
-        description?: string;
-        category?: string;
-        pins?: number;
-        followers?: number;
-        sections?: number;
-        thumbnail?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          followers?: number;
-        };
-      };
-      pins: Array<{
-        id?: string;
-        url: string;
+      boardId?: string;
+      boardUrl: string;
+      name?: string;
+      description?: string;
+      category?: string;
+      pins?: number;
+      followers?: number;
+      sections?: number;
+      thumbnailUrl?: string;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl?: string;
+      authorAvatarUrl?: string;
+      authorIsVerified?: boolean;
+      results: Array<{
+        pinId?: string;
+        pinUrl: string;
         title?: string;
         text?: string;
         altText?: string;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
+        linkUrl?: string;
         domain?: string;
-        createdAt?: string;
-        image?: string;
-        width?: number;
-        height?: number;
-        dominantColor?: string;
-        video?: {
-          url: string;
-          durationSeconds?: number;
-        };
+        publishedAt?: string;
+        imageUrl?: string;
+        videoUrl?: string;
+        videoDurationSeconds?: number;
         saves?: number;
         reposts?: number;
         comments?: number;
         reactions?: number;
         isPromoted: boolean;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          followers?: number;
-        };
-        board?: {
-          id?: string;
-          name?: string;
-          url: string;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        boardId?: string;
+        boardName?: string;
+        boardUrl?: string;
       }>;
       cursor?: string;
     };
@@ -12595,9 +6971,12 @@ export type PinterestBoardResponse =
 
 export type PinterestUserData = {
   body: {
-    user: string;
-    limit?: number;
+    profile: string;
     cursor?: string;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -12624,63 +7003,46 @@ export type PinterestUserResponses = {
   200: {
     success: true;
     data: {
-      profile: {
-        id?: string;
-        username?: string;
-        name?: string;
-        url: string;
-        avatar?: string;
-        followers?: number;
-        bio?: string;
-        website?: string;
-        following?: number;
-        pins?: number;
-        boards?: number;
-        isVerified: boolean;
-        isPrivate: boolean;
-        createdAt?: string;
-      };
-      pins: Array<{
-        id?: string;
-        url: string;
+      userId?: string;
+      username?: string;
+      userUrl: string;
+      name?: string;
+      avatarUrl?: string;
+      followers?: number;
+      bio?: string;
+      website?: string;
+      following?: number;
+      pins?: number;
+      boards?: number;
+      isVerified: boolean;
+      isPrivate: boolean;
+      createdAt?: string;
+      results: Array<{
+        pinId?: string;
+        pinUrl: string;
         title?: string;
         text?: string;
         altText?: string;
-        link?: {
-          url: string;
-          title?: string;
-          description?: string;
-          image?: string;
-        };
+        linkUrl?: string;
         domain?: string;
-        createdAt?: string;
-        image?: string;
-        width?: number;
-        height?: number;
-        dominantColor?: string;
-        video?: {
-          url: string;
-          durationSeconds?: number;
-        };
+        publishedAt?: string;
+        imageUrl?: string;
+        videoUrl?: string;
+        videoDurationSeconds?: number;
         saves?: number;
         reposts?: number;
         comments?: number;
         reactions?: number;
         isPromoted: boolean;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          followers?: number;
-        };
-        board?: {
-          id?: string;
-          name?: string;
-          url: string;
-        };
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        boardId?: string;
+        boardName?: string;
+        boardUrl?: string;
       }>;
       cursor?: string;
     };
@@ -12692,24 +7054,16 @@ export type PinterestUserResponses = {
 export type PinterestUserResponse =
   PinterestUserResponses[keyof PinterestUserResponses];
 
-export type PinterestAdsSearchData = {
+export type XPostData = {
   body: {
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country: string;
-    advertiser?: string;
-    from?: string;
-    to?: string;
-    limit?: number;
-    cursor?: string;
+    post: string;
   };
   path?: never;
   query?: never;
-  url: "/v1/pinterest/ads/search";
+  url: "/v1/x/post";
 };
 
-export type PinterestAdsSearchErrors = {
+export type XPostErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -12720,462 +7074,58 @@ export type PinterestAdsSearchErrors = {
   "5XX": _Error;
 };
 
-export type PinterestAdsSearchError =
-  PinterestAdsSearchErrors[keyof PinterestAdsSearchErrors];
+export type XPostError = XPostErrors[keyof XPostErrors];
 
-export type PinterestAdsSearchResponses = {
+export type XPostResponses = {
   /**
    * The data, and the credits this call used.
    */
   200: {
     success: true;
     data: {
-      ads: Array<{
-        id?: string;
+      postId?: string;
+      postUrl: string;
+      text?: string;
+      publishedAt?: string;
+      language?: string;
+      likes?: number;
+      replies?: number;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl?: string;
+      authorAvatarUrl?: string;
+      authorIsVerified?: boolean;
+      media: Array<{
+        type: "photo" | "video" | "gif";
         url: string;
-        headline?: string;
-        text?: string;
-        advertisers?: Array<string>;
-        image?: string;
-        video?: string;
-        links?: Array<string>;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        euReach?: {
-          min?: number;
-          max?: number;
-        };
-        reachByCountry?: Array<{
-          country?: string;
-          reach?: {
-            min?: number;
-            max?: number;
-          };
-        }>;
-        countries?: Array<string>;
-        ageRanges?: Array<string>;
-        genders?: Array<string>;
-        interests?: Array<string>;
-        audienceTypes?: Array<string>;
-        isCommercial: boolean;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type PinterestAdsSearchResponse =
-  PinterestAdsSearchResponses[keyof PinterestAdsSearchResponses];
-
-export type PinterestAdsAdData = {
-  body: {
-    ad: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/pinterest/ads/ad";
-};
-
-export type PinterestAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type PinterestAdsAdError =
-  PinterestAdsAdErrors[keyof PinterestAdsAdErrors];
-
-export type PinterestAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ad: {
-        id?: string;
-        url: string;
-        headline?: string;
-        text?: string;
-        advertisers?: Array<string>;
-        image?: string;
-        video?: string;
-        links?: Array<string>;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        euReach?: {
-          min?: number;
-          max?: number;
-        };
-        reachByCountry?: Array<{
-          country?: string;
-          reach?: {
-            min?: number;
-            max?: number;
-          };
-        }>;
-        countries?: Array<string>;
-        ageRanges?: Array<string>;
-        genders?: Array<string>;
-        interests?: Array<string>;
-        audienceTypes?: Array<string>;
-        isCommercial: boolean;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type PinterestAdsAdResponse =
-  PinterestAdsAdResponses[keyof PinterestAdsAdResponses];
-
-export type XTweetData = {
-  body: {
-    tweet: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/x/tweet";
-};
-
-export type XTweetErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type XTweetError = XTweetErrors[keyof XTweetErrors];
-
-export type XTweetResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      tweet: {
-        id?: string;
-        url: string;
-        text?: string;
-        createdAt?: string;
-        language?: string;
-        likes?: number;
-        replies?: number;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          verifiedType?: string;
-        };
-        media?: Array<{
-          type: "photo" | "video" | "gif";
-          url: string;
-          thumbnail?: string;
-          width?: number;
-          height?: number;
-          durationSeconds?: number;
-        }>;
-        links?: Array<string>;
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        replyTo?: {
-          id?: string;
-          url?: string;
-          username?: string;
-        };
-        isEdited: boolean;
-        isSensitive: boolean;
-        parent?: {
-          id?: string;
-          url: string;
-          text?: string;
-          createdAt?: string;
-          language?: string;
-          likes?: number;
-          replies?: number;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-            verifiedType?: string;
-          };
-          media?: Array<{
-            type: "photo" | "video" | "gif";
-            url: string;
-            thumbnail?: string;
-            width?: number;
-            height?: number;
-            durationSeconds?: number;
-          }>;
-          links?: Array<string>;
-          hashtags?: Array<string>;
-          mentions?: Array<string>;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isEdited: boolean;
-          isSensitive: boolean;
-        };
-        quoted?: {
-          id?: string;
-          url: string;
-          text?: string;
-          createdAt?: string;
-          language?: string;
-          likes?: number;
-          replies?: number;
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-            verifiedType?: string;
-          };
-          media?: Array<{
-            type: "photo" | "video" | "gif";
-            url: string;
-            thumbnail?: string;
-            width?: number;
-            height?: number;
-            durationSeconds?: number;
-          }>;
-          links?: Array<string>;
-          hashtags?: Array<string>;
-          mentions?: Array<string>;
-          replyTo?: {
-            id?: string;
-            url?: string;
-            username?: string;
-          };
-          isEdited: boolean;
-          isSensitive: boolean;
-        };
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type XTweetResponse = XTweetResponses[keyof XTweetResponses];
-
-export type KickChannelData = {
-  body: {
-    channel: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/kick/channel";
-};
-
-export type KickChannelErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type KickChannelError = KickChannelErrors[keyof KickChannelErrors];
-
-export type KickChannelResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      channel: {
-        id?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        bio?: string;
-        avatar?: string;
-        banner?: string;
-        followers?: number;
-        isVerified: boolean;
-        isAffiliate: boolean;
-        isBanned: boolean;
-        socials?: Array<{
-          name?: string;
-          username?: string;
-        }>;
-        recentCategories?: Array<{
-          name?: string;
-          slug?: string;
-        }>;
-        live?: {
-          id?: string;
-          title?: string;
-          viewers?: number;
-          startedAt?: string;
-          language?: string;
-          isMature: boolean;
-          categories?: Array<{
-            name?: string;
-            slug?: string;
-          }>;
-        };
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type KickChannelResponse =
-  KickChannelResponses[keyof KickChannelResponses];
-
-export type KickVideosData = {
-  body: {
-    channel: string;
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/kick/videos";
-};
-
-export type KickVideosErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type KickVideosError = KickVideosErrors[keyof KickVideosErrors];
-
-export type KickVideosResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      videos: Array<{
-        id?: string;
-        url: string;
-        title?: string;
-        startedAt?: string;
+        thumbnailUrl?: string;
         durationSeconds?: number;
-        views?: number;
-        language?: string;
-        isMature: boolean;
-        thumbnail?: string;
-        stream?: string;
-        categories?: Array<{
-          name?: string;
-          slug?: string;
-        }>;
       }>;
+      links: Array<string>;
+      hashtags: Array<string>;
+      mentions: Array<string>;
+      replyToUrl?: string;
+      parentText?: string;
+      quotedUrl?: string;
+      quotedText?: string;
+      isEdited: boolean;
+      isSensitive: boolean;
     };
     creditsUsed: number;
     requestId: string;
   };
 };
 
-export type KickVideosResponse = KickVideosResponses[keyof KickVideosResponses];
-
-export type KickClipsData = {
-  body: {
-    channel: string;
-    sort?: "top" | "newest";
-    within?: "day" | "week" | "month" | "all";
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/kick/clips";
-};
-
-export type KickClipsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type KickClipsError = KickClipsErrors[keyof KickClipsErrors];
-
-export type KickClipsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      clips: Array<{
-        id?: string;
-        url: string;
-        title?: string;
-        views?: number;
-        likes?: number;
-        durationSeconds?: number;
-        createdAt?: string;
-        isMature: boolean;
-        thumbnail?: string;
-        video?: string;
-        category?: {
-          name?: string;
-          slug?: string;
-        };
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type KickClipsResponse = KickClipsResponses[keyof KickClipsResponses];
+export type XPostResponse = XPostResponses[keyof XPostResponses];
 
 export type FinanceQuoteData = {
   body: {
     symbols: Array<string>;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -13202,7 +7152,7 @@ export type FinanceQuoteResponses = {
   200: {
     success: true;
     data: {
-      quotes: Array<{
+      results: Array<{
         symbol?: string;
         name?: string;
         type?: string;
@@ -13241,34 +7191,20 @@ export type FinanceQuoteResponse =
 export type FinanceHistoryData = {
   body: {
     symbol: string;
-    within?:
-      | "day"
-      | "fiveDays"
-      | "month"
-      | "threeMonths"
-      | "sixMonths"
-      | "year"
-      | "twoYears"
-      | "fiveYears"
-      | "tenYears"
-      | "yearToDate"
-      | "all";
     from?: string;
     to?: string;
     interval?:
       | "minute"
-      | "twoMinutes"
       | "fiveMinutes"
       | "fifteenMinutes"
-      | "thirtyMinutes"
       | "hour"
-      | "ninetyMinutes"
       | "day"
-      | "fiveDays"
       | "week"
-      | "month"
-      | "threeMonths";
-    includeExtendedHours?: boolean;
+      | "month";
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -13296,29 +7232,25 @@ export type FinanceHistoryResponses = {
   200: {
     success: true;
     data: {
-      history?: {
-        symbol?: string;
-        currency?: string;
-        timezone?: string;
-        interval?: string;
-        candles?: Array<{
-          openedAt: string;
-          open?: number;
-          high?: number;
-          low?: number;
-          close?: number;
-          adjustedClose?: number;
-          volume?: number;
-        }>;
-        dividends?: Array<{
-          date: string;
-          amount: number;
-        }>;
-        splits?: Array<{
-          date: string;
-          ratio?: string;
-        }>;
-      };
+      currency?: string;
+      timezone?: string;
+      results: Array<{
+        openedAt: string;
+        open?: number;
+        high?: number;
+        low?: number;
+        close?: number;
+        adjustedClose?: number;
+        volume?: number;
+      }>;
+      dividends: Array<{
+        date: string;
+        amount: number;
+      }>;
+      splits: Array<{
+        date: string;
+        ratio?: string;
+      }>;
     };
     creditsUsed: number;
     requestId: string;
@@ -13331,8 +7263,10 @@ export type FinanceHistoryResponse =
 export type FinanceSearchData = {
   body: {
     query: string;
-    quotesLimit?: number;
-    newsLimit?: number;
+    /**
+     * Return at most this many results from the page. The price stays the same.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -13359,7 +7293,7 @@ export type FinanceSearchResponses = {
   200: {
     success: true;
     data: {
-      quotes: Array<{
+      results: Array<{
         symbol?: string;
         name?: string;
         type?: string;
@@ -13370,10 +7304,8 @@ export type FinanceSearchResponses = {
       news: Array<{
         title?: string;
         url: string;
-        publisher?: {
-          name?: string;
-        };
-        createdAt?: string;
+        publisherName?: string;
+        publishedAt?: string;
         tickers?: Array<string>;
       }>;
     };
@@ -13385,16 +7317,828 @@ export type FinanceSearchResponses = {
 export type FinanceSearchResponse =
   FinanceSearchResponses[keyof FinanceSearchResponses];
 
-export type FinanceProfileData = {
+export type AdsSearchData = {
+  body:
+    | {
+        query: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, or all. Any case is accepted.
+         */
+        country?: string;
+        status?: "active" | "inactive" | "all";
+        cursor?: string;
+        network: "meta";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        advertiser?: string;
+        domain?: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        mediaType?: "text" | "image" | "video";
+        cursor?: string;
+        network: "google";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        query?: string;
+        advertiser?: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        cursor?: string;
+        network: "tiktok";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        query?: string;
+        advertiser?: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        within?: "month" | "year" | "all";
+        cursor?: string;
+        network: "linkedin";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        query?: string;
+        advertiser?: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        cursor?: string;
+        network: "microsoft";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country: string;
+        advertiser?: string;
+        cursor?: string;
+        network: "pinterest";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      };
+  path?: never;
+  query?: never;
+  url: "/v1/ads/search";
+};
+
+export type AdsSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AdsSearchError = AdsSearchErrors[keyof AdsSearchErrors];
+
+export type AdsSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data:
+      | {
+          results?: Array<{
+            adId?: string;
+            adUrl: string;
+            pageId?: string;
+            pageName?: string;
+            pageUrl?: string;
+            pageAvatarUrl?: string;
+            pageCategories?: Array<string>;
+            pageLikes?: number;
+            isActive: boolean;
+            firstShownAt?: string;
+            lastShownAt?: string;
+            platforms?: Array<string>;
+            format?: string;
+            text?: string;
+            linkUrl?: string;
+            linkTitle?: string;
+            linkDescription?: string;
+            ctaText?: string;
+            imageUrls?: Array<string>;
+            videoUrls?: Array<string>;
+            cards?: Array<{
+              text?: string;
+              linkUrl?: string;
+              linkTitle?: string;
+              ctaText?: string;
+              imageUrl?: string;
+              videoUrl?: string;
+            }>;
+            versions: number;
+            categories?: Array<string>;
+            paidBy?: string;
+            spendMin?: number;
+            spendMax?: number;
+            /**
+             * ISO 4217 currency code, e.g. USD.
+             */
+            spendCurrency?: string;
+            impressionsMin?: number;
+            impressionsMax?: number;
+            reachMin?: number;
+            reachMax?: number;
+            countries?: Array<string>;
+          }>;
+          cursor?: string;
+        }
+      | {
+          results?: Array<{
+            adId?: string;
+            adUrl: string;
+            advertiserId?: string;
+            advertiserName?: string;
+            advertiserUrl: string;
+            domain?: string;
+            format: "text" | "image" | "video" | "unknown";
+            firstShownAt?: string;
+            lastShownAt?: string;
+            daysShown?: number;
+            previewUrl?: string;
+            imageUrl?: string;
+          }>;
+          totalMin?: number;
+          totalMax?: number;
+          cursor?: string;
+        }
+      | {
+          advertiserId?: string;
+          advertiserName?: string;
+          results?: Array<{
+            adId?: string;
+            adUrl: string;
+            advertiserName?: string;
+            headline?: string;
+            firstShownAt?: string;
+            lastShownAt?: string;
+            reachMin?: number;
+            reachMax?: number;
+            videoUrl?: string;
+            thumbnailUrl?: string;
+            imageUrls?: Array<string>;
+          }>;
+          total?: number;
+          cursor?: string;
+        }
+      | {
+          results?: Array<{
+            adId?: string;
+            adUrl: string;
+            creativeType?: string;
+            format?: string;
+            advertiserName?: string;
+            advertiserUrl?: string;
+            advertiserAvatarUrl?: string;
+            postedBy?: string;
+            text?: string;
+            headline?: string;
+            imageUrls?: Array<string>;
+          }>;
+          total?: number;
+          cursor?: string;
+        }
+      | {
+          results?: Array<{
+            adId?: string;
+            advertiserId?: string;
+            advertiserName?: string;
+            headline?: string;
+            text?: string;
+            linkUrl?: string;
+            linkCaption?: string;
+            imageUrls?: Array<string>;
+          }>;
+          total?: number;
+          cursor?: string;
+        }
+      | {
+          results?: Array<{
+            adId?: string;
+            adUrl: string;
+            headline?: string;
+            text?: string;
+            advertisers?: Array<string>;
+            imageUrl?: string;
+            videoUrl?: string;
+            links?: Array<string>;
+            firstShownAt?: string;
+            lastShownAt?: string;
+            reachMin?: number;
+            reachMax?: number;
+            reachByCountry?: Array<{
+              country?: string;
+              reachMin?: number;
+              reachMax?: number;
+            }>;
+            countries?: Array<string>;
+            ageRanges?: Array<string>;
+            genders?: Array<string>;
+            interests?: Array<string>;
+            audienceTypes?: Array<string>;
+            isCommercial: boolean;
+          }>;
+          cursor?: string;
+        };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AdsSearchResponse = AdsSearchResponses[keyof AdsSearchResponses];
+
+export type AdsAdData = {
+  body:
+    | {
+        ad: string;
+        network: "meta";
+      }
+    | {
+        advertiser?: string;
+        ad: string;
+        network: "google";
+      }
+    | {
+        ad: string;
+        network: "tiktok";
+      }
+    | {
+        ad: string;
+        network: "linkedin";
+      }
+    | {
+        ad: string;
+        network: "microsoft";
+      }
+    | {
+        ad: string;
+        network: "pinterest";
+      };
+  path?: never;
+  query?: never;
+  url: "/v1/ads/ad";
+};
+
+export type AdsAdErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AdsAdError = AdsAdErrors[keyof AdsAdErrors];
+
+export type AdsAdResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data:
+      | {
+          adId?: string;
+          adUrl: string;
+          pageId?: string;
+          pageName?: string;
+          pageUrl?: string;
+          pageAvatarUrl?: string;
+          pageCategories?: Array<string>;
+          pageLikes?: number;
+          isActive: boolean;
+          firstShownAt?: string;
+          lastShownAt?: string;
+          platforms?: Array<string>;
+          format?: string;
+          text?: string;
+          linkUrl?: string;
+          linkTitle?: string;
+          linkDescription?: string;
+          ctaText?: string;
+          imageUrls?: Array<string>;
+          videoUrls?: Array<string>;
+          cards?: Array<{
+            text?: string;
+            linkUrl?: string;
+            linkTitle?: string;
+            ctaText?: string;
+            imageUrl?: string;
+            videoUrl?: string;
+          }>;
+          versions: number;
+          categories?: Array<string>;
+          paidBy?: string;
+          spendMin?: number;
+          spendMax?: number;
+          /**
+           * ISO 4217 currency code, e.g. USD.
+           */
+          spendCurrency?: string;
+          impressionsMin?: number;
+          impressionsMax?: number;
+          reachMin?: number;
+          reachMax?: number;
+          countries?: Array<string>;
+          advertiserDescription?: string;
+          advertiserCategory?: string;
+          advertiserVerification?: string;
+          advertiserInstagram?: string;
+          advertiserInstagramFollowers?: number;
+          audienceAgeGender?: Array<{
+            age?: string;
+            female: number;
+            male: number;
+            unknown: number;
+          }>;
+          audienceRegions?: Array<{
+            region?: string;
+            share: number;
+          }>;
+          euReachTotal?: number;
+          euReachByCountry?: Array<{
+            country?: string;
+            age?: string;
+            female: number;
+            male: number;
+            unknown: number;
+          }>;
+          payers?: Array<{
+            paidBy?: string;
+            beneficiary?: string;
+          }>;
+        }
+      | {
+          adId?: string;
+          adUrl: string;
+          advertiserId?: string;
+          advertiserName?: string;
+          advertiserUrl: string;
+          domain?: string;
+          format: "text" | "image" | "video" | "unknown";
+          firstShownAt?: string;
+          lastShownAt?: string;
+          daysShown?: number;
+          previewUrl?: string;
+          imageUrl?: string;
+          advertiserCountry?: string;
+          advertiserIsVerified?: boolean;
+          paidBy?: string;
+          impressionsMin?: number;
+          impressionsMax?: number;
+          variations?: Array<{
+            previewUrl?: string;
+            imageUrl?: string;
+            videoUrl?: string;
+          }>;
+          regions?: Array<{
+            country?: string;
+            firstShownAt?: string;
+            lastShownAt?: string;
+            impressionsMin?: number;
+            impressionsMax?: number;
+          }>;
+          targetingIncluded?: Array<string>;
+          targetingExcluded?: Array<string>;
+        }
+      | {
+          adId?: string;
+          adUrl: string;
+          advertiserName?: string;
+          headline?: string;
+          firstShownAt?: string;
+          lastShownAt?: string;
+          reachMin?: number;
+          reachMax?: number;
+          videoUrl?: string;
+          thumbnailUrl?: string;
+          imageUrls?: Array<string>;
+          advertiserId?: string;
+          advertiserCountry?: string;
+          paidBy?: string;
+          linkUrl?: string;
+          ctaText?: string;
+          objective?: string;
+          category?: string;
+          audienceSizeMin?: number;
+          audienceSizeMax?: number;
+          impressionsMin?: number;
+          impressionsMax?: number;
+          countries?: Array<string>;
+          languages?: Array<string>;
+          interests?: string;
+          regions?: Array<{
+            country?: string;
+            impressionsMin?: number;
+            impressionsMax?: number;
+            ages?: Array<string>;
+            genders?: Array<string>;
+          }>;
+        }
+      | {
+          adId?: string;
+          adUrl: string;
+          creativeType?: string;
+          format?: string;
+          advertiserName?: string;
+          advertiserUrl?: string;
+          advertiserAvatarUrl?: string;
+          postedBy?: string;
+          text?: string;
+          headline?: string;
+          imageUrls?: Array<string>;
+          paidBy?: string;
+          ctaText?: string;
+          videoUrls?: Array<string>;
+          firstShownAt?: string;
+          lastShownAt?: string;
+          impressionsMin?: number;
+          impressionsMax?: number;
+          countries?: Array<{
+            country?: string;
+            share?: number;
+          }>;
+          targeting?: Array<{
+            parameter?: string;
+            description?: string;
+          }>;
+          targetingUsed?: Array<{
+            parameter?: string;
+            isTargeted: boolean;
+            isExcluded: boolean;
+          }>;
+        }
+      | {
+          adId?: string;
+          advertiserId?: string;
+          advertiserName?: string;
+          headline?: string;
+          text?: string;
+          linkUrl?: string;
+          linkCaption?: string;
+          imageUrls?: Array<string>;
+          paidBy?: string;
+          firstShownAt?: string;
+          lastShownAt?: string;
+          impressionsMin?: number;
+          impressionsMax?: number;
+          countries?: Array<{
+            country?: string;
+            share?: number;
+          }>;
+          targeting?: Array<{
+            type?: string;
+            isExcluded: boolean;
+          }>;
+        }
+      | {
+          adId?: string;
+          adUrl: string;
+          headline?: string;
+          text?: string;
+          advertisers?: Array<string>;
+          imageUrl?: string;
+          videoUrl?: string;
+          links?: Array<string>;
+          firstShownAt?: string;
+          lastShownAt?: string;
+          reachMin?: number;
+          reachMax?: number;
+          reachByCountry?: Array<{
+            country?: string;
+            reachMin?: number;
+            reachMax?: number;
+          }>;
+          countries?: Array<string>;
+          ageRanges?: Array<string>;
+          genders?: Array<string>;
+          interests?: Array<string>;
+          audienceTypes?: Array<string>;
+          isCommercial: boolean;
+        };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AdsAdResponse = AdsAdResponses[keyof AdsAdResponses];
+
+export type AdsAdvertisersData = {
+  body:
+    | {
+        query: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        network: "google";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        query: string;
+        network: "microsoft";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      };
+  path?: never;
+  query?: never;
+  url: "/v1/ads/advertisers";
+};
+
+export type AdsAdvertisersErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AdsAdvertisersError =
+  AdsAdvertisersErrors[keyof AdsAdvertisersErrors];
+
+export type AdsAdvertisersResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data:
+      | {
+          results?: Array<{
+            advertiserId?: string;
+            advertiserName?: string;
+            advertiserCountry?: string;
+            advertiserUrl: string;
+            isVerified: boolean;
+            adsMin?: number;
+            adsMax?: number;
+          }>;
+          domains?: Array<string>;
+        }
+      | {
+          results?: Array<{
+            advertiserId?: string;
+            advertiserName?: string;
+            advertiserCountry?: string;
+            isVerified: boolean;
+          }>;
+          total?: number;
+        };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AdsAdvertisersResponse =
+  AdsAdvertisersResponses[keyof AdsAdvertisersResponses];
+
+export type SuggestData = {
+  body:
+    | {
+        query: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        /**
+         * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+         */
+        language?: string;
+        source: "google";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        query: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        /**
+         * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+         */
+        language?: string;
+        source: "youtube";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        query: string;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?:
+          | "us"
+          | "ca"
+          | "mx"
+          | "br"
+          | "gb"
+          | "de"
+          | "fr"
+          | "it"
+          | "es"
+          | "nl"
+          | "be"
+          | "se"
+          | "pl"
+          | "tr"
+          | "ae"
+          | "sa"
+          | "eg"
+          | "in"
+          | "jp"
+          | "au"
+          | "sg";
+        source: "amazon";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      };
+  path?: never;
+  query?: never;
+  url: "/v1/suggest";
+};
+
+export type SuggestErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type SuggestError = SuggestErrors[keyof SuggestErrors];
+
+export type SuggestResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data:
+      | {
+          results?: Array<{
+            keyword: string;
+            rank: number;
+          }>;
+        }
+      | {
+          results?: Array<{
+            keyword: string;
+            rank: number;
+          }>;
+        }
+      | {
+          results?: Array<{
+            keyword: string;
+            rank: number;
+          }>;
+        };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type SuggestResponse = SuggestResponses[keyof SuggestResponses];
+
+export type GoogleTrendsData = {
+  body:
+    | {
+        queries: Array<string>;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        within?: "hour" | "day" | "week" | "month" | "year" | "all";
+        by: "time";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      }
+    | {
+        queries: Array<string>;
+        /**
+         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         */
+        country?: string;
+        within?: "hour" | "day" | "week" | "month" | "year" | "all";
+        resolution?: "country" | "region" | "metro";
+        by: "region";
+        /**
+         * Return at most this many results from the page. The price stays the same.
+         */
+        limit?: number;
+      };
+  path?: never;
+  query?: never;
+  url: "/v1/google/trends";
+};
+
+export type GoogleTrendsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleTrendsError = GoogleTrendsErrors[keyof GoogleTrendsErrors];
+
+export type GoogleTrendsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data:
+      | {
+          results?: Array<{
+            recordedAt: string;
+            values?: Array<number>;
+            isPartial: boolean;
+          }>;
+          averages?: Array<number>;
+        }
+      | {
+          results?: Array<{
+            code?: string;
+            name?: string;
+            values?: Array<number>;
+          }>;
+        };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleTrendsResponse =
+  GoogleTrendsResponses[keyof GoogleTrendsResponses];
+
+export type FinanceStockData = {
   body: {
     symbol: string;
   };
   path?: never;
   query?: never;
-  url: "/v1/finance/profile";
+  url: "/v1/finance/stock";
 };
 
-export type FinanceProfileErrors = {
+export type FinanceStockErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -13405,888 +8149,72 @@ export type FinanceProfileErrors = {
   "5XX": _Error;
 };
 
-export type FinanceProfileError =
-  FinanceProfileErrors[keyof FinanceProfileErrors];
+export type FinanceStockError = FinanceStockErrors[keyof FinanceStockErrors];
 
-export type FinanceProfileResponses = {
+export type FinanceStockResponses = {
   /**
    * The data, and the credits this call used.
    */
   200: {
     success: true;
     data: {
-      profile?: {
-        symbol?: string;
+      symbol?: string;
+      name?: string;
+      type?: string;
+      exchange?: string;
+      currency?: string;
+      sector?: string;
+      industry?: string;
+      employees?: number;
+      website?: string;
+      summary?: string;
+      address?: string;
+      phone?: string;
+      officers?: Array<{
         name?: string;
-        type?: string;
-        exchange?: string;
-        currency?: string;
-        sector?: string;
-        industry?: string;
-        employees?: number;
-        website?: string;
-        summary?: string;
-        address?: {
-          full?: string;
-          street?: string;
-          city?: string;
-          state?: string;
-          postalCode?: string;
-          country?: string;
-        };
-        phone?: string;
-        officers?: Array<{
-          name?: string;
-          title?: string;
-          age?: number;
-          totalPay?: number;
-        }>;
-        recommendation?: string;
-        stats?: {
-          [key: string]: number;
-        };
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type FinanceProfileResponse =
-  FinanceProfileResponses[keyof FinanceProfileResponses];
-
-export type MicrosoftAdsSearchData = {
-  body: {
-    query?: string;
-    advertiser?: string;
-    countries?: Array<string>;
-    from?: string;
-    to?: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/microsoft/ads/search";
-};
-
-export type MicrosoftAdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MicrosoftAdsSearchError =
-  MicrosoftAdsSearchErrors[keyof MicrosoftAdsSearchErrors];
-
-export type MicrosoftAdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ads: Array<{
-        id?: string;
-        advertiser?: {
-          id?: string;
-          name?: string;
-        };
-        headline?: string;
-        text?: string;
-        link?: {
-          url?: string;
-          caption?: string;
-        };
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-      }>;
-      total?: number;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MicrosoftAdsSearchResponse =
-  MicrosoftAdsSearchResponses[keyof MicrosoftAdsSearchResponses];
-
-export type MicrosoftAdsAdData = {
-  body: {
-    ad: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/microsoft/ads/ad";
-};
-
-export type MicrosoftAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MicrosoftAdsAdError =
-  MicrosoftAdsAdErrors[keyof MicrosoftAdsAdErrors];
-
-export type MicrosoftAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ad?: {
-        id?: string;
-        advertiser?: {
-          id?: string;
-          name?: string;
-        };
-        headline?: string;
-        text?: string;
-        link?: {
-          url?: string;
-          caption?: string;
-        };
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        paidBy?: string;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        impressions?: {
-          min?: number;
-          max?: number;
-        };
-        countries?: Array<{
-          country?: string;
-          share?: number;
-        }>;
-        targeting?: Array<{
-          type?: string;
-          isExcluded: boolean;
-        }>;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MicrosoftAdsAdResponse =
-  MicrosoftAdsAdResponses[keyof MicrosoftAdsAdResponses];
-
-export type MicrosoftAdsAdvertisersData = {
-  body: {
-    query: string;
-    limit?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/microsoft/ads/advertisers";
-};
-
-export type MicrosoftAdsAdvertisersErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MicrosoftAdsAdvertisersError =
-  MicrosoftAdsAdvertisersErrors[keyof MicrosoftAdsAdvertisersErrors];
-
-export type MicrosoftAdsAdvertisersResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      advertisers: Array<{
-        id?: string;
-        name?: string;
-        country?: string;
-        isVerified: boolean;
-      }>;
-      total?: number;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MicrosoftAdsAdvertisersResponse =
-  MicrosoftAdsAdvertisersResponses[keyof MicrosoftAdsAdvertisersResponses];
-
-export type SnapchatProfileData = {
-  body: {
-    user: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/snapchat/profile";
-};
-
-export type SnapchatProfileErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type SnapchatProfileError =
-  SnapchatProfileErrors[keyof SnapchatProfileErrors];
-
-export type SnapchatProfileResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      profile: {
-        id?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        bio?: string;
-        website?: string;
-        avatar?: string;
-        banner?: string;
-        subscribers?: number;
-        category?: string;
-        subcategory?: string;
-        isVerified: boolean;
-        isBusiness: boolean;
-        createdAt?: string;
-        updatedAt?: string;
-        related?: Array<string>;
-      };
-      spotlights: Array<{
-        id?: string;
-        url: string;
-        video?: string;
-        thumbnail?: string;
-        views?: number;
-        shares?: number;
-        createdAt?: string;
-        durationSeconds?: number;
-        width?: number;
-        height?: number;
-        hashtags?: Array<string>;
-      }>;
-      stories: Array<{
-        id?: string;
-        type: "image" | "video";
-        url?: string;
-        thumbnail?: string;
-        createdAt?: string;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type SnapchatProfileResponse =
-  SnapchatProfileResponses[keyof SnapchatProfileResponses];
-
-export type SnapchatAdsSearchData = {
-  body: {
-    advertiser: string;
-    countries?: Array<string>;
-    status?: "active" | "paused";
-    from?: string;
-    to?: string;
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/snapchat/ads/search";
-};
-
-export type SnapchatAdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type SnapchatAdsSearchError =
-  SnapchatAdsSearchErrors[keyof SnapchatAdsSearchErrors];
-
-export type SnapchatAdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ads: Array<{
-        id?: string;
-        name?: string;
-        paidBy?: string;
-        brand?: string;
-        profile?: string;
-        account?: string;
-        status?: string;
-        type?: string;
-        creativeType?: string;
-        headline?: string;
-        cta?: {
-          text?: string;
-          type?: string;
-        };
-        languages?: Array<string>;
-        media?: {
-          type?: string;
-          url?: string;
-        };
-        link?: {
-          url?: string;
-          title?: string;
-          description?: string;
-          caption?: string;
-        };
-        firstShownAt?: string;
-        lastShownAt?: string;
-        impressions?: number;
-        countries?: Array<{
-          country?: string;
-          impressions: number;
-        }>;
-        targeting: {
-          ageRanges?: Array<string>;
-          hasRegulatedContent: boolean;
-        };
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type SnapchatAdsSearchResponse =
-  SnapchatAdsSearchResponses[keyof SnapchatAdsSearchResponses];
-
-export type SnapchatAdsAdData = {
-  body: {
-    ad: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/snapchat/ads/ad";
-};
-
-export type SnapchatAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type SnapchatAdsAdError = SnapchatAdsAdErrors[keyof SnapchatAdsAdErrors];
-
-export type SnapchatAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      ad: {
-        id?: string;
-        name?: string;
-        paidBy?: string;
-        brand?: string;
-        profile?: string;
-        account?: string;
-        status?: string;
-        type?: string;
-        creativeType?: string;
-        headline?: string;
-        cta?: {
-          text?: string;
-          type?: string;
-        };
-        languages?: Array<string>;
-        media?: {
-          type?: string;
-          url?: string;
-        };
-        link?: {
-          url?: string;
-          title?: string;
-          description?: string;
-          caption?: string;
-        };
-        firstShownAt?: string;
-        lastShownAt?: string;
-        impressions?: number;
-        countries?: Array<{
-          country?: string;
-          impressions: number;
-        }>;
-        targeting: {
-          ageRanges?: Array<string>;
-          hasRegulatedContent: boolean;
-        };
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type SnapchatAdsAdResponse =
-  SnapchatAdsAdResponses[keyof SnapchatAdsAdResponses];
-
-export type TumblrBlogData = {
-  body: {
-    blog: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tumblr/blog";
-};
-
-export type TumblrBlogErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TumblrBlogError = TumblrBlogErrors[keyof TumblrBlogErrors];
-
-export type TumblrBlogResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      blog: {
-        id?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        description?: string;
-        avatar?: string;
-        posts?: number;
-        updatedAt?: string;
-        isNsfw: boolean;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TumblrBlogResponse = TumblrBlogResponses[keyof TumblrBlogResponses];
-
-export type TumblrPostsData = {
-  body: {
-    blog: string;
-    tag?: string;
-    type?:
-      | "text"
-      | "photo"
-      | "quote"
-      | "link"
-      | "chat"
-      | "audio"
-      | "video"
-      | "answer";
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tumblr/posts";
-};
-
-export type TumblrPostsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TumblrPostsError = TumblrPostsErrors[keyof TumblrPostsErrors];
-
-export type TumblrPostsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      blog: {
-        id?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        description?: string;
-        avatar?: string;
-        posts?: number;
-        updatedAt?: string;
-        isNsfw: boolean;
-      };
-      posts: Array<{
-        id?: string;
-        url: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        type?: string;
-        createdAt?: string;
-        summary?: string;
-        text?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        links?: Array<string>;
-        tags?: Array<string>;
-        notes?: number;
-        likes?: number;
-        reposts?: number;
-        replies?: number;
-        repostOf?: {
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
-        repostedFrom?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        isNsfw: boolean;
-      }>;
-      total?: number;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TumblrPostsResponse =
-  TumblrPostsResponses[keyof TumblrPostsResponses];
-
-export type TumblrPostData = {
-  body: {
-    post: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tumblr/post";
-};
-
-export type TumblrPostErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TumblrPostError = TumblrPostErrors[keyof TumblrPostErrors];
-
-export type TumblrPostResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      post: {
-        id?: string;
-        url: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        type?: string;
-        createdAt?: string;
-        summary?: string;
-        text?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        links?: Array<string>;
-        tags?: Array<string>;
-        notes?: number;
-        likes?: number;
-        reposts?: number;
-        replies?: number;
-        repostOf?: {
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
-        repostedFrom?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        isNsfw: boolean;
-      };
-      blog: {
-        id?: string;
-        username?: string;
-        url: string;
-        name?: string;
-        description?: string;
-        avatar?: string;
-        posts?: number;
-        updatedAt?: string;
-        isNsfw: boolean;
-      };
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TumblrPostResponse = TumblrPostResponses[keyof TumblrPostResponses];
-
-export type TumblrSearchData = {
-  body: {
-    query: string;
-    sort?: "top" | "newest";
-    limit?: number;
-    cursor?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/tumblr/search";
-};
-
-export type TumblrSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TumblrSearchError = TumblrSearchErrors[keyof TumblrSearchErrors];
-
-export type TumblrSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      posts: Array<{
-        id?: string;
-        url: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        type?: string;
-        createdAt?: string;
-        summary?: string;
-        text?: string;
-        images?: Array<{
-          url: string;
-          caption?: string;
-          alt?: string;
-        }>;
-        videos?: Array<{
-          url: string;
-        }>;
-        links?: Array<string>;
-        tags?: Array<string>;
-        notes?: number;
-        likes?: number;
-        reposts?: number;
-        replies?: number;
-        repostOf?: {
-          author?: {
-            id?: string;
-            username?: string;
-            name?: string;
-            url?: string;
-            avatar?: string;
-            isVerified?: boolean;
-          };
-        };
-        repostedFrom?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-        };
-        isNsfw: boolean;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TumblrSearchResponse =
-  TumblrSearchResponses[keyof TumblrSearchResponses];
-
-export type QuoraQuestionData = {
-  body: {
-    question: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/quora/question";
-};
-
-export type QuoraQuestionErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type QuoraQuestionError = QuoraQuestionErrors[keyof QuoraQuestionErrors];
-
-export type QuoraQuestionResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      question: {
-        id?: string;
-        url: string;
         title?: string;
-        answers?: number;
-        topics?: Array<string>;
-      };
-      answers: Array<{
-        id?: string;
-        url?: string;
-        text?: string;
-        author?: {
-          id?: string;
-          username?: string;
-          name?: string;
-          url?: string;
-          avatar?: string;
-          isVerified?: boolean;
-          credential?: string;
-        };
-        likes?: number;
-        views?: number;
-        shares?: number;
-        comments?: number;
-        createdAt?: string;
+        age?: number;
+        totalPay?: number;
       }>;
+      recommendation?: string;
+      stats?: Array<{
+        name?: string;
+        value: number;
+      }>;
+    } & {
+      symbol?: string;
+      name?: string;
+      type?: string;
+      exchange?: string;
+      currency?: string;
+      marketState?: string;
+      price?: number;
+      change?: number;
+      changePercent?: number;
+      open?: number;
+      high?: number;
+      low?: number;
+      previousClose?: number;
+      volume?: number;
+      averageVolume?: number;
+      marketCap?: number;
+      fiftyTwoWeekHigh?: number;
+      fiftyTwoWeekLow?: number;
+      peRatio?: number;
+      forwardPeRatio?: number;
+      earningsPerShare?: number;
+      dividendYield?: number;
+      preMarketPrice?: number;
+      postMarketPrice?: number;
+      updatedAt?: string;
     };
     creditsUsed: number;
     requestId: string;
   };
 };
 
-export type QuoraQuestionResponse =
-  QuoraQuestionResponses[keyof QuoraQuestionResponses];
+export type FinanceStockResponse =
+  FinanceStockResponses[keyof FinanceStockResponses];
 
 export type ClientOptions = {
   baseUrl: "https://api.stophy.dev" | (string & {});

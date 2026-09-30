@@ -5,7 +5,16 @@ from helpers import body_of, make_client, query_of
 
 ENVELOPE = {
     "success": True,
-    "data": {"results": [{"type": "video", "url": "https://youtu.be/abc"}]},
+    "data": {
+        "results": [
+            {
+                "type": "video",
+                "videoId": "abc",
+                "videoUrl": "https://youtu.be/abc",
+                "channelName": "Bun",
+            }
+        ]
+    },
     "creditsUsed": 1,
     "requestId": "req_1",
 }
@@ -14,40 +23,48 @@ ENVELOPE = {
 def test_posts_input_to_the_spec_path():
     client, calls = make_client({"json": ENVELOPE})
     result = client.youtube.search(query="bun runtime", limit=2)
-    assert result["data"]["results"][0]["url"] == "https://youtu.be/abc"
+    assert result["data"]["results"][0]["videoUrl"] == "https://youtu.be/abc"
     assert calls[0].method == "POST"
     assert calls[0].url.path == "/v1/youtube/search"
     assert body_of(calls[0]) == {"query": "bun runtime", "limit": 2}
     assert calls[0].headers["accept"] == "application/json"
 
 
-def test_nested_operation_and_keyword_argument():
+def test_single_segment_operations_and_keyword_argument():
     client, calls = make_client({"json": ENVELOPE})
-    client.youtube.comments.replies(video="abc", cursor="tok", limit=5)
-    assert calls[0].url.path == "/v1/youtube/comments/replies"
-    assert body_of(calls[0]) == {"video": "abc", "cursor": "tok", "limit": 5}
+    client.transcript(video="https://youtu.be/abc", include_timestamps=True)
+    assert calls[0].url.path == "/v1/transcript"
+    assert body_of(calls[0]) == {
+        "video": "https://youtu.be/abc",
+        "includeTimestamps": True,
+    }
 
-    client.web.search(query="news", from_="2026-01-01")
-    assert body_of(calls[1])["from"] == "2026-01-01"
+    client.suggest(source="google", query="bun")
+    assert calls[1].url.path == "/v1/suggest"
+    assert body_of(calls[1]) == {"source": "google", "query": "bun"}
+
+    client.finance.history(symbol="AAPL", from_="2026-01-01")
+    assert body_of(calls[2])["from"] == "2026-01-01"
 
 
-def test_markdown_format_returns_text():
-    client, calls = make_client(
-        {"raw": "# results", "headers": {"content-type": "text/markdown"}}
-    )
-    text = client.youtube.search(query="bun runtime", format="markdown")
-    assert text == "# results"
-    assert calls[0].headers["accept"] == "text/markdown"
+def test_joined_operations_send_the_discriminator():
+    client, calls = make_client({"json": ENVELOPE})
+    client.ads.search(network="meta", query="shoes")
+    client.google.trends(by="time", queries=["bun"])
+    assert calls[0].url.path == "/v1/ads/search"
+    assert body_of(calls[0]) == {"network": "meta", "query": "shoes"}
+    assert calls[1].url.path == "/v1/google/trends"
+    assert body_of(calls[1]) == {"by": "time", "queries": ["bun"]}
 
 
 def test_empty_optional_body_and_endpoint_catalog():
     client, calls = make_client(
         [{"json": ENVELOPE}, {"json": {"endpoints": []}}],
     )
-    client.crypto.trending()
+    client.crypto.coins()
     catalog = client.endpoints()
     assert body_of(calls[0]) == {}
-    assert calls[0].url.path == "/v1/crypto/trending"
+    assert calls[0].url.path == "/v1/crypto/coins"
     assert catalog["endpoints"] == []
     assert calls[1].method == "GET"
 
@@ -95,7 +112,7 @@ def test_usage_and_logs():
 def test_every_spec_operation_is_callable():
     spec = json.loads(Path("openapi.json").read_text())
     client, _calls = make_client({"json": ENVELOPE})
-    assert len(spec["paths"]) > 100
+    assert len(spec["paths"]) > 90
     for path in spec["paths"]:
         node = client
         for part in [item for item in path.split("/") if item and item != "v1"]:

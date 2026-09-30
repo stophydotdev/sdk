@@ -8,8 +8,6 @@ const RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504]);
 const USER_AGENT = `stophy-typescript/${version}`;
 
 export interface CallOptions {
-	/** Send `Accept: text/markdown` and return the response body as a string. */
-	format?: "markdown";
 	signal?: AbortSignal;
 }
 
@@ -48,7 +46,6 @@ export function createCaller(options: TransportOptions): Caller {
 	};
 
 	return async (spec) => {
-		const markdown = spec.options?.format === "markdown";
 		const headers = new Headers(options.headers);
 		if (typeof document === "undefined" && !headers.has("user-agent")) {
 			headers.set("user-agent", USER_AGENT);
@@ -56,7 +53,7 @@ export function createCaller(options: TransportOptions): Caller {
 		if (options.apiKey) {
 			headers.set("authorization", `Bearer ${options.apiKey}`);
 		}
-		headers.set("accept", markdown ? "text/markdown" : "application/json");
+		headers.set("accept", "application/json");
 		if (spec.body !== undefined)
 			headers.set("content-type", "application/json");
 
@@ -70,7 +67,6 @@ export function createCaller(options: TransportOptions): Caller {
 				body: spec.body === undefined ? undefined : JSON.stringify(spec.body),
 				signal,
 			}),
-			markdown,
 			spec.options?.signal,
 			retry,
 		);
@@ -87,7 +83,6 @@ async function send(
 	baseFetch: FetchLike,
 	url: string,
 	init: (signal: AbortSignal) => RequestInit,
-	markdown: boolean,
 	signal: AbortSignal | undefined,
 	retry: RetryPolicy,
 ): Promise<unknown> {
@@ -117,7 +112,7 @@ async function send(
 						? backoffMs(n, retry.initialDelayMs)
 						: seconds * 1000;
 			} else {
-				return await readBody(response, markdown);
+				return await readBody(response);
 			}
 		} finally {
 			deadline.clear();
@@ -150,13 +145,9 @@ function withDeadline(signal: AbortSignal | undefined, timeoutMs: number) {
 	};
 }
 
-async function readBody(
-	response: Response,
-	markdown: boolean,
-): Promise<unknown> {
+async function readBody(response: Response): Promise<unknown> {
 	if (!response.ok) throw await errorFrom(response);
 	const text = await response.text();
-	if (markdown) return text;
 	if (!text) {
 		throw failed(response, "Stophy returned an empty response", {});
 	}

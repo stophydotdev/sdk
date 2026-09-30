@@ -11,18 +11,16 @@ def _run(function):
     return asyncio.run(function())
 
 
-def test_async_search_and_markdown():
+def test_async_search_and_transcript():
     calls = []
 
     def handler(request: httpx.Request) -> httpx.Response:
         calls.append(request)
-        if request.headers.get("accept") == "text/markdown":
-            return httpx.Response(200, text="# results", request=request)
         return httpx.Response(
             200,
             json={
                 "success": True,
-                "data": {"results": [{"url": "https://youtu.be/abc"}]},
+                "data": {"results": [{"videoUrl": "https://youtu.be/abc"}]},
                 "creditsUsed": 1,
                 "requestId": "req_1",
             },
@@ -36,14 +34,14 @@ def test_async_search_and_markdown():
             max_retries=0,
         ) as client:
             result = await client.youtube.search(query="bun runtime", limit=2)
-            text = await client.youtube.search(query="bun runtime", format="markdown")
-            return result, text
+            await client.transcript(video="https://youtu.be/abc")
+            return result
 
-    result, text = _run(run)
-    assert result["data"]["results"][0]["url"] == "https://youtu.be/abc"
-    assert text == "# results"
+    result = _run(run)
+    assert result["data"]["results"][0]["videoUrl"] == "https://youtu.be/abc"
     assert body_of(calls[0]) == {"query": "bun runtime", "limit": 2}
-    assert calls[1].headers["accept"] == "text/markdown"
+    assert calls[1].url.path == "/v1/transcript"
+    assert calls[1].headers["accept"] == "application/json"
 
 
 def test_async_error_has_code():
