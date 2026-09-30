@@ -41,8 +41,8 @@ from .models import (
     CryptoHistoryResponse,
     CryptoWalletChain,
     CryptoWalletResponse,
-    EmailCheckResponse,
     EmailFindResponse,
+    EmailVerifyResponse,
     EndpointCatalog,
     FinanceHistoryInterval,
     FinanceHistoryResponse,
@@ -76,10 +76,8 @@ from .models import (
     InstagramSearchType,
     LinkedinCompanyResponse,
     LinkedinJobsJobResponse,
-    LinkedinJobsSearchExperiencesItem,
     LinkedinJobsSearchResponse,
     LinkedinJobsSearchWithin,
-    LinkedinJobsSearchWorkplacesItem,
     LinkedinPostsResponse,
     LinkedinProfileResponse,
     MapsPlaceResponse,
@@ -138,7 +136,6 @@ from .models import (
     WalmartProductResponse,
     WalmartSearchResponse,
     WalmartSearchSort,
-    WebContactsResponse,
     WebNewsResponse,
     WebNewsTopic,
     WebNewsWithin,
@@ -255,33 +252,14 @@ class SyncWebNews:
         return self._call("POST", "/v1/web/news", body)
 
 
-class SyncWebContacts:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        url: str,
-    ) -> WebContactsResponse:
-        body = _omit_none(
-            {
-                "url": url,
-            }
-        )
-        return self._call("POST", "/v1/web/contacts", body)
-
-
 class SyncWeb:
     search: SyncWebSearch
     news: SyncWebNews
-    contacts: SyncWebContacts
 
     def __init__(self, call: SyncCall) -> None:
         self._call = call
         self.search = SyncWebSearch(call)
         self.news = SyncWebNews(call)
-        self.contacts = SyncWebContacts(call)
 
 
 class SyncYoutubeSearch:
@@ -1108,8 +1086,6 @@ class SyncLinkedinJobsSearch:
         query: str | None = None,
         location: str | None = None,
         within: LinkedinJobsSearchWithin | None = None,
-        workplaces: list[LinkedinJobsSearchWorkplacesItem] | None = None,
-        experiences: list[LinkedinJobsSearchExperiencesItem] | None = None,
         cursor: str | None = None,
         limit: int | None = None,
     ) -> LinkedinJobsSearchResponse:
@@ -1118,8 +1094,6 @@ class SyncLinkedinJobsSearch:
                 "query": query,
                 "location": location,
                 "within": within,
-                "workplaces": workplaces,
-                "experiences": experiences,
                 "cursor": cursor,
                 "limit": limit,
             }
@@ -1473,21 +1447,21 @@ class SyncSite:
         self.seo = SyncSiteSeo(call)
 
 
-class SyncEmailCheck:
+class SyncEmailVerify:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
 
     def __call__(
         self,
         *,
-        emails: list[str],
-    ) -> EmailCheckResponse:
+        email: str,
+    ) -> EmailVerifyResponse:
         body = _omit_none(
             {
-                "emails": emails,
+                "email": email,
             }
         )
-        return self._call("POST", "/v1/email/check", body)
+        return self._call("POST", "/v1/email/verify", body)
 
 
 class SyncEmailFind:
@@ -1497,29 +1471,29 @@ class SyncEmailFind:
     def __call__(
         self,
         *,
+        domain: str,
         name: str | None = None,
         first_name: str | None = None,
         last_name: str | None = None,
-        company: str,
     ) -> EmailFindResponse:
         body = _omit_none(
             {
+                "domain": domain,
                 "name": name,
                 "firstName": first_name,
                 "lastName": last_name,
-                "company": company,
             }
         )
         return self._call("POST", "/v1/email/find", body)
 
 
 class SyncEmail:
-    check: SyncEmailCheck
+    verify: SyncEmailVerify
     find: SyncEmailFind
 
     def __init__(self, call: SyncCall) -> None:
         self._call = call
-        self.check = SyncEmailCheck(call)
+        self.verify = SyncEmailVerify(call)
         self.find = SyncEmailFind(call)
 
 
@@ -3179,33 +3153,14 @@ class AsyncWebNews:
         return await self._call("POST", "/v1/web/news", body)
 
 
-class AsyncWebContacts:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        url: str,
-    ) -> WebContactsResponse:
-        body = _omit_none(
-            {
-                "url": url,
-            }
-        )
-        return await self._call("POST", "/v1/web/contacts", body)
-
-
 class AsyncWeb:
     search: AsyncWebSearch
     news: AsyncWebNews
-    contacts: AsyncWebContacts
 
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
         self.search = AsyncWebSearch(call)
         self.news = AsyncWebNews(call)
-        self.contacts = AsyncWebContacts(call)
 
 
 class AsyncYoutubeSearch:
@@ -4032,8 +3987,6 @@ class AsyncLinkedinJobsSearch:
         query: str | None = None,
         location: str | None = None,
         within: LinkedinJobsSearchWithin | None = None,
-        workplaces: list[LinkedinJobsSearchWorkplacesItem] | None = None,
-        experiences: list[LinkedinJobsSearchExperiencesItem] | None = None,
         cursor: str | None = None,
         limit: int | None = None,
     ) -> LinkedinJobsSearchResponse:
@@ -4042,8 +3995,6 @@ class AsyncLinkedinJobsSearch:
                 "query": query,
                 "location": location,
                 "within": within,
-                "workplaces": workplaces,
-                "experiences": experiences,
                 "cursor": cursor,
                 "limit": limit,
             }
@@ -4397,21 +4348,21 @@ class AsyncSite:
         self.seo = AsyncSiteSeo(call)
 
 
-class AsyncEmailCheck:
+class AsyncEmailVerify:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
 
     async def __call__(
         self,
         *,
-        emails: list[str],
-    ) -> EmailCheckResponse:
+        email: str,
+    ) -> EmailVerifyResponse:
         body = _omit_none(
             {
-                "emails": emails,
+                "email": email,
             }
         )
-        return await self._call("POST", "/v1/email/check", body)
+        return await self._call("POST", "/v1/email/verify", body)
 
 
 class AsyncEmailFind:
@@ -4421,29 +4372,29 @@ class AsyncEmailFind:
     async def __call__(
         self,
         *,
+        domain: str,
         name: str | None = None,
         first_name: str | None = None,
         last_name: str | None = None,
-        company: str,
     ) -> EmailFindResponse:
         body = _omit_none(
             {
+                "domain": domain,
                 "name": name,
                 "firstName": first_name,
                 "lastName": last_name,
-                "company": company,
             }
         )
         return await self._call("POST", "/v1/email/find", body)
 
 
 class AsyncEmail:
-    check: AsyncEmailCheck
+    verify: AsyncEmailVerify
     find: AsyncEmailFind
 
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
-        self.check = AsyncEmailCheck(call)
+        self.verify = AsyncEmailVerify(call)
         self.find = AsyncEmailFind(call)
 
 

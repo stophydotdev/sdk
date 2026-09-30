@@ -13,6 +13,10 @@ export type _Error = {
       | "forbidden"
       | "insufficientCredits"
       | "internalError"
+      | "inviteClaimed"
+      | "inviteDisabled"
+      | "inviteExpired"
+      | "inviteUsedUp"
       | "invalidCliSession"
       | "invalidCliVerifier"
       | "invalidRequest"
@@ -106,14 +110,14 @@ export type WebSearchData = {
      */
     country?: string;
     /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     * Two-letter language code like en or pt. Any case is accepted.
      */
     language?: string;
     includeDomains?: Array<string>;
     excludeDomains?: Array<string>;
     within?: "day" | "week" | "month" | "year" | "all";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -174,14 +178,14 @@ export type WebNewsData = {
      */
     country?: string;
     /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     * Two-letter language code like en or pt. Any case is accepted.
      */
     language?: string;
     includeDomains?: Array<string>;
     excludeDomains?: Array<string>;
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -227,60 +231,6 @@ export type WebNewsResponses = {
 
 export type WebNewsResponse = WebNewsResponses[keyof WebNewsResponses];
 
-export type WebContactsData = {
-  body: {
-    url: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/web/contacts";
-};
-
-export type WebContactsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type WebContactsError = WebContactsErrors[keyof WebContactsErrors];
-
-export type WebContactsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      emails: Array<string>;
-      phones: Array<string>;
-      socials: Array<{
-        platform:
-          | "facebook"
-          | "instagram"
-          | "x"
-          | "linkedin"
-          | "youtube"
-          | "tiktok"
-          | "pinterest"
-          | "github"
-          | "threads";
-        url: string;
-      }>;
-      pages: Array<string>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type WebContactsResponse =
-  WebContactsResponses[keyof WebContactsResponses];
-
 export type YoutubeSearchData = {
   body: {
     query: string;
@@ -289,7 +239,7 @@ export type YoutubeSearchData = {
     sort?: "relevance" | "top";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -486,7 +436,7 @@ export type YoutubeCommentsData = {
     sort?: "top" | "newest";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -548,7 +498,7 @@ export type YoutubeChannelData = {
     tab?: "videos" | "shorts" | "live" | "playlists" | "posts";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -649,7 +599,7 @@ export type YoutubePlaylistData = {
     playlist: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -725,7 +675,7 @@ export type RedditSearchData = {
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -909,7 +859,7 @@ export type RedditSubredditData = {
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1001,7 +951,7 @@ export type RedditUserData = {
     sort?: "newest" | "hot" | "top";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1098,7 +1048,7 @@ export type RedditDomainData = {
     sort?: "hot" | "newest" | "top";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1183,7 +1133,7 @@ export type MapsSearchData = {
      */
     language?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1318,7 +1268,7 @@ export type MapsReviewsData = {
      */
     language?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1557,7 +1507,7 @@ export type InstagramSearchData = {
     type?: "all" | "posts" | "reels";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1633,7 +1583,7 @@ export type InstagramCommentsData = {
     comment?: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1843,7 +1793,7 @@ export type TiktokHashtagData = {
     hashtag: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1917,7 +1867,7 @@ export type TiktokCommentsData = {
     comment?: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -1975,7 +1925,7 @@ export type TiktokSearchData = {
     type?: "videos" | "users";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -2236,7 +2186,7 @@ export type BlueskyFollowersData = {
     profile: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -2494,7 +2444,7 @@ export type ThreadsSearchData = {
   body: {
     query: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -2566,7 +2516,7 @@ export type TelegramPostsData = {
     channel: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -2748,7 +2698,7 @@ export type MetaAdsPageData = {
     status?: "active" | "inactive" | "all";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -2836,18 +2786,9 @@ export type LinkedinJobsSearchData = {
     query?: string;
     location?: string;
     within?: "day" | "week" | "month" | "all";
-    workplaces?: Array<"onsite" | "remote" | "hybrid">;
-    experiences?: Array<
-      | "internship"
-      | "entry"
-      | "associate"
-      | "midSenior"
-      | "director"
-      | "executive"
-    >;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -3073,7 +3014,7 @@ export type LinkedinPostsData = {
     profile?: string;
     company?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -3141,7 +3082,7 @@ export type ZillowSearchData = {
     query?: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -3175,6 +3116,9 @@ export type ZillowSearchResponses = {
         propertyUrl: string;
         status: "forSale" | "forRent" | "sold" | "other";
         statusText?: string;
+        /**
+         * Asking price, monthly rent, or the sale price of a sold home. Null when Zillow shows none, which includes sold homes in states that keep sale prices private, such as Texas.
+         */
         price?: number;
         priceCurrency: "USD";
         addressFull?: string;
@@ -3248,6 +3192,9 @@ export type ZillowPropertyResponses = {
       propertyUrl: string;
       status?: string;
       homeType?: string;
+      /**
+       * Asking price, monthly rent, or the sale price of a sold home. Null when Zillow shows none, which includes sold homes in states that keep sale prices private, such as Texas.
+       */
       price?: number;
       priceCurrency: "USD";
       zestimate?: number;
@@ -3307,7 +3254,7 @@ export type UpworkSearchData = {
     experience?: "entry" | "intermediate" | "expert";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -3447,7 +3394,7 @@ export type GoogleTrendsRelatedData = {
     country?: string;
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -3518,7 +3465,7 @@ export type GoogleTrendsTrendingData = {
       | "travel"
       | "climate";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -3678,16 +3625,16 @@ export type SiteSeoResponses = {
 
 export type SiteSeoResponse = SiteSeoResponses[keyof SiteSeoResponses];
 
-export type EmailCheckData = {
+export type EmailVerifyData = {
   body: {
-    emails: Array<string>;
+    email: string;
   };
   path?: never;
   query?: never;
-  url: "/v1/email/check";
+  url: "/v1/email/verify";
 };
 
-export type EmailCheckErrors = {
+export type EmailVerifyErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -3698,40 +3645,36 @@ export type EmailCheckErrors = {
   "5XX": _Error;
 };
 
-export type EmailCheckError = EmailCheckErrors[keyof EmailCheckErrors];
+export type EmailVerifyError = EmailVerifyErrors[keyof EmailVerifyErrors];
 
-export type EmailCheckResponses = {
+export type EmailVerifyResponses = {
   /**
    * The data, and the credits this call used.
    */
   200: {
     success: true;
     data: {
-      emails: Array<{
-        email?: string;
-        status: "ok" | "risky" | "invalid";
-        reasons?: Array<string>;
-        isValidSyntax: boolean;
-        domain?: string;
-        mx?: Array<string>;
-        isDisposable: boolean;
-        isRole: boolean;
-        isFree: boolean;
-      }>;
+      email?: string;
+      status: "valid" | "risky" | "invalid";
+      mxProvider?: string;
+      isRole: boolean;
+      isDisposable: boolean;
+      isFree: boolean;
     };
     creditsUsed: number;
     requestId: string;
   };
 };
 
-export type EmailCheckResponse = EmailCheckResponses[keyof EmailCheckResponses];
+export type EmailVerifyResponse =
+  EmailVerifyResponses[keyof EmailVerifyResponses];
 
 export type EmailFindData = {
   body: {
+    domain: string;
     name?: string;
     firstName?: string;
     lastName?: string;
-    company: string;
   };
   path?: never;
   query?: never;
@@ -3757,13 +3700,22 @@ export type EmailFindResponses = {
    */
   200: {
     success: true;
-    data: {
-      email?: string;
-      status: "ok" | "risky" | "invalid" | "unknown";
-      domain?: string;
-      isCatchAll?: boolean;
-      pattern?: string;
-    };
+    data:
+      | {
+          email?: string;
+          status: "valid" | "risky" | "notFound";
+          domain?: string;
+          mxProvider?: string;
+        }
+      | {
+          domain?: string;
+          mxProvider?: string;
+          results?: Array<{
+            email?: string;
+            status: "valid" | "risky";
+            type: "personal" | "generic";
+          }>;
+        };
     creditsUsed: number;
     requestId: string;
   };
@@ -3782,7 +3734,7 @@ export type CryptoCoinsData = {
     sort?: "marketCap" | "volume";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -3944,7 +3896,7 @@ export type CryptoHistoryData = {
     from?: string;
     to?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -3992,7 +3944,7 @@ export type CryptoDexSearchData = {
   body: {
     query: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -4254,6 +4206,9 @@ export type CryptoWalletResponse =
 export type IndeedSearchData = {
   body: {
     query?: string;
+    /**
+     * City, region or postal code, e.g. Kansas City, MO. Only jobs within about 5 miles are returned, so a city on a state line stays in its own state.
+     */
     location?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
@@ -4334,7 +4289,7 @@ export type IndeedSearchData = {
     within?: "day" | "week" | "month";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -4561,7 +4516,7 @@ export type TripadvisorSearchData = {
     query: string;
     type?: "all" | "hotels" | "restaurants" | "attractions" | "geos";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -4697,7 +4652,7 @@ export type TripadvisorReviewsData = {
     ratings?: Array<number>;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -4782,7 +4737,7 @@ export type GoogletravelFlightsData = {
     adults?: number;
     cabin?: "economy" | "premiumEconomy" | "business" | "first";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -4812,8 +4767,17 @@ export type GoogletravelFlightsResponses = {
   200: {
     success: true;
     data: {
+      cabin: "economy" | "premiumEconomy" | "business" | "first";
+      tripType: "oneWay" | "roundTrip";
+      adults: number;
+      /**
+       * Outbound flight options. With returnDate, each price is the round-trip total for that outbound choice.
+       */
       results: Array<{
         isBest: boolean;
+        /**
+         * Total fare in USD for all adults together. For a round trip it covers both directions.
+         */
         price?: number;
         priceCurrency: "USD";
         airlines?: Array<string>;
@@ -4827,6 +4791,9 @@ export type GoogletravelFlightsResponses = {
          * Local time at the airport, YYYY-MM-DDTHH:mm, no time zone.
          */
         arrivalLocalTime?: string;
+        /**
+         * The outbound journey only, including a return search.
+         */
         legs?: Array<{
           flightNumber?: string;
           airline?: string;
@@ -4904,7 +4871,7 @@ export type AmazonSearchData = {
       | "eg";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -5097,7 +5064,7 @@ export type AmazonBestsellersData = {
       | "eg";
     cursor?: "2";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -5158,7 +5125,7 @@ export type ShopifyProductsData = {
     collection?: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -5235,7 +5202,7 @@ export type ShopifyCollectionsData = {
     store: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -5272,7 +5239,6 @@ export type ShopifyCollectionsResponses = {
         title?: string;
         description?: string;
         imageUrl?: string;
-        products?: number;
         publishedAt?: string;
         updatedAt?: string;
       }>;
@@ -5352,7 +5318,7 @@ export type WalmartSearchData = {
     maxPrice?: number;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -5494,7 +5460,7 @@ export type AliexpressSearchData = {
     maxPrice?: number;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -5529,7 +5495,13 @@ export type AliexpressSearchResponses = {
         productUrl: string;
         title?: string;
         imageUrl?: string;
+        /**
+         * Lowest sale price across the variants, as listed in search. minPrice and maxPrice filter on this price. The product page can show a lower promotional price.
+         */
         price?: number;
+        /**
+         * Lowest list price across the variants before any discount. It matches the product's originalPrice.
+         */
         originalPrice?: number;
         /**
          * ISO 4217 currency code, e.g. USD.
@@ -5584,7 +5556,13 @@ export type AliexpressProductResponses = {
       productUrl: string;
       title?: string;
       imageUrls: Array<string>;
+      /**
+       * Lowest sale price across the variants, including the promotional price the product page shows. It can be lower than the search price for the same item.
+       */
       price?: number;
+      /**
+       * Lowest list price across the variants before any discount. It matches the search result's originalPrice.
+       */
       originalPrice?: number;
       /**
        * ISO 4217 currency code, e.g. USD.
@@ -5713,7 +5691,7 @@ export type AppstoreSearchData = {
     country?: string;
     device?: "iphone" | "ipad" | "mac";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -5793,7 +5771,7 @@ export type AppstoreReviewsData = {
     sort?: "newest" | "helpful" | "highest" | "lowest";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -5876,7 +5854,7 @@ export type AppstoreTopData = {
      */
     country?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6026,7 +6004,7 @@ export type GoogleplaySearchData = {
      */
     language?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6094,7 +6072,7 @@ export type GoogleplayReviewsData = {
     rating?: number;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6153,11 +6131,17 @@ export type AirbnbSearchData = {
     checkIn?: string;
     checkOut?: string;
     adults?: number;
+    /**
+     * Lowest average nightly rate in USD, before taxes and fees. Compare with pricePerNight, which includes them.
+     */
     minPrice?: number;
+    /**
+     * Highest average nightly rate in USD, before taxes and fees. Compare with pricePerNight, which includes them.
+     */
     maxPrice?: number;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6192,8 +6176,22 @@ export type AirbnbSearchResponses = {
         name?: string;
         title?: string;
         subtitle?: string;
+        /**
+         * Total for the whole stay in USD, taxes and fees included.
+         */
         price?: number;
+        /**
+         * Total for the whole stay before a discount, in USD.
+         */
         originalPrice?: number;
+        /**
+         * Number of nights the price covers. A search without dates is priced for a default 5-night stay.
+         */
+        nights?: number;
+        /**
+         * price divided by nights, in USD, taxes and fees included.
+         */
+        pricePerNight?: number;
         /**
          * ISO 4217 currency code, e.g. USD.
          */
@@ -6314,7 +6312,7 @@ export type AirbnbCalendarData = {
     listing: string;
     month?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6352,7 +6350,6 @@ export type AirbnbCalendarResponses = {
         isCheckOutDay: boolean;
         minNights?: number;
         maxNights?: number;
-        priceText?: string;
       }>;
     };
     creditsUsed: number;
@@ -6369,7 +6366,7 @@ export type AirbnbReviewsData = {
     sort?: "relevance" | "newest" | "highest" | "lowest";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6433,7 +6430,7 @@ export type RightmoveSearchData = {
     sort?: "newest" | "oldest" | "priceHigh" | "priceLow";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6469,6 +6466,10 @@ export type RightmoveSearchResponses = {
         addressFull?: string;
         summary?: string;
         price?: number;
+        /**
+         * True when the agent shows no price (POA); price is then null.
+         */
+        isPriceOnApplication: boolean;
         priceText?: string;
         priceQualifier?: string;
         priceFrequency?: string;
@@ -6543,6 +6544,10 @@ export type RightmovePropertyResponses = {
       description?: string;
       price?: number;
       /**
+       * True when the agent shows no price (POA); price is then null.
+       */
+      isPriceOnApplication: boolean;
+      /**
        * ISO 4217 currency code, e.g. USD.
        */
       priceCurrency?: string;
@@ -6605,7 +6610,7 @@ export type ImmoscoutSearchData = {
     sort?: "newest" | "priceLow" | "priceHigh" | "largest";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6752,7 +6757,7 @@ export type PinterestSearchData = {
     type?: "pins" | "videos";
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6887,7 +6892,7 @@ export type PinterestBoardData = {
     board: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -6974,7 +6979,7 @@ export type PinterestUserData = {
     profile: string;
     cursor?: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -7123,7 +7128,7 @@ export type FinanceQuoteData = {
   body: {
     symbols: Array<string>;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -7202,7 +7207,7 @@ export type FinanceHistoryData = {
       | "week"
       | "month";
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -7235,6 +7240,9 @@ export type FinanceHistoryResponses = {
       currency?: string;
       timezone?: string;
       results: Array<{
+        /**
+         * When the candle opened. Weekly and monthly candles carry the first trading day of that week or month inside the requested range.
+         */
         openedAt: string;
         open?: number;
         high?: number;
@@ -7264,7 +7272,7 @@ export type FinanceSearchData = {
   body: {
     query: string;
     /**
-     * Return at most this many results from the page. The price stays the same.
+     * Return at most this many results (1-100).
      */
     limit?: number;
   };
@@ -7329,7 +7337,7 @@ export type AdsSearchData = {
         cursor?: string;
         network: "meta";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
@@ -7337,14 +7345,14 @@ export type AdsSearchData = {
         advertiser?: string;
         domain?: string;
         /**
-         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         * Country code like de. Only ads shown in this country are returned. Any case is accepted.
          */
         country?: string;
         mediaType?: "text" | "image" | "video";
         cursor?: string;
         network: "google";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
@@ -7352,13 +7360,13 @@ export type AdsSearchData = {
         query?: string;
         advertiser?: string;
         /**
-         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         * European country code like de. TikTok publishes ads for these countries only. Any case is accepted.
          */
         country?: string;
         cursor?: string;
         network: "tiktok";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
@@ -7373,7 +7381,7 @@ export type AdsSearchData = {
         cursor?: string;
         network: "linkedin";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
@@ -7381,26 +7389,26 @@ export type AdsSearchData = {
         query?: string;
         advertiser?: string;
         /**
-         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         * EU/EEA country code like de. Microsoft publishes ads for these countries only. Any case is accepted.
          */
         country?: string;
         cursor?: string;
         network: "microsoft";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
     | {
         /**
-         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         * EU country code like fr, or br or tr. Pinterest publishes ads for these countries only. Any case is accepted.
          */
         country: string;
         advertiser?: string;
         cursor?: string;
         network: "pinterest";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       };
@@ -7863,12 +7871,12 @@ export type AdsAdvertisersData = {
     | {
         query: string;
         /**
-         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+         * Country code like de. Advertisers are matched on ads shown in this country, wherever the advertiser is based. Any case is accepted.
          */
         country?: string;
         network: "google";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
@@ -7876,7 +7884,7 @@ export type AdsAdvertisersData = {
         query: string;
         network: "microsoft";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       };
@@ -7949,7 +7957,7 @@ export type SuggestData = {
         language?: string;
         source: "google";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
@@ -7965,7 +7973,7 @@ export type SuggestData = {
         language?: string;
         source: "youtube";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
@@ -7998,7 +8006,7 @@ export type SuggestData = {
           | "sg";
         source: "amazon";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       };
@@ -8063,7 +8071,7 @@ export type GoogleTrendsData = {
         within?: "hour" | "day" | "week" | "month" | "year" | "all";
         by: "time";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       }
@@ -8077,7 +8085,7 @@ export type GoogleTrendsData = {
         resolution?: "country" | "region" | "metro";
         by: "region";
         /**
-         * Return at most this many results from the page. The price stays the same.
+         * Return at most this many results (1-100).
          */
         limit?: number;
       };
@@ -8109,16 +8117,22 @@ export type GoogleTrendsResponses = {
       | {
           results?: Array<{
             recordedAt: string;
-            values?: Array<number>;
+            values?: {
+              [key: string]: number;
+            };
             isPartial: boolean;
           }>;
-          averages?: Array<number>;
+          averages?: {
+            [key: string]: number;
+          };
         }
       | {
           results?: Array<{
             code?: string;
             name?: string;
-            values?: Array<number>;
+            values?: {
+              [key: string]: number;
+            };
           }>;
         };
     creditsUsed: number;

@@ -52,10 +52,10 @@ import type {
 	CryptoHistoryResponse,
 	CryptoWalletData,
 	CryptoWalletResponse,
-	EmailCheckData,
-	EmailCheckResponse,
 	EmailFindData,
 	EmailFindResponse,
+	EmailVerifyData,
+	EmailVerifyResponse,
 	FinanceHistoryData,
 	FinanceHistoryResponse,
 	FinanceQuoteData,
@@ -181,8 +181,6 @@ import type {
 	WalmartProductResponse,
 	WalmartSearchData,
 	WalmartSearchResponse,
-	WebContactsData,
-	WebContactsResponse,
 	WebNewsData,
 	WebNewsResponse,
 	WebSearchData,
@@ -212,7 +210,6 @@ export function bindSurface(call: Caller) {
 		web: {
 			search: post<WebSearchData["body"], WebSearchResponse>("/v1/web/search", call),
 			news: postOptional<WebNewsData["body"], WebNewsResponse>("/v1/web/news", call),
-			contacts: post<WebContactsData["body"], WebContactsResponse>("/v1/web/contacts", call),
 		},
 		youtube: {
 			search: post<YoutubeSearchData["body"], YoutubeSearchResponse>("/v1/youtube/search", call),
@@ -293,7 +290,7 @@ export function bindSurface(call: Caller) {
 			seo: post<SiteSeoData["body"], SiteSeoResponse>("/v1/site/seo", call),
 		},
 		email: {
-			check: post<EmailCheckData["body"], EmailCheckResponse>("/v1/email/check", call),
+			verify: post<EmailVerifyData["body"], EmailVerifyResponse>("/v1/email/verify", call),
 			find: post<EmailFindData["body"], EmailFindResponse>("/v1/email/find", call),
 		},
 		crypto: {

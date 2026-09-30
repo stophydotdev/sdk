@@ -14,9 +14,6 @@ import type {
   WebNewsData,
   WebNewsResponse,
   WebNewsError,
-  WebContactsData,
-  WebContactsResponse,
-  WebContactsError,
   YoutubeSearchData,
   YoutubeSearchResponse,
   YoutubeSearchError,
@@ -149,9 +146,9 @@ import type {
   SiteSeoData,
   SiteSeoResponse,
   SiteSeoError,
-  EmailCheckData,
-  EmailCheckResponse,
-  EmailCheckError,
+  EmailVerifyData,
+  EmailVerifyResponse,
+  EmailVerifyError,
   EmailFindData,
   EmailFindResponse,
   EmailFindError,
@@ -390,33 +387,6 @@ export const webNews = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/web/news",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Find emails, phone numbers and social profiles on a website
- * Costs 2 credits per call.
- */
-export const webContacts = <ThrowOnError extends boolean = false>(
-  options: Options<WebContactsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    WebContactsResponse,
-    WebContactsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/web/contacts",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1614,15 +1584,15 @@ export const siteSeo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Check if email addresses can receive mail
+ * Check if an email address can receive mail
  * Costs 1 credit per call.
  */
-export const emailCheck = <ThrowOnError extends boolean = false>(
-  options: Options<EmailCheckData, ThrowOnError>
+export const emailVerify = <ThrowOnError extends boolean = false>(
+  options: Options<EmailVerifyData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    EmailCheckResponse,
-    EmailCheckError,
+    EmailVerifyResponse,
+    EmailVerifyError,
     ThrowOnError
   >({
     security: [
@@ -1631,7 +1601,7 @@ export const emailCheck = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/email/check",
+    url: "/v1/email/verify",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1641,7 +1611,7 @@ export const emailCheck = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Find a person's most likely work email address
+ * Find a person's work email from their name, or the emails on a company's site
  * Costs 1 credit per call.
  */
 export const emailFind = <ThrowOnError extends boolean = false>(
