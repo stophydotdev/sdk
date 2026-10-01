@@ -520,7 +520,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 4096
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -1114,7 +1114,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 4096
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -1305,7 +1305,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 4096
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -1643,7 +1643,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 4096
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -1846,8 +1846,8 @@
       "post": {
         "operationId": "redditSearch",
         "summary": "Search Reddit posts, comments, subreddits and users",
-        "description": "Costs 2 credits per call. Pages with cursor.",
-        "x-credits": 2,
+        "description": "Costs 1 credit per call. Pages with cursor.",
+        "x-credits": 1,
         "requestBody": {
           "required": true,
           "content": {
@@ -1898,7 +1898,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 8192
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -2231,8 +2231,8 @@
       "post": {
         "operationId": "redditPost",
         "summary": "Read a post and its comment thread",
-        "description": "Costs 2 credits per call.",
-        "x-credits": 2,
+        "description": "Costs 1 credit per call.",
+        "x-credits": 1,
         "requestBody": {
           "required": true,
           "content": {
@@ -2518,8 +2518,8 @@
       "post": {
         "operationId": "redditSubreddit",
         "summary": "Get a subreddit's info and a page of its posts",
-        "description": "Costs 2 credits per call. Pages with cursor.",
-        "x-credits": 2,
+        "description": "Costs 1 credit per call. Pages with cursor.",
+        "x-credits": 1,
         "requestBody": {
           "required": true,
           "content": {
@@ -2554,7 +2554,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 8192
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -2837,8 +2837,8 @@
       "post": {
         "operationId": "redditUser",
         "summary": "Get a user's profile and a page of their posts and comments",
-        "description": "Costs 2 credits per call. Pages with cursor.",
-        "x-credits": 2,
+        "description": "Costs 1 credit per call. Pages with cursor.",
+        "x-credits": 1,
         "requestBody": {
           "required": true,
           "content": {
@@ -2870,7 +2870,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 8192
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -3184,8 +3184,8 @@
       "post": {
         "operationId": "redditDomain",
         "summary": "Get Reddit posts that link to a website",
-        "description": "Costs 2 credits per call. Pages with cursor.",
-        "x-credits": 2,
+        "description": "Costs 1 credit per call. Pages with cursor.",
+        "x-credits": 1,
         "requestBody": {
           "required": true,
           "content": {
@@ -3208,7 +3208,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 8192
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -3442,8 +3442,8 @@
       "post": {
         "operationId": "mapsSearch",
         "summary": "Search places on Google Maps by keyword and location",
-        "description": "Costs 1 credit per call. Pages with cursor.",
-        "x-credits": 1,
+        "description": "Costs 3 credits per call. Pages with cursor.",
+        "x-credits": 3,
         "requestBody": {
           "required": true,
           "content": {
@@ -3463,7 +3463,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^\\d{1,7}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "country": {
                     "default": "us",
@@ -3874,7 +3875,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 4096
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "language": {
                     "default": "en",
@@ -4067,8 +4068,8 @@
       "post": {
         "operationId": "instagramProfile",
         "summary": "Get a profile's bio, stats and a page of its posts and reels",
-        "description": "Costs 1 credit per call. Pages with cursor.",
-        "x-credits": 1,
+        "description": "Costs 2 credits per call. Pages with cursor.",
+        "x-credits": 2,
         "requestBody": {
           "required": true,
           "content": {
@@ -4081,7 +4082,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^(?:\\d{1,4}~(?:\\d+_\\d+)?|(?:\\d+_\\d+))$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -4707,7 +4709,7 @@
                   "cursor": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 4096
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -4872,7 +4874,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^[\\w-]{10,300}:\\d{1,20}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -5390,7 +5393,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^(?:\\d{1,4}~(?:\\d{1,20})?|(?:\\d{1,20}))$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -5632,7 +5636,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^(?:\\d{1,4}~(?:\\d{1,20})?|(?:\\d{1,20}))$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -5804,7 +5809,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^(?:\\d{1,4}~(?:\\d{1,6}:[\\w-]{1,80})?|(?:\\d{1,6}:[\\w-]{1,80}))$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -6075,8 +6081,8 @@
       "post": {
         "operationId": "metaAdsPage",
         "summary": "Get the ads a Facebook page runs",
-        "description": "Costs 2 credits per call. Pages with cursor.",
-        "x-credits": 2,
+        "description": "Costs 5 credits per call. Pages with cursor.",
+        "x-credits": 5,
         "requestBody": {
           "required": true,
           "content": {
@@ -6113,7 +6119,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^(?:\\d{1,4}~(?:[\\w-]{10,500})?|(?:[\\w-]{10,500}))$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -6411,8 +6418,8 @@
       "post": {
         "operationId": "linkedinJobsSearch",
         "summary": "Search LinkedIn jobs",
-        "description": "Costs 1 credit per call. Pages with cursor.",
-        "x-credits": 1,
+        "description": "Costs 3 credits per call. Pages with cursor.",
+        "x-credits": 3,
         "requestBody": {
           "required": true,
           "content": {
@@ -6440,7 +6447,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^\\d{1,3}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -7236,8 +7244,8 @@
       "post": {
         "operationId": "zillowSearch",
         "summary": "Search homes for sale, for rent or sold",
-        "description": "Costs 1 credit per call. Pages with cursor.",
-        "x-credits": 1,
+        "description": "Costs 3 credits per call. Pages with cursor.",
+        "x-credits": 3,
         "requestBody": {
           "required": true,
           "content": {
@@ -7310,7 +7318,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^\\d{1,3}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -7543,8 +7552,8 @@
       "post": {
         "operationId": "zillowProperty",
         "summary": "Get a home's details, price and Zestimate",
-        "description": "Costs 1 credit per call.",
-        "x-credits": 1,
+        "description": "Costs 2 credits per call.",
+        "x-credits": 2,
         "requestBody": {
           "required": true,
           "content": {
@@ -7812,8 +7821,8 @@
       "post": {
         "operationId": "upworkSearch",
         "summary": "Search Upwork jobs",
-        "description": "Costs 2 credits per call. Pages with cursor.",
-        "x-credits": 2,
+        "description": "Costs 3 credits per call. Pages with cursor.",
+        "x-credits": 3,
         "requestBody": {
           "required": true,
           "content": {
@@ -7851,7 +7860,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^\\d{1,7}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -8276,8 +8286,8 @@
       "post": {
         "operationId": "googletravelFlights",
         "summary": "Search flights with prices and times",
-        "description": "Costs 1 credit per call.",
-        "x-credits": 1,
+        "description": "Costs 5 credits per call.",
+        "x-credits": 5,
         "requestBody": {
           "required": true,
           "content": {
@@ -8569,8 +8579,8 @@
       "post": {
         "operationId": "airbnbSearch",
         "summary": "Search Airbnb stays by place and dates",
-        "description": "Costs 1 credit per call. Pages with cursor.",
-        "x-credits": 1,
+        "description": "Costs 3 credits per call. Pages with cursor.",
+        "x-credits": 3,
         "requestBody": {
           "required": true,
           "content": {
@@ -8611,7 +8621,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^\\d{1,7}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -9283,7 +9294,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^\\d{1,7}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -9427,8 +9439,8 @@
       "post": {
         "operationId": "rightmoveSearch",
         "summary": "Search UK homes for sale or rent",
-        "description": "Costs 1 credit per call. Pages with cursor.",
-        "x-credits": 1,
+        "description": "Costs 3 credits per call. Pages with cursor.",
+        "x-credits": 3,
         "requestBody": {
           "required": true,
           "content": {
@@ -9479,7 +9491,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^\\d{1,3}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -9967,8 +9980,8 @@
       "post": {
         "operationId": "immoscoutSearch",
         "summary": "Search German homes for rent or sale",
-        "description": "Costs 1 credit per call. Pages with cursor.",
-        "x-credits": 1,
+        "description": "Costs 3 credits per call. Pages with cursor.",
+        "x-credits": 3,
         "requestBody": {
           "required": true,
           "content": {
@@ -10018,7 +10031,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^\\d{1,3}$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -10438,7 +10452,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^(?:\\d{1,4}~(?:[\\w+/=|-]{8,4096})?|(?:[\\w+/=|-]{8,4096}))$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -10840,7 +10855,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^(?:\\d{1,4}~(?:[\\w+/=|-]{8,4096})?|(?:[\\w+/=|-]{8,4096}))$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -11108,7 +11124,8 @@
                   },
                   "cursor": {
                     "type": "string",
-                    "pattern": "^(?:\\d{1,4}~(?:[\\w+/=|-]{8,4096})?|(?:[\\w+/=|-]{8,4096}))$"
+                    "minLength": 1,
+                    "description": "The cursor from the previous response. Send it as is."
                   },
                   "limit": {
                     "type": "integer",
@@ -11367,8 +11384,8 @@
       "post": {
         "operationId": "adsSearch",
         "summary": "Search a public ad library: Meta, Google, TikTok, LinkedIn, Microsoft or Pinterest",
-        "description": "Costs 2 credits per call. Pages with cursor.",
-        "x-credits": 2,
+        "description": "Costs 5 credits per call. Pages with cursor.",
+        "x-credits": 5,
         "requestBody": {
           "required": true,
           "content": {
@@ -11409,7 +11426,8 @@
                       },
                       "cursor": {
                         "type": "string",
-                        "pattern": "^(?:\\d{1,4}~(?:[\\w-]{10,500})?|(?:[\\w-]{10,500}))$"
+                        "minLength": 1,
+                        "description": "The cursor from the previous response. Send it as is."
                       },
                       "network": {
                         "type": "string",
@@ -11458,7 +11476,8 @@
                       },
                       "cursor": {
                         "type": "string",
-                        "pattern": "^[\\w+/=-]{8,512}$"
+                        "minLength": 1,
+                        "description": "The cursor from the previous response. Send it as is."
                       },
                       "network": {
                         "type": "string",
@@ -11496,7 +11515,8 @@
                       },
                       "cursor": {
                         "type": "string",
-                        "pattern": "^(?:\\d{1,4}~(?:[A-Za-z0-9+/=]{8,400})?|(?:[A-Za-z0-9+/=]{8,400}))$"
+                        "minLength": 1,
+                        "description": "The cursor from the previous response. Send it as is."
                       },
                       "network": {
                         "type": "string",
@@ -11541,7 +11561,8 @@
                       },
                       "cursor": {
                         "type": "string",
-                        "pattern": "^(?:\\d{1,4}~(?:\\d{1,20}-\\d{1,20})?|(?:\\d{1,20}-\\d{1,20}))$"
+                        "minLength": 1,
+                        "description": "The cursor from the previous response. Send it as is."
                       },
                       "network": {
                         "type": "string",
@@ -11578,7 +11599,8 @@
                       },
                       "cursor": {
                         "type": "string",
-                        "pattern": "^\\d{1,3}$"
+                        "minLength": 1,
+                        "description": "The cursor from the previous response. Send it as is."
                       },
                       "network": {
                         "type": "string",
@@ -11618,7 +11640,8 @@
                       },
                       "cursor": {
                         "type": "string",
-                        "pattern": "^(?:\\d{1,4}~(?:[\\w+/=|-]{8,4096})?|(?:[\\w+/=|-]{8,4096}))$"
+                        "minLength": 1,
+                        "description": "The cursor from the previous response. Send it as is."
                       },
                       "network": {
                         "type": "string",
@@ -12347,8 +12370,8 @@
       "post": {
         "operationId": "adsAd",
         "summary": "Get one ad's details from Meta, Google, TikTok, LinkedIn, Microsoft or Pinterest",
-        "description": "Costs 2 credits per call.",
-        "x-credits": 2,
+        "description": "Costs 5 credits per call.",
+        "x-credits": 5,
         "requestBody": {
           "required": true,
           "content": {
@@ -13497,8 +13520,8 @@
       "post": {
         "operationId": "adsAdvertisers",
         "summary": "Find advertisers by name in the Google or Microsoft ad library",
-        "description": "Costs 2 credits per call.",
-        "x-credits": 2,
+        "description": "Costs 1 credit per call.",
+        "x-credits": 1,
         "requestBody": {
           "required": true,
           "content": {

@@ -167,6 +167,9 @@ export type YoutubeSearchData = {
     type?: "videos" | "all" | "channels" | "playlists" | "shorts";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
     sort?: "relevance" | "top";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -364,6 +367,9 @@ export type YoutubeCommentsData = {
      */
     comment?: string;
     sort?: "top" | "newest";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -426,6 +432,9 @@ export type YoutubeChannelData = {
   body: {
     channel: string;
     tab?: "videos" | "shorts" | "live" | "playlists" | "posts";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -527,6 +536,9 @@ export type YoutubeChannelResponse =
 export type YoutubePlaylistData = {
   body: {
     playlist: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -603,6 +615,9 @@ export type RedditSearchData = {
     subreddit?: string;
     sort?: "relevance" | "hot" | "top" | "newest" | "mostComments";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -787,6 +802,9 @@ export type RedditSubredditData = {
     subreddit: string;
     sort?: "hot" | "newest" | "top";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -879,6 +897,9 @@ export type RedditUserData = {
     profile: string;
     tab?: "overview" | "posts" | "comments";
     sort?: "newest" | "hot" | "top";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -976,6 +997,9 @@ export type RedditDomainData = {
   body: {
     domain: string;
     sort?: "hot" | "newest" | "top";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -1053,6 +1077,9 @@ export type MapsSearchData = {
   body: {
     query: string;
     location: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
@@ -1192,6 +1219,9 @@ export type MapsReviewsData = {
   body: {
     place: string;
     sort?: "relevance" | "newest" | "highest" | "lowest";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
@@ -1262,6 +1292,9 @@ export type MapsReviewsResponse =
 export type InstagramProfileData = {
   body: {
     profile: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -1439,6 +1472,9 @@ export type InstagramCommentsData = {
   body: {
     post: string;
     comment?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -1498,6 +1534,9 @@ export type InstagramCommentsResponse =
 export type TiktokProfileData = {
   body: {
     profile: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -1653,6 +1692,9 @@ export type TiktokVideoResponse =
 export type TiktokHashtagData = {
   body: {
     hashtag: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -1727,6 +1769,9 @@ export type TiktokCommentsData = {
   body: {
     video: string;
     comment?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -1785,6 +1830,9 @@ export type TiktokSearchData = {
   body: {
     query: string;
     type?: "videos" | "users";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -1880,6 +1928,9 @@ export type MetaAdsPageData = {
      * Only ads with this creative: image, video, or text (no image or video).
      */
     mediaType?: "image" | "video" | "text";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -1986,6 +2037,9 @@ export type LinkedinJobsSearchData = {
     query?: string;
     location?: string;
     within?: "day" | "week" | "month" | "all";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -2288,6 +2342,9 @@ export type ZillowSearchData = {
     >;
     sort?: "relevance" | "newest" | "priceHigh" | "priceLow";
     query?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -2460,6 +2517,9 @@ export type UpworkSearchData = {
     sort?: "newest" | "relevance";
     jobType?: "hourly" | "fixed";
     experience?: "entry" | "intermediate" | "expert";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -2716,6 +2776,9 @@ export type AirbnbSearchData = {
      * Highest average nightly rate in USD, before taxes and fees. Compare with pricePerNight, which includes them.
      */
     maxPrice?: number;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -2941,6 +3004,9 @@ export type AirbnbReviewsData = {
   body: {
     listing: string;
     sort?: "relevance" | "newest" | "highest" | "lowest";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -3005,6 +3071,9 @@ export type RightmoveSearchData = {
     minBedrooms?: number;
     maxBedrooms?: number;
     sort?: "newest" | "oldest" | "priceHigh" | "priceLow";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -3185,6 +3254,9 @@ export type ImmoscoutSearchData = {
     maxPrice?: number;
     minRooms?: number;
     sort?: "newest" | "priceLow" | "priceHigh" | "largest";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -3332,6 +3404,9 @@ export type PinterestSearchData = {
   body: {
     query: string;
     type?: "pins" | "videos";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -3467,6 +3542,9 @@ export type PinterestPinResponse =
 export type PinterestBoardData = {
   body: {
     board: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -3554,6 +3632,9 @@ export type PinterestBoardResponse =
 export type PinterestUserData = {
   body: {
     profile: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
     cursor?: string;
     /**
      * Return at most this many results (1-100).
@@ -3649,6 +3730,9 @@ export type AdsSearchData = {
          * Only ads with this creative: image, video, or text (no image or video).
          */
         mediaType?: "image" | "video" | "text";
+        /**
+         * The cursor from the previous response. Send it as is.
+         */
         cursor?: string;
         network: "meta";
         /**
@@ -3668,6 +3752,9 @@ export type AdsSearchData = {
          */
         country?: string;
         mediaType?: "text" | "image" | "video";
+        /**
+         * The cursor from the previous response. Send it as is.
+         */
         cursor?: string;
         network: "google";
         /**
@@ -3682,6 +3769,9 @@ export type AdsSearchData = {
          * European country code like de. TikTok publishes ads for these countries only. Any case is accepted.
          */
         country?: string;
+        /**
+         * The cursor from the previous response. Send it as is.
+         */
         cursor?: string;
         network: "tiktok";
         /**
@@ -3697,6 +3787,9 @@ export type AdsSearchData = {
          */
         country?: string;
         within?: "month" | "year" | "all";
+        /**
+         * The cursor from the previous response. Send it as is.
+         */
         cursor?: string;
         network: "linkedin";
         /**
@@ -3711,6 +3804,9 @@ export type AdsSearchData = {
          * EU/EEA country code like de. Microsoft publishes ads for these countries only. Any case is accepted.
          */
         country?: string;
+        /**
+         * The cursor from the previous response. Send it as is.
+         */
         cursor?: string;
         network: "microsoft";
         /**
@@ -3731,6 +3827,9 @@ export type AdsSearchData = {
          * Advertiser name to filter by. Pinterest does not publish advertiser names on the ads themselves, so results carry no advertiser.
          */
         advertiser?: string;
+        /**
+         * The cursor from the previous response. Send it as is.
+         */
         cursor?: string;
         network: "pinterest";
         /**
