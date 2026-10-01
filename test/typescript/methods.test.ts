@@ -41,6 +41,23 @@ describe("namespaced operations", () => {
 		expect(calls[0]?.body).toEqual({ video: "https://youtu.be/abc" });
 	});
 
+	test("calls the app, jobs, places and shopping endpoints", async () => {
+		const { client, calls } = makeClient({ json: envelope });
+		await client.appstore.search({ query: "notes" });
+		await client.googleplay.reviews({ app: "com.example.app", cursor: "c1" });
+		await client.indeed.search({ query: "designer" });
+		await client.tripadvisor.place({ place: "d1234" });
+		await client.walmart.search({ query: "tv" });
+		expect(calls.map((call) => new URL(call.url).pathname)).toEqual([
+			"/v1/appstore/search",
+			"/v1/googleplay/reviews",
+			"/v1/indeed/search",
+			"/v1/tripadvisor/place",
+			"/v1/walmart/search",
+		]);
+		expect(calls[1]?.body).toEqual({ app: "com.example.app", cursor: "c1" });
+	});
+
 	test("sends the network discriminator for joined endpoints", async () => {
 		const { client, calls } = makeClient({ json: envelope });
 		await client.ads.search({ network: "meta", query: "shoes" });

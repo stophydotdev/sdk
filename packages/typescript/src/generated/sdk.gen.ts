@@ -107,9 +107,51 @@ import type {
   UpworkJobData,
   UpworkJobResponse,
   UpworkJobError,
+  IndeedSearchData,
+  IndeedSearchResponse,
+  IndeedSearchError,
+  IndeedJobData,
+  IndeedJobResponse,
+  IndeedJobError,
+  TripadvisorSearchData,
+  TripadvisorSearchResponse,
+  TripadvisorSearchError,
+  TripadvisorPlaceData,
+  TripadvisorPlaceResponse,
+  TripadvisorPlaceError,
+  TripadvisorReviewsData,
+  TripadvisorReviewsResponse,
+  TripadvisorReviewsError,
   GoogletravelFlightsData,
   GoogletravelFlightsResponse,
   GoogletravelFlightsError,
+  WalmartSearchData,
+  WalmartSearchResponse,
+  WalmartSearchError,
+  WalmartProductData,
+  WalmartProductResponse,
+  WalmartProductError,
+  AppstoreAppData,
+  AppstoreAppResponse,
+  AppstoreAppError,
+  AppstoreSearchData,
+  AppstoreSearchResponse,
+  AppstoreSearchError,
+  AppstoreReviewsData,
+  AppstoreReviewsResponse,
+  AppstoreReviewsError,
+  AppstoreTopData,
+  AppstoreTopResponse,
+  AppstoreTopError,
+  GoogleplayAppData,
+  GoogleplayAppResponse,
+  GoogleplayAppError,
+  GoogleplaySearchData,
+  GoogleplaySearchResponse,
+  GoogleplaySearchError,
+  GoogleplayReviewsData,
+  GoogleplayReviewsResponse,
+  GoogleplayReviewsError,
   AirbnbSearchData,
   AirbnbSearchResponse,
   AirbnbSearchError,
@@ -273,8 +315,8 @@ export const youtubeVideo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get what is said in a YouTube, TikTok, Instagram or other video, with timestamps
- * Costs 2 credits per call.
+ * Get what a YouTube or other video says. 2 credits with captions, else 2 plus 1 per 10 s
+ * Costs 2 credits when the video has captions; otherwise 2 credits plus 1 credit for every 10 seconds of audio, up to 30 minutes.
  */
 export const transcript = <ThrowOnError extends boolean = false>(
   options: Options<TranscriptData, ThrowOnError>
@@ -1083,6 +1125,141 @@ export const upworkJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Search Indeed jobs
+ * Costs 1 credit per call. Pages with cursor.
+ */
+export const indeedSearch = <ThrowOnError extends boolean = false>(
+  options: Options<IndeedSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    IndeedSearchResponse,
+    IndeedSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/indeed/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get an Indeed job's details
+ * Costs 1 credit per call.
+ */
+export const indeedJob = <ThrowOnError extends boolean = false>(
+  options: Options<IndeedJobData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    IndeedJobResponse,
+    IndeedJobError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/indeed/job",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Search hotels, restaurants and attractions
+ * Costs 1 credit per call.
+ */
+export const tripadvisorSearch = <ThrowOnError extends boolean = false>(
+  options: Options<TripadvisorSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    TripadvisorSearchResponse,
+    TripadvisorSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/tripadvisor/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get a place's rating, ranking and details
+ * Costs 1 credit per call.
+ */
+export const tripadvisorPlace = <ThrowOnError extends boolean = false>(
+  options: Options<TripadvisorPlaceData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    TripadvisorPlaceResponse,
+    TripadvisorPlaceError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/tripadvisor/place",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get a place's reviews
+ * Costs 1 credit per call. Pages with cursor.
+ */
+export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
+  options: Options<TripadvisorReviewsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    TripadvisorReviewsResponse,
+    TripadvisorReviewsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/tripadvisor/reviews",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
  * Search flights with prices and times
  * Costs 5 credits per call.
  */
@@ -1101,6 +1278,249 @@ export const googletravelFlights = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/googletravel/flights",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Search Walmart products
+ * Costs 5 credits per call. Pages with cursor.
+ */
+export const walmartSearch = <ThrowOnError extends boolean = false>(
+  options: Options<WalmartSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WalmartSearchResponse,
+    WalmartSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/walmart/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get a Walmart product's price and details
+ * Costs 3 credits per call.
+ */
+export const walmartProduct = <ThrowOnError extends boolean = false>(
+  options: Options<WalmartProductData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WalmartProductResponse,
+    WalmartProductError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/walmart/product",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get an app's details from the App Store
+ * Costs 1 credit per call.
+ */
+export const appstoreApp = <ThrowOnError extends boolean = false>(
+  options: Options<AppstoreAppData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    AppstoreAppResponse,
+    AppstoreAppError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/appstore/app",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Search App Store apps
+ * Costs 1 credit per call.
+ */
+export const appstoreSearch = <ThrowOnError extends boolean = false>(
+  options: Options<AppstoreSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    AppstoreSearchResponse,
+    AppstoreSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/appstore/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get an app's App Store reviews
+ * Costs 1 credit per call. Pages with cursor.
+ */
+export const appstoreReviews = <ThrowOnError extends boolean = false>(
+  options: Options<AppstoreReviewsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    AppstoreReviewsResponse,
+    AppstoreReviewsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/appstore/reviews",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get App Store top charts
+ * Costs 1 credit per call.
+ */
+export const appstoreTop = <ThrowOnError extends boolean = false>(
+  options: Options<AppstoreTopData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    AppstoreTopResponse,
+    AppstoreTopError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/appstore/top",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get an app's details from Google Play
+ * Costs 1 credit per call.
+ */
+export const googleplayApp = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleplayAppData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GoogleplayAppResponse,
+    GoogleplayAppError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/googleplay/app",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Search Google Play apps
+ * Costs 1 credit per call.
+ */
+export const googleplaySearch = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleplaySearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GoogleplaySearchResponse,
+    GoogleplaySearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/googleplay/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Get an app's Google Play reviews
+ * Costs 1 credit per call. Pages with cursor.
+ */
+export const googleplayReviews = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleplayReviewsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GoogleplayReviewsResponse,
+    GoogleplayReviewsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/googleplay/reviews",
     ...options,
     headers: {
       "Content-Type": "application/json",

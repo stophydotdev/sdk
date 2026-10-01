@@ -20,7 +20,10 @@ export async function typedCalls(): Promise<void> {
 	}
 	const credits: number = result.creditsUsed;
 	if (credits < 0) throw new Error("unreachable");
-	await client.transcript({ video: "https://youtu.be/abc" });
+	const transcript = await client.transcript({ video: "https://youtu.be/abc" });
+	const seconds: number | undefined = transcript.data.transcribedSeconds;
+	if (seconds !== undefined && seconds < 0) throw new Error("unreachable");
+	await client.walmart.search({ query: "tv", sort: "priceLow" });
 	await client.ads.search({ network: "meta", query: "shoes" });
 	await client.ads.search({ network: "google", query: "example.com" });
 	const profile = await client.tiktok.profile({ profile: "bun" });

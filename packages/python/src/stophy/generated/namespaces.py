@@ -14,13 +14,29 @@ from .models import (
     AirbnbListingResponse,
     AirbnbReviewsResponse,
     AirbnbSearchResponse,
+    AppstoreAppResponse,
+    AppstoreReviewsResponse,
+    AppstoreReviewsSort,
+    AppstoreSearchDevice,
+    AppstoreSearchResponse,
+    AppstoreTopChart,
+    AppstoreTopGenre,
+    AppstoreTopResponse,
     EndpointCatalog,
+    GoogleplayAppResponse,
+    GoogleplayReviewsResponse,
+    GoogleplayReviewsSort,
+    GoogleplaySearchResponse,
     GoogletravelFlightsCabin,
     GoogletravelFlightsResponse,
     ImmoscoutListingResponse,
     ImmoscoutSearchResponse,
     ImmoscoutSearchSort,
     ImmoscoutSearchType,
+    IndeedJobResponse,
+    IndeedSearchCountry,
+    IndeedSearchResponse,
+    IndeedSearchWithin,
     InstagramCommentsResponse,
     InstagramPostResponse,
     InstagramProfileResponse,
@@ -64,11 +80,18 @@ from .models import (
     TiktokSearchType,
     TiktokVideoResponse,
     TranscriptResponse,
+    TripadvisorPlaceResponse,
+    TripadvisorReviewsResponse,
+    TripadvisorSearchResponse,
+    TripadvisorSearchType,
     UpworkJobResponse,
     UpworkSearchExperience,
     UpworkSearchJobType,
     UpworkSearchResponse,
     UpworkSearchSort,
+    WalmartProductResponse,
+    WalmartSearchResponse,
+    WalmartSearchSort,
     WebSearchResponse,
     WebSearchWithin,
     YoutubeChannelResponse,
@@ -1007,6 +1030,139 @@ class SyncUpwork:
         self.job = SyncUpworkJob(call)
 
 
+class SyncIndeedSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str | None = None,
+        location: str | None = None,
+        country: IndeedSearchCountry | None = None,
+        remote: bool | None = None,
+        within: IndeedSearchWithin | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> IndeedSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "location": location,
+                "country": country,
+                "remote": remote,
+                "within": within,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/indeed/search", body)
+
+
+class SyncIndeedJob:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        job: str,
+        country: IndeedSearchCountry | None = None,
+    ) -> IndeedJobResponse:
+        body = _omit_none(
+            {
+                "job": job,
+                "country": country,
+            }
+        )
+        return self._call("POST", "/v1/indeed/job", body)
+
+
+class SyncIndeed:
+    search: SyncIndeedSearch
+    job: SyncIndeedJob
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncIndeedSearch(call)
+        self.job = SyncIndeedJob(call)
+
+
+class SyncTripadvisorSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        type: TripadvisorSearchType | None = None,
+        limit: int | None = None,
+    ) -> TripadvisorSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "type": type,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/tripadvisor/search", body)
+
+
+class SyncTripadvisorPlace:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        place: str,
+    ) -> TripadvisorPlaceResponse:
+        body = _omit_none(
+            {
+                "place": place,
+            }
+        )
+        return self._call("POST", "/v1/tripadvisor/place", body)
+
+
+class SyncTripadvisorReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        place: str,
+        language: str | None = None,
+        ratings: list[int] | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> TripadvisorReviewsResponse:
+        body = _omit_none(
+            {
+                "place": place,
+                "language": language,
+                "ratings": ratings,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/tripadvisor/reviews", body)
+
+
+class SyncTripadvisor:
+    search: SyncTripadvisorSearch
+    place: SyncTripadvisorPlace
+    reviews: SyncTripadvisorReviews
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncTripadvisorSearch(call)
+        self.place = SyncTripadvisorPlace(call)
+        self.reviews = SyncTripadvisorReviews(call)
+
+
 class SyncGoogletravelFlights:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -1042,6 +1198,251 @@ class SyncGoogletravel:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
         self.flights = SyncGoogletravelFlights(call)
+
+
+class SyncWalmartSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        sort: WalmartSearchSort | None = None,
+        min_price: float | None = None,
+        max_price: float | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> WalmartSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "sort": sort,
+                "minPrice": min_price,
+                "maxPrice": max_price,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/walmart/search", body)
+
+
+class SyncWalmartProduct:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        product: str,
+    ) -> WalmartProductResponse:
+        body = _omit_none(
+            {
+                "product": product,
+            }
+        )
+        return self._call("POST", "/v1/walmart/product", body)
+
+
+class SyncWalmart:
+    search: SyncWalmartSearch
+    product: SyncWalmartProduct
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncWalmartSearch(call)
+        self.product = SyncWalmartProduct(call)
+
+
+class SyncAppstoreApp:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        app: str,
+        country: str | None = None,
+    ) -> AppstoreAppResponse:
+        body = _omit_none(
+            {
+                "app": app,
+                "country": country,
+            }
+        )
+        return self._call("POST", "/v1/appstore/app", body)
+
+
+class SyncAppstoreSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        country: str | None = None,
+        device: AppstoreSearchDevice | None = None,
+        limit: int | None = None,
+    ) -> AppstoreSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "country": country,
+                "device": device,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/appstore/search", body)
+
+
+class SyncAppstoreReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        app: str,
+        country: str | None = None,
+        sort: AppstoreReviewsSort | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> AppstoreReviewsResponse:
+        body = _omit_none(
+            {
+                "app": app,
+                "country": country,
+                "sort": sort,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/appstore/reviews", body)
+
+
+class SyncAppstoreTop:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        chart: AppstoreTopChart | None = None,
+        device: AppstoreSearchDevice | None = None,
+        genre: AppstoreTopGenre | None = None,
+        country: str | None = None,
+        limit: int | None = None,
+    ) -> AppstoreTopResponse:
+        body = _omit_none(
+            {
+                "chart": chart,
+                "device": device,
+                "genre": genre,
+                "country": country,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/appstore/top", body)
+
+
+class SyncAppstore:
+    app: SyncAppstoreApp
+    search: SyncAppstoreSearch
+    reviews: SyncAppstoreReviews
+    top: SyncAppstoreTop
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.app = SyncAppstoreApp(call)
+        self.search = SyncAppstoreSearch(call)
+        self.reviews = SyncAppstoreReviews(call)
+        self.top = SyncAppstoreTop(call)
+
+
+class SyncGoogleplayApp:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        app: str,
+        country: str | None = None,
+        language: str | None = None,
+    ) -> GoogleplayAppResponse:
+        body = _omit_none(
+            {
+                "app": app,
+                "country": country,
+                "language": language,
+            }
+        )
+        return self._call("POST", "/v1/googleplay/app", body)
+
+
+class SyncGoogleplaySearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        country: str | None = None,
+        language: str | None = None,
+        limit: int | None = None,
+    ) -> GoogleplaySearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "country": country,
+                "language": language,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/googleplay/search", body)
+
+
+class SyncGoogleplayReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        app: str,
+        country: str | None = None,
+        language: str | None = None,
+        sort: GoogleplayReviewsSort | None = None,
+        rating: int | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> GoogleplayReviewsResponse:
+        body = _omit_none(
+            {
+                "app": app,
+                "country": country,
+                "language": language,
+                "sort": sort,
+                "rating": rating,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/googleplay/reviews", body)
+
+
+class SyncGoogleplay:
+    app: SyncGoogleplayApp
+    search: SyncGoogleplaySearch
+    reviews: SyncGoogleplayReviews
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.app = SyncGoogleplayApp(call)
+        self.search = SyncGoogleplaySearch(call)
+        self.reviews = SyncGoogleplayReviews(call)
 
 
 class SyncAirbnbSearch:
@@ -1610,7 +2011,12 @@ class SyncSurface:
     linkedin: SyncLinkedin
     zillow: SyncZillow
     upwork: SyncUpwork
+    indeed: SyncIndeed
+    tripadvisor: SyncTripadvisor
     googletravel: SyncGoogletravel
+    walmart: SyncWalmart
+    appstore: SyncAppstore
+    googleplay: SyncGoogleplay
     airbnb: SyncAirbnb
     rightmove: SyncRightmove
     immoscout: SyncImmoscout
@@ -1630,7 +2036,12 @@ class SyncSurface:
         self.linkedin = SyncLinkedin(call)
         self.zillow = SyncZillow(call)
         self.upwork = SyncUpwork(call)
+        self.indeed = SyncIndeed(call)
+        self.tripadvisor = SyncTripadvisor(call)
         self.googletravel = SyncGoogletravel(call)
+        self.walmart = SyncWalmart(call)
+        self.appstore = SyncAppstore(call)
+        self.googleplay = SyncGoogleplay(call)
         self.airbnb = SyncAirbnb(call)
         self.rightmove = SyncRightmove(call)
         self.immoscout = SyncImmoscout(call)
@@ -2534,6 +2945,139 @@ class AsyncUpwork:
         self.job = AsyncUpworkJob(call)
 
 
+class AsyncIndeedSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str | None = None,
+        location: str | None = None,
+        country: IndeedSearchCountry | None = None,
+        remote: bool | None = None,
+        within: IndeedSearchWithin | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> IndeedSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "location": location,
+                "country": country,
+                "remote": remote,
+                "within": within,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/indeed/search", body)
+
+
+class AsyncIndeedJob:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        job: str,
+        country: IndeedSearchCountry | None = None,
+    ) -> IndeedJobResponse:
+        body = _omit_none(
+            {
+                "job": job,
+                "country": country,
+            }
+        )
+        return await self._call("POST", "/v1/indeed/job", body)
+
+
+class AsyncIndeed:
+    search: AsyncIndeedSearch
+    job: AsyncIndeedJob
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncIndeedSearch(call)
+        self.job = AsyncIndeedJob(call)
+
+
+class AsyncTripadvisorSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        type: TripadvisorSearchType | None = None,
+        limit: int | None = None,
+    ) -> TripadvisorSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "type": type,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/tripadvisor/search", body)
+
+
+class AsyncTripadvisorPlace:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        place: str,
+    ) -> TripadvisorPlaceResponse:
+        body = _omit_none(
+            {
+                "place": place,
+            }
+        )
+        return await self._call("POST", "/v1/tripadvisor/place", body)
+
+
+class AsyncTripadvisorReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        place: str,
+        language: str | None = None,
+        ratings: list[int] | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> TripadvisorReviewsResponse:
+        body = _omit_none(
+            {
+                "place": place,
+                "language": language,
+                "ratings": ratings,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/tripadvisor/reviews", body)
+
+
+class AsyncTripadvisor:
+    search: AsyncTripadvisorSearch
+    place: AsyncTripadvisorPlace
+    reviews: AsyncTripadvisorReviews
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncTripadvisorSearch(call)
+        self.place = AsyncTripadvisorPlace(call)
+        self.reviews = AsyncTripadvisorReviews(call)
+
+
 class AsyncGoogletravelFlights:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -2569,6 +3113,251 @@ class AsyncGoogletravel:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
         self.flights = AsyncGoogletravelFlights(call)
+
+
+class AsyncWalmartSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        sort: WalmartSearchSort | None = None,
+        min_price: float | None = None,
+        max_price: float | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> WalmartSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "sort": sort,
+                "minPrice": min_price,
+                "maxPrice": max_price,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/walmart/search", body)
+
+
+class AsyncWalmartProduct:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        product: str,
+    ) -> WalmartProductResponse:
+        body = _omit_none(
+            {
+                "product": product,
+            }
+        )
+        return await self._call("POST", "/v1/walmart/product", body)
+
+
+class AsyncWalmart:
+    search: AsyncWalmartSearch
+    product: AsyncWalmartProduct
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncWalmartSearch(call)
+        self.product = AsyncWalmartProduct(call)
+
+
+class AsyncAppstoreApp:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        app: str,
+        country: str | None = None,
+    ) -> AppstoreAppResponse:
+        body = _omit_none(
+            {
+                "app": app,
+                "country": country,
+            }
+        )
+        return await self._call("POST", "/v1/appstore/app", body)
+
+
+class AsyncAppstoreSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        country: str | None = None,
+        device: AppstoreSearchDevice | None = None,
+        limit: int | None = None,
+    ) -> AppstoreSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "country": country,
+                "device": device,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/appstore/search", body)
+
+
+class AsyncAppstoreReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        app: str,
+        country: str | None = None,
+        sort: AppstoreReviewsSort | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> AppstoreReviewsResponse:
+        body = _omit_none(
+            {
+                "app": app,
+                "country": country,
+                "sort": sort,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/appstore/reviews", body)
+
+
+class AsyncAppstoreTop:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        chart: AppstoreTopChart | None = None,
+        device: AppstoreSearchDevice | None = None,
+        genre: AppstoreTopGenre | None = None,
+        country: str | None = None,
+        limit: int | None = None,
+    ) -> AppstoreTopResponse:
+        body = _omit_none(
+            {
+                "chart": chart,
+                "device": device,
+                "genre": genre,
+                "country": country,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/appstore/top", body)
+
+
+class AsyncAppstore:
+    app: AsyncAppstoreApp
+    search: AsyncAppstoreSearch
+    reviews: AsyncAppstoreReviews
+    top: AsyncAppstoreTop
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.app = AsyncAppstoreApp(call)
+        self.search = AsyncAppstoreSearch(call)
+        self.reviews = AsyncAppstoreReviews(call)
+        self.top = AsyncAppstoreTop(call)
+
+
+class AsyncGoogleplayApp:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        app: str,
+        country: str | None = None,
+        language: str | None = None,
+    ) -> GoogleplayAppResponse:
+        body = _omit_none(
+            {
+                "app": app,
+                "country": country,
+                "language": language,
+            }
+        )
+        return await self._call("POST", "/v1/googleplay/app", body)
+
+
+class AsyncGoogleplaySearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        country: str | None = None,
+        language: str | None = None,
+        limit: int | None = None,
+    ) -> GoogleplaySearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "country": country,
+                "language": language,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/googleplay/search", body)
+
+
+class AsyncGoogleplayReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        app: str,
+        country: str | None = None,
+        language: str | None = None,
+        sort: GoogleplayReviewsSort | None = None,
+        rating: int | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> GoogleplayReviewsResponse:
+        body = _omit_none(
+            {
+                "app": app,
+                "country": country,
+                "language": language,
+                "sort": sort,
+                "rating": rating,
+                "cursor": cursor,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/googleplay/reviews", body)
+
+
+class AsyncGoogleplay:
+    app: AsyncGoogleplayApp
+    search: AsyncGoogleplaySearch
+    reviews: AsyncGoogleplayReviews
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.app = AsyncGoogleplayApp(call)
+        self.search = AsyncGoogleplaySearch(call)
+        self.reviews = AsyncGoogleplayReviews(call)
 
 
 class AsyncAirbnbSearch:
@@ -3137,7 +3926,12 @@ class AsyncSurface:
     linkedin: AsyncLinkedin
     zillow: AsyncZillow
     upwork: AsyncUpwork
+    indeed: AsyncIndeed
+    tripadvisor: AsyncTripadvisor
     googletravel: AsyncGoogletravel
+    walmart: AsyncWalmart
+    appstore: AsyncAppstore
+    googleplay: AsyncGoogleplay
     airbnb: AsyncAirbnb
     rightmove: AsyncRightmove
     immoscout: AsyncImmoscout
@@ -3157,7 +3951,12 @@ class AsyncSurface:
         self.linkedin = AsyncLinkedin(call)
         self.zillow = AsyncZillow(call)
         self.upwork = AsyncUpwork(call)
+        self.indeed = AsyncIndeed(call)
+        self.tripadvisor = AsyncTripadvisor(call)
         self.googletravel = AsyncGoogletravel(call)
+        self.walmart = AsyncWalmart(call)
+        self.appstore = AsyncAppstore(call)
+        self.googleplay = AsyncGoogleplay(call)
         self.airbnb = AsyncAirbnb(call)
         self.rightmove = AsyncRightmove(call)
         self.immoscout = AsyncImmoscout(call)
