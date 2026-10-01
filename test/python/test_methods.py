@@ -39,32 +39,25 @@ def test_single_segment_operations_and_keyword_argument():
         "includeTimestamps": True,
     }
 
-    client.suggest(source="google", query="bun")
-    assert calls[1].url.path == "/v1/suggest"
-    assert body_of(calls[1]) == {"source": "google", "query": "bun"}
-
-    client.finance.history(symbol="AAPL", from_="2026-01-01")
-    assert body_of(calls[2])["from"] == "2026-01-01"
-
 
 def test_joined_operations_send_the_discriminator():
     client, calls = make_client({"json": ENVELOPE})
     client.ads.search(network="meta", query="shoes")
-    client.google.trends(by="time", queries=["bun"])
+    client.ads.search(network="google", query="example.com")
     assert calls[0].url.path == "/v1/ads/search"
     assert body_of(calls[0]) == {"network": "meta", "query": "shoes"}
-    assert calls[1].url.path == "/v1/google/trends"
-    assert body_of(calls[1]) == {"by": "time", "queries": ["bun"]}
+    assert calls[1].url.path == "/v1/ads/search"
+    assert body_of(calls[1]) == {"network": "google", "query": "example.com"}
 
 
 def test_empty_optional_body_and_endpoint_catalog():
     client, calls = make_client(
         [{"json": ENVELOPE}, {"json": {"endpoints": []}}],
     )
-    client.crypto.coins()
+    client.upwork.search()
     catalog = client.endpoints()
     assert body_of(calls[0]) == {}
-    assert calls[0].url.path == "/v1/crypto/coins"
+    assert calls[0].url.path == "/v1/upwork/search"
     assert catalog["endpoints"] == []
     assert calls[1].method == "GET"
 
@@ -112,7 +105,8 @@ def test_usage_and_logs():
 def test_every_spec_operation_is_callable():
     spec = json.loads(Path("openapi.json").read_text())
     client, _calls = make_client({"json": ENVELOPE})
-    assert len(spec["paths"]) > 90
+    assert "/v1/web/search" in spec["paths"]
+    assert "/v1/amazon/product" not in spec["paths"]
     for path in spec["paths"]:
         node = client
         for part in [item for item in path.split("/") if item and item != "v1"]:

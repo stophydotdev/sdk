@@ -1,6 +1,6 @@
 # Stophy for Python
 
-Live data from 40+ sites for AI agents in Python: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto. Every method and result is typed.
+The web data layer for AI agents, in Python. Live web data as typed JSON. Search, video, social, jobs, places, property and ads behind one key, with a flat price per call. You pay only for answers that come back. Every method and result is typed.
 
 ## Install
 
@@ -17,7 +17,7 @@ result = Stophy().web.search(query="bun runtime")
 print(result["data"]["results"])
 ```
 
-Web search, YouTube search, and transcripts work without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
+Web search works without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 
@@ -30,17 +30,17 @@ videos = stophy.youtube.search(query="bun runtime", limit=5)
 print(videos["data"]["results"])
 ```
 
-Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.ads.search(network="meta", ...)`. Endpoints with a single name are methods on the client: `stophy.transcript(...)`, `stophy.suggest(...)`.
+Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.ads.search(network="meta", ...)`. Endpoints with a single name are methods on the client, like `stophy.transcript(...)`.
 
 Every response is a dict with `success`, `data`, `creditsUsed`, and `requestId`. `data` is one flat dict. Lists are in `data["results"]`.
 
-Arguments are keyword-only and snake_case. A field named `from` is passed as `from_`.
+Arguments are keyword-only and snake_case.
 
 For async code, use `AsyncStophy`. It has the same methods, and you `await` each call.
 
-## More sources
+## More data
 
-A transcript, Reddit posts, Google Maps reviews, an Amazon product and Meta ads:
+A transcript, Reddit posts, Google Maps reviews, a TikTok profile and Meta ads:
 
 ```python
 stophy = Stophy(api_key="st_...")
@@ -57,14 +57,14 @@ if place_id:
     reviews = stophy.maps.reviews(place=place_id, limit=20)
     print(reviews["data"]["results"])
 
-product = stophy.amazon.product(product="B08N5WRWNW", country="us")
-print(product["data"].get("title"), product["data"].get("price"))
+profile = stophy.tiktok.profile(profile="tiktok", limit=5)
+print(profile["data"].get("followers"), profile["data"].get("results"))
 
 ads = stophy.ads.search(network="meta", query="running shoes")
 print(ads["data"]["results"])
 ```
 
-Some endpoints cover several sources. Pick one with a keyword: `network` for `ads.*`, `source` for `suggest`, `by` for `google.trends`. The type checker follows the choice.
+`ads.search` covers several ad networks. Pick one with `network`. The type checker follows the choice.
 
 ## Get the next page
 

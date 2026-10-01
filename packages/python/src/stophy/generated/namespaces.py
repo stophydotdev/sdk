@@ -14,66 +14,16 @@ from .models import (
     AirbnbListingResponse,
     AirbnbReviewsResponse,
     AirbnbSearchResponse,
-    AliexpressProductResponse,
-    AliexpressSearchResponse,
-    AliexpressSearchSort,
-    AmazonBestsellersResponse,
-    AmazonProductResponse,
-    AmazonSearchCountry,
-    AmazonSearchResponse,
-    AmazonSearchSort,
-    AppstoreAppResponse,
-    AppstoreReviewsResponse,
-    AppstoreReviewsSort,
-    AppstoreSearchDevice,
-    AppstoreSearchResponse,
-    AppstoreTopChart,
-    AppstoreTopGenre,
-    AppstoreTopResponse,
-    BlueskyFollowersResponse,
-    BlueskyPostResponse,
-    BlueskyProfileResponse,
-    CryptoCoinResponse,
-    CryptoCoinsResponse,
-    CryptoCoinsSort,
-    CryptoDexSearchResponse,
-    CryptoDexTokenResponse,
-    CryptoHistoryResponse,
-    CryptoWalletChain,
-    CryptoWalletResponse,
-    EmailFindResponse,
-    EmailVerifyResponse,
     EndpointCatalog,
-    FinanceHistoryInterval,
-    FinanceHistoryResponse,
-    FinanceQuoteResponse,
-    FinanceSearchResponse,
-    FinanceStockResponse,
-    GoogleplayAppResponse,
-    GoogleplayReviewsResponse,
-    GoogleplayReviewsSort,
-    GoogleplaySearchResponse,
     GoogletravelFlightsCabin,
     GoogletravelFlightsResponse,
-    GoogleTrendsOption1Resolution,
-    GoogleTrendsRelatedResponse,
-    GoogleTrendsResponse,
-    GoogleTrendsTrendingCategory,
-    GoogleTrendsTrendingResponse,
-    GoogleTrendsTrendingWithin,
     ImmoscoutListingResponse,
     ImmoscoutSearchResponse,
     ImmoscoutSearchSort,
     ImmoscoutSearchType,
-    IndeedJobResponse,
-    IndeedSearchCountry,
-    IndeedSearchResponse,
-    IndeedSearchWithin,
     InstagramCommentsResponse,
     InstagramPostResponse,
     InstagramProfileResponse,
-    InstagramSearchResponse,
-    InstagramSearchType,
     LinkedinCompanyResponse,
     LinkedinJobsJobResponse,
     LinkedinJobsSearchResponse,
@@ -84,6 +34,7 @@ from .models import (
     MapsReviewsResponse,
     MapsReviewsSort,
     MapsSearchResponse,
+    MetaAdsPageMediaType,
     MetaAdsPageResponse,
     MetaAdsPageStatus,
     PinterestBoardResponse,
@@ -106,17 +57,6 @@ from .models import (
     RightmoveSearchResponse,
     RightmoveSearchSort,
     RightmoveSearchStatus,
-    ShopifyCollectionsResponse,
-    ShopifyProductsResponse,
-    ShopifyStoreResponse,
-    SiteSeoResponse,
-    SuggestOption2Country,
-    SuggestResponse,
-    TelegramPostResponse,
-    TelegramPostsResponse,
-    ThreadsPostResponse,
-    ThreadsProfileResponse,
-    ThreadsSearchResponse,
     TiktokCommentsResponse,
     TiktokHashtagResponse,
     TiktokProfileResponse,
@@ -124,24 +64,13 @@ from .models import (
     TiktokSearchType,
     TiktokVideoResponse,
     TranscriptResponse,
-    TripadvisorPlaceResponse,
-    TripadvisorReviewsResponse,
-    TripadvisorSearchResponse,
-    TripadvisorSearchType,
     UpworkJobResponse,
     UpworkSearchExperience,
     UpworkSearchJobType,
     UpworkSearchResponse,
     UpworkSearchSort,
-    WalmartProductResponse,
-    WalmartSearchResponse,
-    WalmartSearchSort,
-    WebNewsResponse,
-    WebNewsTopic,
-    WebNewsWithin,
     WebSearchResponse,
     WebSearchWithin,
-    XPostResponse,
     YoutubeChannelResponse,
     YoutubeChannelTab,
     YoutubeCommentsResponse,
@@ -150,6 +79,7 @@ from .models import (
     YoutubeSearchResponse,
     YoutubeSearchSort,
     YoutubeSearchType,
+    YoutubeSearchWithin,
     YoutubeVideoResponse,
     ZillowPropertyResponse,
     ZillowSearchHomeTypesItem,
@@ -221,45 +151,12 @@ class SyncWebSearch:
         return self._call("POST", "/v1/web/search", body)
 
 
-class SyncWebNews:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str | None = None,
-        topic: WebNewsTopic | None = None,
-        country: str | None = None,
-        language: str | None = None,
-        include_domains: list[str] | None = None,
-        exclude_domains: list[str] | None = None,
-        within: WebNewsWithin | None = None,
-        limit: int | None = None,
-    ) -> WebNewsResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "topic": topic,
-                "country": country,
-                "language": language,
-                "includeDomains": include_domains,
-                "excludeDomains": exclude_domains,
-                "within": within,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/web/news", body)
-
-
 class SyncWeb:
     search: SyncWebSearch
-    news: SyncWebNews
 
     def __init__(self, call: SyncCall) -> None:
         self._call = call
         self.search = SyncWebSearch(call)
-        self.news = SyncWebNews(call)
 
 
 class SyncYoutubeSearch:
@@ -271,7 +168,7 @@ class SyncYoutubeSearch:
         *,
         query: str,
         type: YoutubeSearchType | None = None,
-        within: WebNewsWithin | None = None,
+        within: YoutubeSearchWithin | None = None,
         sort: YoutubeSearchSort | None = None,
         cursor: str | None = None,
         limit: int | None = None,
@@ -423,7 +320,7 @@ class SyncRedditSearch:
         type: RedditSearchType | None = None,
         subreddit: str | None = None,
         sort: RedditSearchSort | None = None,
-        within: WebNewsWithin | None = None,
+        within: YoutubeSearchWithin | None = None,
         cursor: str | None = None,
         limit: int | None = None,
     ) -> RedditSearchResponse:
@@ -469,7 +366,7 @@ class SyncRedditSubreddit:
         *,
         subreddit: str,
         sort: RedditSubredditSort | None = None,
-        within: WebNewsWithin | None = None,
+        within: YoutubeSearchWithin | None = None,
         cursor: str | None = None,
         limit: int | None = None,
     ) -> RedditSubredditResponse:
@@ -643,11 +540,13 @@ class SyncInstagramProfile:
         *,
         profile: str,
         cursor: str | None = None,
+        limit: int | None = None,
     ) -> InstagramProfileResponse:
         body = _omit_none(
             {
                 "profile": profile,
                 "cursor": cursor,
+                "limit": limit,
             }
         )
         return self._call("POST", "/v1/instagram/profile", body)
@@ -668,29 +567,6 @@ class SyncInstagramPost:
             }
         )
         return self._call("POST", "/v1/instagram/post", body)
-
-
-class SyncInstagramSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        type: InstagramSearchType | None = None,
-        within: WebNewsWithin | None = None,
-        limit: int | None = None,
-    ) -> InstagramSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "type": type,
-                "within": within,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/instagram/search", body)
 
 
 class SyncInstagramComments:
@@ -719,14 +595,12 @@ class SyncInstagramComments:
 class SyncInstagram:
     profile: SyncInstagramProfile
     post: SyncInstagramPost
-    search: SyncInstagramSearch
     comments: SyncInstagramComments
 
     def __init__(self, call: SyncCall) -> None:
         self._call = call
         self.profile = SyncInstagramProfile(call)
         self.post = SyncInstagramPost(call)
-        self.search = SyncInstagramSearch(call)
         self.comments = SyncInstagramComments(call)
 
 
@@ -739,11 +613,13 @@ class SyncTiktokProfile:
         *,
         profile: str,
         cursor: str | None = None,
+        limit: int | None = None,
     ) -> TiktokProfileResponse:
         body = _omit_none(
             {
                 "profile": profile,
                 "cursor": cursor,
+                "limit": limit,
             }
         )
         return self._call("POST", "/v1/tiktok/profile", body)
@@ -849,192 +725,6 @@ class SyncTiktok:
         self.search = SyncTiktokSearch(call)
 
 
-class SyncBlueskyProfile:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        profile: str,
-        cursor: str | None = None,
-    ) -> BlueskyProfileResponse:
-        body = _omit_none(
-            {
-                "profile": profile,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/bluesky/profile", body)
-
-
-class SyncBlueskyPost:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        post: str,
-    ) -> BlueskyPostResponse:
-        body = _omit_none(
-            {
-                "post": post,
-            }
-        )
-        return self._call("POST", "/v1/bluesky/post", body)
-
-
-class SyncBlueskyFollowers:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        profile: str,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> BlueskyFollowersResponse:
-        body = _omit_none(
-            {
-                "profile": profile,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/bluesky/followers", body)
-
-
-class SyncBluesky:
-    profile: SyncBlueskyProfile
-    post: SyncBlueskyPost
-    followers: SyncBlueskyFollowers
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.profile = SyncBlueskyProfile(call)
-        self.post = SyncBlueskyPost(call)
-        self.followers = SyncBlueskyFollowers(call)
-
-
-class SyncThreadsProfile:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        profile: str,
-        cursor: str | None = None,
-    ) -> ThreadsProfileResponse:
-        body = _omit_none(
-            {
-                "profile": profile,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/threads/profile", body)
-
-
-class SyncThreadsPost:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        post: str,
-        cursor: str | None = None,
-    ) -> ThreadsPostResponse:
-        body = _omit_none(
-            {
-                "post": post,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/threads/post", body)
-
-
-class SyncThreadsSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        limit: int | None = None,
-    ) -> ThreadsSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/threads/search", body)
-
-
-class SyncThreads:
-    profile: SyncThreadsProfile
-    post: SyncThreadsPost
-    search: SyncThreadsSearch
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.profile = SyncThreadsProfile(call)
-        self.post = SyncThreadsPost(call)
-        self.search = SyncThreadsSearch(call)
-
-
-class SyncTelegramPosts:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        channel: str,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> TelegramPostsResponse:
-        body = _omit_none(
-            {
-                "channel": channel,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/telegram/posts", body)
-
-
-class SyncTelegramPost:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        post: str,
-    ) -> TelegramPostResponse:
-        body = _omit_none(
-            {
-                "post": post,
-            }
-        )
-        return self._call("POST", "/v1/telegram/post", body)
-
-
-class SyncTelegram:
-    posts: SyncTelegramPosts
-    post: SyncTelegramPost
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.posts = SyncTelegramPosts(call)
-        self.post = SyncTelegramPost(call)
-
-
 class SyncMetaAdsPage:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -1045,6 +735,7 @@ class SyncMetaAdsPage:
         page: str,
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
+        media_type: MetaAdsPageMediaType | None = None,
         cursor: str | None = None,
         limit: int | None = None,
     ) -> MetaAdsPageResponse:
@@ -1053,6 +744,7 @@ class SyncMetaAdsPage:
                 "page": page,
                 "country": country,
                 "status": status,
+                "mediaType": media_type,
                 "cursor": cursor,
                 "limit": limit,
             }
@@ -1315,479 +1007,6 @@ class SyncUpwork:
         self.job = SyncUpworkJob(call)
 
 
-class SyncGoogleTrendsRelated:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        within: WebNewsWithin | None = None,
-        limit: int | None = None,
-    ) -> GoogleTrendsRelatedResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "within": within,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/google/trends/related", body)
-
-
-class SyncGoogleTrendsTrending:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        country: str | None = None,
-        within: GoogleTrendsTrendingWithin | None = None,
-        category: GoogleTrendsTrendingCategory | None = None,
-        limit: int | None = None,
-    ) -> GoogleTrendsTrendingResponse:
-        body = _omit_none(
-            {
-                "country": country,
-                "within": within,
-                "category": category,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/google/trends/trending", body)
-
-
-class SyncGoogleTrends:
-    related: SyncGoogleTrendsRelated
-    trending: SyncGoogleTrendsTrending
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.related = SyncGoogleTrendsRelated(call)
-        self.trending = SyncGoogleTrendsTrending(call)
-
-    @overload
-    def __call__(
-        self,
-        *,
-        queries: list[str],
-        country: str | None = None,
-        within: WebNewsWithin | None = None,
-        by: Literal["time"],
-        limit: int | None = None,
-    ) -> GoogleTrendsResponse: ...
-    @overload
-    def __call__(
-        self,
-        *,
-        queries: list[str],
-        country: str | None = None,
-        within: WebNewsWithin | None = None,
-        resolution: GoogleTrendsOption1Resolution | None = None,
-        by: Literal["region"],
-        limit: int | None = None,
-    ) -> GoogleTrendsResponse: ...
-    def __call__(
-        self,
-        *,
-        queries: list[str] | None = None,
-        country: str | None = None,
-        within: WebNewsWithin | None = None,
-        by: Literal["time"] | Literal["region"] | None = None,
-        limit: int | None = None,
-        resolution: GoogleTrendsOption1Resolution | None = None,
-    ) -> GoogleTrendsResponse:
-        body = _omit_none(
-            {
-                "queries": queries,
-                "country": country,
-                "within": within,
-                "by": by,
-                "limit": limit,
-                "resolution": resolution,
-            }
-        )
-        return self._call("POST", "/v1/google/trends", body)
-
-
-class SyncGoogle:
-    trends: SyncGoogleTrends
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.trends = SyncGoogleTrends(call)
-
-
-class SyncSiteSeo:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        url: str,
-    ) -> SiteSeoResponse:
-        body = _omit_none(
-            {
-                "url": url,
-            }
-        )
-        return self._call("POST", "/v1/site/seo", body)
-
-
-class SyncSite:
-    seo: SyncSiteSeo
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.seo = SyncSiteSeo(call)
-
-
-class SyncEmailVerify:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        email: str,
-    ) -> EmailVerifyResponse:
-        body = _omit_none(
-            {
-                "email": email,
-            }
-        )
-        return self._call("POST", "/v1/email/verify", body)
-
-
-class SyncEmailFind:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        domain: str,
-        name: str | None = None,
-        first_name: str | None = None,
-        last_name: str | None = None,
-    ) -> EmailFindResponse:
-        body = _omit_none(
-            {
-                "domain": domain,
-                "name": name,
-                "firstName": first_name,
-                "lastName": last_name,
-            }
-        )
-        return self._call("POST", "/v1/email/find", body)
-
-
-class SyncEmail:
-    verify: SyncEmailVerify
-    find: SyncEmailFind
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.verify = SyncEmailVerify(call)
-        self.find = SyncEmailFind(call)
-
-
-class SyncCryptoCoins:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        currency: str | None = None,
-        category: str | None = None,
-        coins: list[str] | None = None,
-        sort: CryptoCoinsSort | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> CryptoCoinsResponse:
-        body = _omit_none(
-            {
-                "currency": currency,
-                "category": category,
-                "coins": coins,
-                "sort": sort,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/crypto/coins", body)
-
-
-class SyncCryptoCoin:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        coin: str,
-        platform: str | None = None,
-        currency: str | None = None,
-    ) -> CryptoCoinResponse:
-        body = _omit_none(
-            {
-                "coin": coin,
-                "platform": platform,
-                "currency": currency,
-            }
-        )
-        return self._call("POST", "/v1/crypto/coin", body)
-
-
-class SyncCryptoHistory:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        coin: str,
-        currency: str | None = None,
-        from_: str | None = None,
-        to: str | None = None,
-        limit: int | None = None,
-    ) -> CryptoHistoryResponse:
-        body = _omit_none(
-            {
-                "coin": coin,
-                "currency": currency,
-                "from": from_,
-                "to": to,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/crypto/history", body)
-
-
-class SyncCryptoDexSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        limit: int | None = None,
-    ) -> CryptoDexSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/crypto/dex/search", body)
-
-
-class SyncCryptoDexToken:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        chain: str | None = None,
-        token: str,
-    ) -> CryptoDexTokenResponse:
-        body = _omit_none(
-            {
-                "chain": chain,
-                "token": token,
-            }
-        )
-        return self._call("POST", "/v1/crypto/dex/token", body)
-
-
-class SyncCryptoDex:
-    search: SyncCryptoDexSearch
-    token: SyncCryptoDexToken
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.search = SyncCryptoDexSearch(call)
-        self.token = SyncCryptoDexToken(call)
-
-
-class SyncCryptoWallet:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        chain: CryptoWalletChain,
-        wallet: str,
-        cursor: str | None = None,
-    ) -> CryptoWalletResponse:
-        body = _omit_none(
-            {
-                "chain": chain,
-                "wallet": wallet,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/crypto/wallet", body)
-
-
-class SyncCrypto:
-    coins: SyncCryptoCoins
-    coin: SyncCryptoCoin
-    history: SyncCryptoHistory
-    dex: SyncCryptoDex
-    wallet: SyncCryptoWallet
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.coins = SyncCryptoCoins(call)
-        self.coin = SyncCryptoCoin(call)
-        self.history = SyncCryptoHistory(call)
-        self.dex = SyncCryptoDex(call)
-        self.wallet = SyncCryptoWallet(call)
-
-
-class SyncIndeedSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str | None = None,
-        location: str | None = None,
-        country: IndeedSearchCountry | None = None,
-        remote: bool | None = None,
-        within: IndeedSearchWithin | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> IndeedSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "location": location,
-                "country": country,
-                "remote": remote,
-                "within": within,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/indeed/search", body)
-
-
-class SyncIndeedJob:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        job: str,
-        country: IndeedSearchCountry | None = None,
-    ) -> IndeedJobResponse:
-        body = _omit_none(
-            {
-                "job": job,
-                "country": country,
-            }
-        )
-        return self._call("POST", "/v1/indeed/job", body)
-
-
-class SyncIndeed:
-    search: SyncIndeedSearch
-    job: SyncIndeedJob
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.search = SyncIndeedSearch(call)
-        self.job = SyncIndeedJob(call)
-
-
-class SyncTripadvisorSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        type: TripadvisorSearchType | None = None,
-        limit: int | None = None,
-    ) -> TripadvisorSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "type": type,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/tripadvisor/search", body)
-
-
-class SyncTripadvisorPlace:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        place: str,
-    ) -> TripadvisorPlaceResponse:
-        body = _omit_none(
-            {
-                "place": place,
-            }
-        )
-        return self._call("POST", "/v1/tripadvisor/place", body)
-
-
-class SyncTripadvisorReviews:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        place: str,
-        language: str | None = None,
-        ratings: list[int] | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> TripadvisorReviewsResponse:
-        body = _omit_none(
-            {
-                "place": place,
-                "language": language,
-                "ratings": ratings,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/tripadvisor/reviews", body)
-
-
-class SyncTripadvisor:
-    search: SyncTripadvisorSearch
-    place: SyncTripadvisorPlace
-    reviews: SyncTripadvisorReviews
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.search = SyncTripadvisorSearch(call)
-        self.place = SyncTripadvisorPlace(call)
-        self.reviews = SyncTripadvisorReviews(call)
-
-
 class SyncGoogletravelFlights:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -1823,463 +1042,6 @@ class SyncGoogletravel:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
         self.flights = SyncGoogletravelFlights(call)
-
-
-class SyncAmazonSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str | None = None,
-        category: str | None = None,
-        min_price: float | None = None,
-        max_price: float | None = None,
-        sort: AmazonSearchSort | None = None,
-        country: AmazonSearchCountry | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> AmazonSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "category": category,
-                "minPrice": min_price,
-                "maxPrice": max_price,
-                "sort": sort,
-                "country": country,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/amazon/search", body)
-
-
-class SyncAmazonProduct:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        product: str,
-        country: AmazonSearchCountry | None = None,
-    ) -> AmazonProductResponse:
-        body = _omit_none(
-            {
-                "product": product,
-                "country": country,
-            }
-        )
-        return self._call("POST", "/v1/amazon/product", body)
-
-
-class SyncAmazonBestsellers:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        category: str,
-        country: AmazonSearchCountry | None = None,
-        cursor: Literal["2"] | None = None,
-        limit: int | None = None,
-    ) -> AmazonBestsellersResponse:
-        body = _omit_none(
-            {
-                "category": category,
-                "country": country,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/amazon/bestsellers", body)
-
-
-class SyncAmazon:
-    search: SyncAmazonSearch
-    product: SyncAmazonProduct
-    bestsellers: SyncAmazonBestsellers
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.search = SyncAmazonSearch(call)
-        self.product = SyncAmazonProduct(call)
-        self.bestsellers = SyncAmazonBestsellers(call)
-
-
-class SyncShopifyProducts:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        store: str,
-        collection: str | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> ShopifyProductsResponse:
-        body = _omit_none(
-            {
-                "store": store,
-                "collection": collection,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/shopify/products", body)
-
-
-class SyncShopifyCollections:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        store: str,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> ShopifyCollectionsResponse:
-        body = _omit_none(
-            {
-                "store": store,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/shopify/collections", body)
-
-
-class SyncShopifyStore:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        store: str,
-    ) -> ShopifyStoreResponse:
-        body = _omit_none(
-            {
-                "store": store,
-            }
-        )
-        return self._call("POST", "/v1/shopify/store", body)
-
-
-class SyncShopify:
-    products: SyncShopifyProducts
-    collections: SyncShopifyCollections
-    store: SyncShopifyStore
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.products = SyncShopifyProducts(call)
-        self.collections = SyncShopifyCollections(call)
-        self.store = SyncShopifyStore(call)
-
-
-class SyncWalmartSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        sort: WalmartSearchSort | None = None,
-        min_price: float | None = None,
-        max_price: float | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> WalmartSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "sort": sort,
-                "minPrice": min_price,
-                "maxPrice": max_price,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/walmart/search", body)
-
-
-class SyncWalmartProduct:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        product: str,
-    ) -> WalmartProductResponse:
-        body = _omit_none(
-            {
-                "product": product,
-            }
-        )
-        return self._call("POST", "/v1/walmart/product", body)
-
-
-class SyncWalmart:
-    search: SyncWalmartSearch
-    product: SyncWalmartProduct
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.search = SyncWalmartSearch(call)
-        self.product = SyncWalmartProduct(call)
-
-
-class SyncAliexpressSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        sort: AliexpressSearchSort | None = None,
-        min_price: float | None = None,
-        max_price: float | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> AliexpressSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "sort": sort,
-                "minPrice": min_price,
-                "maxPrice": max_price,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/aliexpress/search", body)
-
-
-class SyncAliexpressProduct:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        product: str,
-    ) -> AliexpressProductResponse:
-        body = _omit_none(
-            {
-                "product": product,
-            }
-        )
-        return self._call("POST", "/v1/aliexpress/product", body)
-
-
-class SyncAliexpress:
-    search: SyncAliexpressSearch
-    product: SyncAliexpressProduct
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.search = SyncAliexpressSearch(call)
-        self.product = SyncAliexpressProduct(call)
-
-
-class SyncAppstoreApp:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        app: str,
-        country: str | None = None,
-    ) -> AppstoreAppResponse:
-        body = _omit_none(
-            {
-                "app": app,
-                "country": country,
-            }
-        )
-        return self._call("POST", "/v1/appstore/app", body)
-
-
-class SyncAppstoreSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        device: AppstoreSearchDevice | None = None,
-        limit: int | None = None,
-    ) -> AppstoreSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "device": device,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/appstore/search", body)
-
-
-class SyncAppstoreReviews:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        app: str,
-        country: str | None = None,
-        sort: AppstoreReviewsSort | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> AppstoreReviewsResponse:
-        body = _omit_none(
-            {
-                "app": app,
-                "country": country,
-                "sort": sort,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/appstore/reviews", body)
-
-
-class SyncAppstoreTop:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        chart: AppstoreTopChart | None = None,
-        device: AppstoreSearchDevice | None = None,
-        genre: AppstoreTopGenre | None = None,
-        country: str | None = None,
-        limit: int | None = None,
-    ) -> AppstoreTopResponse:
-        body = _omit_none(
-            {
-                "chart": chart,
-                "device": device,
-                "genre": genre,
-                "country": country,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/appstore/top", body)
-
-
-class SyncAppstore:
-    app: SyncAppstoreApp
-    search: SyncAppstoreSearch
-    reviews: SyncAppstoreReviews
-    top: SyncAppstoreTop
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.app = SyncAppstoreApp(call)
-        self.search = SyncAppstoreSearch(call)
-        self.reviews = SyncAppstoreReviews(call)
-        self.top = SyncAppstoreTop(call)
-
-
-class SyncGoogleplayApp:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        app: str,
-        country: str | None = None,
-        language: str | None = None,
-    ) -> GoogleplayAppResponse:
-        body = _omit_none(
-            {
-                "app": app,
-                "country": country,
-                "language": language,
-            }
-        )
-        return self._call("POST", "/v1/googleplay/app", body)
-
-
-class SyncGoogleplaySearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        limit: int | None = None,
-    ) -> GoogleplaySearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/googleplay/search", body)
-
-
-class SyncGoogleplayReviews:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        app: str,
-        country: str | None = None,
-        language: str | None = None,
-        sort: GoogleplayReviewsSort | None = None,
-        rating: int | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> GoogleplayReviewsResponse:
-        body = _omit_none(
-            {
-                "app": app,
-                "country": country,
-                "language": language,
-                "sort": sort,
-                "rating": rating,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/googleplay/reviews", body)
-
-
-class SyncGoogleplay:
-    app: SyncGoogleplayApp
-    search: SyncGoogleplaySearch
-    reviews: SyncGoogleplayReviews
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.app = SyncGoogleplayApp(call)
-        self.search = SyncGoogleplaySearch(call)
-        self.reviews = SyncGoogleplayReviews(call)
 
 
 class SyncAirbnbSearch:
@@ -2602,125 +1364,6 @@ class SyncPinterest:
         self.user = SyncPinterestUser(call)
 
 
-class SyncXPost:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        post: str,
-    ) -> XPostResponse:
-        body = _omit_none(
-            {
-                "post": post,
-            }
-        )
-        return self._call("POST", "/v1/x/post", body)
-
-
-class SyncX:
-    post: SyncXPost
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.post = SyncXPost(call)
-
-
-class SyncFinanceQuote:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        symbols: list[str],
-        limit: int | None = None,
-    ) -> FinanceQuoteResponse:
-        body = _omit_none(
-            {
-                "symbols": symbols,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/finance/quote", body)
-
-
-class SyncFinanceHistory:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        symbol: str,
-        from_: str | None = None,
-        to: str | None = None,
-        interval: FinanceHistoryInterval | None = None,
-        limit: int | None = None,
-    ) -> FinanceHistoryResponse:
-        body = _omit_none(
-            {
-                "symbol": symbol,
-                "from": from_,
-                "to": to,
-                "interval": interval,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/finance/history", body)
-
-
-class SyncFinanceSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        limit: int | None = None,
-    ) -> FinanceSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/finance/search", body)
-
-
-class SyncFinanceStock:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        symbol: str,
-    ) -> FinanceStockResponse:
-        body = _omit_none(
-            {
-                "symbol": symbol,
-            }
-        )
-        return self._call("POST", "/v1/finance/stock", body)
-
-
-class SyncFinance:
-    quote: SyncFinanceQuote
-    history: SyncFinanceHistory
-    search: SyncFinanceSearch
-    stock: SyncFinanceStock
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.quote = SyncFinanceQuote(call)
-        self.history = SyncFinanceHistory(call)
-        self.search = SyncFinanceSearch(call)
-        self.stock = SyncFinanceStock(call)
-
-
 class SyncAdsSearch:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -2732,6 +1375,7 @@ class SyncAdsSearch:
         query: str,
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
+        media_type: MetaAdsPageMediaType | None = None,
         cursor: str | None = None,
         network: Literal["meta"],
         limit: int | None = None,
@@ -2740,6 +1384,7 @@ class SyncAdsSearch:
     def __call__(
         self,
         *,
+        query: str | None = None,
         advertiser: str | None = None,
         domain: str | None = None,
         country: str | None = None,
@@ -2786,6 +1431,7 @@ class SyncAdsSearch:
     def __call__(
         self,
         *,
+        query: str | None = None,
         country: str,
         advertiser: str | None = None,
         cursor: str | None = None,
@@ -2798,6 +1444,7 @@ class SyncAdsSearch:
         query: str | None = None,
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
+        media_type: MetaAdsPageMediaType | AdsSearchOption1MediaType | None = None,
         cursor: str | None = None,
         network: Literal["meta"]
         | Literal["google"]
@@ -2809,7 +1456,6 @@ class SyncAdsSearch:
         limit: int | None = None,
         advertiser: str | None = None,
         domain: str | None = None,
-        media_type: AdsSearchOption1MediaType | None = None,
         within: AdsSearchOption3Within | None = None,
     ) -> AdsSearchResponse:
         body = _omit_none(
@@ -2817,12 +1463,12 @@ class SyncAdsSearch:
                 "query": query,
                 "country": country,
                 "status": status,
+                "mediaType": media_type,
                 "cursor": cursor,
                 "network": network,
                 "limit": limit,
                 "advertiser": advertiser,
                 "domain": domain,
-                "mediaType": media_type,
                 "within": within,
             }
         )
@@ -2951,60 +1597,6 @@ class SyncAds:
         self.advertisers = SyncAdsAdvertisers(call)
 
 
-class SyncSuggest:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    @overload
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        source: Literal["google"],
-        limit: int | None = None,
-    ) -> SuggestResponse: ...
-    @overload
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        source: Literal["youtube"],
-        limit: int | None = None,
-    ) -> SuggestResponse: ...
-    @overload
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: SuggestOption2Country | None = None,
-        source: Literal["amazon"],
-        limit: int | None = None,
-    ) -> SuggestResponse: ...
-    def __call__(
-        self,
-        *,
-        query: str | None = None,
-        country: str | SuggestOption2Country | None = None,
-        language: str | None = None,
-        source: Literal["google"] | Literal["youtube"] | Literal["amazon"] | None = None,
-        limit: int | None = None,
-    ) -> SuggestResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-                "source": source,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/suggest", body)
-
-
 class SyncSurface:
     endpoints: SyncEndpoints
     web: SyncWeb
@@ -3014,34 +1606,16 @@ class SyncSurface:
     maps: SyncMaps
     instagram: SyncInstagram
     tiktok: SyncTiktok
-    bluesky: SyncBluesky
-    threads: SyncThreads
-    telegram: SyncTelegram
     meta: SyncMeta
     linkedin: SyncLinkedin
     zillow: SyncZillow
     upwork: SyncUpwork
-    google: SyncGoogle
-    site: SyncSite
-    email: SyncEmail
-    crypto: SyncCrypto
-    indeed: SyncIndeed
-    tripadvisor: SyncTripadvisor
     googletravel: SyncGoogletravel
-    amazon: SyncAmazon
-    shopify: SyncShopify
-    walmart: SyncWalmart
-    aliexpress: SyncAliexpress
-    appstore: SyncAppstore
-    googleplay: SyncGoogleplay
     airbnb: SyncAirbnb
     rightmove: SyncRightmove
     immoscout: SyncImmoscout
     pinterest: SyncPinterest
-    x: SyncX
-    finance: SyncFinance
     ads: SyncAds
-    suggest: SyncSuggest
 
     def __init__(self, call: SyncCall) -> None:
         self.endpoints = SyncEndpoints(call)
@@ -3052,34 +1626,16 @@ class SyncSurface:
         self.maps = SyncMaps(call)
         self.instagram = SyncInstagram(call)
         self.tiktok = SyncTiktok(call)
-        self.bluesky = SyncBluesky(call)
-        self.threads = SyncThreads(call)
-        self.telegram = SyncTelegram(call)
         self.meta = SyncMeta(call)
         self.linkedin = SyncLinkedin(call)
         self.zillow = SyncZillow(call)
         self.upwork = SyncUpwork(call)
-        self.google = SyncGoogle(call)
-        self.site = SyncSite(call)
-        self.email = SyncEmail(call)
-        self.crypto = SyncCrypto(call)
-        self.indeed = SyncIndeed(call)
-        self.tripadvisor = SyncTripadvisor(call)
         self.googletravel = SyncGoogletravel(call)
-        self.amazon = SyncAmazon(call)
-        self.shopify = SyncShopify(call)
-        self.walmart = SyncWalmart(call)
-        self.aliexpress = SyncAliexpress(call)
-        self.appstore = SyncAppstore(call)
-        self.googleplay = SyncGoogleplay(call)
         self.airbnb = SyncAirbnb(call)
         self.rightmove = SyncRightmove(call)
         self.immoscout = SyncImmoscout(call)
         self.pinterest = SyncPinterest(call)
-        self.x = SyncX(call)
-        self.finance = SyncFinance(call)
         self.ads = SyncAds(call)
-        self.suggest = SyncSuggest(call)
 
 
 class AsyncEndpoints:
@@ -3122,45 +1678,12 @@ class AsyncWebSearch:
         return await self._call("POST", "/v1/web/search", body)
 
 
-class AsyncWebNews:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str | None = None,
-        topic: WebNewsTopic | None = None,
-        country: str | None = None,
-        language: str | None = None,
-        include_domains: list[str] | None = None,
-        exclude_domains: list[str] | None = None,
-        within: WebNewsWithin | None = None,
-        limit: int | None = None,
-    ) -> WebNewsResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "topic": topic,
-                "country": country,
-                "language": language,
-                "includeDomains": include_domains,
-                "excludeDomains": exclude_domains,
-                "within": within,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/web/news", body)
-
-
 class AsyncWeb:
     search: AsyncWebSearch
-    news: AsyncWebNews
 
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
         self.search = AsyncWebSearch(call)
-        self.news = AsyncWebNews(call)
 
 
 class AsyncYoutubeSearch:
@@ -3172,7 +1695,7 @@ class AsyncYoutubeSearch:
         *,
         query: str,
         type: YoutubeSearchType | None = None,
-        within: WebNewsWithin | None = None,
+        within: YoutubeSearchWithin | None = None,
         sort: YoutubeSearchSort | None = None,
         cursor: str | None = None,
         limit: int | None = None,
@@ -3324,7 +1847,7 @@ class AsyncRedditSearch:
         type: RedditSearchType | None = None,
         subreddit: str | None = None,
         sort: RedditSearchSort | None = None,
-        within: WebNewsWithin | None = None,
+        within: YoutubeSearchWithin | None = None,
         cursor: str | None = None,
         limit: int | None = None,
     ) -> RedditSearchResponse:
@@ -3370,7 +1893,7 @@ class AsyncRedditSubreddit:
         *,
         subreddit: str,
         sort: RedditSubredditSort | None = None,
-        within: WebNewsWithin | None = None,
+        within: YoutubeSearchWithin | None = None,
         cursor: str | None = None,
         limit: int | None = None,
     ) -> RedditSubredditResponse:
@@ -3544,11 +2067,13 @@ class AsyncInstagramProfile:
         *,
         profile: str,
         cursor: str | None = None,
+        limit: int | None = None,
     ) -> InstagramProfileResponse:
         body = _omit_none(
             {
                 "profile": profile,
                 "cursor": cursor,
+                "limit": limit,
             }
         )
         return await self._call("POST", "/v1/instagram/profile", body)
@@ -3569,29 +2094,6 @@ class AsyncInstagramPost:
             }
         )
         return await self._call("POST", "/v1/instagram/post", body)
-
-
-class AsyncInstagramSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        type: InstagramSearchType | None = None,
-        within: WebNewsWithin | None = None,
-        limit: int | None = None,
-    ) -> InstagramSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "type": type,
-                "within": within,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/instagram/search", body)
 
 
 class AsyncInstagramComments:
@@ -3620,14 +2122,12 @@ class AsyncInstagramComments:
 class AsyncInstagram:
     profile: AsyncInstagramProfile
     post: AsyncInstagramPost
-    search: AsyncInstagramSearch
     comments: AsyncInstagramComments
 
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
         self.profile = AsyncInstagramProfile(call)
         self.post = AsyncInstagramPost(call)
-        self.search = AsyncInstagramSearch(call)
         self.comments = AsyncInstagramComments(call)
 
 
@@ -3640,11 +2140,13 @@ class AsyncTiktokProfile:
         *,
         profile: str,
         cursor: str | None = None,
+        limit: int | None = None,
     ) -> TiktokProfileResponse:
         body = _omit_none(
             {
                 "profile": profile,
                 "cursor": cursor,
+                "limit": limit,
             }
         )
         return await self._call("POST", "/v1/tiktok/profile", body)
@@ -3750,192 +2252,6 @@ class AsyncTiktok:
         self.search = AsyncTiktokSearch(call)
 
 
-class AsyncBlueskyProfile:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        profile: str,
-        cursor: str | None = None,
-    ) -> BlueskyProfileResponse:
-        body = _omit_none(
-            {
-                "profile": profile,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/bluesky/profile", body)
-
-
-class AsyncBlueskyPost:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        post: str,
-    ) -> BlueskyPostResponse:
-        body = _omit_none(
-            {
-                "post": post,
-            }
-        )
-        return await self._call("POST", "/v1/bluesky/post", body)
-
-
-class AsyncBlueskyFollowers:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        profile: str,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> BlueskyFollowersResponse:
-        body = _omit_none(
-            {
-                "profile": profile,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/bluesky/followers", body)
-
-
-class AsyncBluesky:
-    profile: AsyncBlueskyProfile
-    post: AsyncBlueskyPost
-    followers: AsyncBlueskyFollowers
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.profile = AsyncBlueskyProfile(call)
-        self.post = AsyncBlueskyPost(call)
-        self.followers = AsyncBlueskyFollowers(call)
-
-
-class AsyncThreadsProfile:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        profile: str,
-        cursor: str | None = None,
-    ) -> ThreadsProfileResponse:
-        body = _omit_none(
-            {
-                "profile": profile,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/threads/profile", body)
-
-
-class AsyncThreadsPost:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        post: str,
-        cursor: str | None = None,
-    ) -> ThreadsPostResponse:
-        body = _omit_none(
-            {
-                "post": post,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/threads/post", body)
-
-
-class AsyncThreadsSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        limit: int | None = None,
-    ) -> ThreadsSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/threads/search", body)
-
-
-class AsyncThreads:
-    profile: AsyncThreadsProfile
-    post: AsyncThreadsPost
-    search: AsyncThreadsSearch
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.profile = AsyncThreadsProfile(call)
-        self.post = AsyncThreadsPost(call)
-        self.search = AsyncThreadsSearch(call)
-
-
-class AsyncTelegramPosts:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        channel: str,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> TelegramPostsResponse:
-        body = _omit_none(
-            {
-                "channel": channel,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/telegram/posts", body)
-
-
-class AsyncTelegramPost:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        post: str,
-    ) -> TelegramPostResponse:
-        body = _omit_none(
-            {
-                "post": post,
-            }
-        )
-        return await self._call("POST", "/v1/telegram/post", body)
-
-
-class AsyncTelegram:
-    posts: AsyncTelegramPosts
-    post: AsyncTelegramPost
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.posts = AsyncTelegramPosts(call)
-        self.post = AsyncTelegramPost(call)
-
-
 class AsyncMetaAdsPage:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -3946,6 +2262,7 @@ class AsyncMetaAdsPage:
         page: str,
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
+        media_type: MetaAdsPageMediaType | None = None,
         cursor: str | None = None,
         limit: int | None = None,
     ) -> MetaAdsPageResponse:
@@ -3954,6 +2271,7 @@ class AsyncMetaAdsPage:
                 "page": page,
                 "country": country,
                 "status": status,
+                "mediaType": media_type,
                 "cursor": cursor,
                 "limit": limit,
             }
@@ -4216,479 +2534,6 @@ class AsyncUpwork:
         self.job = AsyncUpworkJob(call)
 
 
-class AsyncGoogleTrendsRelated:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        within: WebNewsWithin | None = None,
-        limit: int | None = None,
-    ) -> GoogleTrendsRelatedResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "within": within,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/google/trends/related", body)
-
-
-class AsyncGoogleTrendsTrending:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        country: str | None = None,
-        within: GoogleTrendsTrendingWithin | None = None,
-        category: GoogleTrendsTrendingCategory | None = None,
-        limit: int | None = None,
-    ) -> GoogleTrendsTrendingResponse:
-        body = _omit_none(
-            {
-                "country": country,
-                "within": within,
-                "category": category,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/google/trends/trending", body)
-
-
-class AsyncGoogleTrends:
-    related: AsyncGoogleTrendsRelated
-    trending: AsyncGoogleTrendsTrending
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.related = AsyncGoogleTrendsRelated(call)
-        self.trending = AsyncGoogleTrendsTrending(call)
-
-    @overload
-    async def __call__(
-        self,
-        *,
-        queries: list[str],
-        country: str | None = None,
-        within: WebNewsWithin | None = None,
-        by: Literal["time"],
-        limit: int | None = None,
-    ) -> GoogleTrendsResponse: ...
-    @overload
-    async def __call__(
-        self,
-        *,
-        queries: list[str],
-        country: str | None = None,
-        within: WebNewsWithin | None = None,
-        resolution: GoogleTrendsOption1Resolution | None = None,
-        by: Literal["region"],
-        limit: int | None = None,
-    ) -> GoogleTrendsResponse: ...
-    async def __call__(
-        self,
-        *,
-        queries: list[str] | None = None,
-        country: str | None = None,
-        within: WebNewsWithin | None = None,
-        by: Literal["time"] | Literal["region"] | None = None,
-        limit: int | None = None,
-        resolution: GoogleTrendsOption1Resolution | None = None,
-    ) -> GoogleTrendsResponse:
-        body = _omit_none(
-            {
-                "queries": queries,
-                "country": country,
-                "within": within,
-                "by": by,
-                "limit": limit,
-                "resolution": resolution,
-            }
-        )
-        return await self._call("POST", "/v1/google/trends", body)
-
-
-class AsyncGoogle:
-    trends: AsyncGoogleTrends
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.trends = AsyncGoogleTrends(call)
-
-
-class AsyncSiteSeo:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        url: str,
-    ) -> SiteSeoResponse:
-        body = _omit_none(
-            {
-                "url": url,
-            }
-        )
-        return await self._call("POST", "/v1/site/seo", body)
-
-
-class AsyncSite:
-    seo: AsyncSiteSeo
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.seo = AsyncSiteSeo(call)
-
-
-class AsyncEmailVerify:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        email: str,
-    ) -> EmailVerifyResponse:
-        body = _omit_none(
-            {
-                "email": email,
-            }
-        )
-        return await self._call("POST", "/v1/email/verify", body)
-
-
-class AsyncEmailFind:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        domain: str,
-        name: str | None = None,
-        first_name: str | None = None,
-        last_name: str | None = None,
-    ) -> EmailFindResponse:
-        body = _omit_none(
-            {
-                "domain": domain,
-                "name": name,
-                "firstName": first_name,
-                "lastName": last_name,
-            }
-        )
-        return await self._call("POST", "/v1/email/find", body)
-
-
-class AsyncEmail:
-    verify: AsyncEmailVerify
-    find: AsyncEmailFind
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.verify = AsyncEmailVerify(call)
-        self.find = AsyncEmailFind(call)
-
-
-class AsyncCryptoCoins:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        currency: str | None = None,
-        category: str | None = None,
-        coins: list[str] | None = None,
-        sort: CryptoCoinsSort | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> CryptoCoinsResponse:
-        body = _omit_none(
-            {
-                "currency": currency,
-                "category": category,
-                "coins": coins,
-                "sort": sort,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/crypto/coins", body)
-
-
-class AsyncCryptoCoin:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        coin: str,
-        platform: str | None = None,
-        currency: str | None = None,
-    ) -> CryptoCoinResponse:
-        body = _omit_none(
-            {
-                "coin": coin,
-                "platform": platform,
-                "currency": currency,
-            }
-        )
-        return await self._call("POST", "/v1/crypto/coin", body)
-
-
-class AsyncCryptoHistory:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        coin: str,
-        currency: str | None = None,
-        from_: str | None = None,
-        to: str | None = None,
-        limit: int | None = None,
-    ) -> CryptoHistoryResponse:
-        body = _omit_none(
-            {
-                "coin": coin,
-                "currency": currency,
-                "from": from_,
-                "to": to,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/crypto/history", body)
-
-
-class AsyncCryptoDexSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        limit: int | None = None,
-    ) -> CryptoDexSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/crypto/dex/search", body)
-
-
-class AsyncCryptoDexToken:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        chain: str | None = None,
-        token: str,
-    ) -> CryptoDexTokenResponse:
-        body = _omit_none(
-            {
-                "chain": chain,
-                "token": token,
-            }
-        )
-        return await self._call("POST", "/v1/crypto/dex/token", body)
-
-
-class AsyncCryptoDex:
-    search: AsyncCryptoDexSearch
-    token: AsyncCryptoDexToken
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.search = AsyncCryptoDexSearch(call)
-        self.token = AsyncCryptoDexToken(call)
-
-
-class AsyncCryptoWallet:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        chain: CryptoWalletChain,
-        wallet: str,
-        cursor: str | None = None,
-    ) -> CryptoWalletResponse:
-        body = _omit_none(
-            {
-                "chain": chain,
-                "wallet": wallet,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/crypto/wallet", body)
-
-
-class AsyncCrypto:
-    coins: AsyncCryptoCoins
-    coin: AsyncCryptoCoin
-    history: AsyncCryptoHistory
-    dex: AsyncCryptoDex
-    wallet: AsyncCryptoWallet
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.coins = AsyncCryptoCoins(call)
-        self.coin = AsyncCryptoCoin(call)
-        self.history = AsyncCryptoHistory(call)
-        self.dex = AsyncCryptoDex(call)
-        self.wallet = AsyncCryptoWallet(call)
-
-
-class AsyncIndeedSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str | None = None,
-        location: str | None = None,
-        country: IndeedSearchCountry | None = None,
-        remote: bool | None = None,
-        within: IndeedSearchWithin | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> IndeedSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "location": location,
-                "country": country,
-                "remote": remote,
-                "within": within,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/indeed/search", body)
-
-
-class AsyncIndeedJob:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        job: str,
-        country: IndeedSearchCountry | None = None,
-    ) -> IndeedJobResponse:
-        body = _omit_none(
-            {
-                "job": job,
-                "country": country,
-            }
-        )
-        return await self._call("POST", "/v1/indeed/job", body)
-
-
-class AsyncIndeed:
-    search: AsyncIndeedSearch
-    job: AsyncIndeedJob
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.search = AsyncIndeedSearch(call)
-        self.job = AsyncIndeedJob(call)
-
-
-class AsyncTripadvisorSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        type: TripadvisorSearchType | None = None,
-        limit: int | None = None,
-    ) -> TripadvisorSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "type": type,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/tripadvisor/search", body)
-
-
-class AsyncTripadvisorPlace:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        place: str,
-    ) -> TripadvisorPlaceResponse:
-        body = _omit_none(
-            {
-                "place": place,
-            }
-        )
-        return await self._call("POST", "/v1/tripadvisor/place", body)
-
-
-class AsyncTripadvisorReviews:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        place: str,
-        language: str | None = None,
-        ratings: list[int] | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> TripadvisorReviewsResponse:
-        body = _omit_none(
-            {
-                "place": place,
-                "language": language,
-                "ratings": ratings,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/tripadvisor/reviews", body)
-
-
-class AsyncTripadvisor:
-    search: AsyncTripadvisorSearch
-    place: AsyncTripadvisorPlace
-    reviews: AsyncTripadvisorReviews
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.search = AsyncTripadvisorSearch(call)
-        self.place = AsyncTripadvisorPlace(call)
-        self.reviews = AsyncTripadvisorReviews(call)
-
-
 class AsyncGoogletravelFlights:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -4724,463 +2569,6 @@ class AsyncGoogletravel:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
         self.flights = AsyncGoogletravelFlights(call)
-
-
-class AsyncAmazonSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str | None = None,
-        category: str | None = None,
-        min_price: float | None = None,
-        max_price: float | None = None,
-        sort: AmazonSearchSort | None = None,
-        country: AmazonSearchCountry | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> AmazonSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "category": category,
-                "minPrice": min_price,
-                "maxPrice": max_price,
-                "sort": sort,
-                "country": country,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/amazon/search", body)
-
-
-class AsyncAmazonProduct:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        product: str,
-        country: AmazonSearchCountry | None = None,
-    ) -> AmazonProductResponse:
-        body = _omit_none(
-            {
-                "product": product,
-                "country": country,
-            }
-        )
-        return await self._call("POST", "/v1/amazon/product", body)
-
-
-class AsyncAmazonBestsellers:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        category: str,
-        country: AmazonSearchCountry | None = None,
-        cursor: Literal["2"] | None = None,
-        limit: int | None = None,
-    ) -> AmazonBestsellersResponse:
-        body = _omit_none(
-            {
-                "category": category,
-                "country": country,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/amazon/bestsellers", body)
-
-
-class AsyncAmazon:
-    search: AsyncAmazonSearch
-    product: AsyncAmazonProduct
-    bestsellers: AsyncAmazonBestsellers
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.search = AsyncAmazonSearch(call)
-        self.product = AsyncAmazonProduct(call)
-        self.bestsellers = AsyncAmazonBestsellers(call)
-
-
-class AsyncShopifyProducts:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        store: str,
-        collection: str | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> ShopifyProductsResponse:
-        body = _omit_none(
-            {
-                "store": store,
-                "collection": collection,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/shopify/products", body)
-
-
-class AsyncShopifyCollections:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        store: str,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> ShopifyCollectionsResponse:
-        body = _omit_none(
-            {
-                "store": store,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/shopify/collections", body)
-
-
-class AsyncShopifyStore:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        store: str,
-    ) -> ShopifyStoreResponse:
-        body = _omit_none(
-            {
-                "store": store,
-            }
-        )
-        return await self._call("POST", "/v1/shopify/store", body)
-
-
-class AsyncShopify:
-    products: AsyncShopifyProducts
-    collections: AsyncShopifyCollections
-    store: AsyncShopifyStore
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.products = AsyncShopifyProducts(call)
-        self.collections = AsyncShopifyCollections(call)
-        self.store = AsyncShopifyStore(call)
-
-
-class AsyncWalmartSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        sort: WalmartSearchSort | None = None,
-        min_price: float | None = None,
-        max_price: float | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> WalmartSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "sort": sort,
-                "minPrice": min_price,
-                "maxPrice": max_price,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/walmart/search", body)
-
-
-class AsyncWalmartProduct:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        product: str,
-    ) -> WalmartProductResponse:
-        body = _omit_none(
-            {
-                "product": product,
-            }
-        )
-        return await self._call("POST", "/v1/walmart/product", body)
-
-
-class AsyncWalmart:
-    search: AsyncWalmartSearch
-    product: AsyncWalmartProduct
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.search = AsyncWalmartSearch(call)
-        self.product = AsyncWalmartProduct(call)
-
-
-class AsyncAliexpressSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        sort: AliexpressSearchSort | None = None,
-        min_price: float | None = None,
-        max_price: float | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> AliexpressSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "sort": sort,
-                "minPrice": min_price,
-                "maxPrice": max_price,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/aliexpress/search", body)
-
-
-class AsyncAliexpressProduct:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        product: str,
-    ) -> AliexpressProductResponse:
-        body = _omit_none(
-            {
-                "product": product,
-            }
-        )
-        return await self._call("POST", "/v1/aliexpress/product", body)
-
-
-class AsyncAliexpress:
-    search: AsyncAliexpressSearch
-    product: AsyncAliexpressProduct
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.search = AsyncAliexpressSearch(call)
-        self.product = AsyncAliexpressProduct(call)
-
-
-class AsyncAppstoreApp:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        app: str,
-        country: str | None = None,
-    ) -> AppstoreAppResponse:
-        body = _omit_none(
-            {
-                "app": app,
-                "country": country,
-            }
-        )
-        return await self._call("POST", "/v1/appstore/app", body)
-
-
-class AsyncAppstoreSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        device: AppstoreSearchDevice | None = None,
-        limit: int | None = None,
-    ) -> AppstoreSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "device": device,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/appstore/search", body)
-
-
-class AsyncAppstoreReviews:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        app: str,
-        country: str | None = None,
-        sort: AppstoreReviewsSort | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> AppstoreReviewsResponse:
-        body = _omit_none(
-            {
-                "app": app,
-                "country": country,
-                "sort": sort,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/appstore/reviews", body)
-
-
-class AsyncAppstoreTop:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        chart: AppstoreTopChart | None = None,
-        device: AppstoreSearchDevice | None = None,
-        genre: AppstoreTopGenre | None = None,
-        country: str | None = None,
-        limit: int | None = None,
-    ) -> AppstoreTopResponse:
-        body = _omit_none(
-            {
-                "chart": chart,
-                "device": device,
-                "genre": genre,
-                "country": country,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/appstore/top", body)
-
-
-class AsyncAppstore:
-    app: AsyncAppstoreApp
-    search: AsyncAppstoreSearch
-    reviews: AsyncAppstoreReviews
-    top: AsyncAppstoreTop
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.app = AsyncAppstoreApp(call)
-        self.search = AsyncAppstoreSearch(call)
-        self.reviews = AsyncAppstoreReviews(call)
-        self.top = AsyncAppstoreTop(call)
-
-
-class AsyncGoogleplayApp:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        app: str,
-        country: str | None = None,
-        language: str | None = None,
-    ) -> GoogleplayAppResponse:
-        body = _omit_none(
-            {
-                "app": app,
-                "country": country,
-                "language": language,
-            }
-        )
-        return await self._call("POST", "/v1/googleplay/app", body)
-
-
-class AsyncGoogleplaySearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        limit: int | None = None,
-    ) -> GoogleplaySearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/googleplay/search", body)
-
-
-class AsyncGoogleplayReviews:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        app: str,
-        country: str | None = None,
-        language: str | None = None,
-        sort: GoogleplayReviewsSort | None = None,
-        rating: int | None = None,
-        cursor: str | None = None,
-        limit: int | None = None,
-    ) -> GoogleplayReviewsResponse:
-        body = _omit_none(
-            {
-                "app": app,
-                "country": country,
-                "language": language,
-                "sort": sort,
-                "rating": rating,
-                "cursor": cursor,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/googleplay/reviews", body)
-
-
-class AsyncGoogleplay:
-    app: AsyncGoogleplayApp
-    search: AsyncGoogleplaySearch
-    reviews: AsyncGoogleplayReviews
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.app = AsyncGoogleplayApp(call)
-        self.search = AsyncGoogleplaySearch(call)
-        self.reviews = AsyncGoogleplayReviews(call)
 
 
 class AsyncAirbnbSearch:
@@ -5503,125 +2891,6 @@ class AsyncPinterest:
         self.user = AsyncPinterestUser(call)
 
 
-class AsyncXPost:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        post: str,
-    ) -> XPostResponse:
-        body = _omit_none(
-            {
-                "post": post,
-            }
-        )
-        return await self._call("POST", "/v1/x/post", body)
-
-
-class AsyncX:
-    post: AsyncXPost
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.post = AsyncXPost(call)
-
-
-class AsyncFinanceQuote:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        symbols: list[str],
-        limit: int | None = None,
-    ) -> FinanceQuoteResponse:
-        body = _omit_none(
-            {
-                "symbols": symbols,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/finance/quote", body)
-
-
-class AsyncFinanceHistory:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        symbol: str,
-        from_: str | None = None,
-        to: str | None = None,
-        interval: FinanceHistoryInterval | None = None,
-        limit: int | None = None,
-    ) -> FinanceHistoryResponse:
-        body = _omit_none(
-            {
-                "symbol": symbol,
-                "from": from_,
-                "to": to,
-                "interval": interval,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/finance/history", body)
-
-
-class AsyncFinanceSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        limit: int | None = None,
-    ) -> FinanceSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/finance/search", body)
-
-
-class AsyncFinanceStock:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        symbol: str,
-    ) -> FinanceStockResponse:
-        body = _omit_none(
-            {
-                "symbol": symbol,
-            }
-        )
-        return await self._call("POST", "/v1/finance/stock", body)
-
-
-class AsyncFinance:
-    quote: AsyncFinanceQuote
-    history: AsyncFinanceHistory
-    search: AsyncFinanceSearch
-    stock: AsyncFinanceStock
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.quote = AsyncFinanceQuote(call)
-        self.history = AsyncFinanceHistory(call)
-        self.search = AsyncFinanceSearch(call)
-        self.stock = AsyncFinanceStock(call)
-
-
 class AsyncAdsSearch:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -5633,6 +2902,7 @@ class AsyncAdsSearch:
         query: str,
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
+        media_type: MetaAdsPageMediaType | None = None,
         cursor: str | None = None,
         network: Literal["meta"],
         limit: int | None = None,
@@ -5641,6 +2911,7 @@ class AsyncAdsSearch:
     async def __call__(
         self,
         *,
+        query: str | None = None,
         advertiser: str | None = None,
         domain: str | None = None,
         country: str | None = None,
@@ -5687,6 +2958,7 @@ class AsyncAdsSearch:
     async def __call__(
         self,
         *,
+        query: str | None = None,
         country: str,
         advertiser: str | None = None,
         cursor: str | None = None,
@@ -5699,6 +2971,7 @@ class AsyncAdsSearch:
         query: str | None = None,
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
+        media_type: MetaAdsPageMediaType | AdsSearchOption1MediaType | None = None,
         cursor: str | None = None,
         network: Literal["meta"]
         | Literal["google"]
@@ -5710,7 +2983,6 @@ class AsyncAdsSearch:
         limit: int | None = None,
         advertiser: str | None = None,
         domain: str | None = None,
-        media_type: AdsSearchOption1MediaType | None = None,
         within: AdsSearchOption3Within | None = None,
     ) -> AdsSearchResponse:
         body = _omit_none(
@@ -5718,12 +2990,12 @@ class AsyncAdsSearch:
                 "query": query,
                 "country": country,
                 "status": status,
+                "mediaType": media_type,
                 "cursor": cursor,
                 "network": network,
                 "limit": limit,
                 "advertiser": advertiser,
                 "domain": domain,
-                "mediaType": media_type,
                 "within": within,
             }
         )
@@ -5852,60 +3124,6 @@ class AsyncAds:
         self.advertisers = AsyncAdsAdvertisers(call)
 
 
-class AsyncSuggest:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    @overload
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        source: Literal["google"],
-        limit: int | None = None,
-    ) -> SuggestResponse: ...
-    @overload
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        source: Literal["youtube"],
-        limit: int | None = None,
-    ) -> SuggestResponse: ...
-    @overload
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: SuggestOption2Country | None = None,
-        source: Literal["amazon"],
-        limit: int | None = None,
-    ) -> SuggestResponse: ...
-    async def __call__(
-        self,
-        *,
-        query: str | None = None,
-        country: str | SuggestOption2Country | None = None,
-        language: str | None = None,
-        source: Literal["google"] | Literal["youtube"] | Literal["amazon"] | None = None,
-        limit: int | None = None,
-    ) -> SuggestResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-                "source": source,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/suggest", body)
-
-
 class AsyncSurface:
     endpoints: AsyncEndpoints
     web: AsyncWeb
@@ -5915,34 +3133,16 @@ class AsyncSurface:
     maps: AsyncMaps
     instagram: AsyncInstagram
     tiktok: AsyncTiktok
-    bluesky: AsyncBluesky
-    threads: AsyncThreads
-    telegram: AsyncTelegram
     meta: AsyncMeta
     linkedin: AsyncLinkedin
     zillow: AsyncZillow
     upwork: AsyncUpwork
-    google: AsyncGoogle
-    site: AsyncSite
-    email: AsyncEmail
-    crypto: AsyncCrypto
-    indeed: AsyncIndeed
-    tripadvisor: AsyncTripadvisor
     googletravel: AsyncGoogletravel
-    amazon: AsyncAmazon
-    shopify: AsyncShopify
-    walmart: AsyncWalmart
-    aliexpress: AsyncAliexpress
-    appstore: AsyncAppstore
-    googleplay: AsyncGoogleplay
     airbnb: AsyncAirbnb
     rightmove: AsyncRightmove
     immoscout: AsyncImmoscout
     pinterest: AsyncPinterest
-    x: AsyncX
-    finance: AsyncFinance
     ads: AsyncAds
-    suggest: AsyncSuggest
 
     def __init__(self, call: AsyncCall) -> None:
         self.endpoints = AsyncEndpoints(call)
@@ -5953,31 +3153,13 @@ class AsyncSurface:
         self.maps = AsyncMaps(call)
         self.instagram = AsyncInstagram(call)
         self.tiktok = AsyncTiktok(call)
-        self.bluesky = AsyncBluesky(call)
-        self.threads = AsyncThreads(call)
-        self.telegram = AsyncTelegram(call)
         self.meta = AsyncMeta(call)
         self.linkedin = AsyncLinkedin(call)
         self.zillow = AsyncZillow(call)
         self.upwork = AsyncUpwork(call)
-        self.google = AsyncGoogle(call)
-        self.site = AsyncSite(call)
-        self.email = AsyncEmail(call)
-        self.crypto = AsyncCrypto(call)
-        self.indeed = AsyncIndeed(call)
-        self.tripadvisor = AsyncTripadvisor(call)
         self.googletravel = AsyncGoogletravel(call)
-        self.amazon = AsyncAmazon(call)
-        self.shopify = AsyncShopify(call)
-        self.walmart = AsyncWalmart(call)
-        self.aliexpress = AsyncAliexpress(call)
-        self.appstore = AsyncAppstore(call)
-        self.googleplay = AsyncGoogleplay(call)
         self.airbnb = AsyncAirbnb(call)
         self.rightmove = AsyncRightmove(call)
         self.immoscout = AsyncImmoscout(call)
         self.pinterest = AsyncPinterest(call)
-        self.x = AsyncX(call)
-        self.finance = AsyncFinance(call)
         self.ads = AsyncAds(call)
-        self.suggest = AsyncSuggest(call)
