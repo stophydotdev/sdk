@@ -1,6 +1,6 @@
 # Stophy SDKs
 
-Live data from 40+ sites for AI agents in TypeScript and Python: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto. Every result is flat and typed.
+The web data layer for AI agents, in TypeScript and Python. Live web data as typed JSON. Search, video, social, jobs, places, property and ads behind one key, with a flat price per call. You pay only for answers that come back.
 
 | Language | Install | Guide |
 | --- | --- | --- |
@@ -19,11 +19,11 @@ from stophy import Stophy
 result = Stophy().web.search(query="bun runtime")
 ```
 
-Both examples work without an API key. For every other source, get a key from the [dashboard](https://stophy.dev/dashboard).
+Both examples work without an API key. Web search is the only method that does. For everything else, get a key from the [dashboard](https://stophy.dev/dashboard).
 
-## More sources
+## More data
 
-A transcript, YouTube search, Google Maps reviews, an Amazon product and Meta ads, in TypeScript:
+A transcript, YouTube search, Google Maps reviews, a TikTok profile and Meta ads, in TypeScript:
 
 ```ts
 const stophy = new Stophy({ apiKey: "st_..." });
@@ -41,8 +41,8 @@ if (placeId) {
   console.log(reviews.data.results);
 }
 
-const product = await stophy.amazon.product({ product: "B08N5WRWNW", country: "us" });
-console.log(product.data.title, product.data.price);
+const profile = await stophy.tiktok.profile({ profile: "tiktok", limit: 5 });
+console.log(profile.data.followers, profile.data.results);
 
 const ads = await stophy.ads.search({ network: "meta", query: "running shoes" });
 console.log(ads.data.results);
@@ -65,8 +65,8 @@ if place_id:
     reviews = stophy.maps.reviews(place=place_id, limit=20)
     print(reviews["data"]["results"])
 
-product = stophy.amazon.product(product="B08N5WRWNW", country="us")
-print(product["data"].get("title"), product["data"].get("price"))
+profile = stophy.tiktok.profile(profile="tiktok", limit=5)
+print(profile["data"].get("followers"), profile["data"].get("results"))
 
 ads = stophy.ads.search(network="meta", query="running shoes")
 print(ads["data"]["results"])

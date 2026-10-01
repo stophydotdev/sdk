@@ -1,6 +1,6 @@
 # Stophy for TypeScript
 
-Live data from 40+ sites for AI agents in TypeScript: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto. Every method and result is typed.
+The web data layer for AI agents, in TypeScript. Live web data as typed JSON. Search, video, social, jobs, places, property and ads behind one key, with a flat price per call. You pay only for answers that come back. Every method and result is typed.
 
 ## Install
 
@@ -17,7 +17,7 @@ const result = await new Stophy().web.search({ query: "bun runtime" });
 console.log(result.data.results);
 ```
 
-Web search, YouTube search, and transcripts work without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
+Web search works without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 
@@ -32,13 +32,13 @@ console.log(videos.data.results);
 
 `new Stophy("st_...")` works too.
 
-Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.ads.search({ network: "meta", ... })`. Endpoints with a single name are methods on the client: `stophy.transcript(...)`, `stophy.suggest(...)`.
+Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.ads.search({ network: "meta", ... })`. Endpoints with a single name are methods on the client, like `stophy.transcript(...)`.
 
 Every response is `{ success, data, creditsUsed, requestId }`. `data` is one flat object. Lists are in `data.results`.
 
-## More sources
+## More data
 
-A transcript, Reddit posts, Google Maps reviews, an Amazon product and Meta ads:
+A transcript, Reddit posts, Google Maps reviews, a TikTok profile and Meta ads:
 
 ```ts
 const stophy = new Stophy({ apiKey: "st_..." });
@@ -56,14 +56,14 @@ if (placeId) {
   console.log(reviews.data.results);
 }
 
-const product = await stophy.amazon.product({ product: "B08N5WRWNW", country: "us" });
-console.log(product.data.title, product.data.price);
+const profile = await stophy.tiktok.profile({ profile: "tiktok", limit: 5 });
+console.log(profile.data.followers, profile.data.results);
 
 const ads = await stophy.ads.search({ network: "meta", query: "running shoes" });
 console.log(ads.data.results);
 ```
 
-Some endpoints cover several sources. Pick one with a field: `network` for `ads.*`, `source` for `suggest`, `by` for `google.trends`. The types follow the choice.
+`ads.search` covers several ad networks. Pick one with `network`. The types follow the choice.
 
 ## Get the next page
 

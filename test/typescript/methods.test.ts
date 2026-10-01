@@ -39,20 +39,19 @@ describe("namespaced operations", () => {
 		await client.transcript({ video: "https://youtu.be/abc" });
 		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/transcript");
 		expect(calls[0]?.body).toEqual({ video: "https://youtu.be/abc" });
-
-		await client.suggest({ source: "google", query: "bun" });
-		expect(new URL(calls[1]?.url ?? "").pathname).toBe("/v1/suggest");
-		expect(calls[1]?.body).toEqual({ source: "google", query: "bun" });
 	});
 
 	test("sends the network discriminator for joined endpoints", async () => {
 		const { client, calls } = makeClient({ json: envelope });
 		await client.ads.search({ network: "meta", query: "shoes" });
-		await client.google.trends({ by: "time", queries: ["bun"] });
+		await client.ads.search({ network: "google", query: "example.com" });
 		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/ads/search");
 		expect(calls[0]?.body).toEqual({ network: "meta", query: "shoes" });
-		expect(new URL(calls[1]?.url ?? "").pathname).toBe("/v1/google/trends");
-		expect(calls[1]?.body).toEqual({ by: "time", queries: ["bun"] });
+		expect(new URL(calls[1]?.url ?? "").pathname).toBe("/v1/ads/search");
+		expect(calls[1]?.body).toEqual({
+			network: "google",
+			query: "example.com",
+		});
 	});
 
 	test("forwards the abort signal", async () => {
@@ -70,9 +69,9 @@ describe("namespaced operations", () => {
 
 	test("omits an empty optional body", async () => {
 		const { client, calls } = makeClient({ json: envelope });
-		await client.crypto.coins();
+		await client.upwork.search();
 		expect(calls[0]?.body).toEqual({});
-		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/crypto/coins");
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/upwork/search");
 	});
 
 	test("lists endpoints with GET", async () => {
@@ -129,7 +128,8 @@ describe("namespaced operations", () => {
 	test("exposes every operation in the spec", async () => {
 		const { client } = makeClient({ json: envelope });
 		const paths = await specPaths();
-		expect(paths.length).toBeGreaterThan(90);
+		expect(paths).toContain("/v1/web/search");
+		expect(paths).not.toContain("/v1/amazon/product");
 		for (const path of paths) {
 			expect(typeof endpointAt(client, path)).toBe("function");
 		}

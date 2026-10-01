@@ -1,12 +1,12 @@
 [project]
 name = "stophy"
-version = "1.0.3"
-description = "Live data from 40+ sites for AI agents in Python: web search, YouTube, Reddit, Google Maps, Amazon, jobs, real estate, ads, stocks and crypto."
+version = "1.0.4"
+description = "Live web data as typed JSON for AI agents. Search, video, social, jobs, places, property and ads behind one key, with a flat price per call. You pay only for answers that come back."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "Stophy" }]
-keywords = ["stophy", "sdk", "web-data", "web-search", "scraping", "ai-agents", "llm", "youtube", "reddit", "maps", "google-maps", "transcripts", "ads", "finance", "crypto"]
+keywords = ["stophy", "sdk", "web-data", "web-search", "scraping", "ai-agents", "llm", "youtube", "reddit", "maps", "google-maps", "transcripts", "ads"]
 dependencies = ["httpx>=0.27", "typing-extensions>=4.5"]
 
 [project.urls]
