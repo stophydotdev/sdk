@@ -40,6 +40,23 @@ def test_single_segment_operations_and_keyword_argument():
     }
 
 
+def test_app_jobs_places_and_shopping_operations():
+    client, calls = make_client({"json": ENVELOPE})
+    client.appstore.search(query="notes")
+    client.googleplay.reviews(app="com.example.app", cursor="c1")
+    client.indeed.search(query="designer")
+    client.tripadvisor.place(place="d1234")
+    client.walmart.search(query="tv")
+    assert [call.url.path for call in calls] == [
+        "/v1/appstore/search",
+        "/v1/googleplay/reviews",
+        "/v1/indeed/search",
+        "/v1/tripadvisor/place",
+        "/v1/walmart/search",
+    ]
+    assert body_of(calls[1]) == {"app": "com.example.app", "cursor": "c1"}
+
+
 def test_joined_operations_send_the_discriminator():
     client, calls = make_client({"json": ENVELOPE})
     client.ads.search(network="meta", query="shoes")

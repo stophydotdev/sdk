@@ -1,6 +1,6 @@
 # Stophy SDKs
 
-The web data layer for AI agents, in TypeScript and Python. Live web data as typed JSON. Search, video, social, jobs, places, property and ads behind one key, with a flat price per call. You pay only for answers that come back.
+The web data layer for AI agents, in TypeScript and Python. Live web data as typed JSON. Search, video, social, jobs, places, property and ads behind one key, with a price shown before every call. You pay only for answers that come back.
 
 | Language | Install | Guide |
 | --- | --- | --- |
