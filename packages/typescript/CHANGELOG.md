@@ -1,5 +1,11 @@
 # stophy
 
+## 1.0.7
+
+### Patch Changes
+
+- 5e54488: `limit` is gone. Each call returns one page from the site. Page-numbered methods take `page` and return `page` and `hasMore`; the others return the site's own `cursor` to pass back. `meta.ads.page` takes `advertiser`.
+
 ## 1.0.6
 
 ### Patch Changes
