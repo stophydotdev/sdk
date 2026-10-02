@@ -13,7 +13,7 @@ pip install stophy
 ```python
 from stophy import Stophy
 
-result = Stophy().web.search(query="bun runtime")
+result = Stophy().google.search(query="bun runtime")
 print(result["data"]["results"])
 ```
 

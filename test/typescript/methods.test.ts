@@ -142,10 +142,16 @@ describe("namespaced operations", () => {
 		});
 	});
 
+	test("keeps web.search and web.news working after the rename", () => {
+		const { client } = makeClient({ json: envelope });
+		expect(typeof endpointAt(client, "/v1/web/search")).toBe("function");
+		expect(typeof endpointAt(client, "/v1/web/news")).toBe("function");
+	});
+
 	test("exposes every operation in the spec", async () => {
 		const { client } = makeClient({ json: envelope });
 		const paths = await specPaths();
-		expect(paths).toContain("/v1/web/search");
+		expect(paths).toContain("/v1/google/search");
 		expect(paths).not.toContain("/v1/amazon/product");
 		for (const path of paths) {
 			expect(typeof endpointAt(client, path)).toBe("function");

@@ -10,3 +10,10 @@ export {
 export { StophyError, type StophyErrorCode } from "./errors";
 export type { Surface } from "./generated/surface.gen";
 export type * from "./generated/types.gen";
+export type {
+	GoogleSearchData as WebSearchData,
+	GoogleSearchError as WebSearchError,
+	GoogleSearchErrors as WebSearchErrors,
+	GoogleSearchResponse as WebSearchResponse,
+	GoogleSearchResponses as WebSearchResponses,
+} from "./generated/types.gen";

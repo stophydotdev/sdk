@@ -10,13 +10,13 @@ The web data layer for AI agents, in TypeScript and Python. Live web data as typ
 ```ts
 import { Stophy } from "stophy";
 
-const result = await new Stophy().web.search({ query: "bun runtime" });
+const result = await new Stophy().google.search({ query: "bun runtime" });
 ```
 
 ```python
 from stophy import Stophy
 
-result = Stophy().web.search(query="bun runtime")
+result = Stophy().google.search(query="bun runtime")
 ```
 
 Both examples work without an API key. Web search is the only method that does. For everything else, get a key from the [dashboard](https://stophy.dev/dashboard).

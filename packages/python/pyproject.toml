@@ -1,6 +1,6 @@
 [project]
 name = "stophy"
-version = "1.0.5"
+version = "1.0.6"
 description = "Live web data as typed JSON for AI agents. Search, video, social, jobs, places, property and ads behind one key, with a price shown before every call. You pay only for answers that come back."
 readme = "README.md"
 requires-python = ">=3.9"

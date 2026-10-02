@@ -13,7 +13,7 @@ npm install stophy
 ```ts
 import { Stophy } from "stophy";
 
-const result = await new Stophy().web.search({ query: "bun runtime" });
+const result = await new Stophy().google.search({ query: "bun runtime" });
 console.log(result.data.results);
 ```
 

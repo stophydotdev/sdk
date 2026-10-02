@@ -122,11 +122,20 @@ def test_usage_and_logs():
 def test_every_spec_operation_is_callable():
     spec = json.loads(Path("openapi.json").read_text())
     client, _calls = make_client({"json": ENVELOPE})
-    assert "/v1/web/search" in spec["paths"]
+    assert "/v1/google/search" in spec["paths"]
     assert "/v1/amazon/product" not in spec["paths"]
     for path in spec["paths"]:
         node = client
         for part in [item for item in path.split("/") if item and item != "v1"]:
             node = getattr(node, part)
         assert callable(node)
+    client.close()
+
+
+def test_web_search_and_web_news_still_work_after_the_rename():
+    client, calls = make_client({"json": ENVELOPE})
+    assert callable(client.web.search)
+    assert callable(client.web.news)
+    client.web.search(query="bun runtime")
+    assert calls[-1].url.path == "/v1/web/search"
     client.close()

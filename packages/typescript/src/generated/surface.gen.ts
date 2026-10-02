@@ -8,6 +8,8 @@ import type {
 	AdsAdvertisersResponse,
 	AdsSearchData,
 	AdsSearchResponse,
+	AiAnswerData,
+	AiAnswerResponse,
 	AirbnbCalendarData,
 	AirbnbCalendarResponse,
 	AirbnbListingData,
@@ -24,6 +26,16 @@ import type {
 	AppstoreSearchResponse,
 	AppstoreTopData,
 	AppstoreTopResponse,
+	GoogleAiModeData,
+	GoogleAiModeResponse,
+	GoogleImagesData,
+	GoogleImagesResponse,
+	GoogleNewsData,
+	GoogleNewsResponse,
+	GoogleSearchData,
+	GoogleSearchResponse,
+	GoogleShoppingData,
+	GoogleShoppingResponse,
 	GoogleplayAppData,
 	GoogleplayAppResponse,
 	GoogleplayReviewsData,
@@ -46,12 +58,16 @@ import type {
 	InstagramPostResponse,
 	InstagramProfileData,
 	InstagramProfileResponse,
+	LinkedinCompaniesSearchData,
+	LinkedinCompaniesSearchResponse,
 	LinkedinCompanyData,
 	LinkedinCompanyResponse,
 	LinkedinJobsJobData,
 	LinkedinJobsJobResponse,
 	LinkedinJobsSearchData,
 	LinkedinJobsSearchResponse,
+	LinkedinPeopleSearchData,
+	LinkedinPeopleSearchResponse,
 	LinkedinPostsData,
 	LinkedinPostsResponse,
 	LinkedinProfileData,
@@ -113,8 +129,6 @@ import type {
 	WalmartProductResponse,
 	WalmartSearchData,
 	WalmartSearchResponse,
-	WebSearchData,
-	WebSearchResponse,
 	YoutubeChannelData,
 	YoutubeChannelResponse,
 	YoutubeCommentsData,
@@ -135,8 +149,12 @@ import type { Caller } from "../transport";
 export function bindSurface(call: Caller) {
 	return {
 		endpoints: get<ListEndpointsResponse>("/v1/endpoints", call),
-		web: {
-			search: post<WebSearchData["body"], WebSearchResponse>("/v1/web/search", call),
+		google: {
+			search: post<GoogleSearchData["body"], GoogleSearchResponse>("/v1/google/search", call),
+			news: postOptional<GoogleNewsData["body"], GoogleNewsResponse>("/v1/google/news", call),
+			images: post<GoogleImagesData["body"], GoogleImagesResponse>("/v1/google/images", call),
+			aiMode: post<GoogleAiModeData["body"], GoogleAiModeResponse>("/v1/google/aiMode", call),
+			shopping: post<GoogleShoppingData["body"], GoogleShoppingResponse>("/v1/google/shopping", call),
 		},
 		youtube: {
 			search: post<YoutubeSearchData["body"], YoutubeSearchResponse>("/v1/youtube/search", call),
@@ -179,6 +197,12 @@ export function bindSurface(call: Caller) {
 			jobs: {
 				search: postOptional<LinkedinJobsSearchData["body"], LinkedinJobsSearchResponse>("/v1/linkedin/jobs/search", call),
 				job: post<LinkedinJobsJobData["body"], LinkedinJobsJobResponse>("/v1/linkedin/jobs/job", call),
+			},
+			people: {
+				search: postOptional<LinkedinPeopleSearchData["body"], LinkedinPeopleSearchResponse>("/v1/linkedin/people/search", call),
+			},
+			companies: {
+				search: postOptional<LinkedinCompaniesSearchData["body"], LinkedinCompaniesSearchResponse>("/v1/linkedin/companies/search", call),
 			},
 			company: post<LinkedinCompanyData["body"], LinkedinCompanyResponse>("/v1/linkedin/company", call),
 			profile: post<LinkedinProfileData["body"], LinkedinProfileResponse>("/v1/linkedin/profile", call),
@@ -243,6 +267,13 @@ export function bindSurface(call: Caller) {
 			search: post<AdsSearchData["body"], AdsSearchResponse>("/v1/ads/search", call),
 			ad: post<AdsAdData["body"], AdsAdResponse>("/v1/ads/ad", call),
 			advertisers: post<AdsAdvertisersData["body"], AdsAdvertisersResponse>("/v1/ads/advertisers", call),
+		},
+		ai: {
+			answer: post<AiAnswerData["body"], AiAnswerResponse>("/v1/ai/answer", call),
+		},
+		web: {
+			search: post<GoogleSearchData["body"], GoogleSearchResponse>("/v1/web/search", call),
+			news: postOptional<GoogleNewsData["body"], GoogleNewsResponse>("/v1/web/news", call),
 		},
 	};
 }

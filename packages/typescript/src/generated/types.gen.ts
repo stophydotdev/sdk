@@ -109,8 +109,12 @@ export type ListEndpointsResponses = {
 export type ListEndpointsResponse =
   ListEndpointsResponses[keyof ListEndpointsResponses];
 
-export type WebSearchData = {
+export type GoogleSearchData = {
   body: {
+    /**
+     * How many results to return, up to 100.
+     */
+    limit?: number;
     query: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
@@ -123,17 +127,13 @@ export type WebSearchData = {
     includeDomains?: Array<string>;
     excludeDomains?: Array<string>;
     within?: "day" | "week" | "month" | "year" | "all";
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
-  url: "/v1/web/search";
+  url: "/v1/google/search";
 };
 
-export type WebSearchErrors = {
+export type GoogleSearchErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -144,9 +144,9 @@ export type WebSearchErrors = {
   "5XX": _Error;
 };
 
-export type WebSearchError = WebSearchErrors[keyof WebSearchErrors];
+export type GoogleSearchError = GoogleSearchErrors[keyof GoogleSearchErrors];
 
-export type WebSearchResponses = {
+export type GoogleSearchResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -154,10 +154,210 @@ export type WebSearchResponses = {
     success: true;
     data: {
       results: Array<{
-        title: string;
         url: string;
+        title: string;
+        /**
+         * Text shown under the title.
+         */
         description?: string;
-        domain?: string;
+        /**
+         * Day shown on the result, when there is one.
+         */
+        date?: string;
+        /**
+         * Links listed under the result.
+         */
+        sitelinks?: Array<{
+          /**
+           * Link text.
+           */
+          title: string;
+          /**
+           * Destination URL.
+           */
+          url: string;
+        }>;
+        position: number;
+      }>;
+      aiOverview?: {
+        text: string;
+        /**
+         * Pages the overview cites.
+         */
+        sources?: Array<{
+          url: string;
+          title?: string;
+        }>;
+      };
+      knowledgeGraph?: {
+        title: string;
+        type?: string;
+        website?: string;
+        imageUrl?: string;
+        description?: string;
+        descriptionSource?: string;
+        descriptionUrl?: string;
+        /**
+         * Labelled facts, like Founded or Headquarters.
+         */
+        attributes?: {
+          [key: string]: string;
+        };
+      };
+      peopleAlsoAsk?: Array<{
+        question: string;
+        answer?: string;
+        title?: string;
+        url?: string;
+      }>;
+      relatedSearches?: Array<string>;
+      /**
+       * True when later pages failed and only the earlier results are here.
+       */
+      isPartial?: true;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleSearchResponse =
+  GoogleSearchResponses[keyof GoogleSearchResponses];
+
+export type GoogleNewsData = {
+  body: {
+    /**
+     * How many articles to return, up to 50. Headlines (no query) give up to 10.
+     */
+    limit?: number;
+    query?: string;
+    /**
+     * Headlines for one section instead of a search. Send query or topic, not both.
+     */
+    topic?:
+      | "world"
+      | "nation"
+      | "business"
+      | "technology"
+      | "entertainment"
+      | "sports"
+      | "science"
+      | "health";
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Two-letter language code like en or pt. Any case is accepted.
+     */
+    language?: string;
+    includeDomains?: Array<string>;
+    excludeDomains?: Array<string>;
+    within?: "hour" | "day" | "week" | "month" | "year" | "all";
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/news";
+};
+
+export type GoogleNewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleNewsError = GoogleNewsErrors[keyof GoogleNewsErrors];
+
+export type GoogleNewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        url: string;
+        title: string;
+        /**
+         * Publication that ran the article.
+         */
+        source?: string;
+        /**
+         * Text shown under the headline.
+         */
+        description?: string;
+        /**
+         * When the article was published.
+         */
+        publishedAt?: string;
+        position: number;
+      }>;
+      /**
+       * True when later pages failed and only the earlier articles are here.
+       */
+      isPartial?: true;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleNewsResponse = GoogleNewsResponses[keyof GoogleNewsResponses];
+
+export type GoogleImagesData = {
+  body: {
+    /**
+     * How many images to return, up to 100.
+     */
+    limit?: number;
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Two-letter language code like en or pt. Any case is accepted.
+     */
+    language?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/images";
+};
+
+export type GoogleImagesErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleImagesError = GoogleImagesErrors[keyof GoogleImagesErrors];
+
+export type GoogleImagesResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        imageUrl: string;
+        title?: string;
+        pageUrl: string;
+        source?: string;
+        width: number;
+        height: number;
+        thumbnailUrl: string;
         position: number;
       }>;
     };
@@ -166,10 +366,154 @@ export type WebSearchResponses = {
   };
 };
 
-export type WebSearchResponse = WebSearchResponses[keyof WebSearchResponses];
+export type GoogleImagesResponse =
+  GoogleImagesResponses[keyof GoogleImagesResponses];
+
+export type GoogleAiModeData = {
+  body: {
+    /**
+     * The question to ask, worded the way a person would ask it.
+     */
+    prompt: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Two-letter language code like en or pt. Any case is accepted.
+     */
+    language?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/aiMode";
+};
+
+export type GoogleAiModeErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleAiModeError = GoogleAiModeErrors[keyof GoogleAiModeErrors];
+
+export type GoogleAiModeResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      prompt?: string;
+      answer: string;
+      sources: Array<{
+        url: string;
+        title?: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleAiModeResponse =
+  GoogleAiModeResponses[keyof GoogleAiModeResponses];
+
+export type GoogleShoppingData = {
+  body: {
+    /**
+     * How many products to return, up to 40.
+     */
+    limit?: number;
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Two-letter language code like en or pt. Any case is accepted.
+     */
+    language?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/shopping";
+};
+
+export type GoogleShoppingErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleShoppingError =
+  GoogleShoppingErrors[keyof GoogleShoppingErrors];
+
+export type GoogleShoppingResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        title: string;
+        /**
+         * Current price in the country's currency.
+         */
+        price: number;
+        /**
+         * ISO 4217 currency code, e.g. USD.
+         */
+        priceCurrency?: string;
+        /**
+         * Higher price Google shows next to the current one, when there is one.
+         */
+        originalPrice?: number;
+        /**
+         * Store with the listed price.
+         */
+        seller?: string;
+        /**
+         * Delivery terms, in the page language.
+         */
+        delivery?: string;
+        /**
+         * Return terms, in the page language.
+         */
+        returns?: string;
+        rating?: number;
+        /**
+         * How many reviews the rating is based on.
+         */
+        reviews?: number;
+        position: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleShoppingResponse =
+  GoogleShoppingResponses[keyof GoogleShoppingResponses];
 
 export type YoutubeSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query: string;
     type?: "videos" | "all" | "channels" | "playlists" | "shorts";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
@@ -178,10 +522,6 @@ export type YoutubeSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -369,6 +709,10 @@ export type TranscriptResponse = TranscriptResponses[keyof TranscriptResponses];
 
 export type YoutubeCommentsData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     video: string;
     /**
      * A comment's repliesCursor from an earlier response. Returns that comment's replies.
@@ -379,10 +723,6 @@ export type YoutubeCommentsData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -438,16 +778,16 @@ export type YoutubeCommentsResponse =
 
 export type YoutubeChannelData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     channel: string;
     tab?: "videos" | "shorts" | "live" | "playlists" | "posts";
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -543,15 +883,15 @@ export type YoutubeChannelResponse =
 
 export type YoutubePlaylistData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     playlist: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -618,19 +958,25 @@ export type YoutubePlaylistResponse =
 
 export type RedditSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
+    /**
+     * Words to find. With any sort other than relevance, a query of several words matches that exact phrase; use sort relevance to match the words anywhere in a post. Quotes, AND, OR, NOT, title:, selftext:, author:, subreddit: and site: are used as typed.
+     */
     query: string;
     type?: "posts" | "subreddits" | "users";
     subreddit?: string;
+    /**
+     * relevance matches the words anywhere in a post. hot, top, newest and mostComments match the exact phrase, so a query of several words only returns posts containing that phrase.
+     */
     sort?: "relevance" | "hot" | "top" | "newest" | "mostComments";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -807,6 +1153,10 @@ export type RedditPostResponse = RedditPostResponses[keyof RedditPostResponses];
 
 export type RedditSubredditData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     subreddit: string;
     sort?: "hot" | "newest" | "top";
     within?: "hour" | "day" | "week" | "month" | "year" | "all";
@@ -814,10 +1164,6 @@ export type RedditSubredditData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -902,6 +1248,10 @@ export type RedditSubredditResponse =
 
 export type RedditUserData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     profile: string;
     tab?: "overview" | "posts" | "comments";
     sort?: "newest" | "hot" | "top";
@@ -909,10 +1259,6 @@ export type RedditUserData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1003,16 +1349,16 @@ export type RedditUserResponse = RedditUserResponses[keyof RedditUserResponses];
 
 export type RedditDomainData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     domain: string;
     sort?: "hot" | "newest" | "top";
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1083,6 +1429,10 @@ export type RedditDomainResponse =
 
 export type MapsSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query: string;
     location: string;
     /**
@@ -1097,10 +1447,6 @@ export type MapsSearchData = {
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
     language?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1225,6 +1571,10 @@ export type MapsPlaceResponse = MapsPlaceResponses[keyof MapsPlaceResponses];
 
 export type MapsReviewsData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     place: string;
     sort?: "relevance" | "newest" | "highest" | "lowest";
     /**
@@ -1235,10 +1585,6 @@ export type MapsReviewsData = {
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
     language?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1299,15 +1645,15 @@ export type MapsReviewsResponse =
 
 export type InstagramProfileData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     profile: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1478,16 +1824,16 @@ export type InstagramPostResponse =
 
 export type InstagramCommentsData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     post: string;
     comment?: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1541,15 +1887,15 @@ export type InstagramCommentsResponse =
 
 export type TiktokProfileData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     profile: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1699,15 +2045,15 @@ export type TiktokVideoResponse =
 
 export type TiktokHashtagData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     hashtag: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1775,16 +2121,16 @@ export type TiktokHashtagResponse =
 
 export type TiktokCommentsData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     video: string;
     comment?: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1836,16 +2182,16 @@ export type TiktokCommentsResponse =
 
 export type TiktokSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query: string;
     type?: "videos" | "users";
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -1926,6 +2272,10 @@ export type TiktokSearchResponse =
 
 export type MetaAdsPageData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     page: string;
     /**
      * ISO 3166-1 alpha-2 country code, or all. Any case is accepted.
@@ -1940,10 +2290,6 @@ export type MetaAdsPageData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -2042,6 +2388,10 @@ export type MetaAdsPageResponse =
 
 export type LinkedinJobsSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query?: string;
     location?: string;
     within?: "day" | "week" | "month" | "all";
@@ -2049,10 +2399,6 @@ export type LinkedinJobsSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -2106,6 +2452,172 @@ export type LinkedinJobsSearchResponses = {
 
 export type LinkedinJobsSearchResponse =
   LinkedinJobsSearchResponses[keyof LinkedinJobsSearchResponses];
+
+export type LinkedinPeopleSearchData = {
+  body: {
+    /**
+     * How many results to return, up to 25.
+     */
+    limit?: number;
+    /**
+     * Free words to match, like a skill or industry.
+     */
+    query?: string;
+    /**
+     * Current job title, like Head of Marketing.
+     */
+    title?: string;
+    /**
+     * Current company, like Shopify.
+     */
+    company?: string;
+    /**
+     * City or region shown on the profile, like Toronto.
+     */
+    location?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/linkedin/people/search";
+};
+
+export type LinkedinPeopleSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type LinkedinPeopleSearchError =
+  LinkedinPeopleSearchErrors[keyof LinkedinPeopleSearchErrors];
+
+export type LinkedinPeopleSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        profileUrl: string;
+        name?: string;
+        headline?: string;
+        title?: string;
+        company?: string;
+        location?: string;
+        education?: string;
+        details?: {
+          profileId?: string;
+          headline?: string;
+          location?: string;
+          about?: string;
+          followers?: number;
+          roles?: Array<{
+            title?: string;
+            company?: string;
+            companyUrl?: string;
+            from?: string;
+            to?: string;
+            isCurrent: boolean;
+          }>;
+          education?: Array<{
+            school?: string;
+            degree?: string;
+            schoolUrl?: string;
+            from?: string;
+            to?: string;
+          }>;
+        };
+        position: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type LinkedinPeopleSearchResponse =
+  LinkedinPeopleSearchResponses[keyof LinkedinPeopleSearchResponses];
+
+export type LinkedinCompaniesSearchData = {
+  body: {
+    /**
+     * How many results to return, up to 25.
+     */
+    limit?: number;
+    /**
+     * Company name or words about what it does.
+     */
+    query?: string;
+    /**
+     * Industry, like Financial Services.
+     */
+    industry?: string;
+    /**
+     * Headquarters city or region, like New York.
+     */
+    location?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/linkedin/companies/search";
+};
+
+export type LinkedinCompaniesSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type LinkedinCompaniesSearchError =
+  LinkedinCompaniesSearchErrors[keyof LinkedinCompaniesSearchErrors];
+
+export type LinkedinCompaniesSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        companyUrl: string;
+        name?: string;
+        description?: string;
+        industry?: string;
+        size?: string;
+        headquarters?: string;
+        followers?: number;
+        details?: {
+          companyId?: string;
+          website?: string;
+          description?: string;
+          industry?: string;
+          size?: string;
+          employees?: number;
+          headquarters?: string;
+          followers?: number;
+          founded?: string;
+          specialties?: Array<string>;
+        };
+        position: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type LinkedinCompaniesSearchResponse =
+  LinkedinCompaniesSearchResponses[keyof LinkedinCompaniesSearchResponses];
 
 export type LinkedinJobsJobData = {
   body: {
@@ -2281,12 +2793,12 @@ export type LinkedinProfileResponse =
 
 export type LinkedinPostsData = {
   body: {
-    profile?: string;
-    company?: string;
     /**
      * Return at most this many results (1-100).
      */
     limit?: number;
+    profile?: string;
+    company?: string;
   };
   path?: never;
   query?: never;
@@ -2333,6 +2845,10 @@ export type LinkedinPostsResponse =
 
 export type ZillowSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     location: string;
     status?: "forSale" | "forRent" | "sold";
     minPrice?: number;
@@ -2354,10 +2870,6 @@ export type ZillowSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -2521,6 +3033,10 @@ export type ZillowPropertyResponse =
 
 export type UpworkSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query?: string;
     sort?: "newest" | "relevance";
     jobType?: "hourly" | "fixed";
@@ -2529,10 +3045,6 @@ export type UpworkSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -2663,6 +3175,10 @@ export type UpworkJobResponse = UpworkJobResponses[keyof UpworkJobResponses];
 
 export type IndeedSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query?: string;
     /**
      * City, region or postal code, e.g. Kansas City, MO. Only jobs within about 5 miles are returned, so a city on a state line stays in its own state.
@@ -2752,10 +3268,6 @@ export type IndeedSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -2977,12 +3489,12 @@ export type IndeedJobResponse = IndeedJobResponses[keyof IndeedJobResponses];
 
 export type TripadvisorSearchData = {
   body: {
-    query: string;
-    type?: "all" | "hotels" | "restaurants" | "attractions" | "geos";
     /**
      * Return at most this many results (1-100).
      */
     limit?: number;
+    query: string;
+    type?: "all" | "hotels" | "restaurants" | "attractions" | "geos";
   };
   path?: never;
   query?: never;
@@ -3111,6 +3623,10 @@ export type TripadvisorPlaceResponse =
 
 export type TripadvisorReviewsData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     place: string;
     language?: string;
     ratings?: Array<number>;
@@ -3118,10 +3634,6 @@ export type TripadvisorReviewsData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3192,6 +3704,10 @@ export type TripadvisorReviewsResponse =
 export type GoogletravelFlightsData = {
   body: {
     /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
+    /**
      * IATA airport code, e.g. JFK. Any case is accepted.
      */
     origin: string;
@@ -3203,10 +3719,6 @@ export type GoogletravelFlightsData = {
     returnDate?: string;
     adults?: number;
     cabin?: "economy" | "premiumEconomy" | "business" | "first";
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3300,6 +3812,10 @@ export type GoogletravelFlightsResponse =
 
 export type WalmartSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query: string;
     sort?:
       | "relevance"
@@ -3314,10 +3830,6 @@ export type WalmartSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3532,16 +4044,16 @@ export type AppstoreAppResponse =
 
 export type AppstoreSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
     country?: string;
     device?: "iphone" | "ipad" | "mac";
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3611,6 +4123,10 @@ export type AppstoreSearchResponse =
 
 export type AppstoreReviewsData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     app: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
@@ -3621,10 +4137,6 @@ export type AppstoreReviewsData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3673,6 +4185,10 @@ export type AppstoreReviewsResponse =
 
 export type AppstoreTopData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     chart?: "free" | "paid" | "grossing";
     device?: "iphone" | "ipad" | "mac";
     genre?:
@@ -3704,10 +4220,6 @@ export type AppstoreTopData = {
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
     country?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3845,6 +4357,10 @@ export type GoogleplayAppResponse =
 
 export type GoogleplaySearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
@@ -3854,10 +4370,6 @@ export type GoogleplaySearchData = {
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
     language?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3910,6 +4422,10 @@ export type GoogleplaySearchResponse =
 
 export type GoogleplayReviewsData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     app: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
@@ -3925,10 +4441,6 @@ export type GoogleplayReviewsData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -3981,6 +4493,10 @@ export type GoogleplayReviewsResponse =
 
 export type AirbnbSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     location: string;
     checkIn?: string;
     checkOut?: string;
@@ -3997,10 +4513,6 @@ export type AirbnbSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4166,12 +4678,12 @@ export type AirbnbListingResponse =
 
 export type AirbnbCalendarData = {
   body: {
-    listing: string;
-    month?: string;
     /**
      * Return at most this many results (1-100).
      */
     limit?: number;
+    listing: string;
+    month?: string;
   };
   path?: never;
   query?: never;
@@ -4219,16 +4731,16 @@ export type AirbnbCalendarResponse =
 
 export type AirbnbReviewsData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     listing: string;
     sort?: "relevance" | "newest" | "highest" | "lowest";
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4281,6 +4793,10 @@ export type AirbnbReviewsResponse =
 
 export type RightmoveSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     location: string;
     status?: "forSale" | "forRent";
     minPrice?: number;
@@ -4292,10 +4808,6 @@ export type RightmoveSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4458,6 +4970,10 @@ export type RightmovePropertyResponse =
 
 export type ImmoscoutSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     location: string;
     type?:
       | "apartmentRent"
@@ -4475,10 +4991,6 @@ export type ImmoscoutSearchData = {
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4619,16 +5131,16 @@ export type ImmoscoutListingResponse =
 
 export type PinterestSearchData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     query: string;
     type?: "pins" | "videos";
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4758,15 +5270,15 @@ export type PinterestPinResponse =
 
 export type PinterestBoardData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     board: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4848,15 +5360,15 @@ export type PinterestBoardResponse =
 
 export type PinterestUserData = {
   body: {
+    /**
+     * Return at most this many results (1-100).
+     */
+    limit?: number;
     profile: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
     cursor?: string;
-    /**
-     * Return at most this many results (1-100).
-     */
-    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4937,6 +5449,10 @@ export type PinterestUserResponse =
 export type AdsSearchData = {
   body:
     | {
+        /**
+         * Return at most this many results (1-100).
+         */
+        limit?: number;
         query: string;
         /**
          * ISO 3166-1 alpha-2 country code, or all. Any case is accepted.
@@ -4952,12 +5468,12 @@ export type AdsSearchData = {
          */
         cursor?: string;
         network: "meta";
+      }
+    | {
         /**
          * Return at most this many results (1-100).
          */
         limit?: number;
-      }
-    | {
         /**
          * A domain like nike.com. Google's library finds ads by domain or advertiser, not by keyword.
          */
@@ -4974,12 +5490,12 @@ export type AdsSearchData = {
          */
         cursor?: string;
         network: "google";
+      }
+    | {
         /**
          * Return at most this many results (1-100).
          */
         limit?: number;
-      }
-    | {
         query?: string;
         advertiser?: string;
         /**
@@ -4991,12 +5507,12 @@ export type AdsSearchData = {
          */
         cursor?: string;
         network: "tiktok";
+      }
+    | {
         /**
          * Return at most this many results (1-100).
          */
         limit?: number;
-      }
-    | {
         query?: string;
         advertiser?: string;
         /**
@@ -5009,12 +5525,12 @@ export type AdsSearchData = {
          */
         cursor?: string;
         network: "linkedin";
+      }
+    | {
         /**
          * Return at most this many results (1-100).
          */
         limit?: number;
-      }
-    | {
         query?: string;
         advertiser?: string;
         /**
@@ -5026,12 +5542,12 @@ export type AdsSearchData = {
          */
         cursor?: string;
         network: "microsoft";
+      }
+    | {
         /**
          * Return at most this many results (1-100).
          */
         limit?: number;
-      }
-    | {
         /**
          * Not supported. Pinterest's ads library has no keyword search. Use advertiser to filter by advertiser name.
          */
@@ -5049,10 +5565,6 @@ export type AdsSearchData = {
          */
         cursor?: string;
         network: "pinterest";
-        /**
-         * Return at most this many results (1-100).
-         */
-        limit?: number;
       };
   path?: never;
   query?: never;
@@ -5543,24 +6055,24 @@ export type AdsAdResponse = AdsAdResponses[keyof AdsAdResponses];
 export type AdsAdvertisersData = {
   body:
     | {
+        /**
+         * Return at most this many results (1-100).
+         */
+        limit?: number;
         query: string;
         /**
          * Country code like de. Advertisers are matched on ads shown in this country, wherever the advertiser is based. Any case is accepted.
          */
         country?: string;
         network: "google";
-        /**
-         * Return at most this many results (1-100).
-         */
-        limit?: number;
       }
     | {
-        query: string;
-        network: "microsoft";
         /**
          * Return at most this many results (1-100).
          */
         limit?: number;
+        query: string;
+        network: "microsoft";
       };
   path?: never;
   query?: never;
@@ -5616,6 +6128,58 @@ export type AdsAdvertisersResponses = {
 
 export type AdsAdvertisersResponse =
   AdsAdvertisersResponses[keyof AdsAdvertisersResponses];
+
+export type AiAnswerData = {
+  body: {
+    /**
+     * The question to ask, worded the way a buyer would ask an AI assistant, e.g. What is the best CRM for a small business? Up to 2000 characters.
+     */
+    prompt: string;
+    /**
+     * Which AI assistant answers: gemini or chatgpt.
+     */
+    engine?: "gemini" | "chatgpt";
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/ai/answer";
+};
+
+export type AiAnswerErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AiAnswerError = AiAnswerErrors[keyof AiAnswerErrors];
+
+export type AiAnswerResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      engine: "gemini" | "chatgpt";
+      prompt?: string;
+      answer: string;
+      sources: Array<{
+        url: string;
+        title?: string;
+        domain: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AiAnswerResponse = AiAnswerResponses[keyof AiAnswerResponses];
 
 export type ClientOptions = {
   baseUrl: "https://api.stophy.dev" | (string & {});

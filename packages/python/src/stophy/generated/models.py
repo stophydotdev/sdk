@@ -6,7 +6,27 @@ from typing import Any, Literal
 
 from typing_extensions import NotRequired, TypedDict
 
-WebSearchWithin = Literal[
+GoogleSearchWithin = Literal[
+    "day",
+    "week",
+    "month",
+    "year",
+    "all",
+]
+
+GoogleNewsTopic = Literal[
+    "world",
+    "nation",
+    "business",
+    "technology",
+    "entertainment",
+    "sports",
+    "science",
+    "health",
+]
+
+GoogleNewsWithin = Literal[
+    "hour",
     "day",
     "week",
     "month",
@@ -20,15 +40,6 @@ YoutubeSearchType = Literal[
     "channels",
     "playlists",
     "shorts",
-]
-
-YoutubeSearchWithin = Literal[
-    "hour",
-    "day",
-    "week",
-    "month",
-    "year",
-    "all",
 ]
 
 YoutubeSearchSort = Literal[
@@ -411,8 +422,13 @@ AdsSearchResponseDataOption1ResultsItemFormat = Literal[
     "unknown",
 ]
 
-LinkedinProfileResponseDataRolesItem = TypedDict(
-    "LinkedinProfileResponseDataRolesItem",
+AiAnswerEngine = Literal[
+    "gemini",
+    "chatgpt",
+]
+
+LinkedinPeopleSearchResponseDataResultsItemDetailsRolesItem = TypedDict(
+    "LinkedinPeopleSearchResponseDataResultsItemDetailsRolesItem",
     {
         "title": NotRequired[str],
         "company": NotRequired[str],
@@ -423,8 +439,8 @@ LinkedinProfileResponseDataRolesItem = TypedDict(
     },
 )
 
-LinkedinProfileResponseDataEducationItem = TypedDict(
-    "LinkedinProfileResponseDataEducationItem",
+LinkedinPeopleSearchResponseDataResultsItemDetailsEducationItem = TypedDict(
+    "LinkedinPeopleSearchResponseDataResultsItemDetailsEducationItem",
     {
         "school": NotRequired[str],
         "degree": NotRequired[str],
@@ -461,21 +477,145 @@ class EndpointCatalog(TypedDict):
     endpoints: list[EndpointCatalogEndpointsItem]
 
 
-class WebSearchResponseDataResultsItem(TypedDict):
+class GoogleSearchResponseDataResultsItemSitelinksItem(TypedDict):
     title: str
     url: str
+
+
+class GoogleSearchResponseDataResultsItem(TypedDict):
+    url: str
+    title: str
     description: NotRequired[str]
-    domain: NotRequired[str]
+    date: NotRequired[str]
+    sitelinks: NotRequired[list[GoogleSearchResponseDataResultsItemSitelinksItem]]
     position: int
 
 
-class WebSearchResponseData(TypedDict):
-    results: list[WebSearchResponseDataResultsItem]
+class GoogleSearchResponseDataAiOverviewSourcesItem(TypedDict):
+    url: str
+    title: NotRequired[str]
 
 
-class WebSearchResponse(TypedDict):
+class GoogleSearchResponseDataAiOverview(TypedDict):
+    text: str
+    sources: NotRequired[list[GoogleSearchResponseDataAiOverviewSourcesItem]]
+
+
+class GoogleSearchResponseDataKnowledgeGraph(TypedDict):
+    title: str
+    type: NotRequired[str]
+    website: NotRequired[str]
+    imageUrl: NotRequired[str]
+    description: NotRequired[str]
+    descriptionSource: NotRequired[str]
+    descriptionUrl: NotRequired[str]
+    attributes: NotRequired[dict[str, str]]
+
+
+class GoogleSearchResponseDataPeopleAlsoAskItem(TypedDict):
+    question: str
+    answer: NotRequired[str]
+    title: NotRequired[str]
+    url: NotRequired[str]
+
+
+class GoogleSearchResponseData(TypedDict):
+    results: list[GoogleSearchResponseDataResultsItem]
+    aiOverview: NotRequired[GoogleSearchResponseDataAiOverview]
+    knowledgeGraph: NotRequired[GoogleSearchResponseDataKnowledgeGraph]
+    peopleAlsoAsk: NotRequired[list[GoogleSearchResponseDataPeopleAlsoAskItem]]
+    relatedSearches: NotRequired[list[str]]
+    isPartial: NotRequired[Literal[True]]
+
+
+class GoogleSearchResponse(TypedDict):
     success: Literal[True]
-    data: WebSearchResponseData
+    data: GoogleSearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class GoogleNewsResponseDataResultsItem(TypedDict):
+    url: str
+    title: str
+    source: NotRequired[str]
+    description: NotRequired[str]
+    publishedAt: NotRequired[str]
+    position: int
+
+
+class GoogleNewsResponseData(TypedDict):
+    results: list[GoogleNewsResponseDataResultsItem]
+    isPartial: NotRequired[Literal[True]]
+
+
+class GoogleNewsResponse(TypedDict):
+    success: Literal[True]
+    data: GoogleNewsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class GoogleImagesResponseDataResultsItem(TypedDict):
+    imageUrl: str
+    title: NotRequired[str]
+    pageUrl: str
+    source: NotRequired[str]
+    width: int
+    height: int
+    thumbnailUrl: str
+    position: int
+
+
+class GoogleImagesResponseData(TypedDict):
+    results: list[GoogleImagesResponseDataResultsItem]
+
+
+class GoogleImagesResponse(TypedDict):
+    success: Literal[True]
+    data: GoogleImagesResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class GoogleAiModeResponseDataSourcesItem(TypedDict):
+    url: str
+    title: NotRequired[str]
+
+
+class GoogleAiModeResponseData(TypedDict):
+    prompt: NotRequired[str]
+    answer: str
+    sources: list[GoogleAiModeResponseDataSourcesItem]
+
+
+class GoogleAiModeResponse(TypedDict):
+    success: Literal[True]
+    data: GoogleAiModeResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class GoogleShoppingResponseDataResultsItem(TypedDict):
+    title: str
+    price: float
+    priceCurrency: NotRequired[str]
+    originalPrice: NotRequired[float]
+    seller: NotRequired[str]
+    delivery: NotRequired[str]
+    returns: NotRequired[str]
+    rating: NotRequired[float]
+    reviews: NotRequired[int]
+    position: int
+
+
+class GoogleShoppingResponseData(TypedDict):
+    results: list[GoogleShoppingResponseDataResultsItem]
+
+
+class GoogleShoppingResponse(TypedDict):
+    success: Literal[True]
+    data: GoogleShoppingResponseData
     creditsUsed: int
     requestId: str
 
@@ -1363,6 +1503,75 @@ class LinkedinJobsSearchResponse(TypedDict):
     requestId: str
 
 
+class LinkedinPeopleSearchResponseDataResultsItemDetails(TypedDict):
+    profileId: NotRequired[str]
+    headline: NotRequired[str]
+    location: NotRequired[str]
+    about: NotRequired[str]
+    followers: NotRequired[int]
+    roles: NotRequired[list[LinkedinPeopleSearchResponseDataResultsItemDetailsRolesItem]]
+    education: NotRequired[list[LinkedinPeopleSearchResponseDataResultsItemDetailsEducationItem]]
+
+
+class LinkedinPeopleSearchResponseDataResultsItem(TypedDict):
+    profileUrl: str
+    name: NotRequired[str]
+    headline: NotRequired[str]
+    title: NotRequired[str]
+    company: NotRequired[str]
+    location: NotRequired[str]
+    education: NotRequired[str]
+    details: NotRequired[LinkedinPeopleSearchResponseDataResultsItemDetails]
+    position: int
+
+
+class LinkedinPeopleSearchResponseData(TypedDict):
+    results: list[LinkedinPeopleSearchResponseDataResultsItem]
+
+
+class LinkedinPeopleSearchResponse(TypedDict):
+    success: Literal[True]
+    data: LinkedinPeopleSearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class LinkedinCompaniesSearchResponseDataResultsItemDetails(TypedDict):
+    companyId: NotRequired[str]
+    website: NotRequired[str]
+    description: NotRequired[str]
+    industry: NotRequired[str]
+    size: NotRequired[str]
+    employees: NotRequired[int]
+    headquarters: NotRequired[str]
+    followers: NotRequired[int]
+    founded: NotRequired[str]
+    specialties: NotRequired[list[str]]
+
+
+class LinkedinCompaniesSearchResponseDataResultsItem(TypedDict):
+    companyUrl: str
+    name: NotRequired[str]
+    description: NotRequired[str]
+    industry: NotRequired[str]
+    size: NotRequired[str]
+    headquarters: NotRequired[str]
+    followers: NotRequired[int]
+    details: NotRequired[LinkedinCompaniesSearchResponseDataResultsItemDetails]
+    position: int
+
+
+class LinkedinCompaniesSearchResponseData(TypedDict):
+    results: list[LinkedinCompaniesSearchResponseDataResultsItem]
+
+
+class LinkedinCompaniesSearchResponse(TypedDict):
+    success: Literal[True]
+    data: LinkedinCompaniesSearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
 class LinkedinJobsJobResponseData(TypedDict):
     jobId: NotRequired[str]
     jobUrl: str
@@ -1424,8 +1633,8 @@ class LinkedinProfileResponseData(TypedDict):
     location: NotRequired[str]
     about: NotRequired[str]
     followers: NotRequired[int]
-    roles: list[LinkedinProfileResponseDataRolesItem]
-    education: list[LinkedinProfileResponseDataEducationItem]
+    roles: list[LinkedinPeopleSearchResponseDataResultsItemDetailsRolesItem]
+    education: list[LinkedinPeopleSearchResponseDataResultsItemDetailsEducationItem]
 
 
 class LinkedinProfileResponse(TypedDict):
@@ -3046,3 +3255,29 @@ class AdsAdvertisersResponse(TypedDict):
     data: AdsAdvertisersResponseDataOption0 | AdsAdvertisersResponseDataOption1
     creditsUsed: int
     requestId: str
+
+
+class AiAnswerResponseDataSourcesItem(TypedDict):
+    url: str
+    title: NotRequired[str]
+    domain: str
+
+
+class AiAnswerResponseData(TypedDict):
+    engine: AiAnswerEngine
+    prompt: NotRequired[str]
+    answer: str
+    sources: list[AiAnswerResponseDataSourcesItem]
+
+
+class AiAnswerResponse(TypedDict):
+    success: Literal[True]
+    data: AiAnswerResponseData
+    creditsUsed: int
+    requestId: str
+
+
+WebSearchResponse = GoogleSearchResponse
+WebSearchResponseData = GoogleSearchResponseData
+WebSearchResponseDataResultsItem = GoogleSearchResponseDataResultsItem
+WebSearchWithin = GoogleSearchWithin
