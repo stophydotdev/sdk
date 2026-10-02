@@ -8,9 +8,21 @@ import type {
 import type {
   ListEndpointsData,
   ListEndpointsResponse,
-  WebSearchData,
-  WebSearchResponse,
-  WebSearchError,
+  GoogleSearchData,
+  GoogleSearchResponse,
+  GoogleSearchError,
+  GoogleNewsData,
+  GoogleNewsResponse,
+  GoogleNewsError,
+  GoogleImagesData,
+  GoogleImagesResponse,
+  GoogleImagesError,
+  GoogleAiModeData,
+  GoogleAiModeResponse,
+  GoogleAiModeError,
+  GoogleShoppingData,
+  GoogleShoppingResponse,
+  GoogleShoppingError,
   YoutubeSearchData,
   YoutubeSearchResponse,
   YoutubeSearchError,
@@ -83,6 +95,12 @@ import type {
   LinkedinJobsSearchData,
   LinkedinJobsSearchResponse,
   LinkedinJobsSearchError,
+  LinkedinPeopleSearchData,
+  LinkedinPeopleSearchResponse,
+  LinkedinPeopleSearchError,
+  LinkedinCompaniesSearchData,
+  LinkedinCompaniesSearchResponse,
+  LinkedinCompaniesSearchError,
   LinkedinJobsJobData,
   LinkedinJobsJobResponse,
   LinkedinJobsJobError,
@@ -197,6 +215,9 @@ import type {
   AdsAdvertisersData,
   AdsAdvertisersResponse,
   AdsAdvertisersError,
+  AiAnswerData,
+  AiAnswerResponse,
+  AiAnswerError,
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -234,15 +255,15 @@ export const listEndpoints = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search the web and get titles, links and snippets
- * Costs 1 credit per call. Works without an API key, within free limits.
+ * Search Google and get results, the AI Overview, the knowledge panel and related questions
+ * Costs 1 credit per 10 results returned, never more than you asked for. Works without an API key, within free limits.
  */
-export const webSearch = <ThrowOnError extends boolean = false>(
-  options: Options<WebSearchData, ThrowOnError>
+export const googleSearch = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleSearchData, ThrowOnError>
 ) => {
   return (options.client ?? _heyApiClient).post<
-    WebSearchResponse,
-    WebSearchError,
+    GoogleSearchResponse,
+    GoogleSearchError,
     ThrowOnError
   >({
     security: [
@@ -251,7 +272,115 @@ export const webSearch = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/v1/web/search",
+    url: "/v1/google/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Search Google News by keyword, date, site and country, or read headlines by topic
+ * Costs 1 credit per 10 articles returned, never more than you asked for.
+ */
+export const googleNews = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleNewsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GoogleNewsResponse,
+    GoogleNewsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/google/news",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Search Google Images and get each full-size image with the page it comes from
+ * Costs 1 credit per call.
+ */
+export const googleImages = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleImagesData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GoogleImagesResponse,
+    GoogleImagesError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/google/images",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Ask Google AI Mode a question and get its answer with the sources it cites
+ * Costs 2 credits per call.
+ */
+export const googleAiMode = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleAiModeData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GoogleAiModeResponse,
+    GoogleAiModeError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/google/aiMode",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Compare product prices and sellers on Google Shopping by country
+ * Costs 2 credits per call.
+ */
+export const googleShopping = <ThrowOnError extends boolean = false>(
+  options: Options<GoogleShoppingData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GoogleShoppingResponse,
+    GoogleShoppingError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/google/shopping",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -900,6 +1029,60 @@ export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/linkedin/jobs/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Find public LinkedIn profiles by job title, company and location, with their details
+ * Costs 1 credit per 10 results, plus 1 credit per result that comes back with details.
+ */
+export const linkedinPeopleSearch = <ThrowOnError extends boolean = false>(
+  options: Options<LinkedinPeopleSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    LinkedinPeopleSearchResponse,
+    LinkedinPeopleSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/linkedin/people/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Find LinkedIn company pages by name, industry and location, with their details
+ * Costs 1 credit per 10 results, plus 1 credit per result that comes back with details.
+ */
+export const linkedinCompaniesSearch = <ThrowOnError extends boolean = false>(
+  options: Options<LinkedinCompaniesSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    LinkedinCompaniesSearchResponse,
+    LinkedinCompaniesSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/linkedin/companies/search",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1926,6 +2109,33 @@ export const adsAdvertisers = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/ads/advertisers",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Ask an AI assistant a question and get its answer with the sources it cites
+ * Costs 3 credits per call.
+ */
+export const aiAnswer = <ThrowOnError extends boolean = false>(
+  options: Options<AiAnswerData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    AiAnswerResponse,
+    AiAnswerError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/ai/answer",
     ...options,
     headers: {
       "Content-Type": "application/json",

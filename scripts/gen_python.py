@@ -307,6 +307,10 @@ def render_models(emitter: Emitter) -> str:
             body.append(f"    {key}: {annotation}")
         body.append("")
         body.append("")
+    defined = {name for name, _ in emitter.models} | {name for name, _ in emitter.aliases}
+    for alias, target in TYPE_ALIASES.items():
+        if target in defined:
+            body.append(f"{alias} = {target}")
     return "\n".join(body).rstrip() + "\n"
 
 
@@ -417,6 +421,19 @@ def render_namespaces(source: str) -> str:
     return "\n".join(header) + source
 
 
+ALIASES = {
+    "/v1/web/search": "/v1/google/search",
+    "/v1/web/news": "/v1/google/news",
+}
+
+TYPE_ALIASES = {
+    "WebSearchResponse": "GoogleSearchResponse",
+    "WebSearchResponseData": "GoogleSearchResponseData",
+    "WebSearchResponseDataResultsItem": "GoogleSearchResponseDataResultsItem",
+    "WebSearchWithin": "GoogleSearchWithin",
+}
+
+
 def main() -> None:
     spec = json.loads(SPEC_PATH.read_text())
     components = spec.get("components", {}).get("schemas", {})
@@ -457,6 +474,12 @@ def main() -> None:
                     ),
                 }
             )
+
+    for alias, target in ALIASES.items():
+        original = next((item for item in prepared if item["path"] == target), None)
+        if original is not None:
+            segments = [part for part in alias.split("/") if part and part != "v1"]
+            prepared.append({**original, "path": alias, "segments": segments})
 
     models = render_models(emitter)
     tree = build_tree(prepared)
