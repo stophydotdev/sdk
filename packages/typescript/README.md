@@ -17,7 +17,7 @@ const result = await new Stophy().google.search({ query: "bun runtime" });
 console.log(result.data.results);
 ```
 
-Web search works without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
+Google search, Google News, YouTube search, YouTube video details and YouTube transcripts work without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 

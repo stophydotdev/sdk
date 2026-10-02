@@ -19,7 +19,7 @@ from stophy import Stophy
 result = Stophy().google.search(query="bun runtime")
 ```
 
-Both examples work without an API key. Web search is the only method that does. For everything else, get a key from the [dashboard](https://stophy.dev/dashboard).
+Both examples work without an API key. So do Google News, YouTube search, YouTube video details and YouTube transcripts, within a small free allowance. For everything else, get a key from the [dashboard](https://stophy.dev/dashboard).
 
 ## More data
 

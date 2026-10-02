@@ -17,7 +17,7 @@ result = Stophy().google.search(query="bun runtime")
 print(result["data"]["results"])
 ```
 
-Web search works without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
+Google search, Google News, YouTube search, YouTube video details and YouTube transcripts work without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 
