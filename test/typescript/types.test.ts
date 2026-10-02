@@ -11,7 +11,7 @@ type _QueryRequired = Expect<
 export async function typedCalls(): Promise<void> {
 	const result = await client.youtube.search({
 		query: "bun runtime",
-		limit: 2,
+		cursor: "next",
 	});
 	const first = result.data.results[0];
 	if (first?.type === "video") {
@@ -24,6 +24,11 @@ export async function typedCalls(): Promise<void> {
 	const seconds: number | undefined = transcript.data.transcribedSeconds;
 	if (seconds !== undefined && seconds < 0) throw new Error("unreachable");
 	await client.walmart.search({ query: "tv", sort: "priceLow" });
+	const google = await client.google.search({ query: "bun", page: 2 });
+	const more: boolean | undefined = google.data.hasMore;
+	if (more === undefined && google.data.page === 0)
+		throw new Error("unreachable");
+	await client.meta.ads.page({ advertiser: "nike" });
 	await client.ads.search({ network: "meta", query: "shoes" });
 	await client.ads.search({ network: "google", query: "example.com" });
 	const profile = await client.tiktok.profile({ profile: "bun" });
@@ -36,6 +41,12 @@ export async function typedCalls(): Promise<void> {
 
 	// @ts-expect-error query is required
 	await client.youtube.search({});
+	// @ts-expect-error limit is gone, results come one page at a time
+	await client.youtube.search({ query: "bun", limit: 2 });
+	// @ts-expect-error google.search pages by number, not cursor
+	await client.google.search({ query: "bun", cursor: "next" });
+	// @ts-expect-error the page is named advertiser
+	await client.meta.ads.page({ page: "nike" });
 	// @ts-expect-error network is required
 	await client.ads.search({ query: "shoes" });
 	// @ts-expect-error the video list is results

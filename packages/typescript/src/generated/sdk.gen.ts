@@ -256,7 +256,7 @@ export const listEndpoints = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Google and get results, the AI Overview, the knowledge panel and related questions
- * Costs 1 credit per 10 results returned, never more than you asked for. Works without an API key, within free limits.
+ * Costs 1 credit per call. Pages with page. Works without an API key, within free limits.
  */
 export const googleSearch = <ThrowOnError extends boolean = false>(
   options: Options<GoogleSearchData, ThrowOnError>
@@ -283,7 +283,7 @@ export const googleSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Google News by keyword, date, site and country, or read headlines by topic
- * Costs 1 credit per 10 articles returned, never more than you asked for.
+ * Costs 1 credit per call. Pages with page. Works without an API key, within free limits.
  */
 export const googleNews = <ThrowOnError extends boolean = false>(
   options: Options<GoogleNewsData, ThrowOnError>
@@ -337,7 +337,7 @@ export const googleImages = <ThrowOnError extends boolean = false>(
 
 /**
  * Ask Google AI Mode a question and get its answer with the sources it cites
- * Costs 2 credits per call.
+ * Costs 1 credit per call.
  */
 export const googleAiMode = <ThrowOnError extends boolean = false>(
   options: Options<GoogleAiModeData, ThrowOnError>
@@ -364,7 +364,7 @@ export const googleAiMode = <ThrowOnError extends boolean = false>(
 
 /**
  * Compare product prices and sellers on Google Shopping by country
- * Costs 2 credits per call.
+ * Costs 1 credit per call. Pages with page.
  */
 export const googleShopping = <ThrowOnError extends boolean = false>(
   options: Options<GoogleShoppingData, ThrowOnError>
@@ -391,7 +391,7 @@ export const googleShopping = <ThrowOnError extends boolean = false>(
 
 /**
  * Search YouTube videos, channels, playlists and shorts
- * Costs 1 credit per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const youtubeSearch = <ThrowOnError extends boolean = false>(
   options: Options<YoutubeSearchData, ThrowOnError>
@@ -418,7 +418,7 @@ export const youtubeSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a video's title, channel, views, likes and description
- * Costs 1 credit per call.
+ * Costs 1 credit per call. Works without an API key, within free limits.
  */
 export const youtubeVideo = <ThrowOnError extends boolean = false>(
   options: Options<YoutubeVideoData, ThrowOnError>
@@ -445,7 +445,7 @@ export const youtubeVideo = <ThrowOnError extends boolean = false>(
 
 /**
  * Get what a YouTube or other video says. 2 credits with captions, else 2 plus 1 per 10 s
- * Costs 2 credits when the video has captions; otherwise 2 credits plus 1 credit for every 10 seconds of audio, up to 30 minutes.
+ * Costs 2 credits when the video has captions; otherwise 2 credits plus 1 credit for every 10 seconds of audio, up to 30 minutes. Works without an API key for YouTube videos, within free limits.
  */
 export const transcript = <ThrowOnError extends boolean = false>(
   options: Options<TranscriptData, ThrowOnError>
@@ -688,7 +688,7 @@ export const redditDomain = <ThrowOnError extends boolean = false>(
 
 /**
  * Search places on Google Maps by keyword and location
- * Costs 3 credits per call. Pages with cursor.
+ * Costs 1 credit per call.
  */
 export const mapsSearch = <ThrowOnError extends boolean = false>(
   options: Options<MapsSearchData, ThrowOnError>
@@ -985,7 +985,7 @@ export const tiktokSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get the ads a Facebook page runs
- * Costs 5 credits per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const metaAdsPage = <ThrowOnError extends boolean = false>(
   options: Options<MetaAdsPageData, ThrowOnError>
@@ -1012,7 +1012,7 @@ export const metaAdsPage = <ThrowOnError extends boolean = false>(
 
 /**
  * Search LinkedIn jobs
- * Costs 3 credits per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with page.
  */
 export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinJobsSearchData, ThrowOnError>
@@ -1039,7 +1039,7 @@ export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Find public LinkedIn profiles by job title, company and location, with their details
- * Costs 1 credit per 10 results, plus 1 credit per result that comes back with details.
+ * Costs 1 credit per 10 results, plus 1 credit per result that comes back with details. Pages with page.
  */
 export const linkedinPeopleSearch = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinPeopleSearchData, ThrowOnError>
@@ -1066,7 +1066,7 @@ export const linkedinPeopleSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Find LinkedIn company pages by name, industry and location, with their details
- * Costs 1 credit per 10 results, plus 1 credit per result that comes back with details.
+ * Costs 1 credit per 10 results, plus 1 credit per result that comes back with details. Pages with page.
  */
 export const linkedinCompaniesSearch = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinCompaniesSearchData, ThrowOnError>
@@ -1201,7 +1201,7 @@ export const linkedinPosts = <ThrowOnError extends boolean = false>(
 
 /**
  * Search homes for sale, for rent or sold
- * Costs 3 credits per call. Pages with cursor.
+ * Costs 2 credits per call. Pages with page.
  */
 export const zillowSearch = <ThrowOnError extends boolean = false>(
   options: Options<ZillowSearchData, ThrowOnError>
@@ -1228,7 +1228,7 @@ export const zillowSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a home's details, price and Zestimate
- * Costs 2 credits per call.
+ * Costs 1 credit per call.
  */
 export const zillowProperty = <ThrowOnError extends boolean = false>(
   options: Options<ZillowPropertyData, ThrowOnError>
@@ -1255,7 +1255,7 @@ export const zillowProperty = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Upwork jobs
- * Costs 3 credits per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with page.
  */
 export const upworkSearch = <ThrowOnError extends boolean = false>(
   options: Options<UpworkSearchData, ThrowOnError>
@@ -1417,7 +1417,7 @@ export const tripadvisorPlace = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a place's reviews
- * Costs 1 credit per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with page.
  */
 export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
   options: Options<TripadvisorReviewsData, ThrowOnError>
@@ -1444,7 +1444,7 @@ export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
 
 /**
  * Search flights with prices and times
- * Costs 5 credits per call.
+ * Costs 1 credit per call.
  */
 export const googletravelFlights = <ThrowOnError extends boolean = false>(
   options: Options<GoogletravelFlightsData, ThrowOnError>
@@ -1471,7 +1471,7 @@ export const googletravelFlights = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Walmart products
- * Costs 5 credits per call. Pages with cursor.
+ * Costs 4 credits per call. Pages with page.
  */
 export const walmartSearch = <ThrowOnError extends boolean = false>(
   options: Options<WalmartSearchData, ThrowOnError>
@@ -1579,7 +1579,7 @@ export const appstoreSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get an app's App Store reviews
- * Costs 1 credit per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with page.
  */
 export const appstoreReviews = <ThrowOnError extends boolean = false>(
   options: Options<AppstoreReviewsData, ThrowOnError>
@@ -1714,7 +1714,7 @@ export const googleplayReviews = <ThrowOnError extends boolean = false>(
 
 /**
  * Search Airbnb stays by place and dates
- * Costs 3 credits per call. Pages with cursor.
+ * Costs 1 credit per call.
  */
 export const airbnbSearch = <ThrowOnError extends boolean = false>(
   options: Options<AirbnbSearchData, ThrowOnError>
@@ -1795,7 +1795,7 @@ export const airbnbCalendar = <ThrowOnError extends boolean = false>(
 
 /**
  * Get a listing's reviews
- * Costs 1 credit per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with page.
  */
 export const airbnbReviews = <ThrowOnError extends boolean = false>(
   options: Options<AirbnbReviewsData, ThrowOnError>
@@ -1822,7 +1822,7 @@ export const airbnbReviews = <ThrowOnError extends boolean = false>(
 
 /**
  * Search UK homes for sale or rent
- * Costs 3 credits per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with page.
  */
 export const rightmoveSearch = <ThrowOnError extends boolean = false>(
   options: Options<RightmoveSearchData, ThrowOnError>
@@ -1876,7 +1876,7 @@ export const rightmoveProperty = <ThrowOnError extends boolean = false>(
 
 /**
  * Search German homes for rent or sale
- * Costs 3 credits per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with page.
  */
 export const immoscoutSearch = <ThrowOnError extends boolean = false>(
   options: Options<ImmoscoutSearchData, ThrowOnError>
@@ -2038,7 +2038,7 @@ export const pinterestUser = <ThrowOnError extends boolean = false>(
 
 /**
  * Search a public ad library: Meta, Google, TikTok, LinkedIn, Microsoft or Pinterest
- * Costs 5 credits per call. Pages with cursor.
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const adsSearch = <ThrowOnError extends boolean = false>(
   options: Options<AdsSearchData, ThrowOnError>
@@ -2065,7 +2065,7 @@ export const adsSearch = <ThrowOnError extends boolean = false>(
 
 /**
  * Get one ad's details from Meta, Google, TikTok, LinkedIn, Microsoft or Pinterest
- * Costs 5 credits per call.
+ * Costs 1 credit per call.
  */
 export const adsAd = <ThrowOnError extends boolean = false>(
   options: Options<AdsAdData, ThrowOnError>
@@ -2119,7 +2119,7 @@ export const adsAdvertisers = <ThrowOnError extends boolean = false>(
 
 /**
  * Ask an AI assistant a question and get its answer with the sources it cites
- * Costs 3 credits per call.
+ * Costs 1 credit per call.
  */
 export const aiAnswer = <ThrowOnError extends boolean = false>(
   options: Options<AiAnswerData, ThrowOnError>
