@@ -477,20 +477,6 @@ class EndpointCatalog(TypedDict):
     endpoints: list[EndpointCatalogEndpointsItem]
 
 
-class GoogleSearchResponseDataResultsItemSitelinksItem(TypedDict):
-    title: str
-    url: str
-
-
-class GoogleSearchResponseDataResultsItem(TypedDict):
-    url: str
-    title: str
-    description: NotRequired[str]
-    date: NotRequired[str]
-    sitelinks: NotRequired[list[GoogleSearchResponseDataResultsItemSitelinksItem]]
-    position: int
-
-
 class GoogleSearchResponseDataAiOverviewSourcesItem(TypedDict):
     url: str
     title: NotRequired[str]
@@ -512,6 +498,20 @@ class GoogleSearchResponseDataKnowledgeGraph(TypedDict):
     attributes: NotRequired[dict[str, str]]
 
 
+class GoogleSearchResponseDataResultsItemSitelinksItem(TypedDict):
+    title: str
+    url: str
+
+
+class GoogleSearchResponseDataResultsItem(TypedDict):
+    url: str
+    title: str
+    description: NotRequired[str]
+    date: NotRequired[str]
+    sitelinks: NotRequired[list[GoogleSearchResponseDataResultsItemSitelinksItem]]
+    position: int
+
+
 class GoogleSearchResponseDataPeopleAlsoAskItem(TypedDict):
     question: str
     answer: NotRequired[str]
@@ -520,12 +520,13 @@ class GoogleSearchResponseDataPeopleAlsoAskItem(TypedDict):
 
 
 class GoogleSearchResponseData(TypedDict):
-    results: list[GoogleSearchResponseDataResultsItem]
     aiOverview: NotRequired[GoogleSearchResponseDataAiOverview]
     knowledgeGraph: NotRequired[GoogleSearchResponseDataKnowledgeGraph]
+    results: list[GoogleSearchResponseDataResultsItem]
     peopleAlsoAsk: NotRequired[list[GoogleSearchResponseDataPeopleAlsoAskItem]]
     relatedSearches: NotRequired[list[str]]
-    isPartial: NotRequired[Literal[True]]
+    page: NotRequired[int]
+    hasMore: NotRequired[bool]
 
 
 class GoogleSearchResponse(TypedDict):
@@ -546,7 +547,8 @@ class GoogleNewsResponseDataResultsItem(TypedDict):
 
 class GoogleNewsResponseData(TypedDict):
     results: list[GoogleNewsResponseDataResultsItem]
-    isPartial: NotRequired[Literal[True]]
+    page: int
+    hasMore: NotRequired[bool]
 
 
 class GoogleNewsResponse(TypedDict):
@@ -611,6 +613,8 @@ class GoogleShoppingResponseDataResultsItem(TypedDict):
 
 class GoogleShoppingResponseData(TypedDict):
     results: list[GoogleShoppingResponseDataResultsItem]
+    page: int
+    hasMore: bool
 
 
 class GoogleShoppingResponse(TypedDict):
@@ -1049,7 +1053,6 @@ class MapsSearchResponseDataResultsItem(TypedDict):
 
 class MapsSearchResponseData(TypedDict):
     results: list[MapsSearchResponseDataResultsItem]
-    cursor: NotRequired[str]
 
 
 class MapsSearchResponse(TypedDict):
@@ -1493,7 +1496,8 @@ class LinkedinJobsSearchResponseDataResultsItem(TypedDict):
 
 class LinkedinJobsSearchResponseData(TypedDict):
     results: list[LinkedinJobsSearchResponseDataResultsItem]
-    cursor: NotRequired[str]
+    page: int
+    hasMore: bool
 
 
 class LinkedinJobsSearchResponse(TypedDict):
@@ -1527,6 +1531,8 @@ class LinkedinPeopleSearchResponseDataResultsItem(TypedDict):
 
 class LinkedinPeopleSearchResponseData(TypedDict):
     results: list[LinkedinPeopleSearchResponseDataResultsItem]
+    page: NotRequired[int]
+    hasMore: NotRequired[bool]
 
 
 class LinkedinPeopleSearchResponse(TypedDict):
@@ -1563,6 +1569,8 @@ class LinkedinCompaniesSearchResponseDataResultsItem(TypedDict):
 
 class LinkedinCompaniesSearchResponseData(TypedDict):
     results: list[LinkedinCompaniesSearchResponseDataResultsItem]
+    page: NotRequired[int]
+    hasMore: NotRequired[bool]
 
 
 class LinkedinCompaniesSearchResponse(TypedDict):
@@ -1702,9 +1710,11 @@ class ZillowSearchResponseDataResultsItem(TypedDict):
 
 
 class ZillowSearchResponseData(TypedDict):
-    results: list[ZillowSearchResponseDataResultsItem]
     total: NotRequired[int]
-    cursor: NotRequired[str]
+    results: list[ZillowSearchResponseDataResultsItem]
+    page: int
+    hasMore: bool
+    totalPages: NotRequired[int]
 
 
 class ZillowSearchResponse(TypedDict):
@@ -1791,9 +1801,11 @@ class UpworkSearchResponseDataResultsItem(TypedDict):
 
 
 class UpworkSearchResponseData(TypedDict):
-    results: list[UpworkSearchResponseDataResultsItem]
     total: NotRequired[int]
-    cursor: NotRequired[str]
+    results: list[UpworkSearchResponseDataResultsItem]
+    page: int
+    hasMore: bool
+    totalPages: NotRequired[int]
 
 
 class UpworkSearchResponse(TypedDict):
@@ -2058,7 +2070,8 @@ class TripadvisorReviewsResponseData(TypedDict):
     placeUrl: NotRequired[str]
     total: NotRequired[int]
     results: list[TripadvisorReviewsResponseDataResultsItem]
-    cursor: NotRequired[str]
+    page: int
+    hasMore: bool
 
 
 class TripadvisorReviewsResponse(TypedDict):
@@ -2134,9 +2147,11 @@ class WalmartSearchResponseDataResultsItem(TypedDict):
 
 
 class WalmartSearchResponseData(TypedDict):
-    results: list[WalmartSearchResponseDataResultsItem]
     total: NotRequired[int]
-    cursor: NotRequired[str]
+    results: list[WalmartSearchResponseDataResultsItem]
+    page: int
+    hasMore: bool
+    totalPages: NotRequired[int]
 
 
 class WalmartSearchResponse(TypedDict):
@@ -2296,7 +2311,8 @@ class AppstoreReviewsResponseDataResultsItem(TypedDict):
 
 class AppstoreReviewsResponseData(TypedDict):
     results: list[AppstoreReviewsResponseDataResultsItem]
-    cursor: NotRequired[str]
+    page: int
+    hasMore: bool
 
 
 class AppstoreReviewsResponse(TypedDict):
@@ -2459,7 +2475,6 @@ class AirbnbSearchResponseDataResultsItem(TypedDict):
 
 class AirbnbSearchResponseData(TypedDict):
     results: list[AirbnbSearchResponseDataResultsItem]
-    cursor: NotRequired[str]
 
 
 class AirbnbSearchResponse(TypedDict):
@@ -2570,9 +2585,10 @@ class AirbnbReviewsResponseDataResultsItem(TypedDict):
 
 
 class AirbnbReviewsResponseData(TypedDict):
-    results: list[AirbnbReviewsResponseDataResultsItem]
     total: NotRequired[int]
-    cursor: NotRequired[str]
+    results: list[AirbnbReviewsResponseDataResultsItem]
+    page: int
+    hasMore: bool
 
 
 class AirbnbReviewsResponse(TypedDict):
@@ -2613,9 +2629,10 @@ class RightmoveSearchResponseDataResultsItem(TypedDict):
 
 
 class RightmoveSearchResponseData(TypedDict):
-    results: list[RightmoveSearchResponseDataResultsItem]
     total: NotRequired[int]
-    cursor: NotRequired[str]
+    results: list[RightmoveSearchResponseDataResultsItem]
+    page: int
+    hasMore: bool
 
 
 class RightmoveSearchResponse(TypedDict):
@@ -2703,9 +2720,11 @@ class ImmoscoutSearchResponseDataResultsItem(TypedDict):
 
 
 class ImmoscoutSearchResponseData(TypedDict):
-    results: list[ImmoscoutSearchResponseDataResultsItem]
     total: NotRequired[int]
-    cursor: NotRequired[str]
+    results: list[ImmoscoutSearchResponseDataResultsItem]
+    page: int
+    hasMore: bool
+    totalPages: int
 
 
 class ImmoscoutSearchResponse(TypedDict):
@@ -2885,9 +2904,9 @@ class AdsSearchResponseDataOption1ResultsItem(TypedDict):
 
 
 class AdsSearchResponseDataOption1(TypedDict):
-    results: NotRequired[list[AdsSearchResponseDataOption1ResultsItem]]
     totalMin: NotRequired[int]
     totalMax: NotRequired[int]
+    results: NotRequired[list[AdsSearchResponseDataOption1ResultsItem]]
     cursor: NotRequired[str]
 
 
@@ -2908,8 +2927,8 @@ class AdsSearchResponseDataOption2ResultsItem(TypedDict):
 class AdsSearchResponseDataOption2(TypedDict):
     advertiserId: NotRequired[str]
     advertiserName: NotRequired[str]
-    results: NotRequired[list[AdsSearchResponseDataOption2ResultsItem]]
     total: NotRequired[int]
+    results: NotRequired[list[AdsSearchResponseDataOption2ResultsItem]]
     cursor: NotRequired[str]
 
 
@@ -2928,8 +2947,8 @@ class AdsSearchResponseDataOption3ResultsItem(TypedDict):
 
 
 class AdsSearchResponseDataOption3(TypedDict):
-    results: NotRequired[list[AdsSearchResponseDataOption3ResultsItem]]
     total: NotRequired[int]
+    results: NotRequired[list[AdsSearchResponseDataOption3ResultsItem]]
     cursor: NotRequired[str]
 
 
@@ -2945,8 +2964,8 @@ class AdsSearchResponseDataOption4ResultsItem(TypedDict):
 
 
 class AdsSearchResponseDataOption4(TypedDict):
-    results: NotRequired[list[AdsSearchResponseDataOption4ResultsItem]]
     total: NotRequired[int]
+    results: NotRequired[list[AdsSearchResponseDataOption4ResultsItem]]
     cursor: NotRequired[str]
 
 
@@ -3234,8 +3253,8 @@ class AdsAdvertisersResponseDataOption0ResultsItem(TypedDict):
 
 
 class AdsAdvertisersResponseDataOption0(TypedDict):
-    results: NotRequired[list[AdsAdvertisersResponseDataOption0ResultsItem]]
     domains: NotRequired[list[str]]
+    results: NotRequired[list[AdsAdvertisersResponseDataOption0ResultsItem]]
 
 
 class AdsAdvertisersResponseDataOption1ResultsItem(TypedDict):
@@ -3246,8 +3265,8 @@ class AdsAdvertisersResponseDataOption1ResultsItem(TypedDict):
 
 
 class AdsAdvertisersResponseDataOption1(TypedDict):
-    results: NotRequired[list[AdsAdvertisersResponseDataOption1ResultsItem]]
     total: NotRequired[int]
+    results: NotRequired[list[AdsAdvertisersResponseDataOption1ResultsItem]]
 
 
 class AdsAdvertisersResponse(TypedDict):

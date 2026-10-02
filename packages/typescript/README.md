@@ -26,7 +26,7 @@ Get a key from the [dashboard](https://stophy.dev/dashboard). Keys start with `s
 ```ts
 const stophy = new Stophy({ apiKey: "st_..." });
 
-const videos = await stophy.youtube.search({ query: "bun runtime", limit: 5 });
+const videos = await stophy.youtube.search({ query: "bun runtime" });
 console.log(videos.data.results);
 ```
 
@@ -49,14 +49,14 @@ console.log(transcript.data.text, transcript.data.segments);
 const posts = await stophy.reddit.search({ query: "bun runtime", sort: "top", within: "month" });
 console.log(posts.data.results);
 
-const places = await stophy.maps.search({ query: "coffee", location: "Austin, TX", limit: 5 });
+const places = await stophy.maps.search({ query: "coffee", location: "Austin, TX" });
 const placeId = places.data.results[0]?.placeId;
 if (placeId) {
-  const reviews = await stophy.maps.reviews({ place: placeId, limit: 20 });
+  const reviews = await stophy.maps.reviews({ place: placeId });
   console.log(reviews.data.results);
 }
 
-const profile = await stophy.tiktok.profile({ profile: "tiktok", limit: 5 });
+const profile = await stophy.tiktok.profile({ profile: "tiktok" });
 console.log(profile.data.followers, profile.data.results);
 
 const ads = await stophy.ads.search({ network: "meta", query: "running shoes" });
@@ -67,11 +67,24 @@ console.log(ads.data.results);
 
 ## Get the next page
 
-When there are more results, `data.cursor` is set. Pass it back to get the next page:
+Each call returns one page of results, as the site shows it. List methods page in one of two ways.
+
+Some take a page number. They return `data.page` and `data.hasMore`. Ask for the next number while `hasMore` is true:
 
 ```ts
-const first = await stophy.reddit.search({ query: "bun" });
-const next = await stophy.reddit.search({ query: "bun", cursor: first.data.cursor });
+const first = await stophy.google.search({ query: "bun runtime" });
+if (first.data.hasMore) {
+  const second = await stophy.google.search({ query: "bun runtime", page: 2 });
+}
+```
+
+Others return `data.cursor` when there is more. Pass it back as is:
+
+```ts
+const first = await stophy.youtube.search({ query: "bun runtime" });
+if (first.data.cursor) {
+  const next = await stophy.youtube.search({ query: "bun runtime", cursor: first.data.cursor });
+}
 ```
 
 ## Handle errors

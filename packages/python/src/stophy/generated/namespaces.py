@@ -161,23 +161,23 @@ class SyncGoogleSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         within: GoogleSearchWithin | None = None,
+        page: int | None = None,
     ) -> GoogleSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "within": within,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/google/search", body)
@@ -190,7 +190,6 @@ class SyncGoogleNews:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         topic: GoogleNewsTopic | None = None,
         country: str | None = None,
@@ -198,10 +197,10 @@ class SyncGoogleNews:
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         within: GoogleNewsWithin | None = None,
+        page: int | None = None,
     ) -> GoogleNewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "topic": topic,
                 "country": country,
@@ -209,6 +208,7 @@ class SyncGoogleNews:
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "within": within,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/google/news", body)
@@ -221,14 +221,12 @@ class SyncGoogleImages:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
     ) -> GoogleImagesResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
@@ -265,17 +263,17 @@ class SyncGoogleShopping:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
+        page: int | None = None,
     ) -> GoogleShoppingResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/google/shopping", body)
@@ -304,7 +302,6 @@ class SyncYoutubeSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: YoutubeSearchType | None = None,
         within: GoogleNewsWithin | None = None,
@@ -313,7 +310,6 @@ class SyncYoutubeSearch:
     ) -> YoutubeSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
                 "within": within,
@@ -348,7 +344,6 @@ class SyncYoutubeComments:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         video: str,
         comment: str | None = None,
         sort: YoutubeCommentsSort | None = None,
@@ -356,7 +351,6 @@ class SyncYoutubeComments:
     ) -> YoutubeCommentsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "video": video,
                 "comment": comment,
                 "sort": sort,
@@ -373,14 +367,12 @@ class SyncYoutubeChannel:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         channel: str,
         tab: YoutubeChannelTab | None = None,
         cursor: str | None = None,
     ) -> YoutubeChannelResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "channel": channel,
                 "tab": tab,
                 "cursor": cursor,
@@ -396,13 +388,11 @@ class SyncYoutubePlaylist:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         playlist: str,
         cursor: str | None = None,
     ) -> YoutubePlaylistResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "playlist": playlist,
                 "cursor": cursor,
             }
@@ -454,7 +444,6 @@ class SyncRedditSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: RedditSearchType | None = None,
         subreddit: str | None = None,
@@ -464,7 +453,6 @@ class SyncRedditSearch:
     ) -> RedditSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
                 "subreddit": subreddit,
@@ -502,7 +490,6 @@ class SyncRedditSubreddit:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         subreddit: str,
         sort: RedditSubredditSort | None = None,
         within: GoogleNewsWithin | None = None,
@@ -510,7 +497,6 @@ class SyncRedditSubreddit:
     ) -> RedditSubredditResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "subreddit": subreddit,
                 "sort": sort,
                 "within": within,
@@ -527,7 +513,6 @@ class SyncRedditUser:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str,
         tab: RedditUserTab | None = None,
         sort: RedditUserSort | None = None,
@@ -535,7 +520,6 @@ class SyncRedditUser:
     ) -> RedditUserResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "tab": tab,
                 "sort": sort,
@@ -552,14 +536,12 @@ class SyncRedditDomain:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         domain: str,
         sort: RedditSubredditSort | None = None,
         cursor: str | None = None,
     ) -> RedditDomainResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "domain": domain,
                 "sort": sort,
                 "cursor": cursor,
@@ -591,19 +573,15 @@ class SyncMapsSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         location: str,
-        cursor: str | None = None,
         country: str | None = None,
         language: str | None = None,
     ) -> MapsSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "location": location,
-                "cursor": cursor,
                 "country": country,
                 "language": language,
             }
@@ -639,19 +617,17 @@ class SyncMapsReviews:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         place: str,
         sort: MapsReviewsSort | None = None,
-        cursor: str | None = None,
         language: str | None = None,
+        cursor: str | None = None,
     ) -> MapsReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "place": place,
                 "sort": sort,
-                "cursor": cursor,
                 "language": language,
+                "cursor": cursor,
             }
         )
         return self._call("POST", "/v1/maps/reviews", body)
@@ -676,13 +652,11 @@ class SyncInstagramProfile:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str,
         cursor: str | None = None,
     ) -> InstagramProfileResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "cursor": cursor,
             }
@@ -714,14 +688,12 @@ class SyncInstagramComments:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         post: str,
         comment: str | None = None,
         cursor: str | None = None,
     ) -> InstagramCommentsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "post": post,
                 "comment": comment,
                 "cursor": cursor,
@@ -749,13 +721,11 @@ class SyncTiktokProfile:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str,
         cursor: str | None = None,
     ) -> TiktokProfileResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "cursor": cursor,
             }
@@ -787,13 +757,11 @@ class SyncTiktokHashtag:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         hashtag: str,
         cursor: str | None = None,
     ) -> TiktokHashtagResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "hashtag": hashtag,
                 "cursor": cursor,
             }
@@ -808,14 +776,12 @@ class SyncTiktokComments:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         video: str,
         comment: str | None = None,
         cursor: str | None = None,
     ) -> TiktokCommentsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "video": video,
                 "comment": comment,
                 "cursor": cursor,
@@ -831,14 +797,12 @@ class SyncTiktokSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: TiktokSearchType | None = None,
         cursor: str | None = None,
     ) -> TiktokSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
                 "cursor": cursor,
@@ -870,8 +834,7 @@ class SyncMetaAdsPage:
     def __call__(
         self,
         *,
-        limit: int | None = None,
-        page: str,
+        advertiser: str,
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
         media_type: MetaAdsPageMediaType | None = None,
@@ -879,8 +842,7 @@ class SyncMetaAdsPage:
     ) -> MetaAdsPageResponse:
         body = _omit_none(
             {
-                "limit": limit,
-                "page": page,
+                "advertiser": advertiser,
                 "country": country,
                 "status": status,
                 "mediaType": media_type,
@@ -913,19 +875,17 @@ class SyncLinkedinJobsSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         location: str | None = None,
         within: LinkedinJobsSearchWithin | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> LinkedinJobsSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "location": location,
                 "within": within,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/linkedin/jobs/search", body)
@@ -965,19 +925,19 @@ class SyncLinkedinPeopleSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         title: str | None = None,
         company: str | None = None,
         location: str | None = None,
+        page: int | None = None,
     ) -> LinkedinPeopleSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "title": title,
                 "company": company,
                 "location": location,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/linkedin/people/search", body)
@@ -998,17 +958,17 @@ class SyncLinkedinCompaniesSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         industry: str | None = None,
         location: str | None = None,
+        page: int | None = None,
     ) -> LinkedinCompaniesSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "industry": industry,
                 "location": location,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/linkedin/companies/search", body)
@@ -1063,13 +1023,11 @@ class SyncLinkedinPosts:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str | None = None,
         company: str | None = None,
     ) -> LinkedinPostsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "company": company,
             }
@@ -1102,7 +1060,6 @@ class SyncZillowSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         location: str,
         status: ZillowSearchStatus | None = None,
         min_price: float | None = None,
@@ -1112,11 +1069,10 @@ class SyncZillowSearch:
         home_types: list[ZillowSearchHomeTypesItem] | None = None,
         sort: ZillowSearchSort | None = None,
         query: str | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> ZillowSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "location": location,
                 "status": status,
                 "minPrice": min_price,
@@ -1126,7 +1082,7 @@ class SyncZillowSearch:
                 "homeTypes": home_types,
                 "sort": sort,
                 "query": query,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/zillow/search", body)
@@ -1166,21 +1122,19 @@ class SyncUpworkSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         sort: UpworkSearchSort | None = None,
         job_type: UpworkSearchJobType | None = None,
         experience: UpworkSearchExperience | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> UpworkSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "sort": sort,
                 "jobType": job_type,
                 "experience": experience,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/upwork/search", body)
@@ -1220,7 +1174,6 @@ class SyncIndeedSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         location: str | None = None,
         country: IndeedSearchCountry | None = None,
@@ -1230,7 +1183,6 @@ class SyncIndeedSearch:
     ) -> IndeedSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "location": location,
                 "country": country,
@@ -1278,13 +1230,11 @@ class SyncTripadvisorSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: TripadvisorSearchType | None = None,
     ) -> TripadvisorSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
             }
@@ -1316,19 +1266,17 @@ class SyncTripadvisorReviews:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         place: str,
         language: str | None = None,
         ratings: list[int] | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> TripadvisorReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "place": place,
                 "language": language,
                 "ratings": ratings,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/tripadvisor/reviews", body)
@@ -1353,7 +1301,6 @@ class SyncGoogletravelFlights:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         origin: str,
         destination: str,
         depart_date: str,
@@ -1363,7 +1310,6 @@ class SyncGoogletravelFlights:
     ) -> GoogletravelFlightsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "origin": origin,
                 "destination": destination,
                 "departDate": depart_date,
@@ -1390,21 +1336,19 @@ class SyncWalmartSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         sort: WalmartSearchSort | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> WalmartSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "sort": sort,
                 "minPrice": min_price,
                 "maxPrice": max_price,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/walmart/search", body)
@@ -1463,14 +1407,12 @@ class SyncAppstoreSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         device: AppstoreSearchDevice | None = None,
     ) -> AppstoreSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "device": device,
@@ -1486,19 +1428,17 @@ class SyncAppstoreReviews:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         app: str,
         country: str | None = None,
         sort: AppstoreReviewsSort | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> AppstoreReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "app": app,
                 "country": country,
                 "sort": sort,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/appstore/reviews", body)
@@ -1511,7 +1451,6 @@ class SyncAppstoreTop:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         chart: AppstoreTopChart | None = None,
         device: AppstoreSearchDevice | None = None,
         genre: AppstoreTopGenre | None = None,
@@ -1519,7 +1458,6 @@ class SyncAppstoreTop:
     ) -> AppstoreTopResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "chart": chart,
                 "device": device,
                 "genre": genre,
@@ -1571,14 +1509,12 @@ class SyncGoogleplaySearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
     ) -> GoogleplaySearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
@@ -1594,7 +1530,6 @@ class SyncGoogleplayReviews:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         app: str,
         country: str | None = None,
         language: str | None = None,
@@ -1604,7 +1539,6 @@ class SyncGoogleplayReviews:
     ) -> GoogleplayReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "app": app,
                 "country": country,
                 "language": language,
@@ -1635,25 +1569,21 @@ class SyncAirbnbSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         location: str,
         check_in: str | None = None,
         check_out: str | None = None,
         adults: int | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
-        cursor: str | None = None,
     ) -> AirbnbSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "location": location,
                 "checkIn": check_in,
                 "checkOut": check_out,
                 "adults": adults,
                 "minPrice": min_price,
                 "maxPrice": max_price,
-                "cursor": cursor,
             }
         )
         return self._call("POST", "/v1/airbnb/search", body)
@@ -1683,13 +1613,11 @@ class SyncAirbnbCalendar:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         listing: str,
         month: str | None = None,
     ) -> AirbnbCalendarResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "listing": listing,
                 "month": month,
             }
@@ -1704,17 +1632,15 @@ class SyncAirbnbReviews:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         listing: str,
         sort: MapsReviewsSort | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> AirbnbReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "listing": listing,
                 "sort": sort,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/airbnb/reviews", body)
@@ -1741,7 +1667,6 @@ class SyncRightmoveSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         location: str,
         status: RightmoveSearchStatus | None = None,
         min_price: float | None = None,
@@ -1749,11 +1674,10 @@ class SyncRightmoveSearch:
         min_bedrooms: int | None = None,
         max_bedrooms: int | None = None,
         sort: RightmoveSearchSort | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> RightmoveSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "location": location,
                 "status": status,
                 "minPrice": min_price,
@@ -1761,7 +1685,7 @@ class SyncRightmoveSearch:
                 "minBedrooms": min_bedrooms,
                 "maxBedrooms": max_bedrooms,
                 "sort": sort,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/rightmove/search", body)
@@ -1801,25 +1725,23 @@ class SyncImmoscoutSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         location: str,
         type: ImmoscoutSearchType | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
         min_rooms: float | None = None,
         sort: ImmoscoutSearchSort | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> ImmoscoutSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "location": location,
                 "type": type,
                 "minPrice": min_price,
                 "maxPrice": max_price,
                 "minRooms": min_rooms,
                 "sort": sort,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/immoscout/search", body)
@@ -1859,14 +1781,12 @@ class SyncPinterestSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: PinterestSearchType | None = None,
         cursor: str | None = None,
     ) -> PinterestSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
                 "cursor": cursor,
@@ -1899,13 +1819,11 @@ class SyncPinterestBoard:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         board: str,
         cursor: str | None = None,
     ) -> PinterestBoardResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "board": board,
                 "cursor": cursor,
             }
@@ -1920,13 +1838,11 @@ class SyncPinterestUser:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str,
         cursor: str | None = None,
     ) -> PinterestUserResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "cursor": cursor,
             }
@@ -1956,81 +1872,70 @@ class SyncAdsSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
+        network: Literal["meta"],
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
         media_type: MetaAdsPageMediaType | None = None,
         cursor: str | None = None,
-        network: Literal["meta"],
     ) -> AdsSearchResponse: ...
     @overload
     def __call__(
         self,
         *,
-        limit: int | None = None,
+        network: Literal["google"],
         query: str | None = None,
         advertiser: str | None = None,
         domain: str | None = None,
         country: str | None = None,
         media_type: AdsSearchOption1MediaType | None = None,
         cursor: str | None = None,
-        network: Literal["google"],
     ) -> AdsSearchResponse: ...
     @overload
     def __call__(
         self,
         *,
-        limit: int | None = None,
+        network: Literal["tiktok"],
         query: str | None = None,
         advertiser: str | None = None,
         country: str | None = None,
         cursor: str | None = None,
-        network: Literal["tiktok"],
     ) -> AdsSearchResponse: ...
     @overload
     def __call__(
         self,
         *,
-        limit: int | None = None,
+        network: Literal["linkedin"],
         query: str | None = None,
         advertiser: str | None = None,
         country: str | None = None,
         within: AdsSearchOption3Within | None = None,
         cursor: str | None = None,
-        network: Literal["linkedin"],
     ) -> AdsSearchResponse: ...
     @overload
     def __call__(
         self,
         *,
-        limit: int | None = None,
-        query: str | None = None,
-        advertiser: str | None = None,
-        country: str | None = None,
-        cursor: str | None = None,
         network: Literal["microsoft"],
+        query: str | None = None,
+        advertiser: str | None = None,
+        country: str | None = None,
+        cursor: str | None = None,
     ) -> AdsSearchResponse: ...
     @overload
     def __call__(
         self,
         *,
-        limit: int | None = None,
-        query: str | None = None,
         country: str,
+        network: Literal["pinterest"],
+        query: str | None = None,
         advertiser: str | None = None,
         cursor: str | None = None,
-        network: Literal["pinterest"],
     ) -> AdsSearchResponse: ...
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
-        country: str | None = None,
-        status: MetaAdsPageStatus | None = None,
-        media_type: MetaAdsPageMediaType | AdsSearchOption1MediaType | None = None,
-        cursor: str | None = None,
         network: Literal["meta"]
         | Literal["google"]
         | Literal["tiktok"]
@@ -2038,19 +1943,22 @@ class SyncAdsSearch:
         | Literal["microsoft"]
         | Literal["pinterest"]
         | None = None,
+        country: str | None = None,
+        status: MetaAdsPageStatus | None = None,
+        media_type: MetaAdsPageMediaType | AdsSearchOption1MediaType | None = None,
+        cursor: str | None = None,
         advertiser: str | None = None,
         domain: str | None = None,
         within: AdsSearchOption3Within | None = None,
     ) -> AdsSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
+                "network": network,
                 "country": country,
                 "status": status,
                 "mediaType": media_type,
                 "cursor": cursor,
-                "network": network,
                 "advertiser": advertiser,
                 "domain": domain,
                 "within": within,
@@ -2074,9 +1982,9 @@ class SyncAdsAd:
     def __call__(
         self,
         *,
-        advertiser: str | None = None,
         ad: str,
         network: Literal["google"],
+        advertiser: str | None = None,
     ) -> AdsAdResponse: ...
     @overload
     def __call__(
@@ -2137,33 +2045,29 @@ class SyncAdsAdvertisers:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
-        country: str | None = None,
         network: Literal["google"],
+        country: str | None = None,
     ) -> AdsAdvertisersResponse: ...
     @overload
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         network: Literal["microsoft"],
     ) -> AdsAdvertisersResponse: ...
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
-        country: str | None = None,
         network: Literal["google"] | Literal["microsoft"] | None = None,
+        country: str | None = None,
     ) -> AdsAdvertisersResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
-                "country": country,
                 "network": network,
+                "country": country,
             }
         )
         return self._call("POST", "/v1/ads/advertisers", body)
@@ -2215,23 +2119,23 @@ class SyncWebSearch:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         within: GoogleSearchWithin | None = None,
+        page: int | None = None,
     ) -> GoogleSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "within": within,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/web/search", body)
@@ -2244,7 +2148,6 @@ class SyncWebNews:
     def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         topic: GoogleNewsTopic | None = None,
         country: str | None = None,
@@ -2252,10 +2155,10 @@ class SyncWebNews:
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         within: GoogleNewsWithin | None = None,
+        page: int | None = None,
     ) -> GoogleNewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "topic": topic,
                 "country": country,
@@ -2263,6 +2166,7 @@ class SyncWebNews:
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "within": within,
+                "page": page,
             }
         )
         return self._call("POST", "/v1/web/news", body)
@@ -2351,23 +2255,23 @@ class AsyncGoogleSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         within: GoogleSearchWithin | None = None,
+        page: int | None = None,
     ) -> GoogleSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "within": within,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/google/search", body)
@@ -2380,7 +2284,6 @@ class AsyncGoogleNews:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         topic: GoogleNewsTopic | None = None,
         country: str | None = None,
@@ -2388,10 +2291,10 @@ class AsyncGoogleNews:
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         within: GoogleNewsWithin | None = None,
+        page: int | None = None,
     ) -> GoogleNewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "topic": topic,
                 "country": country,
@@ -2399,6 +2302,7 @@ class AsyncGoogleNews:
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "within": within,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/google/news", body)
@@ -2411,14 +2315,12 @@ class AsyncGoogleImages:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
     ) -> GoogleImagesResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
@@ -2455,17 +2357,17 @@ class AsyncGoogleShopping:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
+        page: int | None = None,
     ) -> GoogleShoppingResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/google/shopping", body)
@@ -2494,7 +2396,6 @@ class AsyncYoutubeSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: YoutubeSearchType | None = None,
         within: GoogleNewsWithin | None = None,
@@ -2503,7 +2404,6 @@ class AsyncYoutubeSearch:
     ) -> YoutubeSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
                 "within": within,
@@ -2538,7 +2438,6 @@ class AsyncYoutubeComments:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         video: str,
         comment: str | None = None,
         sort: YoutubeCommentsSort | None = None,
@@ -2546,7 +2445,6 @@ class AsyncYoutubeComments:
     ) -> YoutubeCommentsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "video": video,
                 "comment": comment,
                 "sort": sort,
@@ -2563,14 +2461,12 @@ class AsyncYoutubeChannel:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         channel: str,
         tab: YoutubeChannelTab | None = None,
         cursor: str | None = None,
     ) -> YoutubeChannelResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "channel": channel,
                 "tab": tab,
                 "cursor": cursor,
@@ -2586,13 +2482,11 @@ class AsyncYoutubePlaylist:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         playlist: str,
         cursor: str | None = None,
     ) -> YoutubePlaylistResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "playlist": playlist,
                 "cursor": cursor,
             }
@@ -2644,7 +2538,6 @@ class AsyncRedditSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: RedditSearchType | None = None,
         subreddit: str | None = None,
@@ -2654,7 +2547,6 @@ class AsyncRedditSearch:
     ) -> RedditSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
                 "subreddit": subreddit,
@@ -2692,7 +2584,6 @@ class AsyncRedditSubreddit:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         subreddit: str,
         sort: RedditSubredditSort | None = None,
         within: GoogleNewsWithin | None = None,
@@ -2700,7 +2591,6 @@ class AsyncRedditSubreddit:
     ) -> RedditSubredditResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "subreddit": subreddit,
                 "sort": sort,
                 "within": within,
@@ -2717,7 +2607,6 @@ class AsyncRedditUser:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str,
         tab: RedditUserTab | None = None,
         sort: RedditUserSort | None = None,
@@ -2725,7 +2614,6 @@ class AsyncRedditUser:
     ) -> RedditUserResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "tab": tab,
                 "sort": sort,
@@ -2742,14 +2630,12 @@ class AsyncRedditDomain:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         domain: str,
         sort: RedditSubredditSort | None = None,
         cursor: str | None = None,
     ) -> RedditDomainResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "domain": domain,
                 "sort": sort,
                 "cursor": cursor,
@@ -2781,19 +2667,15 @@ class AsyncMapsSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         location: str,
-        cursor: str | None = None,
         country: str | None = None,
         language: str | None = None,
     ) -> MapsSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "location": location,
-                "cursor": cursor,
                 "country": country,
                 "language": language,
             }
@@ -2829,19 +2711,17 @@ class AsyncMapsReviews:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         place: str,
         sort: MapsReviewsSort | None = None,
-        cursor: str | None = None,
         language: str | None = None,
+        cursor: str | None = None,
     ) -> MapsReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "place": place,
                 "sort": sort,
-                "cursor": cursor,
                 "language": language,
+                "cursor": cursor,
             }
         )
         return await self._call("POST", "/v1/maps/reviews", body)
@@ -2866,13 +2746,11 @@ class AsyncInstagramProfile:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str,
         cursor: str | None = None,
     ) -> InstagramProfileResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "cursor": cursor,
             }
@@ -2904,14 +2782,12 @@ class AsyncInstagramComments:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         post: str,
         comment: str | None = None,
         cursor: str | None = None,
     ) -> InstagramCommentsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "post": post,
                 "comment": comment,
                 "cursor": cursor,
@@ -2939,13 +2815,11 @@ class AsyncTiktokProfile:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str,
         cursor: str | None = None,
     ) -> TiktokProfileResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "cursor": cursor,
             }
@@ -2977,13 +2851,11 @@ class AsyncTiktokHashtag:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         hashtag: str,
         cursor: str | None = None,
     ) -> TiktokHashtagResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "hashtag": hashtag,
                 "cursor": cursor,
             }
@@ -2998,14 +2870,12 @@ class AsyncTiktokComments:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         video: str,
         comment: str | None = None,
         cursor: str | None = None,
     ) -> TiktokCommentsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "video": video,
                 "comment": comment,
                 "cursor": cursor,
@@ -3021,14 +2891,12 @@ class AsyncTiktokSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: TiktokSearchType | None = None,
         cursor: str | None = None,
     ) -> TiktokSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
                 "cursor": cursor,
@@ -3060,8 +2928,7 @@ class AsyncMetaAdsPage:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
-        page: str,
+        advertiser: str,
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
         media_type: MetaAdsPageMediaType | None = None,
@@ -3069,8 +2936,7 @@ class AsyncMetaAdsPage:
     ) -> MetaAdsPageResponse:
         body = _omit_none(
             {
-                "limit": limit,
-                "page": page,
+                "advertiser": advertiser,
                 "country": country,
                 "status": status,
                 "mediaType": media_type,
@@ -3103,19 +2969,17 @@ class AsyncLinkedinJobsSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         location: str | None = None,
         within: LinkedinJobsSearchWithin | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> LinkedinJobsSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "location": location,
                 "within": within,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/linkedin/jobs/search", body)
@@ -3155,19 +3019,19 @@ class AsyncLinkedinPeopleSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         title: str | None = None,
         company: str | None = None,
         location: str | None = None,
+        page: int | None = None,
     ) -> LinkedinPeopleSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "title": title,
                 "company": company,
                 "location": location,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/linkedin/people/search", body)
@@ -3188,17 +3052,17 @@ class AsyncLinkedinCompaniesSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         industry: str | None = None,
         location: str | None = None,
+        page: int | None = None,
     ) -> LinkedinCompaniesSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "industry": industry,
                 "location": location,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/linkedin/companies/search", body)
@@ -3253,13 +3117,11 @@ class AsyncLinkedinPosts:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str | None = None,
         company: str | None = None,
     ) -> LinkedinPostsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "company": company,
             }
@@ -3292,7 +3154,6 @@ class AsyncZillowSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         location: str,
         status: ZillowSearchStatus | None = None,
         min_price: float | None = None,
@@ -3302,11 +3163,10 @@ class AsyncZillowSearch:
         home_types: list[ZillowSearchHomeTypesItem] | None = None,
         sort: ZillowSearchSort | None = None,
         query: str | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> ZillowSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "location": location,
                 "status": status,
                 "minPrice": min_price,
@@ -3316,7 +3176,7 @@ class AsyncZillowSearch:
                 "homeTypes": home_types,
                 "sort": sort,
                 "query": query,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/zillow/search", body)
@@ -3356,21 +3216,19 @@ class AsyncUpworkSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         sort: UpworkSearchSort | None = None,
         job_type: UpworkSearchJobType | None = None,
         experience: UpworkSearchExperience | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> UpworkSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "sort": sort,
                 "jobType": job_type,
                 "experience": experience,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/upwork/search", body)
@@ -3410,7 +3268,6 @@ class AsyncIndeedSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         location: str | None = None,
         country: IndeedSearchCountry | None = None,
@@ -3420,7 +3277,6 @@ class AsyncIndeedSearch:
     ) -> IndeedSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "location": location,
                 "country": country,
@@ -3468,13 +3324,11 @@ class AsyncTripadvisorSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: TripadvisorSearchType | None = None,
     ) -> TripadvisorSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
             }
@@ -3506,19 +3360,17 @@ class AsyncTripadvisorReviews:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         place: str,
         language: str | None = None,
         ratings: list[int] | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> TripadvisorReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "place": place,
                 "language": language,
                 "ratings": ratings,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/tripadvisor/reviews", body)
@@ -3543,7 +3395,6 @@ class AsyncGoogletravelFlights:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         origin: str,
         destination: str,
         depart_date: str,
@@ -3553,7 +3404,6 @@ class AsyncGoogletravelFlights:
     ) -> GoogletravelFlightsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "origin": origin,
                 "destination": destination,
                 "departDate": depart_date,
@@ -3580,21 +3430,19 @@ class AsyncWalmartSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         sort: WalmartSearchSort | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> WalmartSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "sort": sort,
                 "minPrice": min_price,
                 "maxPrice": max_price,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/walmart/search", body)
@@ -3653,14 +3501,12 @@ class AsyncAppstoreSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         device: AppstoreSearchDevice | None = None,
     ) -> AppstoreSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "device": device,
@@ -3676,19 +3522,17 @@ class AsyncAppstoreReviews:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         app: str,
         country: str | None = None,
         sort: AppstoreReviewsSort | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> AppstoreReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "app": app,
                 "country": country,
                 "sort": sort,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/appstore/reviews", body)
@@ -3701,7 +3545,6 @@ class AsyncAppstoreTop:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         chart: AppstoreTopChart | None = None,
         device: AppstoreSearchDevice | None = None,
         genre: AppstoreTopGenre | None = None,
@@ -3709,7 +3552,6 @@ class AsyncAppstoreTop:
     ) -> AppstoreTopResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "chart": chart,
                 "device": device,
                 "genre": genre,
@@ -3761,14 +3603,12 @@ class AsyncGoogleplaySearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
     ) -> GoogleplaySearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
@@ -3784,7 +3624,6 @@ class AsyncGoogleplayReviews:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         app: str,
         country: str | None = None,
         language: str | None = None,
@@ -3794,7 +3633,6 @@ class AsyncGoogleplayReviews:
     ) -> GoogleplayReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "app": app,
                 "country": country,
                 "language": language,
@@ -3825,25 +3663,21 @@ class AsyncAirbnbSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         location: str,
         check_in: str | None = None,
         check_out: str | None = None,
         adults: int | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
-        cursor: str | None = None,
     ) -> AirbnbSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "location": location,
                 "checkIn": check_in,
                 "checkOut": check_out,
                 "adults": adults,
                 "minPrice": min_price,
                 "maxPrice": max_price,
-                "cursor": cursor,
             }
         )
         return await self._call("POST", "/v1/airbnb/search", body)
@@ -3873,13 +3707,11 @@ class AsyncAirbnbCalendar:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         listing: str,
         month: str | None = None,
     ) -> AirbnbCalendarResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "listing": listing,
                 "month": month,
             }
@@ -3894,17 +3726,15 @@ class AsyncAirbnbReviews:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         listing: str,
         sort: MapsReviewsSort | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> AirbnbReviewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "listing": listing,
                 "sort": sort,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/airbnb/reviews", body)
@@ -3931,7 +3761,6 @@ class AsyncRightmoveSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         location: str,
         status: RightmoveSearchStatus | None = None,
         min_price: float | None = None,
@@ -3939,11 +3768,10 @@ class AsyncRightmoveSearch:
         min_bedrooms: int | None = None,
         max_bedrooms: int | None = None,
         sort: RightmoveSearchSort | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> RightmoveSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "location": location,
                 "status": status,
                 "minPrice": min_price,
@@ -3951,7 +3779,7 @@ class AsyncRightmoveSearch:
                 "minBedrooms": min_bedrooms,
                 "maxBedrooms": max_bedrooms,
                 "sort": sort,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/rightmove/search", body)
@@ -3991,25 +3819,23 @@ class AsyncImmoscoutSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         location: str,
         type: ImmoscoutSearchType | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
         min_rooms: float | None = None,
         sort: ImmoscoutSearchSort | None = None,
-        cursor: str | None = None,
+        page: int | None = None,
     ) -> ImmoscoutSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "location": location,
                 "type": type,
                 "minPrice": min_price,
                 "maxPrice": max_price,
                 "minRooms": min_rooms,
                 "sort": sort,
-                "cursor": cursor,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/immoscout/search", body)
@@ -4049,14 +3875,12 @@ class AsyncPinterestSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         type: PinterestSearchType | None = None,
         cursor: str | None = None,
     ) -> PinterestSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "type": type,
                 "cursor": cursor,
@@ -4089,13 +3913,11 @@ class AsyncPinterestBoard:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         board: str,
         cursor: str | None = None,
     ) -> PinterestBoardResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "board": board,
                 "cursor": cursor,
             }
@@ -4110,13 +3932,11 @@ class AsyncPinterestUser:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         profile: str,
         cursor: str | None = None,
     ) -> PinterestUserResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "profile": profile,
                 "cursor": cursor,
             }
@@ -4146,81 +3966,70 @@ class AsyncAdsSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
+        network: Literal["meta"],
         country: str | None = None,
         status: MetaAdsPageStatus | None = None,
         media_type: MetaAdsPageMediaType | None = None,
         cursor: str | None = None,
-        network: Literal["meta"],
     ) -> AdsSearchResponse: ...
     @overload
     async def __call__(
         self,
         *,
-        limit: int | None = None,
+        network: Literal["google"],
         query: str | None = None,
         advertiser: str | None = None,
         domain: str | None = None,
         country: str | None = None,
         media_type: AdsSearchOption1MediaType | None = None,
         cursor: str | None = None,
-        network: Literal["google"],
     ) -> AdsSearchResponse: ...
     @overload
     async def __call__(
         self,
         *,
-        limit: int | None = None,
+        network: Literal["tiktok"],
         query: str | None = None,
         advertiser: str | None = None,
         country: str | None = None,
         cursor: str | None = None,
-        network: Literal["tiktok"],
     ) -> AdsSearchResponse: ...
     @overload
     async def __call__(
         self,
         *,
-        limit: int | None = None,
+        network: Literal["linkedin"],
         query: str | None = None,
         advertiser: str | None = None,
         country: str | None = None,
         within: AdsSearchOption3Within | None = None,
         cursor: str | None = None,
-        network: Literal["linkedin"],
     ) -> AdsSearchResponse: ...
     @overload
     async def __call__(
         self,
         *,
-        limit: int | None = None,
-        query: str | None = None,
-        advertiser: str | None = None,
-        country: str | None = None,
-        cursor: str | None = None,
         network: Literal["microsoft"],
+        query: str | None = None,
+        advertiser: str | None = None,
+        country: str | None = None,
+        cursor: str | None = None,
     ) -> AdsSearchResponse: ...
     @overload
     async def __call__(
         self,
         *,
-        limit: int | None = None,
-        query: str | None = None,
         country: str,
+        network: Literal["pinterest"],
+        query: str | None = None,
         advertiser: str | None = None,
         cursor: str | None = None,
-        network: Literal["pinterest"],
     ) -> AdsSearchResponse: ...
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
-        country: str | None = None,
-        status: MetaAdsPageStatus | None = None,
-        media_type: MetaAdsPageMediaType | AdsSearchOption1MediaType | None = None,
-        cursor: str | None = None,
         network: Literal["meta"]
         | Literal["google"]
         | Literal["tiktok"]
@@ -4228,19 +4037,22 @@ class AsyncAdsSearch:
         | Literal["microsoft"]
         | Literal["pinterest"]
         | None = None,
+        country: str | None = None,
+        status: MetaAdsPageStatus | None = None,
+        media_type: MetaAdsPageMediaType | AdsSearchOption1MediaType | None = None,
+        cursor: str | None = None,
         advertiser: str | None = None,
         domain: str | None = None,
         within: AdsSearchOption3Within | None = None,
     ) -> AdsSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
+                "network": network,
                 "country": country,
                 "status": status,
                 "mediaType": media_type,
                 "cursor": cursor,
-                "network": network,
                 "advertiser": advertiser,
                 "domain": domain,
                 "within": within,
@@ -4264,9 +4076,9 @@ class AsyncAdsAd:
     async def __call__(
         self,
         *,
-        advertiser: str | None = None,
         ad: str,
         network: Literal["google"],
+        advertiser: str | None = None,
     ) -> AdsAdResponse: ...
     @overload
     async def __call__(
@@ -4327,33 +4139,29 @@ class AsyncAdsAdvertisers:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
-        country: str | None = None,
         network: Literal["google"],
+        country: str | None = None,
     ) -> AdsAdvertisersResponse: ...
     @overload
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         network: Literal["microsoft"],
     ) -> AdsAdvertisersResponse: ...
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
-        country: str | None = None,
         network: Literal["google"] | Literal["microsoft"] | None = None,
+        country: str | None = None,
     ) -> AdsAdvertisersResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
-                "country": country,
                 "network": network,
+                "country": country,
             }
         )
         return await self._call("POST", "/v1/ads/advertisers", body)
@@ -4405,23 +4213,23 @@ class AsyncWebSearch:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str,
         country: str | None = None,
         language: str | None = None,
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         within: GoogleSearchWithin | None = None,
+        page: int | None = None,
     ) -> GoogleSearchResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "country": country,
                 "language": language,
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "within": within,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/web/search", body)
@@ -4434,7 +4242,6 @@ class AsyncWebNews:
     async def __call__(
         self,
         *,
-        limit: int | None = None,
         query: str | None = None,
         topic: GoogleNewsTopic | None = None,
         country: str | None = None,
@@ -4442,10 +4249,10 @@ class AsyncWebNews:
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         within: GoogleNewsWithin | None = None,
+        page: int | None = None,
     ) -> GoogleNewsResponse:
         body = _omit_none(
             {
-                "limit": limit,
                 "query": query,
                 "topic": topic,
                 "country": country,
@@ -4453,6 +4260,7 @@ class AsyncWebNews:
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "within": within,
+                "page": page,
             }
         )
         return await self._call("POST", "/v1/web/news", body)

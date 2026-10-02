@@ -22,7 +22,7 @@ describe("namespaced operations", () => {
 		const { client, calls } = makeClient({ json: envelope });
 		const result = await client.youtube.search({
 			query: "bun runtime",
-			limit: 2,
+			cursor: "next",
 		});
 		const first = result.data.results[0];
 		expect(first?.type === "video" && first.videoUrl).toBe(
@@ -30,8 +30,17 @@ describe("namespaced operations", () => {
 		);
 		expect(calls[0]?.method).toBe("POST");
 		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/youtube/search");
-		expect(calls[0]?.body).toEqual({ query: "bun runtime", limit: 2 });
+		expect(calls[0]?.body).toEqual({ query: "bun runtime", cursor: "next" });
 		expect(calls[0]?.headers.get("accept")).toBe("application/json");
+	});
+
+	test("sends page numbers and the advertiser", async () => {
+		const { client, calls } = makeClient({ json: envelope });
+		await client.google.search({ query: "bun", page: 2 });
+		await client.meta.ads.page({ advertiser: "nike" });
+		expect(calls[0]?.body).toEqual({ query: "bun", page: 2 });
+		expect(new URL(calls[1]?.url ?? "").pathname).toBe("/v1/meta/ads/page");
+		expect(calls[1]?.body).toEqual({ advertiser: "nike" });
 	});
 
 	test("calls a single-segment operation", async () => {

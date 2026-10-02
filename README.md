@@ -31,17 +31,17 @@ const stophy = new Stophy({ apiKey: "st_..." });
 const transcript = await stophy.transcript({ video: "https://youtu.be/dQw4w9WgXcQ" });
 console.log(transcript.data.text);
 
-const videos = await stophy.youtube.search({ query: "bun runtime", limit: 5 });
+const videos = await stophy.youtube.search({ query: "bun runtime" });
 console.log(videos.data.results);
 
-const places = await stophy.maps.search({ query: "coffee", location: "Austin, TX", limit: 5 });
+const places = await stophy.maps.search({ query: "coffee", location: "Austin, TX" });
 const placeId = places.data.results[0]?.placeId;
 if (placeId) {
-  const reviews = await stophy.maps.reviews({ place: placeId, limit: 20 });
+  const reviews = await stophy.maps.reviews({ place: placeId });
   console.log(reviews.data.results);
 }
 
-const profile = await stophy.tiktok.profile({ profile: "tiktok", limit: 5 });
+const profile = await stophy.tiktok.profile({ profile: "tiktok" });
 console.log(profile.data.followers, profile.data.results);
 
 const ads = await stophy.ads.search({ network: "meta", query: "running shoes" });
@@ -56,16 +56,16 @@ stophy = Stophy(api_key="st_...")
 transcript = stophy.transcript(video="https://youtu.be/dQw4w9WgXcQ")
 print(transcript["data"].get("text"))
 
-videos = stophy.youtube.search(query="bun runtime", limit=5)
+videos = stophy.youtube.search(query="bun runtime")
 print(videos["data"]["results"])
 
-places = stophy.maps.search(query="coffee", location="Austin, TX", limit=5)
+places = stophy.maps.search(query="coffee", location="Austin, TX")
 place_id = places["data"]["results"][0].get("placeId")
 if place_id:
-    reviews = stophy.maps.reviews(place=place_id, limit=20)
+    reviews = stophy.maps.reviews(place=place_id)
     print(reviews["data"]["results"])
 
-profile = stophy.tiktok.profile(profile="tiktok", limit=5)
+profile = stophy.tiktok.profile(profile="tiktok")
 print(profile["data"].get("followers"), profile["data"].get("results"))
 
 ads = stophy.ads.search(network="meta", query="running shoes")

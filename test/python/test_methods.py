@@ -1,4 +1,5 @@
 import json
+import pytest
 from pathlib import Path
 
 from helpers import body_of, make_client, query_of
@@ -22,11 +23,11 @@ ENVELOPE = {
 
 def test_posts_input_to_the_spec_path():
     client, calls = make_client({"json": ENVELOPE})
-    result = client.youtube.search(query="bun runtime", limit=2)
+    result = client.youtube.search(query="bun runtime", cursor="next")
     assert result["data"]["results"][0]["videoUrl"] == "https://youtu.be/abc"
     assert calls[0].method == "POST"
     assert calls[0].url.path == "/v1/youtube/search"
-    assert body_of(calls[0]) == {"query": "bun runtime", "limit": 2}
+    assert body_of(calls[0]) == {"query": "bun runtime", "cursor": "next"}
     assert calls[0].headers["accept"] == "application/json"
 
 
@@ -139,3 +140,19 @@ def test_web_search_and_web_news_still_work_after_the_rename():
     client.web.search(query="bun runtime")
     assert calls[-1].url.path == "/v1/web/search"
     client.close()
+
+
+def test_page_numbers_and_advertiser_are_sent():
+    client, calls = make_client({"json": ENVELOPE})
+    client.google.search(query="bun", page=2)
+    client.meta.ads.page(advertiser="nike")
+    assert body_of(calls[0]) == {"query": "bun", "page": 2}
+    assert calls[1].url.path == "/v1/meta/ads/page"
+    assert body_of(calls[1]) == {"advertiser": "nike"}
+
+
+def test_limit_is_not_accepted():
+    client, calls = make_client({"json": ENVELOPE})
+    with pytest.raises(TypeError):
+        client.youtube.search(query="bun", limit=2)  # type: ignore[call-arg]
+    assert calls == []

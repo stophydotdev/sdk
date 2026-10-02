@@ -26,7 +26,7 @@ Get a key from the [dashboard](https://stophy.dev/dashboard). Keys start with `s
 ```python
 stophy = Stophy(api_key="st_...")
 
-videos = stophy.youtube.search(query="bun runtime", limit=5)
+videos = stophy.youtube.search(query="bun runtime")
 print(videos["data"]["results"])
 ```
 
@@ -51,13 +51,13 @@ print(transcript["data"].get("text"), transcript["data"].get("segments"))
 posts = stophy.reddit.search(query="bun runtime", sort="top", within="month")
 print(posts["data"]["results"])
 
-places = stophy.maps.search(query="coffee", location="Austin, TX", limit=5)
+places = stophy.maps.search(query="coffee", location="Austin, TX")
 place_id = places["data"]["results"][0].get("placeId")
 if place_id:
-    reviews = stophy.maps.reviews(place=place_id, limit=20)
+    reviews = stophy.maps.reviews(place=place_id)
     print(reviews["data"]["results"])
 
-profile = stophy.tiktok.profile(profile="tiktok", limit=5)
+profile = stophy.tiktok.profile(profile="tiktok")
 print(profile["data"].get("followers"), profile["data"].get("results"))
 
 ads = stophy.ads.search(network="meta", query="running shoes")
@@ -68,11 +68,22 @@ print(ads["data"]["results"])
 
 ## Get the next page
 
-When there are more results, `data["cursor"]` is set. Pass it back to get the next page:
+Each call returns one page of results, as the site shows it. List methods page in one of two ways.
+
+Some take a page number. They return `data["page"]` and `data["hasMore"]`. Ask for the next number while `hasMore` is true:
 
 ```python
-first = stophy.reddit.search(query="bun")
-next_page = stophy.reddit.search(query="bun", cursor=first["data"]["cursor"])
+first = stophy.google.search(query="bun runtime")
+if first["data"].get("hasMore"):
+    second = stophy.google.search(query="bun runtime", page=2)
+```
+
+Others return `data["cursor"]` when there is more. Pass it back as is:
+
+```python
+first = stophy.youtube.search(query="bun runtime")
+if first["data"].get("cursor"):
+    next_page = stophy.youtube.search(query="bun runtime", cursor=first["data"]["cursor"])
 ```
 
 ## Handle errors
