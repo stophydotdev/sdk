@@ -34,13 +34,13 @@ def test_async_search_and_transcript():
             max_retries=0,
         ) as client:
             result = await client.youtube.search(query="bun runtime", cursor="next")
-            await client.transcript(video="https://youtu.be/abc")
+            await client.youtube.transcript(video_url="https://youtu.be/abc")
             return result
 
     result = _run(run)
     assert result["data"]["results"][0]["videoUrl"] == "https://youtu.be/abc"
     assert body_of(calls[0]) == {"query": "bun runtime", "cursor": "next"}
-    assert calls[1].url.path == "/v1/transcript"
+    assert calls[1].url.path == "/v1/youtube/transcript"
     assert calls[1].headers["accept"] == "application/json"
 
 

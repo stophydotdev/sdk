@@ -45,46 +45,49 @@ describe("namespaced operations", () => {
 
 	test("calls a single-segment operation", async () => {
 		const { client, calls } = makeClient({ json: envelope });
-		await client.transcript({ video: "https://youtu.be/abc" });
-		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/transcript");
-		expect(calls[0]?.body).toEqual({ video: "https://youtu.be/abc" });
+		await client.youtube.transcript({ videoUrl: "https://youtu.be/abc" });
+		expect(new URL(calls[0]?.url ?? "").pathname).toBe(
+			"/v1/youtube/transcript",
+		);
+		expect(calls[0]?.body).toEqual({ videoUrl: "https://youtu.be/abc" });
 	});
 
 	test("calls the app, jobs, places and shopping endpoints", async () => {
 		const { client, calls } = makeClient({ json: envelope });
 		await client.appstore.search({ query: "notes" });
-		await client.googleplay.reviews({ app: "com.example.app", cursor: "c1" });
+		await client.google.play.reviews({
+			appId: "com.example.app",
+			cursor: "c1",
+		});
 		await client.indeed.search({ query: "designer" });
-		await client.tripadvisor.place({ place: "d1234" });
-		await client.walmart.search({ query: "tv" });
+		await client.tripadvisor.place({ placeId: "d1234" });
+		await client.amazon.search({ query: "tv", sort: "priceLow" });
 		expect(calls.map((call) => new URL(call.url).pathname)).toEqual([
 			"/v1/appstore/search",
-			"/v1/googleplay/reviews",
+			"/v1/google/play/reviews",
 			"/v1/indeed/search",
 			"/v1/tripadvisor/place",
-			"/v1/walmart/search",
+			"/v1/amazon/search",
 		]);
-		expect(calls[1]?.body).toEqual({ app: "com.example.app", cursor: "c1" });
+		expect(calls[1]?.body).toEqual({ appId: "com.example.app", cursor: "c1" });
 	});
 
-	test("sends the network discriminator for joined endpoints", async () => {
+	test("calls the ads endpoints of each network", async () => {
 		const { client, calls } = makeClient({ json: envelope });
-		await client.ads.search({ network: "meta", query: "shoes" });
-		await client.ads.search({ network: "google", query: "example.com" });
-		expect(new URL(calls[0]?.url ?? "").pathname).toBe("/v1/ads/search");
-		expect(calls[0]?.body).toEqual({ network: "meta", query: "shoes" });
-		expect(new URL(calls[1]?.url ?? "").pathname).toBe("/v1/ads/search");
-		expect(calls[1]?.body).toEqual({
-			network: "google",
-			query: "example.com",
-		});
+		await client.meta.ads.search({ query: "shoes" });
+		await client.google.ads.search({ domain: "example.com" });
+		expect(calls.map((call) => new URL(call.url).pathname)).toEqual([
+			"/v1/meta/ads/search",
+			"/v1/google/ads/search",
+		]);
+		expect(calls[1]?.body).toEqual({ domain: "example.com" });
 	});
 
 	test("forwards the abort signal", async () => {
 		const { client, calls } = makeClient({ json: envelope });
 		const controller = new AbortController();
 		controller.abort();
-		await client.maps
+		await client.google.maps
 			.search(
 				{ query: "cairo", location: "Cairo" },
 				{ signal: controller.signal },
@@ -161,7 +164,8 @@ describe("namespaced operations", () => {
 		const { client } = makeClient({ json: envelope });
 		const paths = await specPaths();
 		expect(paths).toContain("/v1/google/search");
-		expect(paths).not.toContain("/v1/amazon/product");
+		expect(paths).toContain("/v1/amazon/product");
+		expect(paths).not.toContain("/v1/walmart/product");
 		for (const path of paths) {
 			expect(typeof endpointAt(client, path)).toBe("function");
 		}

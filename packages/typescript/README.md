@@ -17,7 +17,7 @@ const result = await new Stophy().google.search({ query: "bun runtime" });
 console.log(result.data.results);
 ```
 
-Google search, Google News, YouTube search, YouTube video details and YouTube transcripts work without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
+Google search, Google News, YouTube search, YouTube video details, YouTube transcripts, Reddit search and Google Maps search work without a key, with a small free allowance. Every other method throws a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 
@@ -32,50 +32,48 @@ console.log(videos.data.results);
 
 `new Stophy("st_...")` works too.
 
-Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.ads.search({ network: "meta", ... })`. Endpoints with a single name are methods on the client, like `stophy.transcript(...)`.
+Methods follow the source and the command: `stophy.google.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.meta.ads.search(...)`.
+
+To point at one thing, send its link or its id, never both: `stophy.youtube.video({ videoUrl })` or `stophy.youtube.video({ videoId })`. Methods that take a person send `userUrl` or `username`.
 
 Every response is `{ success, data, creditsUsed, requestId }`. `data` is one flat object. Lists are in `data.results`.
 
 ## More data
 
-A transcript, Reddit posts, Google Maps reviews, a TikTok profile and Meta ads:
+A YouTube transcript, Reddit posts, Google Maps reviews, a TikTok profile and Meta ads:
 
 ```ts
 const stophy = new Stophy({ apiKey: "st_..." });
 
-const transcript = await stophy.transcript({ video: "https://youtu.be/dQw4w9WgXcQ", includeTimestamps: true });
+const transcript = await stophy.youtube.transcript({ videoUrl: "https://youtu.be/dQw4w9WgXcQ", includeTimestamps: true });
 console.log(transcript.data.text, transcript.data.segments);
 
 const posts = await stophy.reddit.search({ query: "bun runtime", sort: "top", within: "month" });
 console.log(posts.data.results);
 
-const places = await stophy.maps.search({ query: "coffee", location: "Austin, TX" });
+const places = await stophy.google.maps.search({ query: "coffee", location: "Austin, TX" });
 const placeId = places.data.results[0]?.placeId;
 if (placeId) {
-  const reviews = await stophy.maps.reviews({ place: placeId });
+  const reviews = await stophy.google.maps.reviews({ placeId });
   console.log(reviews.data.results);
 }
 
-const profile = await stophy.tiktok.profile({ profile: "tiktok" });
+const profile = await stophy.tiktok.profile({ username: "tiktok" });
 console.log(profile.data.followers, profile.data.results);
 
-const ads = await stophy.ads.search({ network: "meta", query: "running shoes" });
+const ads = await stophy.meta.ads.search({ query: "running shoes" });
 console.log(ads.data.results);
 ```
-
-`ads.search` covers several ad networks. Pick one with `network`. The types follow the choice.
 
 ## Get the next page
 
 Each call returns one page of results, as the site shows it. List methods page in one of two ways.
 
-Some take a page number. They return `data.page` and `data.hasMore`. Ask for the next number while `hasMore` is true:
+Some take a page number. They return `data.page`. Ask for the next number to continue, and stop when `results` comes back empty:
 
 ```ts
 const first = await stophy.google.search({ query: "bun runtime" });
-if (first.data.hasMore) {
-  const second = await stophy.google.search({ query: "bun runtime", page: 2 });
-}
+const second = await stophy.google.search({ query: "bun runtime", page: first.data.page + 1 });
 ```
 
 Others return `data.cursor` when there is more. Pass it back as is:
