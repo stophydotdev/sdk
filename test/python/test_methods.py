@@ -33,10 +33,10 @@ def test_posts_input_to_the_spec_path():
 
 def test_single_segment_operations_and_keyword_argument():
     client, calls = make_client({"json": ENVELOPE})
-    client.transcript(video="https://youtu.be/abc", include_timestamps=True)
-    assert calls[0].url.path == "/v1/transcript"
+    client.youtube.transcript(video_url="https://youtu.be/abc", include_timestamps=True)
+    assert calls[0].url.path == "/v1/youtube/transcript"
     assert body_of(calls[0]) == {
-        "video": "https://youtu.be/abc",
+        "videoUrl": "https://youtu.be/abc",
         "includeTimestamps": True,
     }
 
@@ -44,28 +44,27 @@ def test_single_segment_operations_and_keyword_argument():
 def test_app_jobs_places_and_shopping_operations():
     client, calls = make_client({"json": ENVELOPE})
     client.appstore.search(query="notes")
-    client.googleplay.reviews(app="com.example.app", cursor="c1")
+    client.google.play.reviews(app_id="com.example.app", cursor="c1")
     client.indeed.search(query="designer")
-    client.tripadvisor.place(place="d1234")
-    client.walmart.search(query="tv")
+    client.tripadvisor.place(place_id="d1234")
+    client.amazon.search(query="tv", sort="priceLow")
     assert [call.url.path for call in calls] == [
         "/v1/appstore/search",
-        "/v1/googleplay/reviews",
+        "/v1/google/play/reviews",
         "/v1/indeed/search",
         "/v1/tripadvisor/place",
-        "/v1/walmart/search",
+        "/v1/amazon/search",
     ]
-    assert body_of(calls[1]) == {"app": "com.example.app", "cursor": "c1"}
+    assert body_of(calls[1]) == {"appId": "com.example.app", "cursor": "c1"}
 
 
-def test_joined_operations_send_the_discriminator():
+def test_ads_operations_of_each_network():
     client, calls = make_client({"json": ENVELOPE})
-    client.ads.search(network="meta", query="shoes")
-    client.ads.search(network="google", query="example.com")
-    assert calls[0].url.path == "/v1/ads/search"
-    assert body_of(calls[0]) == {"network": "meta", "query": "shoes"}
-    assert calls[1].url.path == "/v1/ads/search"
-    assert body_of(calls[1]) == {"network": "google", "query": "example.com"}
+    client.meta.ads.search(query="shoes")
+    client.google.ads.search(domain="example.com")
+    assert calls[0].url.path == "/v1/meta/ads/search"
+    assert calls[1].url.path == "/v1/google/ads/search"
+    assert body_of(calls[1]) == {"domain": "example.com"}
 
 
 def test_empty_optional_body_and_endpoint_catalog():
@@ -124,7 +123,8 @@ def test_every_spec_operation_is_callable():
     spec = json.loads(Path("openapi.json").read_text())
     client, _calls = make_client({"json": ENVELOPE})
     assert "/v1/google/search" in spec["paths"]
-    assert "/v1/amazon/product" not in spec["paths"]
+    assert "/v1/amazon/product" in spec["paths"]
+    assert "/v1/walmart/product" not in spec["paths"]
     for path in spec["paths"]:
         node = client
         for part in [item for item in path.split("/") if item and item != "v1"]:

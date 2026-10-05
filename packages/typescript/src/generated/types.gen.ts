@@ -4,9 +4,6 @@ export type _Error = {
   success: false;
   error: {
     code:
-      | "agentCodeCompleted"
-      | "agentCodeNotFound"
-      | "agentEmailMismatch"
       | "cliSessionCompleted"
       | "cliSessionExists"
       | "cliSessionNotFound"
@@ -122,7 +119,30 @@ export type GoogleSearchData = {
     language?: string;
     includeDomains?: Array<string>;
     excludeDomains?: Array<string>;
-    within?: "day" | "week" | "month" | "year" | "all";
+    /**
+     * Google's Tools time filter. Leave out for any time.
+     */
+    time?: "pastHour" | "past24Hours" | "pastWeek" | "pastMonth" | "pastYear";
+    /**
+     * Google's Verbatim: search the exact words, with no spelling fixes.
+     */
+    verbatim?: boolean;
+    fileType?:
+      | "pdf"
+      | "doc"
+      | "docx"
+      | "xls"
+      | "xlsx"
+      | "ppt"
+      | "pptx"
+      | "txt"
+      | "rtf"
+      | "csv"
+      | "kml";
+    /**
+     * Hide explicit results.
+     */
+    safeSearch?: boolean;
     /**
      * Page number, starting at 1.
      */
@@ -177,33 +197,90 @@ export type GoogleSearchResponses = {
         attributes?: {
           [key: string]: string;
         };
-      };
-      results: Array<{
-        url: string;
-        title: string;
         /**
-         * Text shown under the title.
+         * Official social profiles.
          */
-        description?: string;
-        /**
-         * Day shown on the result, when there is one.
-         */
-        date?: string;
-        /**
-         * Links listed under the result.
-         */
-        sitelinks?: Array<{
-          /**
-           * Link text.
-           */
-          title: string;
-          /**
-           * Destination URL.
-           */
+        profiles?: Array<{
+          site: string;
           url: string;
         }>;
-        position: number;
-      }>;
+      };
+      results: Array<
+        | {
+            type: "web";
+            url: string;
+            title: string;
+            /**
+             * Text shown under the title.
+             */
+            description?: string;
+            /**
+             * Day shown on the result, when there is one.
+             */
+            date?: string;
+            /**
+             * Links listed under the result.
+             */
+            sitelinks?: Array<{
+              /**
+               * Link text.
+               */
+              title: string;
+              /**
+               * Destination URL.
+               */
+              url: string;
+            }>;
+            position: number;
+          }
+        | {
+            type: "news";
+            url: string;
+            title: string;
+            /**
+             * Publication that ran the story.
+             */
+            source?: string;
+            publishedAt?: string;
+            position: number;
+          }
+        | {
+            type: "video";
+            url: string;
+            title: string;
+            /**
+             * Where the video is hosted, like YouTube.
+             */
+            site?: string;
+            channelName?: string;
+            durationSeconds?: number;
+            /**
+             * Approximate: Google shows only how long ago the video was published.
+             */
+            publishedAt?: string;
+            position: number;
+          }
+        | {
+            type: "post";
+            url: string;
+            text: string;
+            /**
+             * Where it was posted, like Reddit or X.
+             */
+            site?: string;
+            authorName?: string;
+            /**
+             * At least this many.
+             */
+            comments?: number;
+            /**
+             * At least this many.
+             */
+            likes?: number;
+            publishedAt?: string;
+            position: number;
+          }
+      >;
       peopleAlsoAsk?: Array<{
         question: string;
         answer?: string;
@@ -212,7 +289,6 @@ export type GoogleSearchResponses = {
       }>;
       relatedSearches?: Array<string>;
       page?: number;
-      hasMore?: boolean;
     };
     creditsUsed: number;
     requestId: string;
@@ -247,7 +323,14 @@ export type GoogleNewsData = {
     language?: string;
     includeDomains?: Array<string>;
     excludeDomains?: Array<string>;
-    within?: "hour" | "day" | "week" | "month" | "year" | "all";
+    /**
+     * Google's Tools time filter. Leave out for any time.
+     */
+    time?: "pastHour" | "past24Hours" | "pastWeek" | "pastMonth" | "pastYear";
+    /**
+     * Google News' own sort: by relevance or newest first.
+     */
+    sort?: "relevance" | "newest";
     /**
      * Page number, starting at 1.
      */
@@ -296,7 +379,6 @@ export type GoogleNewsResponses = {
         position: number;
       }>;
       page: number;
-      hasMore?: boolean;
     };
     creditsUsed: number;
     requestId: string;
@@ -316,6 +398,32 @@ export type GoogleImagesData = {
      * Two-letter language code like en or pt. Any case is accepted.
      */
     language?: string;
+    size?: "large" | "medium" | "icon";
+    color?:
+      | "blackAndWhite"
+      | "transparent"
+      | "red"
+      | "orange"
+      | "yellow"
+      | "green"
+      | "teal"
+      | "blue"
+      | "purple"
+      | "pink"
+      | "white"
+      | "gray"
+      | "black"
+      | "brown";
+    type?: "clipArt" | "lineDrawing" | "gif";
+    time?: "past24Hours" | "pastWeek" | "pastMonth" | "pastYear";
+    /**
+     * Creative Commons, or commercial and other licenses.
+     */
+    usageRights?: "creativeCommons" | "commercial";
+    /**
+     * Return at most this many images. You pay 1 credit per 10 returned.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -366,7 +474,7 @@ export type GoogleAiModeData = {
     /**
      * The question to ask, worded the way a person would ask it.
      */
-    prompt: string;
+    query: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -401,7 +509,7 @@ export type GoogleAiModeResponses = {
   200: {
     success: true;
     data: {
-      prompt?: string;
+      query?: string;
       answer: string;
       sources: Array<{
         url: string;
@@ -419,6 +527,10 @@ export type GoogleAiModeResponse =
 export type GoogleShoppingData = {
   body: {
     query: string;
+    /**
+     * A filter from a previous response's filters. Its page already holds earlier choices; a selected one removes it.
+     */
+    filter?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -458,7 +570,28 @@ export type GoogleShoppingResponses = {
   200: {
     success: true;
     data: {
+      /**
+       * Google Shopping's own filters for this search.
+       */
+      filters?: Array<{
+        /**
+         * Google's name for the filter, like Price or Brand.
+         */
+        group: string;
+        options?: Array<{
+          label: string;
+          /**
+           * Send as filter to apply this choice.
+           */
+          filter: string;
+          isSelected: boolean;
+        }>;
+      }>;
       results: Array<{
+        /**
+         * Google Shopping's id for this product.
+         */
+        productId: string;
         title: string;
         /**
          * Current price in the country's currency.
@@ -492,7 +625,6 @@ export type GoogleShoppingResponses = {
         position: number;
       }>;
       page: number;
-      hasMore: boolean;
     };
     creditsUsed: number;
     requestId: string;
@@ -502,12 +634,737 @@ export type GoogleShoppingResponses = {
 export type GoogleShoppingResponse =
   GoogleShoppingResponses[keyof GoogleShoppingResponses];
 
+export type GoogleSuggestData = {
+  body: {
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     */
+    language?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/suggest";
+};
+
+export type GoogleSuggestErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleSuggestError = GoogleSuggestErrors[keyof GoogleSuggestErrors];
+
+export type GoogleSuggestResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        keyword: string;
+        rank: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleSuggestResponse =
+  GoogleSuggestResponses[keyof GoogleSuggestResponses];
+
+export type GoogleAdsSearchData = {
+  body: {
+    /**
+     * A domain like nike.com. Google's library finds ads by domain or advertiser, not by keyword.
+     */
+    query?: string;
+    advertiser?: string;
+    domain?: string;
+    /**
+     * Country code like de. Only ads shown in this country are returned. Any case is accepted.
+     */
+    country?: string;
+    mediaType?: "text" | "image" | "video";
+    /**
+     * Google's own Platform filter: where the ad was shown.
+     */
+    platform?: "search" | "youtube" | "play" | "maps" | "shopping";
+    /**
+     * Google's own Date range: ads shown on or after this day.
+     */
+    shownFrom?: string;
+    /**
+     * Google's own Date range: ads shown on or before this day.
+     */
+    shownTo?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/ads/search";
+};
+
+export type GoogleAdsSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleAdsSearchError =
+  GoogleAdsSearchErrors[keyof GoogleAdsSearchErrors];
+
+export type GoogleAdsSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      totalMin?: number;
+      totalMax?: number;
+      results: Array<{
+        adId?: string;
+        adUrl: string;
+        advertiserId?: string;
+        advertiserName?: string;
+        advertiserUrl: string;
+        domain?: string;
+        format: "text" | "image" | "video" | "unknown";
+        firstShownAt?: string;
+        lastShownAt?: string;
+        daysShown?: number;
+        previewUrl?: string;
+        imageUrl?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleAdsSearchResponse =
+  GoogleAdsSearchResponses[keyof GoogleAdsSearchResponses];
+
+export type GoogleAdsAdData = {
+  body: {
+    /**
+     * Link to the Google Ads Transparency ad, like https://adstransparency.google.com/advertiser/AR18378488041124659201/creative/CR12345678901234567890. Send this or adId.
+     */
+    adUrl?: string;
+    /**
+     * Google Ads Transparency ad id, like CR12345678901234567890. Send this or adUrl.
+     */
+    adId?: string;
+    /**
+     * Advertiser id like AR18378488041124659201. Send it with adId; adUrl already has it.
+     */
+    advertiserId?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/ads/ad";
+};
+
+export type GoogleAdsAdErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleAdsAdError = GoogleAdsAdErrors[keyof GoogleAdsAdErrors];
+
+export type GoogleAdsAdResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      adId?: string;
+      adUrl: string;
+      advertiserId?: string;
+      advertiserName?: string;
+      advertiserUrl: string;
+      domain?: string;
+      format: "text" | "image" | "video" | "unknown";
+      firstShownAt?: string;
+      lastShownAt?: string;
+      daysShown?: number;
+      previewUrl?: string;
+      imageUrl?: string;
+      advertiserCountry?: string;
+      advertiserIsVerified?: boolean;
+      paidBy?: string;
+      impressionsMin?: number;
+      impressionsMax?: number;
+      variations: Array<{
+        previewUrl?: string;
+        imageUrl?: string;
+        videoUrl?: string;
+      }>;
+      regions: Array<{
+        country?: string;
+        firstShownAt?: string;
+        lastShownAt?: string;
+        impressionsMin?: number;
+        impressionsMax?: number;
+      }>;
+      targetingIncluded: Array<string>;
+      targetingExcluded: Array<string>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleAdsAdResponse =
+  GoogleAdsAdResponses[keyof GoogleAdsAdResponses];
+
+export type GoogleAdsAdvertisersData = {
+  body: {
+    query: string;
+    /**
+     * Country code like de. Advertisers are matched on ads shown in this country, wherever the advertiser is based. Any case is accepted.
+     */
+    country?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/ads/advertisers";
+};
+
+export type GoogleAdsAdvertisersErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleAdsAdvertisersError =
+  GoogleAdsAdvertisersErrors[keyof GoogleAdsAdvertisersErrors];
+
+export type GoogleAdsAdvertisersResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      domains: Array<string>;
+      results: Array<{
+        advertiserId?: string;
+        advertiserName?: string;
+        advertiserCountry?: string;
+        advertiserUrl: string;
+        isVerified: boolean;
+        adsMin?: number;
+        adsMax?: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleAdsAdvertisersResponse =
+  GoogleAdsAdvertisersResponses[keyof GoogleAdsAdvertisersResponses];
+
+export type GoogleScholarData = {
+  body: {
+    query?: string;
+    /**
+     * A result's citesId: lists the works that cite it, like Scholar's Cited by.
+     */
+    citesId?: string;
+    /**
+     * Scholar's own Custom range: from this year.
+     */
+    yearFrom?: number;
+    /**
+     * Scholar's own Custom range: up to this year.
+     */
+    yearTo?: number;
+    /**
+     * Scholar's own sort. Newest lists recent additions first.
+     */
+    sort?: "relevance" | "newest";
+    /**
+     * Scholar's own Any type, Review articles, or Case law.
+     */
+    type?: "any" | "reviewArticles" | "caseLaw";
+    includePatents?: boolean;
+    /**
+     * Scholar's own include citations: works known only from citations.
+     */
+    includeCitations?: boolean;
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/scholar";
+};
+
+export type GoogleScholarErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleScholarError = GoogleScholarErrors[keyof GoogleScholarErrors];
+
+export type GoogleScholarResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        title: string;
+        url?: string;
+        /**
+         * Scholar's tag, like [PDF] or [BOOK].
+         */
+        format?: "pdf" | "html" | "book" | "citation" | "doc";
+        /**
+         * As Scholar lists them; long lists end early.
+         */
+        authors?: Array<string>;
+        /**
+         * Journal or venue; the case citation for case law.
+         */
+        publication?: string;
+        year?: number;
+        /**
+         * Publisher or site Scholar names; the court for case law.
+         */
+        publisher?: string;
+        snippet?: string;
+        /**
+         * Scholar's Cited by count.
+         */
+        citations?: number;
+        /**
+         * Send as citesId to list the works that cite this one.
+         */
+        citesId?: string;
+        versions?: number;
+        pdfUrl?: string;
+        position: number;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleScholarResponse =
+  GoogleScholarResponses[keyof GoogleScholarResponses];
+
+export type GoogleVideosData = {
+  body: {
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Two-letter language code like en or pt. Any case is accepted.
+     */
+    language?: string;
+    includeDomains?: Array<string>;
+    excludeDomains?: Array<string>;
+    /**
+     * Google's Tools time filter. Leave out for any time.
+     */
+    time?: "pastHour" | "past24Hours" | "pastWeek" | "pastMonth" | "pastYear";
+    /**
+     * Google's own Duration: short is under 4 min, medium 4–20, long 20+.
+     */
+    duration?: "short" | "medium" | "long";
+    /**
+     * Google's own High quality.
+     */
+    highQuality?: boolean;
+    /**
+     * Google's own Closed captioned.
+     */
+    closedCaptioned?: boolean;
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/videos";
+};
+
+export type GoogleVideosErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleVideosError = GoogleVideosErrors[keyof GoogleVideosErrors];
+
+export type GoogleVideosResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        title: string;
+        url: string;
+        /**
+         * Where the video is hosted, like YouTube.
+         */
+        site?: string;
+        channelName?: string;
+        durationSeconds?: number;
+        /**
+         * Approximate when Google shows only how long ago, like 1 month ago.
+         */
+        publishedAt?: string;
+        description?: string;
+        position: number;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleVideosResponse =
+  GoogleVideosResponses[keyof GoogleVideosResponses];
+
+export type GoogleJobsData = {
+  body: {
+    /**
+     * The role, like software engineer.
+     */
+    query: string;
+    /**
+     * City or area, like Austin, TX.
+     */
+    location?: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     */
+    language?: string;
+    /**
+     * Google Jobs' own Date posted.
+     */
+    datePosted?: "yesterday" | "last3Days" | "lastWeek" | "lastMonth";
+    /**
+     * Google Jobs' own Job type.
+     */
+    jobType?: "fullTime" | "partTime" | "contract" | "internship";
+    /**
+     * Google Jobs' own Remote chip.
+     */
+    remote?: boolean;
+    /**
+     * Google Jobs' own No degree chip.
+     */
+    noDegree?: boolean;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/jobs";
+};
+
+export type GoogleJobsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleJobsError = GoogleJobsErrors[keyof GoogleJobsErrors];
+
+export type GoogleJobsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        jobId: string;
+        title: string;
+        companyName?: string;
+        location?: string;
+        /**
+         * The site Google found the post on.
+         */
+        via?: string;
+        /**
+         * Approximate: Google shows how long ago.
+         */
+        publishedAt?: string;
+        jobType?: string;
+        /**
+         * As Google shows it, like 140K–170K a year.
+         */
+        salary?: string;
+        benefits?: Array<string>;
+        apply?: Array<{
+          site: string;
+          url: string;
+        }>;
+        qualifications?: Array<string>;
+        responsibilities?: Array<string>;
+        /**
+         * The start of the job description, as Google shows it.
+         */
+        description?: string;
+        /**
+         * The job on Google Jobs.
+         */
+        jobUrl: string;
+        position: number;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleJobsResponse = GoogleJobsResponses[keyof GoogleJobsResponses];
+
+export type GooglePatentsData = {
+  body: {
+    query?: string;
+    inventor?: string;
+    assignee?: string;
+    /**
+     * Google Patents' own Patent office, like US, EP, WO, CN or JP.
+     */
+    office?: string;
+    language?:
+      | "english"
+      | "german"
+      | "chinese"
+      | "french"
+      | "spanish"
+      | "arabic"
+      | "japanese"
+      | "korean"
+      | "portuguese"
+      | "russian"
+      | "italian"
+      | "dutch"
+      | "swedish"
+      | "finnish"
+      | "norwegian"
+      | "danish";
+    /**
+     * Which date before and after compare: Google Patents' own date choice.
+     */
+    dateType?: "priority" | "filing" | "publication";
+    after?: string;
+    before?: string;
+    status?: "grant" | "application";
+    type?: "patent" | "design";
+    /**
+     * Google Patents' own Litigation: has related litigation, or no known.
+     */
+    litigation?: "has" | "none";
+    sort?: "relevance" | "newest" | "oldest";
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/patents";
+};
+
+export type GooglePatentsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GooglePatentsError = GooglePatentsErrors[keyof GooglePatentsErrors];
+
+export type GooglePatentsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        /**
+         * Publication number, like US11993294B2.
+         */
+        patentId: string;
+        title: string;
+        snippet?: string;
+        assignee?: string;
+        inventor?: string;
+        priorityDate?: string;
+        filingDate?: string;
+        grantDate?: string;
+        publicationDate?: string;
+        language?: string;
+        patentUrl: string;
+        pdfUrl?: string;
+        thumbnailUrl?: string;
+        position: number;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GooglePatentsResponse =
+  GooglePatentsResponses[keyof GooglePatentsResponses];
+
+export type YoutubeSuggestData = {
+  body: {
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     */
+    language?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/youtube/suggest";
+};
+
+export type YoutubeSuggestErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YoutubeSuggestError =
+  YoutubeSuggestErrors[keyof YoutubeSuggestErrors];
+
+export type YoutubeSuggestResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        keyword: string;
+        rank: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YoutubeSuggestResponse =
+  YoutubeSuggestResponses[keyof YoutubeSuggestResponses];
+
 export type YoutubeSearchData = {
   body: {
     query: string;
-    type?: "videos" | "all" | "channels" | "playlists" | "shorts";
-    within?: "hour" | "day" | "week" | "month" | "year" | "all";
-    sort?: "relevance" | "top";
+    /**
+     * Leave out for videos, channels and playlists. Use shorts for Shorts.
+     */
+    type?: "videos" | "shorts" | "channels" | "playlists" | "movies";
+    duration?: "under3Minutes" | "3to20Minutes" | "over20Minutes";
+    uploadDate?: "today" | "thisWeek" | "thisMonth" | "thisYear";
+    features?: Array<
+      | "360"
+      | "live"
+      | "4k"
+      | "hd"
+      | "subtitles"
+      | "creativeCommons"
+      | "vr180"
+      | "3d"
+      | "hdr"
+      | "location"
+      | "purchased"
+    >;
+    prioritize?: "relevance" | "popularity";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -553,6 +1410,9 @@ export type YoutubeSearchResponses = {
             thumbnailUrl?: string;
             isShort: boolean;
             isLive: boolean;
+            /**
+             * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+             */
             publishedAt?: string;
           }
         | {
@@ -588,9 +1448,79 @@ export type YoutubeSearchResponses = {
 export type YoutubeSearchResponse =
   YoutubeSearchResponses[keyof YoutubeSearchResponses];
 
+export type YoutubeTranscriptData = {
+  body: {
+    /**
+     * Link to the YouTube video, like https://youtu.be/p0fybvFyOlM. Send this or videoId.
+     */
+    videoUrl?: string;
+    /**
+     * YouTube video id, like p0fybvFyOlM. Send this or videoUrl.
+     */
+    videoId?: string;
+    /**
+     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     */
+    language?: string;
+    includeTimestamps?: boolean;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/youtube/transcript";
+};
+
+export type YoutubeTranscriptErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YoutubeTranscriptError =
+  YoutubeTranscriptErrors[keyof YoutubeTranscriptErrors];
+
+export type YoutubeTranscriptResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      videoId?: string;
+      videoUrl: string;
+      language?: string;
+      isAutoGenerated: boolean;
+      durationSeconds?: number;
+      transcribedSeconds?: number;
+      text?: string;
+      segments?: Array<{
+        startSeconds: number;
+        endSeconds: number;
+        text?: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YoutubeTranscriptResponse =
+  YoutubeTranscriptResponses[keyof YoutubeTranscriptResponses];
+
 export type YoutubeVideoData = {
   body: {
-    video: string;
+    /**
+     * Link to the YouTube video, like https://youtu.be/p0fybvFyOlM. Send this or videoId.
+     */
+    videoUrl?: string;
+    /**
+     * YouTube video id, like p0fybvFyOlM. Send this or videoUrl.
+     */
+    videoId?: string;
   };
   path?: never;
   query?: never;
@@ -629,11 +1559,24 @@ export type YoutubeVideoResponses = {
       thumbnailUrl?: string;
       isShort: boolean;
       isLive: boolean;
+      /**
+       * When the video was published.
+       */
       publishedAt?: string;
       description?: string;
       likes?: number;
       category?: string;
       tags: Array<string>;
+      comments?: number;
+      channelSubscribers?: number;
+      chapters: Array<{
+        title?: string;
+        startSeconds: number;
+      }>;
+      /**
+       * Where YouTube marks Most replayed on the progress bar.
+       */
+      mostReplayedAtSeconds: Array<number>;
     };
     creditsUsed: number;
     requestId: string;
@@ -643,63 +1586,16 @@ export type YoutubeVideoResponses = {
 export type YoutubeVideoResponse =
   YoutubeVideoResponses[keyof YoutubeVideoResponses];
 
-export type TranscriptData = {
-  body: {
-    video: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    includeTimestamps?: boolean;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/transcript";
-};
-
-export type TranscriptErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type TranscriptError = TranscriptErrors[keyof TranscriptErrors];
-
-export type TranscriptResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      videoId?: string;
-      videoUrl: string;
-      language?: string;
-      isAutoGenerated: boolean;
-      durationSeconds?: number;
-      transcribedSeconds?: number;
-      text?: string;
-      segments?: Array<{
-        startSeconds: number;
-        endSeconds: number;
-        text?: string;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type TranscriptResponse = TranscriptResponses[keyof TranscriptResponses];
-
 export type YoutubeCommentsData = {
   body: {
-    video: string;
+    /**
+     * Link to the YouTube video, like https://youtu.be/p0fybvFyOlM. Send this or videoId.
+     */
+    videoUrl?: string;
+    /**
+     * YouTube video id, like p0fybvFyOlM. Send this or videoUrl.
+     */
+    videoId?: string;
     /**
      * A comment's repliesCursor from an earlier response. Returns that comment's replies.
      */
@@ -764,8 +1660,29 @@ export type YoutubeCommentsResponse =
 
 export type YoutubeChannelData = {
   body: {
-    channel: string;
-    tab?: "videos" | "shorts" | "live" | "playlists" | "posts";
+    /**
+     * Link to the YouTube channel, like https://www.youtube.com/@mkbhd. Send this or channelId.
+     */
+    channelUrl?: string;
+    /**
+     * YouTube channel handle or id, like @mkbhd. Send this or channelUrl.
+     */
+    channelId?: string;
+    /**
+     * YouTube's own channel tab. Releases are a music channel's albums.
+     */
+    tab?:
+      | "videos"
+      | "shorts"
+      | "live"
+      | "playlists"
+      | "podcasts"
+      | "releases"
+      | "posts";
+    /**
+     * YouTube's own sort for the videos, shorts and live tabs.
+     */
+    sort?: "latest" | "popular" | "oldest";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -824,6 +1741,9 @@ export type YoutubeChannelResponses = {
             thumbnailUrl?: string;
             isShort: boolean;
             isLive: boolean;
+            /**
+             * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+             */
             publishedAt?: string;
           }
         | {
@@ -863,9 +1783,410 @@ export type YoutubeChannelResponses = {
 export type YoutubeChannelResponse =
   YoutubeChannelResponses[keyof YoutubeChannelResponses];
 
+export type YoutubeChannelSearchData = {
+  body: {
+    query: string;
+    /**
+     * Link to the YouTube channel, like https://www.youtube.com/@mkbhd. Send this or channelId.
+     */
+    channelUrl?: string;
+    /**
+     * YouTube channel handle or id, like @mkbhd. Send this or channelUrl.
+     */
+    channelId?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/youtube/channel/search";
+};
+
+export type YoutubeChannelSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YoutubeChannelSearchError =
+  YoutubeChannelSearchErrors[keyof YoutubeChannelSearchErrors];
+
+export type YoutubeChannelSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        type: "video";
+        videoId?: string;
+        videoUrl: string;
+        title?: string;
+        channelId?: string;
+        channelName?: string;
+        channelUrl?: string;
+        channelUsername?: string;
+        durationSeconds?: number;
+        views?: number;
+        thumbnailUrl?: string;
+        isShort: boolean;
+        isLive: boolean;
+        /**
+         * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+         */
+        publishedAt?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YoutubeChannelSearchResponse =
+  YoutubeChannelSearchResponses[keyof YoutubeChannelSearchResponses];
+
+export type YoutubeRelatedData = {
+  body: {
+    /**
+     * Link to the YouTube video, like https://youtu.be/p0fybvFyOlM. Send this or videoId.
+     */
+    videoUrl?: string;
+    /**
+     * YouTube video id, like p0fybvFyOlM. Send this or videoUrl.
+     */
+    videoId?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/youtube/related";
+};
+
+export type YoutubeRelatedErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YoutubeRelatedError =
+  YoutubeRelatedErrors[keyof YoutubeRelatedErrors];
+
+export type YoutubeRelatedResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<
+        | {
+            type: "video";
+            videoId?: string;
+            videoUrl: string;
+            title?: string;
+            channelId?: string;
+            channelName?: string;
+            channelUrl?: string;
+            channelUsername?: string;
+            durationSeconds?: number;
+            views?: number;
+            thumbnailUrl?: string;
+            isShort: boolean;
+            isLive: boolean;
+            /**
+             * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+             */
+            publishedAt?: string;
+          }
+        | {
+            type: "channel";
+            channelId?: string;
+            channelUrl: string;
+            channelName?: string;
+            channelUsername?: string;
+            description?: string;
+            subscribers?: number;
+            thumbnailUrl?: string;
+          }
+        | {
+            type: "playlist";
+            playlistId?: string;
+            playlistUrl: string;
+            title?: string;
+            channelId?: string;
+            channelName?: string;
+            channelUrl?: string;
+            channelUsername?: string;
+            videos?: number;
+            thumbnailUrl?: string;
+          }
+      >;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YoutubeRelatedResponse =
+  YoutubeRelatedResponses[keyof YoutubeRelatedResponses];
+
+export type YoutubeHashtagData = {
+  body: {
+    hashtag: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/youtube/hashtag";
+};
+
+export type YoutubeHashtagErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YoutubeHashtagError =
+  YoutubeHashtagErrors[keyof YoutubeHashtagErrors];
+
+export type YoutubeHashtagResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        type: "video";
+        videoId?: string;
+        videoUrl: string;
+        title?: string;
+        channelId?: string;
+        channelName?: string;
+        channelUrl?: string;
+        channelUsername?: string;
+        durationSeconds?: number;
+        views?: number;
+        thumbnailUrl?: string;
+        isShort: boolean;
+        isLive: boolean;
+        /**
+         * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+         */
+        publishedAt?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YoutubeHashtagResponse =
+  YoutubeHashtagResponses[keyof YoutubeHashtagResponses];
+
+export type YoutubePostData = {
+  body: {
+    /**
+     * Link to the YouTube community post, like https://www.youtube.com/post/UgkxX6gkDxQ0KRucvyG7NLui0LhjHp0CLlfZ. Send this or postId.
+     */
+    postUrl?: string;
+    /**
+     * YouTube community post id, like UgkxX6gkDxQ0KRucvyG7NLui0LhjHp0CLlfZ. Send this or postUrl.
+     */
+    postId?: string;
+    /**
+     * YouTube's own comment sort.
+     */
+    sort?: "top" | "newest";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/youtube/post";
+};
+
+export type YoutubePostErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YoutubePostError = YoutubePostErrors[keyof YoutubePostErrors];
+
+export type YoutubePostResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      postId?: string;
+      postUrl?: string;
+      text?: string;
+      publishedAt?: string;
+      likes?: number;
+      comments?: number;
+      imageUrls?: Array<string>;
+      videoId?: string;
+      videoTitle?: string;
+      pollChoices?: Array<string>;
+      pollTotalVotes?: number;
+      results: Array<{
+        commentId?: string;
+        commentUrl: string;
+        text?: string;
+        authorId?: string;
+        authorName?: string;
+        authorUsername?: string;
+        authorUrl?: string;
+        likes: number;
+        replies: number;
+        publishedAt?: string;
+        isPinned: boolean;
+        isHearted: boolean;
+        isChannelOwner: boolean;
+        repliesCursor?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YoutubePostResponse =
+  YoutubePostResponses[keyof YoutubePostResponses];
+
+export type YoutubeChartsData = {
+  body: {
+    /**
+     * YouTube Charts' own chart.
+     */
+    chart?:
+      | "topSongs"
+      | "topVideos"
+      | "topArtists"
+      | "topShortsSongs"
+      | "topPodcasts"
+      | "trending";
+    /**
+     * One of YouTube Charts' own countries as a 2-letter code, or global.
+     */
+    country?: string;
+    /**
+     * Daily exists for topVideos and topShortsSongs only.
+     */
+    interval?: "weekly" | "daily";
+    /**
+     * Return at most this many results. You pay 1 credit per 10 returned.
+     */
+    limit?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/youtube/charts";
+};
+
+export type YoutubeChartsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YoutubeChartsError = YoutubeChartsErrors[keyof YoutubeChartsErrors];
+
+export type YoutubeChartsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      chart?: string;
+      country?: string;
+      /**
+       * The last day the chart covers.
+       */
+      throughDate?: string;
+      results: Array<{
+        position: number;
+        previousPosition?: number;
+        /**
+         * Weeks on the chart, or days for a daily chart.
+         */
+        periodsOnChart?: number;
+        viewsChangePercent?: number;
+        title?: string;
+        artists?: Array<string>;
+        views?: number;
+        videoId?: string;
+        videoUrl?: string;
+        channelId?: string;
+        channelUrl?: string;
+        playlistUrl?: string;
+        durationSeconds?: number;
+        releaseDate?: string;
+        label?: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YoutubeChartsResponse =
+  YoutubeChartsResponses[keyof YoutubeChartsResponses];
+
 export type YoutubePlaylistData = {
   body: {
-    playlist: string;
+    /**
+     * Link to the YouTube playlist, like https://www.youtube.com/playlist?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI. Send this or playlistId.
+     */
+    playlistUrl?: string;
+    /**
+     * YouTube playlist id, like PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI. Send this or playlistUrl.
+     */
+    playlistId?: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -922,6 +2243,9 @@ export type YoutubePlaylistResponses = {
         thumbnailUrl?: string;
         isShort: boolean;
         isLive: boolean;
+        /**
+         * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+         */
         publishedAt?: string;
       }>;
       cursor?: string;
@@ -946,7 +2270,16 @@ export type RedditSearchData = {
      * relevance matches the words anywhere in a post. hot, top, newest and mostComments match the exact phrase, so a query of several words only returns posts containing that phrase.
      */
     sort?: "relevance" | "hot" | "top" | "newest" | "mostComments";
-    within?: "hour" | "day" | "week" | "month" | "year" | "all";
+    /**
+     * Reddit's own time filter. Leave out for Reddit's default.
+     */
+    time?:
+      | "pastHour"
+      | "today"
+      | "pastWeek"
+      | "pastMonth"
+      | "pastYear"
+      | "allTime";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -1046,8 +2379,26 @@ export type RedditSearchResponse =
 
 export type RedditPostData = {
   body: {
-    post: string;
-    sort?: "best" | "top" | "newest";
+    /**
+     * Link to the Reddit post, like https://www.reddit.com/r/programming/comments/1abc2de/example_post/. Send this or postId.
+     */
+    postUrl?: string;
+    /**
+     * Reddit post id, like 1abc2de. Send this or postUrl.
+     */
+    postId?: string;
+    /**
+     * A comment id or link: returns that comment's thread, like Reddit's own link.
+     */
+    comment?: string;
+    /**
+     * Reddit's own comment sort.
+     */
+    sort?: "best" | "top" | "newest" | "controversial" | "old" | "qa";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
   };
   path?: never;
   query?: never;
@@ -1075,35 +2426,35 @@ export type RedditPostResponses = {
     success: true;
     data: {
       postId?: string;
-      postUrl: string;
+      postUrl?: string;
       title?: string;
       text?: string;
       authorId?: string;
       authorUsername?: string;
       authorUrl?: string;
       subreddit?: string;
-      score: number;
+      score?: number;
       upvotePercent?: number;
+      comments?: number;
       publishedAt?: string;
       flair?: string;
       linkUrl?: string;
       thumbnailUrl?: string;
-      isNsfw: boolean;
-      isVideo: boolean;
-      isPinned: boolean;
-      imageUrls: Array<string>;
+      isNsfw?: boolean;
+      isVideo?: boolean;
+      isPinned?: boolean;
+      imageUrls?: Array<string>;
       videoUrl?: string;
       videoHlsUrl?: string;
       videoDurationSeconds?: number;
-      pollOptions: Array<{
+      pollOptions?: Array<{
         text?: string;
         votes?: number;
       }>;
       pollTotalVotes?: number;
       pollEndsAt?: string;
       repostOfUrl?: string;
-      commentCount: number;
-      comments: Array<{
+      results: Array<{
         commentId?: string;
         commentUrl: string;
         parentId?: string;
@@ -1117,6 +2468,10 @@ export type RedditPostResponses = {
         isSubmitter: boolean;
         isPinned: boolean;
       }>;
+      /**
+       * Loads the comments Reddit folded away.
+       */
+      cursor?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -1128,8 +2483,20 @@ export type RedditPostResponse = RedditPostResponses[keyof RedditPostResponses];
 export type RedditSubredditData = {
   body: {
     subreddit: string;
-    sort?: "hot" | "newest" | "top";
-    within?: "hour" | "day" | "week" | "month" | "year" | "all";
+    /**
+     * Reddit's own sort.
+     */
+    sort?: "hot" | "newest" | "top" | "rising" | "controversial";
+    /**
+     * Reddit's own time filter. Leave out for Reddit's default.
+     */
+    time?:
+      | "pastHour"
+      | "today"
+      | "pastWeek"
+      | "pastMonth"
+      | "pastYear"
+      | "allTime";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -1218,9 +2585,29 @@ export type RedditSubredditResponse =
 
 export type RedditUserData = {
   body: {
-    profile: string;
+    /**
+     * Link to the Reddit user, like https://www.reddit.com/user/spez. Send this or username.
+     */
+    userUrl?: string;
+    /**
+     * Reddit user username, like spez. Send this or userUrl.
+     */
+    username?: string;
     tab?: "overview" | "posts" | "comments";
-    sort?: "newest" | "hot" | "top";
+    /**
+     * Reddit's own sort.
+     */
+    sort?: "newest" | "hot" | "top" | "controversial";
+    /**
+     * Reddit's own time filter. Leave out for Reddit's default.
+     */
+    time?:
+      | "pastHour"
+      | "today"
+      | "pastWeek"
+      | "pastMonth"
+      | "pastYear"
+      | "allTime";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -1316,7 +2703,20 @@ export type RedditUserResponse = RedditUserResponses[keyof RedditUserResponses];
 export type RedditDomainData = {
   body: {
     domain: string;
-    sort?: "hot" | "newest" | "top";
+    /**
+     * Reddit's own sort.
+     */
+    sort?: "hot" | "newest" | "top" | "controversial";
+    /**
+     * Reddit's own time filter. Leave out for Reddit's default.
+     */
+    time?:
+      | "pastHour"
+      | "today"
+      | "pastWeek"
+      | "pastMonth"
+      | "pastYear"
+      | "allTime";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -1389,25 +2789,27 @@ export type RedditDomainResponses = {
 export type RedditDomainResponse =
   RedditDomainResponses[keyof RedditDomainResponses];
 
-export type MapsSearchData = {
+export type RedditDiscussionsData = {
   body: {
-    query: string;
-    location: string;
     /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     * Link to the Reddit post, like https://www.reddit.com/r/programming/comments/1abc2de/example_post/. Send this or postId.
      */
-    country?: string;
+    postUrl?: string;
     /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     * Reddit post id, like 1abc2de. Send this or postUrl.
      */
-    language?: string;
+    postId?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
   };
   path?: never;
   query?: never;
-  url: "/v1/maps/search";
+  url: "/v1/reddit/discussions";
 };
 
-export type MapsSearchErrors = {
+export type RedditDiscussionsErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -1418,9 +2820,156 @@ export type MapsSearchErrors = {
   "5XX": _Error;
 };
 
-export type MapsSearchError = MapsSearchErrors[keyof MapsSearchErrors];
+export type RedditDiscussionsError =
+  RedditDiscussionsErrors[keyof RedditDiscussionsErrors];
 
-export type MapsSearchResponses = {
+export type RedditDiscussionsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        type: "post";
+        postId?: string;
+        postUrl: string;
+        title?: string;
+        text?: string;
+        authorId?: string;
+        authorUsername?: string;
+        authorUrl?: string;
+        subreddit?: string;
+        score: number;
+        upvotePercent?: number;
+        comments: number;
+        publishedAt?: string;
+        flair?: string;
+        linkUrl?: string;
+        thumbnailUrl?: string;
+        isNsfw: boolean;
+        isVideo: boolean;
+        isPinned: boolean;
+        imageUrls?: Array<string>;
+        videoUrl?: string;
+        videoHlsUrl?: string;
+        videoDurationSeconds?: number;
+        pollOptions?: Array<{
+          text?: string;
+          votes?: number;
+        }>;
+        pollTotalVotes?: number;
+        pollEndsAt?: string;
+        repostOfUrl?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type RedditDiscussionsResponse =
+  RedditDiscussionsResponses[keyof RedditDiscussionsResponses];
+
+export type RedditSubredditsData = {
+  body: {
+    sort?: "popular" | "newest";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/reddit/subreddits";
+};
+
+export type RedditSubredditsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type RedditSubredditsError =
+  RedditSubredditsErrors[keyof RedditSubredditsErrors];
+
+export type RedditSubredditsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        type: "subreddit";
+        subredditId?: string;
+        subredditName?: string;
+        subredditUrl: string;
+        title?: string;
+        description?: string;
+        members?: number;
+        createdAt?: string;
+        avatarUrl?: string;
+        isNsfw: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type RedditSubredditsResponse =
+  RedditSubredditsResponses[keyof RedditSubredditsResponses];
+
+export type GoogleMapsSearchData = {
+  body: {
+    query: string;
+    location: string;
+    minRating?: 2 | 2.5 | 3 | 3.5 | 4 | 4.5;
+    /**
+     * Google Maps' own Hours filter, Open now: only places open at the moment of the search.
+     */
+    openNow?: boolean;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     */
+    language?: string;
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/maps/search";
+};
+
+export type GoogleMapsSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleMapsSearchError =
+  GoogleMapsSearchErrors[keyof GoogleMapsSearchErrors];
+
+export type GoogleMapsSearchResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -1437,29 +2986,42 @@ export type MapsSearchResponses = {
         latitude: number;
         longitude: number;
         rating?: number;
+        reviews?: number;
         photos?: number;
         phone?: string;
         website?: string;
         description?: string;
+        hours?: Array<{
+          days?: string;
+          times?: Array<string>;
+        }>;
         hoursToday?: string;
         openStatus?: string;
         timezone?: string;
-        plusCode?: string;
         thumbnailUrl?: string;
         reservationUrl?: string;
         attributes?: Array<string>;
       }>;
+      page: number;
     };
     creditsUsed: number;
     requestId: string;
   };
 };
 
-export type MapsSearchResponse = MapsSearchResponses[keyof MapsSearchResponses];
+export type GoogleMapsSearchResponse =
+  GoogleMapsSearchResponses[keyof GoogleMapsSearchResponses];
 
-export type MapsPlaceData = {
+export type GoogleMapsPlaceData = {
   body: {
-    place: string;
+    /**
+     * Link to the Google Maps place, like https://maps.app.goo.gl/Xa3bN7cQ. Send this or placeId.
+     */
+    placeUrl?: string;
+    /**
+     * Google Maps place id, like ChIJN1t_tDeuEmsRUsoyG83frY4. Send this or placeUrl.
+     */
+    placeId?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -1471,10 +3033,10 @@ export type MapsPlaceData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/maps/place";
+  url: "/v1/google/maps/place";
 };
 
-export type MapsPlaceErrors = {
+export type GoogleMapsPlaceErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -1485,9 +3047,10 @@ export type MapsPlaceErrors = {
   "5XX": _Error;
 };
 
-export type MapsPlaceError = MapsPlaceErrors[keyof MapsPlaceErrors];
+export type GoogleMapsPlaceError =
+  GoogleMapsPlaceErrors[keyof GoogleMapsPlaceErrors];
 
-export type MapsPlaceResponses = {
+export type GoogleMapsPlaceResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -1503,10 +3066,15 @@ export type MapsPlaceResponses = {
       latitude: number;
       longitude: number;
       rating?: number;
+      reviews?: number;
       photos?: number;
       phone?: string;
       website?: string;
       description?: string;
+      hours: Array<{
+        days?: string;
+        times?: Array<string>;
+      }>;
       hoursToday?: string;
       openStatus?: string;
       timezone?: string;
@@ -1520,11 +3088,19 @@ export type MapsPlaceResponses = {
   };
 };
 
-export type MapsPlaceResponse = MapsPlaceResponses[keyof MapsPlaceResponses];
+export type GoogleMapsPlaceResponse =
+  GoogleMapsPlaceResponses[keyof GoogleMapsPlaceResponses];
 
-export type MapsReviewsData = {
+export type GoogleMapsReviewsData = {
   body: {
-    place: string;
+    /**
+     * Link to the Google Maps place, like https://maps.app.goo.gl/Xa3bN7cQ. Send this or placeId.
+     */
+    placeUrl?: string;
+    /**
+     * Google Maps place id, like ChIJN1t_tDeuEmsRUsoyG83frY4. Send this or placeUrl.
+     */
+    placeId?: string;
     sort?: "relevance" | "newest" | "highest" | "lowest";
     /**
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
@@ -1537,10 +3113,10 @@ export type MapsReviewsData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/maps/reviews";
+  url: "/v1/google/maps/reviews";
 };
 
-export type MapsReviewsErrors = {
+export type GoogleMapsReviewsErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -1551,9 +3127,10 @@ export type MapsReviewsErrors = {
   "5XX": _Error;
 };
 
-export type MapsReviewsError = MapsReviewsErrors[keyof MapsReviewsErrors];
+export type GoogleMapsReviewsError =
+  GoogleMapsReviewsErrors[keyof GoogleMapsReviewsErrors];
 
-export type MapsReviewsResponses = {
+export type GoogleMapsReviewsResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -1589,12 +3166,24 @@ export type MapsReviewsResponses = {
   };
 };
 
-export type MapsReviewsResponse =
-  MapsReviewsResponses[keyof MapsReviewsResponses];
+export type GoogleMapsReviewsResponse =
+  GoogleMapsReviewsResponses[keyof GoogleMapsReviewsResponses];
 
-export type InstagramProfileData = {
+export type InstagramCommentsData = {
   body: {
-    profile: string;
+    /**
+     * Link to the Instagram post or reel, like https://www.instagram.com/p/DdG4RIxIPyf/. Send this or postCode.
+     */
+    postUrl?: string;
+    /**
+     * Instagram post or reel code, like DdG4RIxIPyf. Send this or postUrl.
+     */
+    postCode?: string;
+    comment?: string;
+    /**
+     * Instagram's comment order. Leave out for newest. Replies have no order filter.
+     */
+    sort?: "newest" | "popular";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -1602,10 +3191,10 @@ export type InstagramProfileData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/instagram/profile";
+  url: "/v1/instagram/comments";
 };
 
-export type InstagramProfileErrors = {
+export type InstagramCommentsErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -1616,65 +3205,27 @@ export type InstagramProfileErrors = {
   "5XX": _Error;
 };
 
-export type InstagramProfileError =
-  InstagramProfileErrors[keyof InstagramProfileErrors];
+export type InstagramCommentsError =
+  InstagramCommentsErrors[keyof InstagramCommentsErrors];
 
-export type InstagramProfileResponses = {
+export type InstagramCommentsResponses = {
   /**
    * The data, and the credits this call used.
    */
   200: {
     success: true;
     data: {
-      userId?: string;
-      username?: string;
-      userUrl?: string;
-      name?: string;
-      bio?: string;
-      bioLinkUrls?: Array<string>;
-      pronouns?: Array<string>;
-      isVerified?: boolean;
-      isPrivate?: boolean;
-      followers?: number;
-      following?: number;
-      posts?: number;
-      avatarUrl?: string;
-      postsAnalyzed?: number;
-      averageLikes?: number;
-      averageComments?: number;
-      engagementRate?: number;
-      postsPerWeek?: number;
-      lastPostAt?: string;
       results: Array<{
-        postId?: string;
-        postCode?: string;
-        postUrl: string;
-        type: "photo" | "video" | "reel" | "carousel";
-        text?: string;
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        publishedAt?: string;
-        likes?: number;
-        comments?: number;
-        views?: number;
-        thumbnailUrl?: string;
-        imageUrls?: Array<string>;
-        videoUrls?: Array<string>;
-        imageDescription?: string;
-        isPinned: boolean;
+        commentId?: string;
+        commentUrl: string;
         authorId?: string;
         authorUsername?: string;
-        authorName?: string;
         authorUrl?: string;
         authorAvatarUrl?: string;
         authorIsVerified: boolean;
-        taggedUsers?: Array<string>;
-        coauthors?: Array<string>;
-        audioTitle?: string;
-        audioArtist?: string;
-        audioIsOriginal?: boolean;
-        isPaidPartnership: boolean;
-        sponsors?: Array<string>;
+        text?: string;
+        replies?: number;
+        publishedAt?: string;
       }>;
       cursor?: string;
     };
@@ -1683,12 +3234,19 @@ export type InstagramProfileResponses = {
   };
 };
 
-export type InstagramProfileResponse =
-  InstagramProfileResponses[keyof InstagramProfileResponses];
+export type InstagramCommentsResponse =
+  InstagramCommentsResponses[keyof InstagramCommentsResponses];
 
 export type InstagramPostData = {
   body: {
-    post: string;
+    /**
+     * Link to the Instagram post or reel, like https://www.instagram.com/p/DdG4RIxIPyf/. Send this or postCode.
+     */
+    postUrl?: string;
+    /**
+     * Instagram post or reel code, like DdG4RIxIPyf. Send this or postUrl.
+     */
+    postCode?: string;
   };
   path?: never;
   query?: never;
@@ -1743,13 +3301,12 @@ export type InstagramPostResponses = {
       audioIsOriginal?: boolean;
       isPaidPartnership: boolean;
       sponsors: Array<string>;
-      commentCount?: number;
-      comments: Array<{
+      comments?: number;
+      results: Array<{
         commentId?: string;
         commentUrl: string;
         authorId?: string;
         authorUsername?: string;
-        authorName?: string;
         authorUrl?: string;
         authorAvatarUrl?: string;
         authorIsVerified: boolean;
@@ -1767,10 +3324,16 @@ export type InstagramPostResponses = {
 export type InstagramPostResponse =
   InstagramPostResponses[keyof InstagramPostResponses];
 
-export type InstagramCommentsData = {
+export type InstagramProfileData = {
   body: {
-    post: string;
-    comment?: string;
+    /**
+     * Link to the Instagram profile, like https://www.instagram.com/natgeo. Send this or username.
+     */
+    userUrl?: string;
+    /**
+     * Instagram profile username, like natgeo. Send this or userUrl.
+     */
+    username?: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -1778,10 +3341,10 @@ export type InstagramCommentsData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/instagram/comments";
+  url: "/v1/instagram/profile";
 };
 
-export type InstagramCommentsErrors = {
+export type InstagramProfileErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -1792,29 +3355,64 @@ export type InstagramCommentsErrors = {
   "5XX": _Error;
 };
 
-export type InstagramCommentsError =
-  InstagramCommentsErrors[keyof InstagramCommentsErrors];
+export type InstagramProfileError =
+  InstagramProfileErrors[keyof InstagramProfileErrors];
 
-export type InstagramCommentsResponses = {
+export type InstagramProfileResponses = {
   /**
    * The data, and the credits this call used.
    */
   200: {
     success: true;
     data: {
+      userId?: string;
+      username?: string;
+      userUrl?: string;
+      name?: string;
+      bio?: string;
+      bioLinkUrls?: Array<string>;
+      isVerified?: boolean;
+      isPrivate?: boolean;
+      followers?: number;
+      following?: number;
+      posts?: number;
+      avatarUrl?: string;
+      postsAnalyzed?: number;
+      averageLikes?: number;
+      averageComments?: number;
+      engagementRate?: number;
+      postsPerWeek?: number;
+      lastPostAt?: string;
       results: Array<{
-        commentId?: string;
-        commentUrl: string;
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
+        type: "photo" | "video" | "reel" | "carousel";
+        text?: string;
+        hashtags?: Array<string>;
+        mentions?: Array<string>;
+        publishedAt?: string;
+        likes?: number;
+        comments?: number;
+        views?: number;
+        thumbnailUrl?: string;
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+        imageDescription?: string;
+        isPinned: boolean;
         authorId?: string;
         authorUsername?: string;
         authorName?: string;
         authorUrl?: string;
         authorAvatarUrl?: string;
         authorIsVerified: boolean;
-        text?: string;
-        likes?: number;
-        replies?: number;
-        publishedAt?: string;
+        taggedUsers?: Array<string>;
+        coauthors?: Array<string>;
+        audioTitle?: string;
+        audioArtist?: string;
+        audioIsOriginal?: boolean;
+        isPaidPartnership: boolean;
+        sponsors?: Array<string>;
       }>;
       cursor?: string;
     };
@@ -1823,12 +3421,207 @@ export type InstagramCommentsResponses = {
   };
 };
 
-export type InstagramCommentsResponse =
-  InstagramCommentsResponses[keyof InstagramCommentsResponses];
+export type InstagramProfileResponse =
+  InstagramProfileResponses[keyof InstagramProfileResponses];
+
+export type InstagramProfileReelsData = {
+  body: {
+    /**
+     * Link to the Instagram profile, like https://www.instagram.com/natgeo. Send this or username.
+     */
+    userUrl?: string;
+    /**
+     * Instagram profile username, like natgeo. Send this or userUrl.
+     */
+    username?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/instagram/profile/reels";
+};
+
+export type InstagramProfileReelsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type InstagramProfileReelsError =
+  InstagramProfileReelsErrors[keyof InstagramProfileReelsErrors];
+
+export type InstagramProfileReelsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
+        likes?: number;
+        comments?: number;
+        views?: number;
+        imageUrl?: string;
+        isPinned: boolean;
+        authorId?: string;
+        authorUsername?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type InstagramProfileReelsResponse =
+  InstagramProfileReelsResponses[keyof InstagramProfileReelsResponses];
+
+export type InstagramSearchData = {
+  body: {
+    query: string;
+    type?: "all" | "reels";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/instagram/search";
+};
+
+export type InstagramSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type InstagramSearchError =
+  InstagramSearchErrors[keyof InstagramSearchErrors];
+
+export type InstagramSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
+        type: "photo" | "video" | "reel" | "carousel";
+        text?: string;
+        hashtags?: Array<string>;
+        mentions?: Array<string>;
+        views?: number;
+        thumbnailUrl?: string;
+        videoUrls?: Array<string>;
+        authorId?: string;
+        authorUsername?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type InstagramSearchResponse =
+  InstagramSearchResponses[keyof InstagramSearchResponses];
+
+export type InstagramTranscriptData = {
+  body: {
+    /**
+     * Link to the Instagram reel or video post, like https://www.instagram.com/reel/DdG4RIxIPyf/. Send this or videoId.
+     */
+    videoUrl?: string;
+    /**
+     * Instagram reel or video post post code, like DdG4RIxIPyf. Send this or videoUrl.
+     */
+    videoId?: string;
+    /**
+     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     */
+    language?: string;
+    includeTimestamps?: boolean;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/instagram/transcript";
+};
+
+export type InstagramTranscriptErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type InstagramTranscriptError =
+  InstagramTranscriptErrors[keyof InstagramTranscriptErrors];
+
+export type InstagramTranscriptResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      videoId?: string;
+      videoUrl: string;
+      language?: string;
+      isAutoGenerated: boolean;
+      durationSeconds?: number;
+      transcribedSeconds?: number;
+      text?: string;
+      segments?: Array<{
+        startSeconds: number;
+        endSeconds: number;
+        text?: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type InstagramTranscriptResponse =
+  InstagramTranscriptResponses[keyof InstagramTranscriptResponses];
 
 export type TiktokProfileData = {
   body: {
-    profile: string;
+    /**
+     * Link to the TikTok profile, like https://www.tiktok.com/@khaby.lame. Send this or username.
+     */
+    userUrl?: string;
+    /**
+     * TikTok profile username, like khaby.lame. Send this or userUrl.
+     */
+    username?: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -1916,7 +3709,14 @@ export type TiktokProfileResponse =
 
 export type TiktokVideoData = {
   body: {
-    video: string;
+    /**
+     * Link to the TikTok video, like https://www.tiktok.com/@khaby.lame/video/7137423965982592302. Send this or videoId.
+     */
+    videoUrl?: string;
+    /**
+     * TikTok video id, like 7137423965982592302. Send this or videoUrl.
+     */
+    videoId?: string;
   };
   path?: never;
   query?: never;
@@ -2052,9 +3852,96 @@ export type TiktokHashtagResponses = {
 export type TiktokHashtagResponse =
   TiktokHashtagResponses[keyof TiktokHashtagResponses];
 
+export type TiktokSoundData = {
+  body: {
+    /**
+     * TikTok sound id, like 7652012548169976607.
+     */
+    audioId: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/sound";
+};
+
+export type TiktokSoundErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokSoundError = TiktokSoundErrors[keyof TiktokSoundErrors];
+
+export type TiktokSoundResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      audioId?: string;
+      audioTitle?: string;
+      audioArtist?: string;
+      audioIsOriginal?: boolean;
+      videos?: number;
+      results: Array<{
+        videoId?: string;
+        videoUrl: string;
+        type: "video" | "photo";
+        text?: string;
+        hashtags?: Array<string>;
+        mentions?: Array<string>;
+        publishedAt?: string;
+        durationSeconds?: number;
+        thumbnailUrl?: string;
+        imageUrls?: Array<string>;
+        views?: number;
+        likes?: number;
+        comments?: number;
+        shares?: number;
+        saves?: number;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
+        audioId?: string;
+        audioTitle?: string;
+        audioArtist?: string;
+        audioIsOriginal?: boolean;
+        isAd: boolean;
+        isAiGenerated: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokSoundResponse =
+  TiktokSoundResponses[keyof TiktokSoundResponses];
+
 export type TiktokCommentsData = {
   body: {
-    video: string;
+    /**
+     * Link to the TikTok video, like https://www.tiktok.com/@khaby.lame/video/7137423965982592302. Send this or videoId.
+     */
+    videoUrl?: string;
+    /**
+     * TikTok video id, like 7137423965982592302. Send this or videoUrl.
+     */
+    videoId?: string;
     comment?: string;
     /**
      * The cursor from the previous response. Send it as is.
@@ -2113,6 +4000,19 @@ export type TiktokSearchData = {
   body: {
     query: string;
     type?: "videos" | "users";
+    /**
+     * TikTok's Sort by, for videos. Leave out for Relevance.
+     */
+    sort?: "relevance" | "mostLiked" | "datePosted";
+    /**
+     * TikTok's Date posted, for videos. Leave out for All time.
+     */
+    datePosted?:
+      | "past24Hours"
+      | "thisWeek"
+      | "thisMonth"
+      | "last3Months"
+      | "last6Months";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -2195,6 +4095,487 @@ export type TiktokSearchResponses = {
 export type TiktokSearchResponse =
   TiktokSearchResponses[keyof TiktokSearchResponses];
 
+export type TiktokTranscriptData = {
+  body: {
+    /**
+     * Link to the TikTok video, like https://www.tiktok.com/@khaby.lame/video/7137423965982592302. Send this or videoId.
+     */
+    videoUrl?: string;
+    /**
+     * TikTok video id, like 7137423965982592302. Send this or videoUrl.
+     */
+    videoId?: string;
+    /**
+     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
+     */
+    language?: string;
+    includeTimestamps?: boolean;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/transcript";
+};
+
+export type TiktokTranscriptErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokTranscriptError =
+  TiktokTranscriptErrors[keyof TiktokTranscriptErrors];
+
+export type TiktokTranscriptResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      videoId?: string;
+      videoUrl: string;
+      language?: string;
+      isAutoGenerated: boolean;
+      durationSeconds?: number;
+      transcribedSeconds?: number;
+      text?: string;
+      segments?: Array<{
+        startSeconds: number;
+        endSeconds: number;
+        text?: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokTranscriptResponse =
+  TiktokTranscriptResponses[keyof TiktokTranscriptResponses];
+
+export type TiktokAdsSearchData = {
+  body: {
+    query?: string;
+    advertiser?: string;
+    /**
+     * European country code like de. TikTok publishes ads for these countries only. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/ads/search";
+};
+
+export type TiktokAdsSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokAdsSearchError =
+  TiktokAdsSearchErrors[keyof TiktokAdsSearchErrors];
+
+export type TiktokAdsSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      advertiserId?: string;
+      advertiserName?: string;
+      total?: number;
+      results: Array<{
+        adId?: string;
+        adUrl: string;
+        advertiserName?: string;
+        headline?: string;
+        firstShownAt?: string;
+        lastShownAt?: string;
+        reachMin?: number;
+        reachMax?: number;
+        videoUrl?: string;
+        thumbnailUrl?: string;
+        imageUrls?: Array<string>;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokAdsSearchResponse =
+  TiktokAdsSearchResponses[keyof TiktokAdsSearchResponses];
+
+export type TiktokAdsAdData = {
+  body: {
+    /**
+     * Link to the TikTok ad, like https://library.tiktok.com/ads/detail?ad_id=1756783467412593. Send this or adId.
+     */
+    adUrl?: string;
+    /**
+     * TikTok ad id, like 1756783467412593. Send this or adUrl.
+     */
+    adId?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/ads/ad";
+};
+
+export type TiktokAdsAdErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokAdsAdError = TiktokAdsAdErrors[keyof TiktokAdsAdErrors];
+
+export type TiktokAdsAdResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      adId?: string;
+      adUrl: string;
+      advertiserName?: string;
+      headline?: string;
+      firstShownAt?: string;
+      lastShownAt?: string;
+      reachMin?: number;
+      reachMax?: number;
+      videoUrl?: string;
+      thumbnailUrl?: string;
+      imageUrls: Array<string>;
+      advertiserId?: string;
+      advertiserCountry?: string;
+      paidBy?: string;
+      linkUrl?: string;
+      ctaText?: string;
+      objective?: string;
+      category?: string;
+      audienceSizeMin?: number;
+      audienceSizeMax?: number;
+      impressionsMin?: number;
+      impressionsMax?: number;
+      countries: Array<string>;
+      languages: Array<string>;
+      interests?: string;
+      regions: Array<{
+        country?: string;
+        impressionsMin?: number;
+        impressionsMax?: number;
+        ages?: Array<string>;
+        genders?: Array<string>;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokAdsAdResponse =
+  TiktokAdsAdResponses[keyof TiktokAdsAdResponses];
+
+export type TiktokShopSearchData = {
+  body: {
+    /**
+     * Product keywords, like gummies.
+     */
+    query: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/shop/search";
+};
+
+export type TiktokShopSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokShopSearchError =
+  TiktokShopSearchErrors[keyof TiktokShopSearchErrors];
+
+export type TiktokShopSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        productId?: string;
+        title?: string;
+        productUrl: string;
+        price: number;
+        originalPrice?: number;
+        /**
+         * ISO 4217 currency code, e.g. USD.
+         */
+        currency?: string;
+        sold?: number;
+        rating?: number;
+        reviews?: number;
+        imageUrl?: string;
+        shopId?: string;
+        shopName?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokShopSearchResponse =
+  TiktokShopSearchResponses[keyof TiktokShopSearchResponses];
+
+export type TiktokShopProductsData = {
+  body: {
+    /**
+     * Link to the TikTok Shop store, like https://shop.tiktok.com/us/store/shop/7495291731420235534. Send this or shopId.
+     */
+    shopUrl?: string;
+    /**
+     * TikTok Shop store id, like 7495291731420235534. Send this or shopUrl.
+     */
+    shopId?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/shop/products";
+};
+
+export type TiktokShopProductsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokShopProductsError =
+  TiktokShopProductsErrors[keyof TiktokShopProductsErrors];
+
+export type TiktokShopProductsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      shopId?: string;
+      shopName?: string;
+      rating?: number;
+      sold?: number;
+      products?: number;
+      reviews?: number;
+      followers?: number;
+      shopUrl?: string;
+      results: Array<{
+        productId?: string;
+        title?: string;
+        productUrl: string;
+        price: number;
+        originalPrice?: number;
+        /**
+         * ISO 4217 currency code, e.g. USD.
+         */
+        currency?: string;
+        sold?: number;
+        rating?: number;
+        reviews?: number;
+        imageUrl?: string;
+        shopId?: string;
+        shopName?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokShopProductsResponse =
+  TiktokShopProductsResponses[keyof TiktokShopProductsResponses];
+
+export type TiktokShopProductData = {
+  body: {
+    /**
+     * Link to the TikTok Shop product, like https://shop.tiktok.com/us/pdp/p/1729592969712207012. Send this or productId.
+     */
+    productUrl?: string;
+    /**
+     * TikTok Shop product id, like 1729592969712207012. Send this or productUrl.
+     */
+    productId?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/shop/product";
+};
+
+export type TiktokShopProductErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokShopProductError =
+  TiktokShopProductErrors[keyof TiktokShopProductErrors];
+
+export type TiktokShopProductResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      productId?: string;
+      title?: string;
+      productUrl: string;
+      price: number;
+      originalPrice?: number;
+      /**
+       * ISO 4217 currency code, e.g. USD.
+       */
+      currency?: string;
+      sold?: number;
+      rating?: number;
+      reviews?: number;
+      stock?: number;
+      shopId?: string;
+      shopName?: string;
+      shopUrl?: string;
+      shopRating?: number;
+      shopProducts?: number;
+      shopFollowers?: number;
+      imageUrls: Array<string>;
+      videoUrl?: string;
+      videoDurationSeconds?: number;
+      videos: Array<{
+        videoId?: string;
+        videoUrl: string;
+        title?: string;
+        authorName?: string;
+        authorId?: string;
+        plays?: number;
+        likes?: number;
+        durationSeconds?: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokShopProductResponse =
+  TiktokShopProductResponses[keyof TiktokShopProductResponses];
+
+export type TiktokShopReviewsData = {
+  body: {
+    /**
+     * Link to the TikTok Shop product, like https://shop.tiktok.com/us/pdp/p/1729592969712207012. Send this or productId.
+     */
+    productUrl?: string;
+    /**
+     * TikTok Shop product id, like 1729592969712207012. Send this or productUrl.
+     */
+    productId?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/tiktok/shop/reviews";
+};
+
+export type TiktokShopReviewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TiktokShopReviewsError =
+  TiktokShopReviewsErrors[keyof TiktokShopReviewsErrors];
+
+export type TiktokShopReviewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      rating?: number;
+      reviews?: number;
+      results: Array<{
+        reviewId?: string;
+        rating: number;
+        text?: string;
+        authorName?: string;
+        isVerified: boolean;
+        publishedAt?: string;
+        country?: string;
+        imageUrls?: Array<string>;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TiktokShopReviewsResponse =
+  TiktokShopReviewsResponses[keyof TiktokShopReviewsResponses];
+
 export type MetaAdsPageData = {
   body: {
     /**
@@ -2207,9 +4588,32 @@ export type MetaAdsPageData = {
     country?: string;
     status?: "active" | "inactive" | "all";
     /**
-     * Only ads with this creative: image, video, or text (no image or video).
+     * The Ad Library's own Media type filter: image, video, or text (no image or video).
      */
-    mediaType?: "image" | "video" | "text";
+    mediaType?: "image" | "video" | "text" | "meme" | "imageAndMeme";
+    /**
+     * The Ad Library's own Platform filter: only ads shown on at least one of these platforms.
+     */
+    platforms?: Array<
+      | "facebook"
+      | "instagram"
+      | "audienceNetwork"
+      | "messenger"
+      | "whatsapp"
+      | "threads"
+    >;
+    /**
+     * The Ad Library's own Language filter: a two-letter code like en. Only ads written in this language.
+     */
+    language?: string;
+    /**
+     * The Ad Library's own Impressions by date: ads shown on or after this day.
+     */
+    shownFrom?: string;
+    /**
+     * The Ad Library's own Impressions by date: ads shown on or before this day.
+     */
+    shownTo?: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -2243,22 +4647,6 @@ export type MetaAdsPageResponses = {
       results: Array<{
         adId?: string;
         adUrl: string;
-        /**
-         * Same as pageId. Present so this ad has the same keys as other ad networks.
-         */
-        advertiserId?: string;
-        /**
-         * Same as pageName. Present so this ad has the same keys as other ad networks.
-         */
-        advertiserName?: string;
-        /**
-         * Same as pageUrl. Present so this ad has the same keys as other ad networks.
-         */
-        advertiserUrl?: string;
-        /**
-         * Same as pageAvatarUrl. Present so this ad has the same keys as other ad networks.
-         */
-        advertiserAvatarUrl?: string;
         pageId?: string;
         pageName?: string;
         pageUrl?: string;
@@ -2314,7 +4702,22 @@ export type LinkedinJobsSearchData = {
   body: {
     query?: string;
     location?: string;
-    within?: "day" | "week" | "month" | "all";
+    /**
+     * LinkedIn's own Date posted.
+     */
+    datePosted?: "anyTime" | "pastMonth" | "pastWeek" | "past24Hours";
+    /**
+     * One company or up to five: LinkedIn URLs, slugs like google, or company ids.
+     */
+    company?: string | Array<string>;
+    /**
+     * LinkedIn's own Easy Apply.
+     */
+    easyApply?: boolean;
+    /**
+     * LinkedIn's own Under 10 applicants.
+     */
+    fewApplicants?: boolean;
     /**
      * Page number, starting at 1.
      */
@@ -2364,7 +4767,6 @@ export type LinkedinJobsSearchResponses = {
         insight?: string;
       }>;
       page: number;
-      hasMore: boolean;
     };
     creditsUsed: number;
     requestId: string;
@@ -2374,179 +4776,16 @@ export type LinkedinJobsSearchResponses = {
 export type LinkedinJobsSearchResponse =
   LinkedinJobsSearchResponses[keyof LinkedinJobsSearchResponses];
 
-export type LinkedinPeopleSearchData = {
-  body: {
-    /**
-     * Free words to match, like a skill or industry.
-     */
-    query?: string;
-    /**
-     * Current job title, like Head of Marketing.
-     */
-    title?: string;
-    /**
-     * Current company, like Shopify.
-     */
-    company?: string;
-    /**
-     * City or region shown on the profile, like Toronto.
-     */
-    location?: string;
-    /**
-     * Page number, starting at 1.
-     */
-    page?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/linkedin/people/search";
-};
-
-export type LinkedinPeopleSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type LinkedinPeopleSearchError =
-  LinkedinPeopleSearchErrors[keyof LinkedinPeopleSearchErrors];
-
-export type LinkedinPeopleSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        profileUrl: string;
-        name?: string;
-        headline?: string;
-        title?: string;
-        company?: string;
-        location?: string;
-        education?: string;
-        details?: {
-          profileId?: string;
-          headline?: string;
-          location?: string;
-          about?: string;
-          followers?: number;
-          roles?: Array<{
-            title?: string;
-            company?: string;
-            companyUrl?: string;
-            from?: string;
-            to?: string;
-            isCurrent: boolean;
-          }>;
-          education?: Array<{
-            school?: string;
-            degree?: string;
-            schoolUrl?: string;
-            from?: string;
-            to?: string;
-          }>;
-        };
-        position: number;
-      }>;
-      page?: number;
-      hasMore?: boolean;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type LinkedinPeopleSearchResponse =
-  LinkedinPeopleSearchResponses[keyof LinkedinPeopleSearchResponses];
-
-export type LinkedinCompaniesSearchData = {
-  body: {
-    /**
-     * Company name or words about what it does.
-     */
-    query?: string;
-    /**
-     * Industry, like Financial Services.
-     */
-    industry?: string;
-    /**
-     * Headquarters city or region, like New York.
-     */
-    location?: string;
-    /**
-     * Page number, starting at 1.
-     */
-    page?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/linkedin/companies/search";
-};
-
-export type LinkedinCompaniesSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type LinkedinCompaniesSearchError =
-  LinkedinCompaniesSearchErrors[keyof LinkedinCompaniesSearchErrors];
-
-export type LinkedinCompaniesSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        companyUrl: string;
-        name?: string;
-        description?: string;
-        industry?: string;
-        size?: string;
-        headquarters?: string;
-        followers?: number;
-        details?: {
-          companyId?: string;
-          website?: string;
-          description?: string;
-          industry?: string;
-          size?: string;
-          employees?: number;
-          headquarters?: string;
-          followers?: number;
-          founded?: string;
-          specialties?: Array<string>;
-        };
-        position: number;
-      }>;
-      page?: number;
-      hasMore?: boolean;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type LinkedinCompaniesSearchResponse =
-  LinkedinCompaniesSearchResponses[keyof LinkedinCompaniesSearchResponses];
-
 export type LinkedinJobsJobData = {
   body: {
-    job: string;
+    /**
+     * Link to the LinkedIn job, like https://www.linkedin.com/jobs/view/4012345678. Send this or jobId.
+     */
+    jobUrl?: string;
+    /**
+     * LinkedIn job id, like 4012345678. Send this or jobUrl.
+     */
+    jobId?: string;
   };
   path?: never;
   query?: never;
@@ -2589,12 +4828,14 @@ export type LinkedinJobsJobResponses = {
       salaryText?: string;
       isEasyApply?: boolean;
       applicants?: number;
+      applicantsText?: string;
       applyUrl?: string;
       seniority?: string;
       employmentType?: string;
       jobFunction?: string;
       industries?: string;
       description?: string;
+      descriptionHtml?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -2606,7 +4847,14 @@ export type LinkedinJobsJobResponse =
 
 export type LinkedinCompanyData = {
   body: {
-    company: string;
+    /**
+     * Link to the LinkedIn company, like https://www.linkedin.com/company/microsoft. Send this or companyId.
+     */
+    companyUrl?: string;
+    /**
+     * LinkedIn company slug, like microsoft. Send this or companyUrl.
+     */
+    companyId?: string;
   };
   path?: never;
   query?: never;
@@ -2657,7 +4905,14 @@ export type LinkedinCompanyResponse =
 
 export type LinkedinProfileData = {
   body: {
-    profile: string;
+    /**
+     * Link to the LinkedIn profile, like https://www.linkedin.com/in/satyanadella. Send this or profileId.
+     */
+    profileUrl?: string;
+    /**
+     * LinkedIn profile slug, like satyanadella. Send this or profileUrl.
+     */
+    profileId?: string;
   };
   path?: never;
   query?: never;
@@ -2694,7 +4949,7 @@ export type LinkedinProfileResponses = {
       followers?: number;
       roles: Array<{
         title?: string;
-        company?: string;
+        companyName?: string;
         companyUrl?: string;
         from?: string;
         to?: string;
@@ -2718,8 +4973,22 @@ export type LinkedinProfileResponse =
 
 export type LinkedinPostsData = {
   body: {
-    profile?: string;
-    company?: string;
+    /**
+     * Link to the LinkedIn profile, like https://www.linkedin.com/in/satyanadella. Send this or profileId.
+     */
+    profileUrl?: string;
+    /**
+     * LinkedIn profile slug, like satyanadella. Send this or profileUrl.
+     */
+    profileId?: string;
+    /**
+     * Link to the LinkedIn company, like https://www.linkedin.com/company/microsoft. Send this or companyId.
+     */
+    companyUrl?: string;
+    /**
+     * LinkedIn company slug, like microsoft. Send this or companyUrl.
+     */
+    companyId?: string;
   };
   path?: never;
   query?: never;
@@ -2752,6 +5021,8 @@ export type LinkedinPostsResponses = {
         text?: string;
         publishedAt?: string;
         likes?: number;
+        comments?: number;
+        imageUrls?: Array<string>;
         authorName?: string;
         authorUrl?: string;
       }>;
@@ -2772,6 +5043,82 @@ export type ZillowSearchData = {
     maxPrice?: number;
     minBedrooms?: number;
     maxBedrooms?: number;
+    minBathrooms?: number;
+    minSqft?: number;
+    maxSqft?: number;
+    /**
+     * Zillow's own Lot size minimum, in square feet.
+     */
+    minLotSize?: number;
+    /**
+     * Zillow's own Lot size maximum, in square feet.
+     */
+    maxLotSize?: number;
+    /**
+     * Zillow's own Year built minimum.
+     */
+    minYearBuilt?: number;
+    /**
+     * Zillow's own Year built maximum.
+     */
+    maxYearBuilt?: number;
+    /**
+     * Zillow's own Max HOA: the highest monthly HOA fee in USD. 0 means no HOA fee.
+     */
+    maxHoa?: number;
+    /**
+     * Zillow's own Parking spots filter: at least this many (1 to 4).
+     */
+    minParkingSpots?: number;
+    /**
+     * Zillow's own Days on Zillow filter: listed in the last 1, 7, 14, 30 or 90 days, or 6, 12, 24 or 36 months. For sold homes it means sold in the last N.
+     */
+    daysOnZillow?:
+      | "1Day"
+      | "7Days"
+      | "14Days"
+      | "30Days"
+      | "90Days"
+      | "6Months"
+      | "12Months"
+      | "24Months"
+      | "36Months";
+    /**
+     * Zillow's own "Must have pool" filter. Only matching homes when true.
+     */
+    hasPool?: boolean;
+    /**
+     * Zillow's own "Must have garage" filter. Only matching homes when true.
+     */
+    hasGarage?: boolean;
+    /**
+     * Zillow's own "Must have A/C" filter. Only matching homes when true.
+     */
+    hasAirConditioning?: boolean;
+    /**
+     * Zillow's own "Waterfront" filter. Only matching homes when true.
+     */
+    isWaterfront?: boolean;
+    /**
+     * Zillow's own "Single-story only" filter. Only matching homes when true.
+     */
+    singleStory?: boolean;
+    /**
+     * Zillow's own "Must have open house" filter. Only matching homes when true.
+     */
+    openHouse?: boolean;
+    /**
+     * Zillow's own "Must have price reduction" filter. Only matching homes when true.
+     */
+    priceReduced?: boolean;
+    /**
+     * Zillow's own "Must have 3D Tour" filter. Only matching homes when true.
+     */
+    has3dTour?: boolean;
+    /**
+     * Zillow's own "Pets Allowed" filter. Only matching homes when true. Rentals only: needs status forRent.
+     */
+    petsAllowed?: boolean;
     homeTypes?: Array<
       | "house"
       | "townhouse"
@@ -2781,8 +5128,19 @@ export type ZillowSearchData = {
       | "apartment"
       | "manufactured"
     >;
-    sort?: "relevance" | "newest" | "priceHigh" | "priceLow";
-    query?: string;
+    sort?:
+      | "relevance"
+      | "newest"
+      | "priceHigh"
+      | "priceLow"
+      | "bedrooms"
+      | "bathrooms"
+      | "squareFeet"
+      | "lotSize";
+    /**
+     * Words the listing must mention, like "pool" or "fixer upper".
+     */
+    keywords?: string;
     /**
      * Page number, starting at 1.
      */
@@ -2851,7 +5209,6 @@ export type ZillowSearchResponses = {
         }>;
       }>;
       page: number;
-      hasMore: boolean;
       totalPages?: number;
     };
     creditsUsed: number;
@@ -2864,7 +5221,14 @@ export type ZillowSearchResponse =
 
 export type ZillowPropertyData = {
   body: {
-    property: string;
+    /**
+     * Link to the Zillow property, like https://www.zillow.com/homedetails/123-Main-St-Austin-TX-78701/29383449_zpid/. Send this or propertyId.
+     */
+    propertyUrl?: string;
+    /**
+     * Zillow property id, like 29383449. Send this or propertyUrl.
+     */
+    propertyId?: string;
   };
   path?: never;
   query?: never;
@@ -2921,7 +5285,7 @@ export type ZillowPropertyResponses = {
       description?: string;
       imageUrls: Array<string>;
       priceHistory: Array<{
-        date: string;
+        eventDate: string;
         price?: number;
         event?: string;
       }>;
@@ -2955,7 +5319,27 @@ export type UpworkSearchData = {
     query?: string;
     sort?: "newest" | "relevance";
     jobType?: "hourly" | "fixed";
-    experience?: "entry" | "intermediate" | "expert";
+    experienceLevel?: "entry" | "intermediate" | "expert";
+    /**
+     * Upwork's hours needed: full time, part time, or as needed. Only hourly jobs say this, so the search stays hourly.
+     */
+    workload?: "fullTime" | "partTime" | "asNeeded";
+    /**
+     * Upwork's project length: under one month, one to three months, three to six months, or more than six months. Only hourly jobs say this, so the search stays hourly.
+     */
+    duration?:
+      | "underOneMonth"
+      | "oneToThreeMonths"
+      | "threeToSixMonths"
+      | "overSixMonths";
+    /**
+     * Lowest hourly rate in USD. A job matches when its posted range overlaps this minimum, so 25 to 50 matches a minimum of 50. The search stays hourly.
+     */
+    minHourlyRate?: number;
+    /**
+     * Highest hourly rate in USD. Send it with minHourlyRate. The job's posted range overlaps both, and the search stays hourly.
+     */
+    maxHourlyRate?: number;
     /**
      * Page number, starting at 1.
      */
@@ -2994,7 +5378,19 @@ export type UpworkSearchResponses = {
         description?: string;
         skills?: Array<string>;
         type?: "hourly" | "fixed";
-        experience?: "entry" | "intermediate" | "expert";
+        experienceLevel?: "entry" | "intermediate" | "expert";
+        /**
+         * Upwork's hours needed. Empty when the job does not say, including fixed-price jobs and clients who are not sure.
+         */
+        workload?: "fullTime" | "partTime" | "asNeeded";
+        /**
+         * Upwork's project length. underOneMonth is under one month, oneToThreeMonths is one to three months, threeToSixMonths is three to six months, and overSixMonths is longer.
+         */
+        duration?:
+          | "underOneMonth"
+          | "oneToThreeMonths"
+          | "threeToSixMonths"
+          | "overSixMonths";
         hourlyRateMin?: number;
         hourlyRateMax?: number;
         fixedBudget?: number;
@@ -3003,8 +5399,6 @@ export type UpworkSearchResponses = {
         publishedAt?: string;
       }>;
       page: number;
-      hasMore: boolean;
-      totalPages?: number;
     };
     creditsUsed: number;
     requestId: string;
@@ -3016,7 +5410,14 @@ export type UpworkSearchResponse =
 
 export type UpworkJobData = {
   body: {
-    job: string;
+    /**
+     * Link to the Upwork job, like https://www.upwork.com/jobs/~021234567890123456789. Send this or jobId.
+     */
+    jobUrl?: string;
+    /**
+     * Upwork job id, like ~021234567890123456789. Send this or jobUrl.
+     */
+    jobId?: string;
   };
   path?: never;
   query?: never;
@@ -3049,7 +5450,19 @@ export type UpworkJobResponses = {
       description?: string;
       skills: Array<string>;
       type?: "hourly" | "fixed";
-      experience?: "entry" | "intermediate" | "expert";
+      experienceLevel?: "entry" | "intermediate" | "expert";
+      /**
+       * Upwork's hours needed. Empty when the job does not say, including fixed-price jobs and clients who are not sure.
+       */
+      workload?: "fullTime" | "partTime" | "asNeeded";
+      /**
+       * Upwork's project length. underOneMonth is under one month, oneToThreeMonths is one to three months, threeToSixMonths is three to six months, and overSixMonths is longer.
+       */
+      duration?:
+        | "underOneMonth"
+        | "oneToThreeMonths"
+        | "threeToSixMonths"
+        | "overSixMonths";
       hourlyRateMin?: number;
       hourlyRateMax?: number;
       fixedBudget?: number;
@@ -3090,11 +5503,209 @@ export type UpworkJobResponses = {
 
 export type UpworkJobResponse = UpworkJobResponses[keyof UpworkJobResponses];
 
+export type GoogleTrendsRelatedData = {
+  body: {
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Google Trends' own time range.
+     */
+    time?:
+      | "pastHour"
+      | "past4Hours"
+      | "pastDay"
+      | "past7Days"
+      | "past30Days"
+      | "past90Days"
+      | "past12Months"
+      | "past5Years"
+      | "since2004";
+    /**
+     * Google Trends' own search type: web, images, news, shopping or youtube.
+     */
+    searchType?: "web" | "images" | "news" | "shopping" | "youtube";
+    /**
+     * Google Trends' own top-level category.
+     */
+    category?:
+      | "artsEntertainment"
+      | "autosVehicles"
+      | "beautyFitness"
+      | "booksLiterature"
+      | "businessIndustrial"
+      | "computersElectronics"
+      | "finance"
+      | "foodDrink"
+      | "games"
+      | "health"
+      | "hobbiesLeisure"
+      | "homeGarden"
+      | "internetTelecom"
+      | "jobsEducation"
+      | "lawGovernment"
+      | "news"
+      | "onlineCommunities"
+      | "peopleSociety"
+      | "petsAnimals"
+      | "realEstate"
+      | "reference"
+      | "science"
+      | "shopping"
+      | "sports"
+      | "travel";
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/trends/related";
+};
+
+export type GoogleTrendsRelatedErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleTrendsRelatedError =
+  GoogleTrendsRelatedErrors[keyof GoogleTrendsRelatedErrors];
+
+export type GoogleTrendsRelatedResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        query?: string;
+        value: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleTrendsRelatedResponse =
+  GoogleTrendsRelatedResponses[keyof GoogleTrendsRelatedResponses];
+
+export type GoogleTrendsTrendingData = {
+  body: {
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Google Trends' own Trending now time range.
+     */
+    time?: "past4Hours" | "past24Hours" | "past48Hours" | "past7Days";
+    category?:
+      | "autos"
+      | "beautyFashion"
+      | "business"
+      | "entertainment"
+      | "foodDrink"
+      | "games"
+      | "health"
+      | "hobbies"
+      | "jobsEducation"
+      | "lawGovernment"
+      | "other"
+      | "petsAnimals"
+      | "politics"
+      | "science"
+      | "shopping"
+      | "sports"
+      | "technology"
+      | "travel"
+      | "climate";
+    /**
+     * Google Trends' own Trend status: all, or only trends still rising.
+     */
+    status?: "all" | "active";
+    /**
+     * Google Trends' own sort.
+     */
+    sort?: "relevance" | "searchVolume" | "recency" | "title";
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/trends/trending";
+};
+
+export type GoogleTrendsTrendingErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleTrendsTrendingError =
+  GoogleTrendsTrendingErrors[keyof GoogleTrendsTrendingErrors];
+
+export type GoogleTrendsTrendingResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        query?: string;
+        volume?: number;
+        increasePercent?: number;
+        startedAt: string;
+        endedAt?: string;
+        isActive: boolean;
+        related?: Array<string>;
+        categories?: Array<
+          | "autos"
+          | "beautyFashion"
+          | "business"
+          | "entertainment"
+          | "foodDrink"
+          | "games"
+          | "health"
+          | "hobbies"
+          | "jobsEducation"
+          | "lawGovernment"
+          | "other"
+          | "petsAnimals"
+          | "politics"
+          | "science"
+          | "shopping"
+          | "sports"
+          | "technology"
+          | "travel"
+          | "climate"
+        >;
+        trendUrl: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleTrendsTrendingResponse =
+  GoogleTrendsTrendingResponses[keyof GoogleTrendsTrendingResponses];
+
 export type IndeedSearchData = {
   body: {
     query?: string;
     /**
-     * City, region or postal code, e.g. Kansas City, MO. Only jobs within about 5 miles are returned, so a city on a state line stays in its own state.
+     * City, region or postal code, e.g. Kansas City, MO.
      */
     location?: string;
     /**
@@ -3139,19 +5750,10 @@ export type IndeedSearchData = {
       | "pt"
       | "it"
       | "gr"
-      | "mt"
-      | "cy"
       | "pl"
       | "cz"
-      | "sk"
       | "hu"
       | "ro"
-      | "bg"
-      | "hr"
-      | "si"
-      | "ee"
-      | "lv"
-      | "lt"
       | "fi"
       | "se"
       | "no"
@@ -3172,11 +5774,34 @@ export type IndeedSearchData = {
       | "ve"
       | "cr"
       | "pa";
-    remote?: boolean;
     /**
-     * Jobs Indeed listed or relisted in this window. A relisted job keeps its first publishedAt and shows the new date in indexedAt.
+     * Indeed's own Distance from the location. 0 is the exact location only.
      */
-    within?: "day" | "week" | "month";
+    distanceMiles?: 0 | 5 | 10 | 15 | 25 | 35 | 50 | 100;
+    /**
+     * Indeed's own Date posted. A relisted job keeps its first publishedAt and shows the new date in indexedAt.
+     */
+    datePosted?: "last24Hours" | "last3Days" | "last7Days" | "last14Days";
+    /**
+     * Indeed's own Remote filter: Remote, or Hybrid work.
+     */
+    remote?: "remote" | "hybrid";
+    /**
+     * Indeed's own Job type.
+     */
+    jobType?: "fullTime" | "partTime" | "contract" | "temporary" | "internship";
+    /**
+     * Indeed's own Experience level.
+     */
+    experienceLevel?: "noExperience" | "entry" | "mid" | "senior";
+    /**
+     * Indeed's own Education.
+     */
+    education?: "highSchool" | "associate" | "bachelor" | "master";
+    /**
+     * Indeed's own Sort by.
+     */
+    sort?: "relevance" | "newest";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -3231,8 +5856,15 @@ export type IndeedSearchResponses = {
         salaryPeriod?: "hour" | "day" | "week" | "month" | "year";
         salaryCurrency?: string;
         salaryIsEstimate: boolean;
-        jobTypes?: Array<"fullTime" | "partTime" | "contract" | "internship">;
+        jobTypes?: Array<
+          "fullTime" | "partTime" | "contract" | "temporary" | "internship"
+        >;
         isRemote: boolean;
+        isHybrid: boolean;
+        experienceLevels?: Array<"noExperience" | "entry" | "mid" | "senior">;
+        educationLevels?: Array<
+          "highSchool" | "associate" | "bachelor" | "master"
+        >;
         attributes?: Array<string>;
         publishedAt?: string;
         indexedAt?: string;
@@ -3254,7 +5886,14 @@ export type IndeedSearchResponse =
 
 export type IndeedJobData = {
   body: {
-    job: string;
+    /**
+     * Link to the Indeed job, like https://www.indeed.com/viewjob?jk=a1b2c3d4e5f60718. Send this or jobId.
+     */
+    jobUrl?: string;
+    /**
+     * Indeed job id, like a1b2c3d4e5f60718. Send this or jobUrl.
+     */
+    jobId?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -3297,19 +5936,10 @@ export type IndeedJobData = {
       | "pt"
       | "it"
       | "gr"
-      | "mt"
-      | "cy"
       | "pl"
       | "cz"
-      | "sk"
       | "hu"
       | "ro"
-      | "bg"
-      | "hr"
-      | "si"
-      | "ee"
-      | "lv"
-      | "lt"
       | "fi"
       | "se"
       | "no"
@@ -3379,8 +6009,15 @@ export type IndeedJobResponses = {
       salaryPeriod?: "hour" | "day" | "week" | "month" | "year";
       salaryCurrency?: string;
       salaryIsEstimate: boolean;
-      jobTypes: Array<"fullTime" | "partTime" | "contract" | "internship">;
+      jobTypes: Array<
+        "fullTime" | "partTime" | "contract" | "temporary" | "internship"
+      >;
       isRemote: boolean;
+      isHybrid: boolean;
+      experienceLevels: Array<"noExperience" | "entry" | "mid" | "senior">;
+      educationLevels: Array<
+        "highSchool" | "associate" | "bachelor" | "master"
+      >;
       attributes: Array<string>;
       publishedAt?: string;
       indexedAt?: string;
@@ -3404,6 +6041,7 @@ export type TripadvisorSearchData = {
   body: {
     query: string;
     type?: "all" | "hotels" | "restaurants" | "attractions" | "geos";
+    location?: string;
   };
   path?: never;
   query?: never;
@@ -3453,7 +6091,14 @@ export type TripadvisorSearchResponse =
 
 export type TripadvisorPlaceData = {
   body: {
-    place: string;
+    /**
+     * Link to the Tripadvisor place, like https://www.tripadvisor.com/Hotel_Review-g186338-d187591-Reviews-The_Ritz_London.html. Send this or placeId.
+     */
+    placeUrl?: string;
+    /**
+     * Tripadvisor place id, like d187591. Send this or placeUrl.
+     */
+    placeId?: string;
   };
   path?: never;
   query?: never;
@@ -3532,9 +6177,30 @@ export type TripadvisorPlaceResponse =
 
 export type TripadvisorReviewsData = {
   body: {
-    place: string;
+    /**
+     * Link to the Tripadvisor place, like https://www.tripadvisor.com/Hotel_Review-g186338-d187591-Reviews-The_Ritz_London.html. Send this or placeId.
+     */
+    placeUrl?: string;
+    /**
+     * Tripadvisor place id, like d187591. Send this or placeUrl.
+     */
+    placeId?: string;
     language?: string;
     ratings?: Array<number>;
+    /**
+     * Tripadvisor's own Traveler type filter: families, couples, solo, business or friends. Only reviews from these travelers.
+     */
+    travelerTypes?: Array<
+      "families" | "couples" | "solo" | "business" | "friends"
+    >;
+    /**
+     * Tripadvisor's own Time of year filter: marMay, junAug, sepNov or decFeb. Only reviews written in these months of the year.
+     */
+    months?: Array<"marMay" | "junAug" | "sepNov" | "decFeb">;
+    /**
+     * Tripadvisor's own Sort by: mostRecent (Most recent) or detailed (Detailed reviews, ordered by recency and how much they say).
+     */
+    sort?: "mostRecent" | "detailed";
     /**
      * Page number, starting at 1.
      */
@@ -3579,8 +6245,7 @@ export type TripadvisorReviewsResponses = {
         text?: string;
         language?: string;
         createdDate?: string;
-        publishedDate?: string;
-        stayDate?: string;
+        stayMonth?: string;
         tripType?: string;
         helpful: number;
         subRatings?: Array<{
@@ -3597,7 +6262,6 @@ export type TripadvisorReviewsResponses = {
         ownerReplyAuthor?: string;
       }>;
       page: number;
-      hasMore: boolean;
     };
     creditsUsed: number;
     requestId: string;
@@ -3607,7 +6271,7 @@ export type TripadvisorReviewsResponses = {
 export type TripadvisorReviewsResponse =
   TripadvisorReviewsResponses[keyof TripadvisorReviewsResponses];
 
-export type GoogletravelFlightsData = {
+export type GoogleFlightsData = {
   body: {
     /**
      * IATA airport code, e.g. JFK. Any case is accepted.
@@ -3621,13 +6285,51 @@ export type GoogletravelFlightsData = {
     returnDate?: string;
     adults?: number;
     cabin?: "economy" | "premiumEconomy" | "business" | "first";
+    /**
+     * Google Flights' Stops filter.
+     */
+    stops?: "any" | "nonstop" | "oneStopOrFewer" | "twoStopsOrFewer";
+    /**
+     * Google Flights' Airlines filter, as airline codes like KQ or EK.
+     */
+    airlines?: Array<string>;
+    /**
+     * Google Flights' Bags filter: prices include this many carry-on bags.
+     */
+    carryOnBags?: number;
+    /**
+     * Google Flights' Bags filter: prices include this many checked bags.
+     */
+    checkedBags?: number;
+    /**
+     * Google Flights' Price filter, in USD for all adults.
+     */
+    maxPrice?: number;
+    /**
+     * Google Flights' Times filter for the outbound departure.
+     */
+    departureTime?: {
+      earliest?: number;
+      latest?: number;
+    };
+    /**
+     * Google Flights' Times filter for the outbound arrival.
+     */
+    arrivalTime?: {
+      earliest?: number;
+      latest?: number;
+    };
+    /**
+     * Google Flights' Duration filter.
+     */
+    maxDurationHours?: number;
   };
   path?: never;
   query?: never;
-  url: "/v1/googletravel/flights";
+  url: "/v1/google/flights";
 };
 
-export type GoogletravelFlightsErrors = {
+export type GoogleFlightsErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -3638,10 +6340,9 @@ export type GoogletravelFlightsErrors = {
   "5XX": _Error;
 };
 
-export type GoogletravelFlightsError =
-  GoogletravelFlightsErrors[keyof GoogletravelFlightsErrors];
+export type GoogleFlightsError = GoogleFlightsErrors[keyof GoogleFlightsErrors];
 
-export type GoogletravelFlightsResponses = {
+export type GoogleFlightsResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -3709,21 +6410,90 @@ export type GoogletravelFlightsResponses = {
   };
 };
 
-export type GoogletravelFlightsResponse =
-  GoogletravelFlightsResponses[keyof GoogletravelFlightsResponses];
+export type GoogleFlightsResponse =
+  GoogleFlightsResponses[keyof GoogleFlightsResponses];
 
-export type WalmartSearchData = {
+export type GoogleHotelsData = {
   body: {
+    /**
+     * Where to stay, like Zanzibar or hotels near Times Square.
+     */
     query: string;
-    sort?:
-      | "relevance"
-      | "priceLow"
-      | "priceHigh"
-      | "bestSelling"
-      | "highest"
-      | "newest";
+    /**
+     * Defaults to tomorrow.
+     */
+    checkIn?: string;
+    /**
+     * Defaults to one night after checkIn.
+     */
+    checkOut?: string;
+    adults?: number;
+    /**
+     * One age per child, like [7, 12].
+     */
+    childrenAges?: Array<number>;
+    /**
+     * ISO 4217 currency code, e.g. USD.
+     */
+    currency?: string;
+    /**
+     * Per night.
+     */
     minPrice?: number;
+    /**
+     * Per night.
+     */
     maxPrice?: number;
+    /**
+     * Google Hotels' own Guest rating.
+     */
+    minRating?: "3.5+" | "4+" | "4.5+";
+    /**
+     * Google Hotels' own Hotel class, as star counts like [4, 5].
+     */
+    hotelClass?: Array<number>;
+    /**
+     * Google Hotels' own Amenities. Every one must be offered.
+     */
+    amenities?: Array<
+      | "freeWifi"
+      | "freeBreakfast"
+      | "restaurant"
+      | "bar"
+      | "kidFriendly"
+      | "petFriendly"
+      | "freeParking"
+      | "parking"
+      | "evCharger"
+      | "roomService"
+      | "fitnessCenter"
+      | "spa"
+      | "pool"
+      | "indoorPool"
+      | "outdoorPool"
+      | "airConditioned"
+      | "wheelchairAccessible"
+      | "beachAccess"
+      | "allInclusiveAvailable"
+    >;
+    /**
+     * Google Hotels' own Property type.
+     */
+    propertyTypes?: Array<
+      | "beachHotels"
+      | "boutiqueHotels"
+      | "hostels"
+      | "inns"
+      | "motels"
+      | "resorts"
+      | "spaHotels"
+      | "bedAndBreakfasts"
+      | "other"
+      | "apartmentHotels"
+    >;
+    freeCancellation?: boolean;
+    specialOffers?: boolean;
+    sort?: "relevance" | "lowestPrice" | "highestRating" | "mostReviewed";
     /**
      * Page number, starting at 1.
      */
@@ -3731,10 +6501,10 @@ export type WalmartSearchData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/walmart/search";
+  url: "/v1/google/hotels";
 };
 
-export type WalmartSearchErrors = {
+export type GoogleHotelsErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -3745,9 +6515,124 @@ export type WalmartSearchErrors = {
   "5XX": _Error;
 };
 
-export type WalmartSearchError = WalmartSearchErrors[keyof WalmartSearchErrors];
+export type GoogleHotelsError = GoogleHotelsErrors[keyof GoogleHotelsErrors];
 
-export type WalmartSearchResponses = {
+export type GoogleHotelsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      checkIn: string;
+      checkOut: string;
+      results: Array<{
+        name: string;
+        hotelId: string;
+        hotelUrl: string;
+        /**
+         * Lowest price per night.
+         */
+        price?: number;
+        /**
+         * For the whole stay, with taxes and fees.
+         */
+        totalPrice?: number;
+        /**
+         * ISO 4217 currency code, e.g. USD.
+         */
+        priceCurrency?: string;
+        /**
+         * Google's badge, like DEAL or GREAT DEAL.
+         */
+        deal?: string;
+        /**
+         * Like 20% less than usual.
+         */
+        dealDescription?: string;
+        rating?: number;
+        reviews?: number;
+        hotelClass?: number;
+        amenities?: Array<string>;
+        position: number;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleHotelsResponse =
+  GoogleHotelsResponses[keyof GoogleHotelsResponses];
+
+export type AmazonSearchData = {
+  body: {
+    query?: string;
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    minRating?: 4;
+    brand?: string;
+    /**
+     * Amazon's own sort. avgCustomerReview is Avg. Customer Review: highest rated first, not most reviewed.
+     */
+    sort?:
+      | "relevance"
+      | "priceLow"
+      | "priceHigh"
+      | "avgCustomerReview"
+      | "newest"
+      | "bestSelling";
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?:
+      | "us"
+      | "gb"
+      | "de"
+      | "fr"
+      | "it"
+      | "es"
+      | "ca"
+      | "jp"
+      | "in"
+      | "au"
+      | "mx"
+      | "br"
+      | "nl"
+      | "se"
+      | "pl"
+      | "sg"
+      | "ae"
+      | "sa"
+      | "tr"
+      | "be"
+      | "eg";
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/amazon/search";
+};
+
+export type AmazonSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AmazonSearchError = AmazonSearchErrors[keyof AmazonSearchErrors];
+
+export type AmazonSearchResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -3768,32 +6653,61 @@ export type WalmartSearchResponses = {
         priceCurrency?: string;
         rating?: number;
         reviews?: number;
-        sellerName?: string;
-        availability?: string;
+        boughtPastMonth?: number;
         isSponsored: boolean;
       }>;
       page: number;
-      hasMore: boolean;
-      totalPages?: number;
     };
     creditsUsed: number;
     requestId: string;
   };
 };
 
-export type WalmartSearchResponse =
-  WalmartSearchResponses[keyof WalmartSearchResponses];
+export type AmazonSearchResponse =
+  AmazonSearchResponses[keyof AmazonSearchResponses];
 
-export type WalmartProductData = {
+export type AmazonProductData = {
   body: {
-    product: string;
+    /**
+     * Link to the Amazon product, like https://www.amazon.com/dp/B0CX23V2ZK. Send this or productId.
+     */
+    productUrl?: string;
+    /**
+     * Amazon product ASIN, like B0CX23V2ZK. Send this or productUrl.
+     */
+    productId?: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?:
+      | "us"
+      | "gb"
+      | "de"
+      | "fr"
+      | "it"
+      | "es"
+      | "ca"
+      | "jp"
+      | "in"
+      | "au"
+      | "mx"
+      | "br"
+      | "nl"
+      | "se"
+      | "pl"
+      | "sg"
+      | "ae"
+      | "sa"
+      | "tr"
+      | "be"
+      | "eg";
   };
   path?: never;
   query?: never;
-  url: "/v1/walmart/product";
+  url: "/v1/amazon/product";
 };
 
-export type WalmartProductErrors = {
+export type AmazonProductErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -3804,10 +6718,9 @@ export type WalmartProductErrors = {
   "5XX": _Error;
 };
 
-export type WalmartProductError =
-  WalmartProductErrors[keyof WalmartProductErrors];
+export type AmazonProductError = AmazonProductErrors[keyof AmazonProductErrors];
 
-export type WalmartProductResponses = {
+export type AmazonProductResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -3827,22 +6740,25 @@ export type WalmartProductResponses = {
       availability?: string;
       rating?: number;
       reviews?: number;
+      bullets: Array<string>;
+      description?: string;
+      imageUrls: Array<string>;
+      variants: Array<{
+        productId?: string;
+        options?: string;
+      }>;
       sellerName?: string;
       sellerId?: string;
+      sellerShipsFrom?: string;
       categories: Array<string>;
-      imageUrls: Array<string>;
-      description?: string;
-      highlights?: string;
+      bestSellersRank: Array<{
+        rank: number;
+        category?: string;
+      }>;
       specs: Array<{
         name?: string;
         value?: string;
       }>;
-      variants: Array<{
-        name?: string;
-        values?: Array<string>;
-      }>;
-      upc?: string;
-      model?: string;
       topReviews: Array<{
         reviewId?: string;
         authorName?: string;
@@ -3850,7 +6766,10 @@ export type WalmartProductResponses = {
         title?: string;
         text?: string;
         publishedAt?: string;
-        helpful?: number;
+        isVerified: boolean;
+        variant?: string;
+        helpfulVotes?: number;
+        imageUrls?: Array<string>;
       }>;
     };
     creditsUsed: number;
@@ -3858,12 +6777,103 @@ export type WalmartProductResponses = {
   };
 };
 
-export type WalmartProductResponse =
-  WalmartProductResponses[keyof WalmartProductResponses];
+export type AmazonProductResponse =
+  AmazonProductResponses[keyof AmazonProductResponses];
+
+export type AmazonBestsellersData = {
+  body: {
+    category: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?:
+      | "us"
+      | "gb"
+      | "de"
+      | "fr"
+      | "it"
+      | "es"
+      | "ca"
+      | "jp"
+      | "in"
+      | "au"
+      | "mx"
+      | "br"
+      | "nl"
+      | "se"
+      | "pl"
+      | "sg"
+      | "ae"
+      | "sa"
+      | "tr"
+      | "be"
+      | "eg";
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/amazon/bestsellers";
+};
+
+export type AmazonBestsellersErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AmazonBestsellersError =
+  AmazonBestsellersErrors[keyof AmazonBestsellersErrors];
+
+export type AmazonBestsellersResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      category?: string;
+      results: Array<{
+        rank: number;
+        productId?: string;
+        productUrl: string;
+        title?: string;
+        imageUrl?: string;
+        price?: number;
+        /**
+         * ISO 4217 currency code, e.g. USD.
+         */
+        priceCurrency?: string;
+        rating?: number;
+        reviews?: number;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AmazonBestsellersResponse =
+  AmazonBestsellersResponses[keyof AmazonBestsellersResponses];
 
 export type AppstoreAppData = {
   body: {
-    app: string;
+    /**
+     * Link to the App Store app, like https://apps.apple.com/us/app/notes/id1110145109. Send this or appId.
+     */
+    appUrl?: string;
+    /**
+     * App Store app id or bundle id, like 1110145109. Send this or appUrl.
+     */
+    appId?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -3950,6 +6960,10 @@ export type AppstoreSearchData = {
      */
     country?: string;
     device?: "iphone" | "ipad" | "mac";
+    /**
+     * Return at most this many apps. You pay 1 credit per 10 returned.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4019,7 +7033,14 @@ export type AppstoreSearchResponse =
 
 export type AppstoreReviewsData = {
   body: {
-    app: string;
+    /**
+     * Link to the App Store app, like https://apps.apple.com/us/app/notes/id1110145109. Send this or appId.
+     */
+    appUrl?: string;
+    /**
+     * App Store app id, like 1110145109. Send this or appUrl.
+     */
+    appId?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -4066,7 +7087,6 @@ export type AppstoreReviewsResponses = {
         isEdited: boolean;
       }>;
       page: number;
-      hasMore: boolean;
     };
     creditsUsed: number;
     requestId: string;
@@ -4109,6 +7129,10 @@ export type AppstoreTopData = {
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
     country?: string;
+    /**
+     * Return at most this many apps. You pay 1 credit per 10 returned.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
@@ -4161,9 +7185,16 @@ export type AppstoreTopResponses = {
 export type AppstoreTopResponse =
   AppstoreTopResponses[keyof AppstoreTopResponses];
 
-export type GoogleplayAppData = {
+export type GooglePlayAppData = {
   body: {
-    app: string;
+    /**
+     * Link to the Google Play app, like https://play.google.com/store/apps/details?id=com.spotify.music. Send this or appId.
+     */
+    appUrl?: string;
+    /**
+     * Google Play app package name, like com.spotify.music. Send this or appUrl.
+     */
+    appId?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -4175,10 +7206,10 @@ export type GoogleplayAppData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/googleplay/app";
+  url: "/v1/google/play/app";
 };
 
-export type GoogleplayAppErrors = {
+export type GooglePlayAppErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -4189,9 +7220,9 @@ export type GoogleplayAppErrors = {
   "5XX": _Error;
 };
 
-export type GoogleplayAppError = GoogleplayAppErrors[keyof GoogleplayAppErrors];
+export type GooglePlayAppError = GooglePlayAppErrors[keyof GooglePlayAppErrors];
 
-export type GoogleplayAppResponses = {
+export type GooglePlayAppResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -4241,10 +7272,10 @@ export type GoogleplayAppResponses = {
   };
 };
 
-export type GoogleplayAppResponse =
-  GoogleplayAppResponses[keyof GoogleplayAppResponses];
+export type GooglePlayAppResponse =
+  GooglePlayAppResponses[keyof GooglePlayAppResponses];
 
-export type GoogleplaySearchData = {
+export type GooglePlaySearchData = {
   body: {
     query: string;
     /**
@@ -4255,13 +7286,17 @@ export type GoogleplaySearchData = {
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
     language?: string;
+    /**
+     * Return at most this many apps. You pay 1 credit per 10 returned.
+     */
+    limit?: number;
   };
   path?: never;
   query?: never;
-  url: "/v1/googleplay/search";
+  url: "/v1/google/play/search";
 };
 
-export type GoogleplaySearchErrors = {
+export type GooglePlaySearchErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -4272,10 +7307,10 @@ export type GoogleplaySearchErrors = {
   "5XX": _Error;
 };
 
-export type GoogleplaySearchError =
-  GoogleplaySearchErrors[keyof GoogleplaySearchErrors];
+export type GooglePlaySearchError =
+  GooglePlaySearchErrors[keyof GooglePlaySearchErrors];
 
-export type GoogleplaySearchResponses = {
+export type GooglePlaySearchResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -4302,12 +7337,19 @@ export type GoogleplaySearchResponses = {
   };
 };
 
-export type GoogleplaySearchResponse =
-  GoogleplaySearchResponses[keyof GoogleplaySearchResponses];
+export type GooglePlaySearchResponse =
+  GooglePlaySearchResponses[keyof GooglePlaySearchResponses];
 
-export type GoogleplayReviewsData = {
+export type GooglePlayReviewsData = {
   body: {
-    app: string;
+    /**
+     * Link to the Google Play app, like https://play.google.com/store/apps/details?id=com.spotify.music. Send this or appId.
+     */
+    appUrl?: string;
+    /**
+     * Google Play app package name, like com.spotify.music. Send this or appUrl.
+     */
+    appId?: string;
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
@@ -4325,10 +7367,10 @@ export type GoogleplayReviewsData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/googleplay/reviews";
+  url: "/v1/google/play/reviews";
 };
 
-export type GoogleplayReviewsErrors = {
+export type GooglePlayReviewsErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -4339,10 +7381,10 @@ export type GoogleplayReviewsErrors = {
   "5XX": _Error;
 };
 
-export type GoogleplayReviewsError =
-  GoogleplayReviewsErrors[keyof GoogleplayReviewsErrors];
+export type GooglePlayReviewsError =
+  GooglePlayReviewsErrors[keyof GooglePlayReviewsErrors];
 
-export type GoogleplayReviewsResponses = {
+export type GooglePlayReviewsResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -4369,625 +7411,8 @@ export type GoogleplayReviewsResponses = {
   };
 };
 
-export type GoogleplayReviewsResponse =
-  GoogleplayReviewsResponses[keyof GoogleplayReviewsResponses];
-
-export type AirbnbSearchData = {
-  body: {
-    location: string;
-    checkIn?: string;
-    checkOut?: string;
-    adults?: number;
-    /**
-     * Lowest average nightly rate in USD, before taxes and fees. Compare with pricePerNight, which includes them.
-     */
-    minPrice?: number;
-    /**
-     * Highest average nightly rate in USD, before taxes and fees. Compare with pricePerNight, which includes them.
-     */
-    maxPrice?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/airbnb/search";
-};
-
-export type AirbnbSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type AirbnbSearchError = AirbnbSearchErrors[keyof AirbnbSearchErrors];
-
-export type AirbnbSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        listingId?: string;
-        listingUrl: string;
-        name?: string;
-        title?: string;
-        subtitle?: string;
-        /**
-         * Total for the whole stay in USD, taxes and fees included.
-         */
-        price?: number;
-        /**
-         * Total for the whole stay before a discount, in USD.
-         */
-        originalPrice?: number;
-        /**
-         * Number of nights the price covers. A search without dates is priced for a default 5-night stay.
-         */
-        nights?: number;
-        /**
-         * price divided by nights, in USD, taxes and fees included.
-         */
-        pricePerNight?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        priceCurrency?: string;
-        priceText?: string;
-        rating?: number;
-        reviews?: number;
-        bedrooms?: number;
-        beds?: number;
-        bathrooms?: number;
-        latitude?: number;
-        longitude?: number;
-        badges?: Array<string>;
-        imageUrls?: Array<string>;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type AirbnbSearchResponse =
-  AirbnbSearchResponses[keyof AirbnbSearchResponses];
-
-export type AirbnbListingData = {
-  body: {
-    listing: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/airbnb/listing";
-};
-
-export type AirbnbListingErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type AirbnbListingError = AirbnbListingErrors[keyof AirbnbListingErrors];
-
-export type AirbnbListingResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      listingId?: string;
-      listingUrl: string;
-      name?: string;
-      headline?: string;
-      description?: string;
-      propertyType?: string;
-      roomType?: string;
-      guests?: number;
-      bedrooms?: number;
-      beds?: number;
-      bathrooms?: number;
-      isPetFriendly?: boolean;
-      isGuestFavorite: boolean;
-      rating?: number;
-      reviews?: number;
-      ratingCategories: Array<{
-        category?: string;
-        rating: number;
-      }>;
-      ratingDistribution: Array<{
-        stars?: string;
-        percent: number;
-      }>;
-      hostId?: string;
-      hostName?: string;
-      hostIsSuperhost: boolean;
-      hostIsVerified: boolean;
-      hostRating?: number;
-      hostReviews?: number;
-      hostYearsHosting?: number;
-      hostBio?: string;
-      hostResponsePercent?: number;
-      hostResponseTime?: string;
-      hostHighlights: Array<string>;
-      hostAvatarUrl?: string;
-      highlights: Array<{
-        title?: string;
-        description?: string;
-      }>;
-      amenities: Array<{
-        group?: string;
-        name?: string;
-        isAvailable: boolean;
-      }>;
-      houseRules: Array<string>;
-      safety: Array<string>;
-      latitude?: number;
-      longitude?: number;
-      isLocationExact: boolean;
-      area?: string;
-      neighborhood?: string;
-      imageUrls: Array<string>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type AirbnbListingResponse =
-  AirbnbListingResponses[keyof AirbnbListingResponses];
-
-export type AirbnbCalendarData = {
-  body: {
-    listing: string;
-    month?: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/airbnb/calendar";
-};
-
-export type AirbnbCalendarErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type AirbnbCalendarError =
-  AirbnbCalendarErrors[keyof AirbnbCalendarErrors];
-
-export type AirbnbCalendarResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        date: string;
-        isAvailable: boolean;
-        isBookable: boolean;
-        isCheckInDay: boolean;
-        isCheckOutDay: boolean;
-        minNights?: number;
-        maxNights?: number;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type AirbnbCalendarResponse =
-  AirbnbCalendarResponses[keyof AirbnbCalendarResponses];
-
-export type AirbnbReviewsData = {
-  body: {
-    listing: string;
-    sort?: "relevance" | "newest" | "highest" | "lowest";
-    /**
-     * Page number, starting at 1.
-     */
-    page?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/airbnb/reviews";
-};
-
-export type AirbnbReviewsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type AirbnbReviewsError = AirbnbReviewsErrors[keyof AirbnbReviewsErrors];
-
-export type AirbnbReviewsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      total?: number;
-      results: Array<{
-        reviewId?: string;
-        text?: string;
-        rating?: number;
-        publishedAt?: string;
-        language?: string;
-        stayLength?: string;
-        authorId?: string;
-        authorName?: string;
-        authorAvatarUrl?: string;
-        authorAddress?: string;
-        ownerReplyText?: string;
-      }>;
-      page: number;
-      hasMore: boolean;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type AirbnbReviewsResponse =
-  AirbnbReviewsResponses[keyof AirbnbReviewsResponses];
-
-export type RightmoveSearchData = {
-  body: {
-    location: string;
-    status?: "forSale" | "forRent";
-    minPrice?: number;
-    maxPrice?: number;
-    minBedrooms?: number;
-    maxBedrooms?: number;
-    sort?: "newest" | "oldest" | "priceHigh" | "priceLow";
-    /**
-     * Page number, starting at 1.
-     */
-    page?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/rightmove/search";
-};
-
-export type RightmoveSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type RightmoveSearchError =
-  RightmoveSearchErrors[keyof RightmoveSearchErrors];
-
-export type RightmoveSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      total?: number;
-      results: Array<{
-        propertyId?: string;
-        propertyUrl: string;
-        addressFull?: string;
-        summary?: string;
-        price?: number;
-        /**
-         * True when the agent shows no price (POA); price is then null.
-         */
-        isPriceOnApplication: boolean;
-        priceText?: string;
-        priceQualifier?: string;
-        priceFrequency?: string;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        priceCurrency?: string;
-        bedrooms?: number;
-        bathrooms?: number;
-        propertyType?: string;
-        sizeText?: string;
-        tenureType?: string;
-        firstListedAt?: string;
-        updateReason?: string;
-        updatedAt?: string;
-        isFeatured: boolean;
-        isAuction: boolean;
-        latitude?: number;
-        longitude?: number;
-        agentName?: string;
-        agentBranchId?: string;
-        agentPhone?: string;
-        keyFeatures?: Array<string>;
-        imageUrls?: Array<string>;
-      }>;
-      page: number;
-      hasMore: boolean;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type RightmoveSearchResponse =
-  RightmoveSearchResponses[keyof RightmoveSearchResponses];
-
-export type RightmovePropertyData = {
-  body: {
-    property: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/rightmove/property";
-};
-
-export type RightmovePropertyErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type RightmovePropertyError =
-  RightmovePropertyErrors[keyof RightmovePropertyErrors];
-
-export type RightmovePropertyResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      propertyId?: string;
-      propertyUrl: string;
-      addressFull?: string;
-      addressPostalCode?: string;
-      addressCountry?: string;
-      description?: string;
-      price?: number;
-      /**
-       * True when the agent shows no price (POA); price is then null.
-       */
-      isPriceOnApplication: boolean;
-      /**
-       * ISO 4217 currency code, e.g. USD.
-       */
-      priceCurrency?: string;
-      priceText?: string;
-      priceQualifier?: string;
-      pricePerSqft?: number;
-      channel?: string;
-      bedrooms?: number;
-      bathrooms?: number;
-      propertyType?: string;
-      tenureType?: string;
-      tenureYearsRemaining?: number;
-      sizes: Array<{
-        value: number;
-        unit?: string;
-      }>;
-      councilTaxBand?: string;
-      annualServiceCharge?: number;
-      annualGroundRent?: number;
-      updateReason?: string;
-      tags: Array<string>;
-      keyFeatures: Array<string>;
-      imageUrls: Array<string>;
-      floorplanUrls: Array<string>;
-      latitude?: number;
-      longitude?: number;
-      nearestStations: Array<{
-        name?: string;
-        types?: Array<string>;
-        distanceMiles?: number;
-      }>;
-      agentName?: string;
-      agentBranchId?: string;
-      agentPhone?: string;
-      agentCompany?: string;
-      agentAddress?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type RightmovePropertyResponse =
-  RightmovePropertyResponses[keyof RightmovePropertyResponses];
-
-export type ImmoscoutSearchData = {
-  body: {
-    location: string;
-    type?:
-      | "apartmentRent"
-      | "apartmentBuy"
-      | "houseRent"
-      | "houseBuy"
-      | "land"
-      | "flatShare"
-      | "shortTerm";
-    minPrice?: number;
-    maxPrice?: number;
-    minRooms?: number;
-    sort?: "newest" | "priceLow" | "priceHigh" | "largest";
-    /**
-     * Page number, starting at 1.
-     */
-    page?: number;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/immoscout/search";
-};
-
-export type ImmoscoutSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type ImmoscoutSearchError =
-  ImmoscoutSearchErrors[keyof ImmoscoutSearchErrors];
-
-export type ImmoscoutSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      total?: number;
-      results: Array<{
-        listingId?: string;
-        listingUrl: string;
-        title?: string;
-        type?: string;
-        addressFull?: string;
-        addressPostalCode?: string;
-        addressCountry?: string;
-        price?: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        priceCurrency?: string;
-        priceText?: string;
-        livingSpace?: number;
-        rooms?: number;
-        energyClass?: string;
-        publishedAt?: string;
-        isPrivate: boolean;
-        isProject: boolean;
-        isNew: boolean;
-        imageUrl?: string;
-      }>;
-      page: number;
-      hasMore: boolean;
-      totalPages: number;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type ImmoscoutSearchResponse =
-  ImmoscoutSearchResponses[keyof ImmoscoutSearchResponses];
-
-export type ImmoscoutListingData = {
-  body: {
-    listing: string;
-  };
-  path?: never;
-  query?: never;
-  url: "/v1/immoscout/listing";
-};
-
-export type ImmoscoutListingErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type ImmoscoutListingError =
-  ImmoscoutListingErrors[keyof ImmoscoutListingErrors];
-
-export type ImmoscoutListingResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      listingId?: string;
-      listingUrl: string;
-      title?: string;
-      type?: string;
-      status?: string;
-      addressFull?: string;
-      addressPostalCode?: string;
-      addressCity?: string;
-      addressDistrict?: string;
-      addressCountry?: string;
-      /**
-       * ISO 4217 currency code, e.g. USD.
-       */
-      priceCurrency?: string;
-      baseRent?: number;
-      totalRent?: number;
-      serviceCharge?: number;
-      price?: number;
-      livingSpace?: number;
-      rooms?: number;
-      yearBuilt?: number;
-      energyClass?: string;
-      attributes: Array<{
-        group?: string;
-        label?: string;
-        value?: string;
-      }>;
-      texts: Array<{
-        title?: string;
-        text?: string;
-      }>;
-      imageUrls: Array<string>;
-      agentName?: string;
-      agentCompany?: string;
-      agentPhone?: string;
-      agentRating?: number;
-      agentUrl?: string;
-      agentAddress?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type ImmoscoutListingResponse =
-  ImmoscoutListingResponses[keyof ImmoscoutListingResponses];
+export type GooglePlayReviewsResponse =
+  GooglePlayReviewsResponses[keyof GooglePlayReviewsResponses];
 
 export type PinterestSearchData = {
   body: {
@@ -5034,11 +7459,11 @@ export type PinterestSearchResponses = {
         domain?: string;
         publishedAt?: string;
         imageUrl?: string;
+        imageWidth?: number;
+        imageHeight?: number;
+        dominantColor?: string;
         videoUrl?: string;
         videoDurationSeconds?: number;
-        saves?: number;
-        reposts?: number;
-        comments?: number;
         reactions?: number;
         isPromoted: boolean;
         authorId?: string;
@@ -5063,7 +7488,14 @@ export type PinterestSearchResponse =
 
 export type PinterestPinData = {
   body: {
-    pin: string;
+    /**
+     * Link to the Pinterest pin, like https://www.pinterest.com/pin/1234567890123456/. Send this or pinId.
+     */
+    pinUrl?: string;
+    /**
+     * Pinterest pin id, like 1234567890123456. Send this or pinUrl.
+     */
+    pinId?: string;
   };
   path?: never;
   query?: never;
@@ -5099,6 +7531,9 @@ export type PinterestPinResponses = {
       domain?: string;
       publishedAt?: string;
       imageUrl?: string;
+      imageWidth?: number;
+      imageHeight?: number;
+      dominantColor?: string;
       videoUrl?: string;
       videoDurationSeconds?: number;
       saves?: number;
@@ -5126,7 +7561,10 @@ export type PinterestPinResponse =
 
 export type PinterestBoardData = {
   body: {
-    board: string;
+    /**
+     * Link to the Pinterest board, like https://www.pinterest.com/marthastewart/kitchen-ideas/.
+     */
+    boardUrl: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -5183,6 +7621,9 @@ export type PinterestBoardResponses = {
         domain?: string;
         publishedAt?: string;
         imageUrl?: string;
+        imageWidth?: number;
+        imageHeight?: number;
+        dominantColor?: string;
         videoUrl?: string;
         videoDurationSeconds?: number;
         saves?: number;
@@ -5210,9 +7651,16 @@ export type PinterestBoardResponses = {
 export type PinterestBoardResponse =
   PinterestBoardResponses[keyof PinterestBoardResponses];
 
-export type PinterestUserData = {
+export type PinterestProfileData = {
   body: {
-    profile: string;
+    /**
+     * Link to the Pinterest profile, like https://www.pinterest.com/marthastewart/. Send this or username.
+     */
+    userUrl?: string;
+    /**
+     * Pinterest profile username, like marthastewart. Send this or userUrl.
+     */
+    username?: string;
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -5220,10 +7668,10 @@ export type PinterestUserData = {
   };
   path?: never;
   query?: never;
-  url: "/v1/pinterest/user";
+  url: "/v1/pinterest/profile";
 };
 
-export type PinterestUserErrors = {
+export type PinterestProfileErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -5234,9 +7682,10 @@ export type PinterestUserErrors = {
   "5XX": _Error;
 };
 
-export type PinterestUserError = PinterestUserErrors[keyof PinterestUserErrors];
+export type PinterestProfileError =
+  PinterestProfileErrors[keyof PinterestProfileErrors];
 
-export type PinterestUserResponses = {
+export type PinterestProfileResponses = {
   /**
    * The data, and the credits this call used.
    */
@@ -5267,6 +7716,9 @@ export type PinterestUserResponses = {
         domain?: string;
         publishedAt?: string;
         imageUrl?: string;
+        imageWidth?: number;
+        imageHeight?: number;
+        dominantColor?: string;
         videoUrl?: string;
         videoDurationSeconds?: number;
         saves?: number;
@@ -5291,677 +7743,55 @@ export type PinterestUserResponses = {
   };
 };
 
-export type PinterestUserResponse =
-  PinterestUserResponses[keyof PinterestUserResponses];
+export type PinterestProfileResponse =
+  PinterestProfileResponses[keyof PinterestProfileResponses];
 
-export type AdsSearchData = {
-  body:
-    | {
-        query: string;
-        network: "meta";
-        /**
-         * ISO 3166-1 alpha-2 country code, or all. Any case is accepted.
-         */
-        country?: string;
-        status?: "active" | "inactive" | "all";
-        /**
-         * Only ads with this creative: image, video, or text (no image or video).
-         */
-        mediaType?: "image" | "video" | "text";
-        /**
-         * The cursor from the previous response. Send it as is.
-         */
-        cursor?: string;
-      }
-    | {
-        network: "google";
-        /**
-         * A domain like nike.com. Google's library finds ads by domain or advertiser, not by keyword.
-         */
-        query?: string;
-        advertiser?: string;
-        domain?: string;
-        /**
-         * Country code like de. Only ads shown in this country are returned. Any case is accepted.
-         */
-        country?: string;
-        mediaType?: "text" | "image" | "video";
-        /**
-         * The cursor from the previous response. Send it as is.
-         */
-        cursor?: string;
-      }
-    | {
-        network: "tiktok";
-        query?: string;
-        advertiser?: string;
-        /**
-         * European country code like de. TikTok publishes ads for these countries only. Any case is accepted.
-         */
-        country?: string;
-        /**
-         * The cursor from the previous response. Send it as is.
-         */
-        cursor?: string;
-      }
-    | {
-        network: "linkedin";
-        query?: string;
-        advertiser?: string;
-        /**
-         * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-         */
-        country?: string;
-        within?: "month" | "year" | "all";
-        /**
-         * The cursor from the previous response. Send it as is.
-         */
-        cursor?: string;
-      }
-    | {
-        network: "microsoft";
-        query?: string;
-        advertiser?: string;
-        /**
-         * EU/EEA country code like de. Microsoft publishes ads for these countries only. Any case is accepted.
-         */
-        country?: string;
-        /**
-         * The cursor from the previous response. Send it as is.
-         */
-        cursor?: string;
-      }
-    | {
-        /**
-         * EU country code like fr, or br or tr. Pinterest publishes ads for these countries only. Any case is accepted.
-         */
-        country: string;
-        network: "pinterest";
-        /**
-         * Not supported. Pinterest's ads library has no keyword search. Use advertiser to filter by advertiser name.
-         */
-        query?: string;
-        /**
-         * Advertiser name to filter by. Pinterest does not publish advertiser names on the ads themselves, so results carry no advertiser.
-         */
-        advertiser?: string;
-        /**
-         * The cursor from the previous response. Send it as is.
-         */
-        cursor?: string;
-      };
-  path?: never;
-  query?: never;
-  url: "/v1/ads/search";
-};
-
-export type AdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type AdsSearchError = AdsSearchErrors[keyof AdsSearchErrors];
-
-export type AdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data:
-      | {
-          results?: Array<{
-            adId?: string;
-            adUrl: string;
-            /**
-             * Same as pageId. Present so this ad has the same keys as other ad networks.
-             */
-            advertiserId?: string;
-            /**
-             * Same as pageName. Present so this ad has the same keys as other ad networks.
-             */
-            advertiserName?: string;
-            /**
-             * Same as pageUrl. Present so this ad has the same keys as other ad networks.
-             */
-            advertiserUrl?: string;
-            /**
-             * Same as pageAvatarUrl. Present so this ad has the same keys as other ad networks.
-             */
-            advertiserAvatarUrl?: string;
-            pageId?: string;
-            pageName?: string;
-            pageUrl?: string;
-            pageAvatarUrl?: string;
-            pageCategories?: Array<string>;
-            pageLikes?: number;
-            isActive: boolean;
-            firstShownAt?: string;
-            lastShownAt?: string;
-            platforms?: Array<string>;
-            format?: string;
-            text?: string;
-            linkUrl?: string;
-            linkTitle?: string;
-            linkDescription?: string;
-            ctaText?: string;
-            imageUrls?: Array<string>;
-            videoUrls?: Array<string>;
-            cards?: Array<{
-              text?: string;
-              linkUrl?: string;
-              linkTitle?: string;
-              ctaText?: string;
-              imageUrl?: string;
-              videoUrl?: string;
-            }>;
-            versions: number;
-            categories?: Array<string>;
-            paidBy?: string;
-            spendMin?: number;
-            spendMax?: number;
-            /**
-             * ISO 4217 currency code, e.g. USD.
-             */
-            spendCurrency?: string;
-            impressionsMin?: number;
-            impressionsMax?: number;
-            reachMin?: number;
-            reachMax?: number;
-            countries?: Array<string>;
-          }>;
-          cursor?: string;
-        }
-      | {
-          totalMin?: number;
-          totalMax?: number;
-          results?: Array<{
-            adId?: string;
-            adUrl: string;
-            advertiserId?: string;
-            advertiserName?: string;
-            advertiserUrl: string;
-            domain?: string;
-            format: "text" | "image" | "video" | "unknown";
-            firstShownAt?: string;
-            lastShownAt?: string;
-            daysShown?: number;
-            previewUrl?: string;
-            imageUrl?: string;
-          }>;
-          cursor?: string;
-        }
-      | {
-          advertiserId?: string;
-          advertiserName?: string;
-          total?: number;
-          results?: Array<{
-            adId?: string;
-            adUrl: string;
-            advertiserName?: string;
-            headline?: string;
-            firstShownAt?: string;
-            lastShownAt?: string;
-            reachMin?: number;
-            reachMax?: number;
-            videoUrl?: string;
-            thumbnailUrl?: string;
-            imageUrls?: Array<string>;
-          }>;
-          cursor?: string;
-        }
-      | {
-          total?: number;
-          results?: Array<{
-            adId?: string;
-            adUrl: string;
-            creativeType?: string;
-            format?: string;
-            advertiserName?: string;
-            advertiserUrl?: string;
-            advertiserAvatarUrl?: string;
-            postedBy?: string;
-            text?: string;
-            headline?: string;
-            imageUrls?: Array<string>;
-          }>;
-          cursor?: string;
-        }
-      | {
-          total?: number;
-          results?: Array<{
-            adId?: string;
-            advertiserId?: string;
-            advertiserName?: string;
-            headline?: string;
-            text?: string;
-            linkUrl?: string;
-            linkCaption?: string;
-            imageUrls?: Array<string>;
-          }>;
-          cursor?: string;
-        }
-      | {
-          results?: Array<{
-            adId?: string;
-            adUrl: string;
-            headline?: string;
-            text?: string;
-            advertisers?: Array<string>;
-            imageUrl?: string;
-            videoUrl?: string;
-            links?: Array<string>;
-            firstShownAt?: string;
-            lastShownAt?: string;
-            reachMin?: number;
-            reachMax?: number;
-            reachByCountry?: Array<{
-              country?: string;
-              reachMin?: number;
-              reachMax?: number;
-            }>;
-            countries?: Array<string>;
-            ageRanges?: Array<string>;
-            genders?: Array<string>;
-            interests?: Array<string>;
-            audienceTypes?: Array<string>;
-            isCommercial: boolean;
-          }>;
-          cursor?: string;
-        };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type AdsSearchResponse = AdsSearchResponses[keyof AdsSearchResponses];
-
-export type AdsAdData = {
-  body:
-    | {
-        ad: string;
-        network: "meta";
-      }
-    | {
-        ad: string;
-        network: "google";
-        advertiser?: string;
-      }
-    | {
-        ad: string;
-        network: "tiktok";
-      }
-    | {
-        ad: string;
-        network: "linkedin";
-      }
-    | {
-        ad: string;
-        network: "microsoft";
-      }
-    | {
-        ad: string;
-        network: "pinterest";
-      };
-  path?: never;
-  query?: never;
-  url: "/v1/ads/ad";
-};
-
-export type AdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type AdsAdError = AdsAdErrors[keyof AdsAdErrors];
-
-export type AdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data:
-      | {
-          adId?: string;
-          adUrl: string;
-          /**
-           * Same as pageId. Present so this ad has the same keys as other ad networks.
-           */
-          advertiserId?: string;
-          /**
-           * Same as pageName. Present so this ad has the same keys as other ad networks.
-           */
-          advertiserName?: string;
-          /**
-           * Same as pageUrl. Present so this ad has the same keys as other ad networks.
-           */
-          advertiserUrl?: string;
-          /**
-           * Same as pageAvatarUrl. Present so this ad has the same keys as other ad networks.
-           */
-          advertiserAvatarUrl?: string;
-          pageId?: string;
-          pageName?: string;
-          pageUrl?: string;
-          pageAvatarUrl?: string;
-          pageCategories?: Array<string>;
-          pageLikes?: number;
-          isActive: boolean;
-          firstShownAt?: string;
-          lastShownAt?: string;
-          platforms?: Array<string>;
-          format?: string;
-          text?: string;
-          linkUrl?: string;
-          linkTitle?: string;
-          linkDescription?: string;
-          ctaText?: string;
-          imageUrls?: Array<string>;
-          videoUrls?: Array<string>;
-          cards?: Array<{
-            text?: string;
-            linkUrl?: string;
-            linkTitle?: string;
-            ctaText?: string;
-            imageUrl?: string;
-            videoUrl?: string;
-          }>;
-          versions: number;
-          categories?: Array<string>;
-          paidBy?: string;
-          spendMin?: number;
-          spendMax?: number;
-          /**
-           * ISO 4217 currency code, e.g. USD.
-           */
-          spendCurrency?: string;
-          impressionsMin?: number;
-          impressionsMax?: number;
-          reachMin?: number;
-          reachMax?: number;
-          countries?: Array<string>;
-          advertiserDescription?: string;
-          advertiserCategory?: string;
-          advertiserVerification?: string;
-          advertiserInstagram?: string;
-          advertiserInstagramFollowers?: number;
-          audienceAgeGender?: Array<{
-            age?: string;
-            female: number;
-            male: number;
-            unknown: number;
-          }>;
-          audienceRegions?: Array<{
-            region?: string;
-            share: number;
-          }>;
-          euReachTotal?: number;
-          euReachByCountry?: Array<{
-            country?: string;
-            age?: string;
-            female: number;
-            male: number;
-            unknown: number;
-          }>;
-          payers?: Array<{
-            paidBy?: string;
-            beneficiary?: string;
-          }>;
-        }
-      | {
-          adId?: string;
-          adUrl: string;
-          advertiserId?: string;
-          advertiserName?: string;
-          advertiserUrl: string;
-          domain?: string;
-          format: "text" | "image" | "video" | "unknown";
-          firstShownAt?: string;
-          lastShownAt?: string;
-          daysShown?: number;
-          previewUrl?: string;
-          imageUrl?: string;
-          advertiserCountry?: string;
-          advertiserIsVerified?: boolean;
-          paidBy?: string;
-          impressionsMin?: number;
-          impressionsMax?: number;
-          variations?: Array<{
-            previewUrl?: string;
-            imageUrl?: string;
-            videoUrl?: string;
-          }>;
-          regions?: Array<{
-            country?: string;
-            firstShownAt?: string;
-            lastShownAt?: string;
-            impressionsMin?: number;
-            impressionsMax?: number;
-          }>;
-          targetingIncluded?: Array<string>;
-          targetingExcluded?: Array<string>;
-        }
-      | {
-          adId?: string;
-          adUrl: string;
-          advertiserName?: string;
-          headline?: string;
-          firstShownAt?: string;
-          lastShownAt?: string;
-          reachMin?: number;
-          reachMax?: number;
-          videoUrl?: string;
-          thumbnailUrl?: string;
-          imageUrls?: Array<string>;
-          advertiserId?: string;
-          advertiserCountry?: string;
-          paidBy?: string;
-          linkUrl?: string;
-          ctaText?: string;
-          objective?: string;
-          category?: string;
-          audienceSizeMin?: number;
-          audienceSizeMax?: number;
-          impressionsMin?: number;
-          impressionsMax?: number;
-          countries?: Array<string>;
-          languages?: Array<string>;
-          interests?: string;
-          regions?: Array<{
-            country?: string;
-            impressionsMin?: number;
-            impressionsMax?: number;
-            ages?: Array<string>;
-            genders?: Array<string>;
-          }>;
-        }
-      | {
-          adId?: string;
-          adUrl: string;
-          creativeType?: string;
-          format?: string;
-          advertiserName?: string;
-          advertiserUrl?: string;
-          advertiserAvatarUrl?: string;
-          postedBy?: string;
-          text?: string;
-          headline?: string;
-          imageUrls?: Array<string>;
-          paidBy?: string;
-          ctaText?: string;
-          videoUrls?: Array<string>;
-          firstShownAt?: string;
-          lastShownAt?: string;
-          impressionsMin?: number;
-          impressionsMax?: number;
-          countries?: Array<{
-            country?: string;
-            share?: number;
-          }>;
-          targeting?: Array<{
-            parameter?: string;
-            description?: string;
-          }>;
-          targetingUsed?: Array<{
-            parameter?: string;
-            isTargeted: boolean;
-            isExcluded: boolean;
-          }>;
-        }
-      | {
-          adId?: string;
-          advertiserId?: string;
-          advertiserName?: string;
-          headline?: string;
-          text?: string;
-          linkUrl?: string;
-          linkCaption?: string;
-          imageUrls?: Array<string>;
-          paidBy?: string;
-          firstShownAt?: string;
-          lastShownAt?: string;
-          impressionsMin?: number;
-          impressionsMax?: number;
-          countries?: Array<{
-            country?: string;
-            share?: number;
-          }>;
-          targeting?: Array<{
-            type?: string;
-            isExcluded: boolean;
-          }>;
-        }
-      | {
-          adId?: string;
-          adUrl: string;
-          headline?: string;
-          text?: string;
-          advertisers?: Array<string>;
-          imageUrl?: string;
-          videoUrl?: string;
-          links?: Array<string>;
-          firstShownAt?: string;
-          lastShownAt?: string;
-          reachMin?: number;
-          reachMax?: number;
-          reachByCountry?: Array<{
-            country?: string;
-            reachMin?: number;
-            reachMax?: number;
-          }>;
-          countries?: Array<string>;
-          ageRanges?: Array<string>;
-          genders?: Array<string>;
-          interests?: Array<string>;
-          audienceTypes?: Array<string>;
-          isCommercial: boolean;
-        };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type AdsAdResponse = AdsAdResponses[keyof AdsAdResponses];
-
-export type AdsAdvertisersData = {
-  body:
-    | {
-        query: string;
-        network: "google";
-        /**
-         * Country code like de. Advertisers are matched on ads shown in this country, wherever the advertiser is based. Any case is accepted.
-         */
-        country?: string;
-      }
-    | {
-        query: string;
-        network: "microsoft";
-      };
-  path?: never;
-  query?: never;
-  url: "/v1/ads/advertisers";
-};
-
-export type AdsAdvertisersErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type AdsAdvertisersError =
-  AdsAdvertisersErrors[keyof AdsAdvertisersErrors];
-
-export type AdsAdvertisersResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data:
-      | {
-          domains?: Array<string>;
-          results?: Array<{
-            advertiserId?: string;
-            advertiserName?: string;
-            advertiserCountry?: string;
-            advertiserUrl: string;
-            isVerified: boolean;
-            adsMin?: number;
-            adsMax?: number;
-          }>;
-        }
-      | {
-          total?: number;
-          results?: Array<{
-            advertiserId?: string;
-            advertiserName?: string;
-            advertiserCountry?: string;
-            isVerified: boolean;
-          }>;
-        };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type AdsAdvertisersResponse =
-  AdsAdvertisersResponses[keyof AdsAdvertisersResponses];
-
-export type AiAnswerData = {
+export type MetaAdsSearchData = {
   body: {
+    query: string;
     /**
-     * The question to ask, worded the way a buyer would ask an AI assistant, e.g. What is the best CRM for a small business? Up to 2000 characters.
+     * ISO 3166-1 alpha-2 country code, or all. Any case is accepted.
      */
-    prompt: string;
+    country?: string;
+    status?: "active" | "inactive" | "all";
     /**
-     * Which AI assistant answers: gemini or chatgpt.
+     * The Ad Library's own Media type filter: image, video, or text (no image or video).
      */
-    engine?: "gemini" | "chatgpt";
+    mediaType?: "image" | "video" | "text" | "meme" | "imageAndMeme";
+    /**
+     * The Ad Library's own Platform filter: only ads shown on at least one of these platforms.
+     */
+    platforms?: Array<
+      | "facebook"
+      | "instagram"
+      | "audienceNetwork"
+      | "messenger"
+      | "whatsapp"
+      | "threads"
+    >;
+    /**
+     * The Ad Library's own Language filter: a two-letter code like en. Only ads written in this language.
+     */
+    language?: string;
+    /**
+     * The Ad Library's own Impressions by date: ads shown on or after this day.
+     */
+    shownFrom?: string;
+    /**
+     * The Ad Library's own Impressions by date: ads shown on or before this day.
+     */
+    shownTo?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
   };
   path?: never;
   query?: never;
-  url: "/v1/ai/answer";
+  url: "/v1/meta/ads/search";
 };
 
-export type AiAnswerErrors = {
+export type MetaAdsSearchErrors = {
   /**
    * The request failed. retryable says whether trying again can help.
    */
@@ -5972,22 +7802,173 @@ export type AiAnswerErrors = {
   "5XX": _Error;
 };
 
-export type AiAnswerError = AiAnswerErrors[keyof AiAnswerErrors];
+export type MetaAdsSearchError = MetaAdsSearchErrors[keyof MetaAdsSearchErrors];
 
-export type AiAnswerResponses = {
+export type MetaAdsSearchResponses = {
   /**
    * The data, and the credits this call used.
    */
   200: {
     success: true;
     data: {
-      engine: "gemini" | "chatgpt";
-      prompt?: string;
-      answer: string;
-      sources: Array<{
-        url: string;
-        title?: string;
-        domain: string;
+      results: Array<{
+        adId?: string;
+        adUrl: string;
+        pageId?: string;
+        pageName?: string;
+        pageUrl?: string;
+        pageAvatarUrl?: string;
+        pageCategories?: Array<string>;
+        pageLikes?: number;
+        isActive: boolean;
+        firstShownAt?: string;
+        lastShownAt?: string;
+        platforms?: Array<string>;
+        format?: string;
+        text?: string;
+        linkUrl?: string;
+        linkTitle?: string;
+        linkDescription?: string;
+        ctaText?: string;
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+        cards?: Array<{
+          text?: string;
+          linkUrl?: string;
+          linkTitle?: string;
+          ctaText?: string;
+          imageUrl?: string;
+          videoUrl?: string;
+        }>;
+        versions: number;
+        categories?: Array<string>;
+        paidBy?: string;
+        spendMin?: number;
+        spendMax?: number;
+        /**
+         * ISO 4217 currency code, e.g. USD.
+         */
+        spendCurrency?: string;
+        impressionsMin?: number;
+        impressionsMax?: number;
+        reachMin?: number;
+        reachMax?: number;
+        countries?: Array<string>;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type MetaAdsSearchResponse =
+  MetaAdsSearchResponses[keyof MetaAdsSearchResponses];
+
+export type MetaAdsAdData = {
+  body: {
+    /**
+     * Link to the Meta Ad Library ad, like https://www.facebook.com/ads/library/?id=1234567890123456. Send this or adId.
+     */
+    adUrl?: string;
+    /**
+     * Meta Ad Library ad id, like 1234567890123456. Send this or adUrl.
+     */
+    adId?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/meta/ads/ad";
+};
+
+export type MetaAdsAdErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type MetaAdsAdError = MetaAdsAdErrors[keyof MetaAdsAdErrors];
+
+export type MetaAdsAdResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      adId?: string;
+      adUrl: string;
+      pageId?: string;
+      pageName?: string;
+      pageUrl?: string;
+      pageAvatarUrl?: string;
+      pageCategories: Array<string>;
+      pageLikes?: number;
+      isActive: boolean;
+      firstShownAt?: string;
+      lastShownAt?: string;
+      platforms: Array<string>;
+      format?: string;
+      text?: string;
+      linkUrl?: string;
+      linkTitle?: string;
+      linkDescription?: string;
+      ctaText?: string;
+      imageUrls: Array<string>;
+      videoUrls: Array<string>;
+      cards: Array<{
+        text?: string;
+        linkUrl?: string;
+        linkTitle?: string;
+        ctaText?: string;
+        imageUrl?: string;
+        videoUrl?: string;
+      }>;
+      versions: number;
+      categories: Array<string>;
+      paidBy?: string;
+      spendMin?: number;
+      spendMax?: number;
+      /**
+       * ISO 4217 currency code, e.g. USD.
+       */
+      spendCurrency?: string;
+      impressionsMin?: number;
+      impressionsMax?: number;
+      reachMin?: number;
+      reachMax?: number;
+      countries: Array<string>;
+      advertiserDescription?: string;
+      advertiserCategory?: string;
+      advertiserVerification?: string;
+      advertiserInstagram?: string;
+      advertiserInstagramFollowers?: number;
+      audienceAgeGender: Array<{
+        age?: string;
+        female: number;
+        male: number;
+        unknown: number;
+      }>;
+      audienceRegions: Array<{
+        region?: string;
+        share: number;
+      }>;
+      euReachTotal?: number;
+      euReachByCountry: Array<{
+        country?: string;
+        age?: string;
+        female: number;
+        male: number;
+        unknown: number;
+      }>;
+      payers: Array<{
+        paidBy?: string;
+        beneficiary?: string;
       }>;
     };
     creditsUsed: number;
@@ -5995,7 +7976,724 @@ export type AiAnswerResponses = {
   };
 };
 
-export type AiAnswerResponse = AiAnswerResponses[keyof AiAnswerResponses];
+export type MetaAdsAdResponse = MetaAdsAdResponses[keyof MetaAdsAdResponses];
+
+export type LinkedinAdsSearchData = {
+  body: {
+    query?: string;
+    advertiser?: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    within?: "month" | "year" | "all";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/linkedin/ads/search";
+};
+
+export type LinkedinAdsSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type LinkedinAdsSearchError =
+  LinkedinAdsSearchErrors[keyof LinkedinAdsSearchErrors];
+
+export type LinkedinAdsSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      total?: number;
+      results: Array<{
+        adId?: string;
+        adUrl: string;
+        creativeType?: string;
+        format?: string;
+        advertiserName?: string;
+        advertiserUrl?: string;
+        advertiserAvatarUrl?: string;
+        postedBy?: string;
+        text?: string;
+        headline?: string;
+        imageUrls?: Array<string>;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type LinkedinAdsSearchResponse =
+  LinkedinAdsSearchResponses[keyof LinkedinAdsSearchResponses];
+
+export type LinkedinAdsAdData = {
+  body: {
+    /**
+     * Link to the LinkedIn ad, like https://www.linkedin.com/ad-library/detail/1234567. Send this or adId.
+     */
+    adUrl?: string;
+    /**
+     * LinkedIn ad id, like 1234567. Send this or adUrl.
+     */
+    adId?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/linkedin/ads/ad";
+};
+
+export type LinkedinAdsAdErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type LinkedinAdsAdError = LinkedinAdsAdErrors[keyof LinkedinAdsAdErrors];
+
+export type LinkedinAdsAdResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      adId?: string;
+      adUrl: string;
+      creativeType?: string;
+      format?: string;
+      advertiserName?: string;
+      advertiserUrl?: string;
+      advertiserAvatarUrl?: string;
+      postedBy?: string;
+      text?: string;
+      headline?: string;
+      imageUrls: Array<string>;
+      paidBy?: string;
+      ctaText?: string;
+      videoUrls: Array<string>;
+      firstShownAt?: string;
+      lastShownAt?: string;
+      impressionsMin?: number;
+      impressionsMax?: number;
+      countries: Array<{
+        country?: string;
+        share?: number;
+      }>;
+      targeting: Array<{
+        parameter?: string;
+        description?: string;
+      }>;
+      targetingUsed: Array<{
+        parameter?: string;
+        isTargeted: boolean;
+        isExcluded: boolean;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type LinkedinAdsAdResponse =
+  LinkedinAdsAdResponses[keyof LinkedinAdsAdResponses];
+
+export type MicrosoftAdsSearchData = {
+  body: {
+    query?: string;
+    advertiser?: string;
+    /**
+     * EU/EEA country code like de. Microsoft publishes ads for these countries only. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/microsoft/ads/search";
+};
+
+export type MicrosoftAdsSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type MicrosoftAdsSearchError =
+  MicrosoftAdsSearchErrors[keyof MicrosoftAdsSearchErrors];
+
+export type MicrosoftAdsSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      total?: number;
+      results: Array<{
+        adId?: string;
+        advertiserId?: string;
+        advertiserName?: string;
+        headline?: string;
+        text?: string;
+        linkUrl?: string;
+        linkCaption?: string;
+        imageUrls?: Array<string>;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type MicrosoftAdsSearchResponse =
+  MicrosoftAdsSearchResponses[keyof MicrosoftAdsSearchResponses];
+
+export type MicrosoftAdsAdData = {
+  body: {
+    /**
+     * Microsoft Ad Library ad id, like 1234567890.
+     */
+    adId: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/microsoft/ads/ad";
+};
+
+export type MicrosoftAdsAdErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type MicrosoftAdsAdError =
+  MicrosoftAdsAdErrors[keyof MicrosoftAdsAdErrors];
+
+export type MicrosoftAdsAdResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      adId?: string;
+      advertiserId?: string;
+      advertiserName?: string;
+      headline?: string;
+      text?: string;
+      linkUrl?: string;
+      linkCaption?: string;
+      imageUrls: Array<string>;
+      paidBy?: string;
+      firstShownAt?: string;
+      lastShownAt?: string;
+      impressionsMin?: number;
+      impressionsMax?: number;
+      countries: Array<{
+        country?: string;
+        share?: number;
+      }>;
+      targeting: Array<{
+        type?: string;
+        isExcluded: boolean;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type MicrosoftAdsAdResponse =
+  MicrosoftAdsAdResponses[keyof MicrosoftAdsAdResponses];
+
+export type MicrosoftAdsAdvertisersData = {
+  body: {
+    query: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/microsoft/ads/advertisers";
+};
+
+export type MicrosoftAdsAdvertisersErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type MicrosoftAdsAdvertisersError =
+  MicrosoftAdsAdvertisersErrors[keyof MicrosoftAdsAdvertisersErrors];
+
+export type MicrosoftAdsAdvertisersResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      total?: number;
+      results: Array<{
+        advertiserId?: string;
+        advertiserName?: string;
+        advertiserCountry?: string;
+        isVerified: boolean;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type MicrosoftAdsAdvertisersResponse =
+  MicrosoftAdsAdvertisersResponses[keyof MicrosoftAdsAdvertisersResponses];
+
+export type PinterestAdsSearchData = {
+  body: {
+    /**
+     * EU country code like fr, or br or tr. Pinterest publishes ads for these countries only. Any case is accepted.
+     */
+    country: string;
+    /**
+     * Advertiser name to filter by. Pinterest does not publish advertiser names on the ads themselves, so results carry no advertiser.
+     */
+    advertiser?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/pinterest/ads/search";
+};
+
+export type PinterestAdsSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type PinterestAdsSearchError =
+  PinterestAdsSearchErrors[keyof PinterestAdsSearchErrors];
+
+export type PinterestAdsSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        adId?: string;
+        adUrl: string;
+        headline?: string;
+        text?: string;
+        advertisers?: Array<string>;
+        imageUrl?: string;
+        videoUrl?: string;
+        links?: Array<string>;
+        firstShownAt?: string;
+        lastShownAt?: string;
+        reachMin?: number;
+        reachMax?: number;
+        reachByCountry?: Array<{
+          country?: string;
+          reachMin?: number;
+          reachMax?: number;
+        }>;
+        countries?: Array<string>;
+        ageRanges?: Array<string>;
+        genders?: Array<string>;
+        interests?: Array<string>;
+        audienceTypes?: Array<string>;
+        isCommercial: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type PinterestAdsSearchResponse =
+  PinterestAdsSearchResponses[keyof PinterestAdsSearchResponses];
+
+export type PinterestAdsAdData = {
+  body: {
+    /**
+     * Link to the Pinterest ad, like https://ads.pinterest.com/ads-repository/1234567890123456/. Send this or adId.
+     */
+    adUrl?: string;
+    /**
+     * Pinterest ad id, like 1234567890123456. Send this or adUrl.
+     */
+    adId?: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/pinterest/ads/ad";
+};
+
+export type PinterestAdsAdErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type PinterestAdsAdError =
+  PinterestAdsAdErrors[keyof PinterestAdsAdErrors];
+
+export type PinterestAdsAdResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      adId?: string;
+      adUrl: string;
+      headline?: string;
+      text?: string;
+      advertisers: Array<string>;
+      imageUrl?: string;
+      videoUrl?: string;
+      links: Array<string>;
+      firstShownAt?: string;
+      lastShownAt?: string;
+      reachMin?: number;
+      reachMax?: number;
+      reachByCountry: Array<{
+        country?: string;
+        reachMin?: number;
+        reachMax?: number;
+      }>;
+      countries: Array<string>;
+      ageRanges: Array<string>;
+      genders: Array<string>;
+      interests: Array<string>;
+      audienceTypes: Array<string>;
+      isCommercial: boolean;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type PinterestAdsAdResponse =
+  PinterestAdsAdResponses[keyof PinterestAdsAdResponses];
+
+export type AmazonSuggestData = {
+  body: {
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?:
+      | "us"
+      | "ca"
+      | "mx"
+      | "br"
+      | "gb"
+      | "de"
+      | "fr"
+      | "it"
+      | "es"
+      | "nl"
+      | "be"
+      | "se"
+      | "pl"
+      | "tr"
+      | "ae"
+      | "sa"
+      | "eg"
+      | "in"
+      | "jp"
+      | "au"
+      | "sg";
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/amazon/suggest";
+};
+
+export type AmazonSuggestErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AmazonSuggestError = AmazonSuggestErrors[keyof AmazonSuggestErrors];
+
+export type AmazonSuggestResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        keyword: string;
+        rank: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AmazonSuggestResponse =
+  AmazonSuggestResponses[keyof AmazonSuggestResponses];
+
+export type GoogleTrendsInterestData = {
+  body: {
+    queries: Array<string>;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Google Trends' own time range.
+     */
+    time?:
+      | "pastHour"
+      | "past4Hours"
+      | "pastDay"
+      | "past7Days"
+      | "past30Days"
+      | "past90Days"
+      | "past12Months"
+      | "past5Years"
+      | "since2004";
+    /**
+     * Google Trends' own search type: web, images, news, shopping or youtube.
+     */
+    searchType?: "web" | "images" | "news" | "shopping" | "youtube";
+    /**
+     * Google Trends' own top-level category.
+     */
+    category?:
+      | "artsEntertainment"
+      | "autosVehicles"
+      | "beautyFitness"
+      | "booksLiterature"
+      | "businessIndustrial"
+      | "computersElectronics"
+      | "finance"
+      | "foodDrink"
+      | "games"
+      | "health"
+      | "hobbiesLeisure"
+      | "homeGarden"
+      | "internetTelecom"
+      | "jobsEducation"
+      | "lawGovernment"
+      | "news"
+      | "onlineCommunities"
+      | "peopleSociety"
+      | "petsAnimals"
+      | "realEstate"
+      | "reference"
+      | "science"
+      | "shopping"
+      | "sports"
+      | "travel";
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/trends/interest";
+};
+
+export type GoogleTrendsInterestErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleTrendsInterestError =
+  GoogleTrendsInterestErrors[keyof GoogleTrendsInterestErrors];
+
+export type GoogleTrendsInterestResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      averages?: {
+        [key: string]: number;
+      };
+      results: Array<{
+        recordedAt: string;
+        values?: {
+          [key: string]: number;
+        };
+        isPartial: boolean;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleTrendsInterestResponse =
+  GoogleTrendsInterestResponses[keyof GoogleTrendsInterestResponses];
+
+export type GoogleTrendsRegionsData = {
+  body: {
+    queries: Array<string>;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Google Trends' own time range.
+     */
+    time?:
+      | "pastHour"
+      | "past4Hours"
+      | "pastDay"
+      | "past7Days"
+      | "past30Days"
+      | "past90Days"
+      | "past12Months"
+      | "past5Years"
+      | "since2004";
+    /**
+     * Google Trends' own search type: web, images, news, shopping or youtube.
+     */
+    searchType?: "web" | "images" | "news" | "shopping" | "youtube";
+    /**
+     * Google Trends' own top-level category.
+     */
+    category?:
+      | "artsEntertainment"
+      | "autosVehicles"
+      | "beautyFitness"
+      | "booksLiterature"
+      | "businessIndustrial"
+      | "computersElectronics"
+      | "finance"
+      | "foodDrink"
+      | "games"
+      | "health"
+      | "hobbiesLeisure"
+      | "homeGarden"
+      | "internetTelecom"
+      | "jobsEducation"
+      | "lawGovernment"
+      | "news"
+      | "onlineCommunities"
+      | "peopleSociety"
+      | "petsAnimals"
+      | "realEstate"
+      | "reference"
+      | "science"
+      | "shopping"
+      | "sports"
+      | "travel";
+    resolution?: "country" | "region" | "metro";
+  };
+  path?: never;
+  query?: never;
+  url: "/v1/google/trends/regions";
+};
+
+export type GoogleTrendsRegionsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GoogleTrendsRegionsError =
+  GoogleTrendsRegionsErrors[keyof GoogleTrendsRegionsErrors];
+
+export type GoogleTrendsRegionsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        code?: string;
+        name?: string;
+        values?: {
+          [key: string]: number;
+        };
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GoogleTrendsRegionsResponse =
+  GoogleTrendsRegionsResponses[keyof GoogleTrendsRegionsResponses];
 
 export type ClientOptions = {
   baseUrl: "https://api.stophy.dev" | (string & {});

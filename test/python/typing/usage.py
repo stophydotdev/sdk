@@ -4,30 +4,30 @@ import asyncio
 
 from stophy import AsyncStophy, Stophy
 from stophy.generated.models import (
-    AdsSearchResponse,
-    TranscriptResponse,
-    WebSearchResponse,
+    GoogleSearchResponse,
+    MetaAdsPageResponse,
+    YoutubeTranscriptResponse,
 )
 
 
-def sync_search() -> WebSearchResponse:
+def sync_search() -> GoogleSearchResponse:
     with Stophy() as stophy:
         return stophy.web.search(query="bun runtime", page=2)
 
 
-def sync_ads() -> AdsSearchResponse:
+def sync_ads() -> MetaAdsPageResponse:
     with Stophy() as stophy:
-        return stophy.ads.search(network="meta", query="shoes")
+        return stophy.meta.ads.search(query="shoes")
 
 
-async def async_search() -> WebSearchResponse:
+async def async_search() -> GoogleSearchResponse:
     async with AsyncStophy() as stophy:
         return await stophy.web.search(query="bun runtime", page=2)
 
 
-async def async_transcript() -> TranscriptResponse:
+async def async_transcript() -> YoutubeTranscriptResponse:
     async with AsyncStophy() as stophy:
-        return await stophy.transcript(video="https://youtu.be/abc")
+        return await stophy.youtube.transcript(video_url="https://youtu.be/abc")
 
 
 def main() -> None:

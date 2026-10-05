@@ -17,7 +17,7 @@ result = Stophy().google.search(query="bun runtime")
 print(result["data"]["results"])
 ```
 
-Google search, Google News, YouTube search, YouTube video details and YouTube transcripts work without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
+Google search, Google News, YouTube search, YouTube video details, YouTube transcripts, Reddit search and Google Maps search work without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 
@@ -30,7 +30,9 @@ videos = stophy.youtube.search(query="bun runtime")
 print(videos["data"]["results"])
 ```
 
-Methods follow the source and the command: `stophy.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.ads.search(network="meta", ...)`. Endpoints with a single name are methods on the client, like `stophy.transcript(...)`.
+Methods follow the source and the command: `stophy.google.maps.search(...)`, `stophy.reddit.subreddit(...)`, `stophy.meta.ads.search(...)`.
+
+To point at one thing, send its link or its id, never both: `stophy.youtube.video(video_url=...)` or `stophy.youtube.video(video_id=...)`. Methods that take a person send `user_url` or `username`.
 
 Every response is a dict with `success`, `data`, `creditsUsed`, and `requestId`. `data` is one flat dict. Lists are in `data["results"]`.
 
@@ -40,42 +42,39 @@ For async code, use `AsyncStophy`. It has the same methods, and you `await` each
 
 ## More data
 
-A transcript, Reddit posts, Google Maps reviews, a TikTok profile and Meta ads:
+A YouTube transcript, Reddit posts, Google Maps reviews, a TikTok profile and Meta ads:
 
 ```python
 stophy = Stophy(api_key="st_...")
 
-transcript = stophy.transcript(video="https://youtu.be/dQw4w9WgXcQ", include_timestamps=True)
+transcript = stophy.youtube.transcript(video_url="https://youtu.be/dQw4w9WgXcQ", include_timestamps=True)
 print(transcript["data"].get("text"), transcript["data"].get("segments"))
 
 posts = stophy.reddit.search(query="bun runtime", sort="top", within="month")
 print(posts["data"]["results"])
 
-places = stophy.maps.search(query="coffee", location="Austin, TX")
+places = stophy.google.maps.search(query="coffee", location="Austin, TX")
 place_id = places["data"]["results"][0].get("placeId")
 if place_id:
-    reviews = stophy.maps.reviews(place=place_id)
+    reviews = stophy.google.maps.reviews(place_id=place_id)
     print(reviews["data"]["results"])
 
-profile = stophy.tiktok.profile(profile="tiktok")
+profile = stophy.tiktok.profile(username="tiktok")
 print(profile["data"].get("followers"), profile["data"].get("results"))
 
-ads = stophy.ads.search(network="meta", query="running shoes")
+ads = stophy.meta.ads.search(query="running shoes")
 print(ads["data"]["results"])
 ```
-
-`ads.search` covers several ad networks. Pick one with `network`. The type checker follows the choice.
 
 ## Get the next page
 
 Each call returns one page of results, as the site shows it. List methods page in one of two ways.
 
-Some take a page number. They return `data["page"]` and `data["hasMore"]`. Ask for the next number while `hasMore` is true:
+Some take a page number. They return `data["page"]`. Ask for the next number to continue, and stop when `results` comes back empty:
 
 ```python
 first = stophy.google.search(query="bun runtime")
-if first["data"].get("hasMore"):
-    second = stophy.google.search(query="bun runtime", page=2)
+second = stophy.google.search(query="bun runtime", page=first["data"]["page"] + 1)
 ```
 
 Others return `data["cursor"]` when there is more. Pass it back as is:

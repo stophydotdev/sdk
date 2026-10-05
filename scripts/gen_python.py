@@ -409,12 +409,15 @@ def render_root(root: Node, prefix: str, async_mode: bool) -> list[str]:
 
 
 def render_namespaces(source: str) -> str:
+    typing_names = "Any, Literal, Mapping, Protocol"
+    if "@overload" in source:
+        typing_names += ", overload"
     header = [
         '"""Generated from openapi.json by scripts/gen_python.py. Do not edit."""',
         "",
         "from __future__ import annotations",
         "",
-        "from typing import Any, Literal, Mapping, Protocol, overload",
+        f"from typing import {typing_names}",
         "",
         "",
     ]

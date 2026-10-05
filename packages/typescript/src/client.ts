@@ -8,7 +8,7 @@ import {
 } from "./transport";
 
 export interface StophyOptions {
-	/** Defaults to `STOPHY_API_KEY`. Without a key, only Google search, Google News and YouTube search, videos and transcripts answer. */
+	/** Defaults to `STOPHY_API_KEY`. Without a key, only Google search, Google News, YouTube search, videos and transcripts, Reddit search and Google Maps search answer. */
 	apiKey?: string;
 	/** Defaults to `STOPHY_BASE_URL` or `https://api.stophy.dev`. */
 	baseUrl?: string;
