@@ -2,7 +2,7 @@
   "name": "stophy-sdk",
   "version": "0.0.0",
   "private": true,
-  "description": "Live web data as typed JSON for AI agents. Search, video, social, jobs, places, property and ads behind one key, with a flat price per call. You pay only for answers that come back.",
+  "description": "The web data API for AI agents. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers.",
   "homepage": "https://stophy.dev",
   "repository": {
     "type": "git",

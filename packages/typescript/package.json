@@ -1,7 +1,7 @@
 {
   "name": "stophy",
   "version": "1.0.7",
-  "description": "Live web data as typed JSON for AI agents. Search, video, social, jobs, places, property and ads behind one key, with a price shown before every call. You pay only for answers that come back.",
+  "description": "The web data API for AI agents. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://stophy.dev",
