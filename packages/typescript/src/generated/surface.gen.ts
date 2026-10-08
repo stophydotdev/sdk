@@ -2,6 +2,12 @@
 
 import { get, post, postOptional } from "../bind";
 import type {
+	AirbnbListingData,
+	AirbnbListingResponse,
+	AirbnbReviewsData,
+	AirbnbReviewsResponse,
+	AirbnbSearchData,
+	AirbnbSearchResponse,
 	AmazonBestsellersData,
 	AmazonBestsellersResponse,
 	AmazonProductData,
@@ -18,6 +24,20 @@ import type {
 	AppstoreSearchResponse,
 	AppstoreTopData,
 	AppstoreTopResponse,
+	BookingHotelData,
+	BookingHotelResponse,
+	BookingHotelReviewsData,
+	BookingHotelReviewsResponse,
+	BookingSearchData,
+	BookingSearchResponse,
+	CareersJobData,
+	CareersJobResponse,
+	CareersJobsData,
+	CareersJobsResponse,
+	EbayItemData,
+	EbayItemResponse,
+	EbaySearchData,
+	EbaySearchResponse,
 	GoogleAdsAdData,
 	GoogleAdsAdResponse,
 	GoogleAdsAdvertisersData,
@@ -137,6 +157,12 @@ import type {
 	RedditSubredditsResponse,
 	RedditUserData,
 	RedditUserResponse,
+	ThreadsPostData,
+	ThreadsPostResponse,
+	ThreadsProfileData,
+	ThreadsProfilePostsData,
+	ThreadsProfilePostsResponse,
+	ThreadsProfileResponse,
 	TiktokAdsAdData,
 	TiktokAdsAdResponse,
 	TiktokAdsSearchData,
@@ -169,6 +195,12 @@ import type {
 	TripadvisorReviewsResponse,
 	TripadvisorSearchData,
 	TripadvisorSearchResponse,
+	TrustpilotCompanyData,
+	TrustpilotCompanyResponse,
+	TrustpilotCompanyReviewsData,
+	TrustpilotCompanyReviewsResponse,
+	TrustpilotSearchData,
+	TrustpilotSearchResponse,
 	UpworkJobData,
 	UpworkJobResponse,
 	UpworkSearchData,
@@ -326,10 +358,20 @@ export function bindSurface(call: Caller) {
 			search: postOptional<IndeedSearchData["body"], IndeedSearchResponse>("/v1/indeed/search", call),
 			job: postOptional<IndeedJobData["body"], IndeedJobResponse>("/v1/indeed/job", call),
 		},
+		careers: {
+			jobs: post<CareersJobsData["body"], CareersJobsResponse>("/v1/careers/jobs", call),
+			job: post<CareersJobData["body"], CareersJobResponse>("/v1/careers/job", call),
+		},
 		tripadvisor: {
 			search: post<TripadvisorSearchData["body"], TripadvisorSearchResponse>("/v1/tripadvisor/search", call),
 			place: postOptional<TripadvisorPlaceData["body"], TripadvisorPlaceResponse>("/v1/tripadvisor/place", call),
 			reviews: postOptional<TripadvisorReviewsData["body"], TripadvisorReviewsResponse>("/v1/tripadvisor/reviews", call),
+		},
+		booking: {
+			search: post<BookingSearchData["body"], BookingSearchResponse>("/v1/booking/search", call),
+			hotel: Object.assign(postOptional<BookingHotelData["body"], BookingHotelResponse>("/v1/booking/hotel", call), {
+					reviews: postOptional<BookingHotelReviewsData["body"], BookingHotelReviewsResponse>("/v1/booking/hotel/reviews", call),
+				}),
 		},
 		amazon: {
 			search: postOptional<AmazonSearchData["body"], AmazonSearchResponse>("/v1/amazon/search", call),
@@ -359,6 +401,27 @@ export function bindSurface(call: Caller) {
 				ad: post<MicrosoftAdsAdData["body"], MicrosoftAdsAdResponse>("/v1/microsoft/ads/ad", call),
 				advertisers: post<MicrosoftAdsAdvertisersData["body"], MicrosoftAdsAdvertisersResponse>("/v1/microsoft/ads/advertisers", call),
 			},
+		},
+		threads: {
+			profile: Object.assign(postOptional<ThreadsProfileData["body"], ThreadsProfileResponse>("/v1/threads/profile", call), {
+					posts: postOptional<ThreadsProfilePostsData["body"], ThreadsProfilePostsResponse>("/v1/threads/profile/posts", call),
+				}),
+			post: postOptional<ThreadsPostData["body"], ThreadsPostResponse>("/v1/threads/post", call),
+		},
+		trustpilot: {
+			company: Object.assign(postOptional<TrustpilotCompanyData["body"], TrustpilotCompanyResponse>("/v1/trustpilot/company", call), {
+					reviews: postOptional<TrustpilotCompanyReviewsData["body"], TrustpilotCompanyReviewsResponse>("/v1/trustpilot/company/reviews", call),
+				}),
+			search: post<TrustpilotSearchData["body"], TrustpilotSearchResponse>("/v1/trustpilot/search", call),
+		},
+		ebay: {
+			search: post<EbaySearchData["body"], EbaySearchResponse>("/v1/ebay/search", call),
+			item: postOptional<EbayItemData["body"], EbayItemResponse>("/v1/ebay/item", call),
+		},
+		airbnb: {
+			search: post<AirbnbSearchData["body"], AirbnbSearchResponse>("/v1/airbnb/search", call),
+			listing: postOptional<AirbnbListingData["body"], AirbnbListingResponse>("/v1/airbnb/listing", call),
+			reviews: postOptional<AirbnbReviewsData["body"], AirbnbReviewsResponse>("/v1/airbnb/reviews", call),
 		},
 		web: {
 			search: post<GoogleSearchData["body"], GoogleSearchResponse>("/v1/web/search", call),

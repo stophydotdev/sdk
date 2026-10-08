@@ -89,6 +89,11 @@ export type EndpointCatalog = {
   }>;
 };
 
+/**
+ * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+ */
+export type MaxTextLength = number;
+
 export type ListEndpointsData = {
   body?: never;
   path?: never;
@@ -144,12 +149,25 @@ export type GoogleSearchData = {
      */
     safeSearch?: boolean;
     /**
+     * Also read the top results and add each page's text as markdown. Costs 1 more credit for each result that comes back with its text.
+     */
+    scrapeResults?: boolean;
+    /**
+     * How many of the top results to read when scrapeResults is on.
+     */
+    scrapeLimit?: number;
+    /**
      * Page number, starting at 1.
      */
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/search";
 };
 
@@ -232,6 +250,14 @@ export type GoogleSearchResponses = {
               url: string;
             }>;
             position: number;
+            /**
+             * The page's text, when scrapeResults is on and the page was read.
+             */
+            markdown?: string;
+            /**
+             * Why this page has no markdown, when scrapeResults is on.
+             */
+            scrapeError?: string;
           }
         | {
             type: "news";
@@ -337,7 +363,12 @@ export type GoogleNewsData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/news";
 };
 
@@ -426,7 +457,12 @@ export type GoogleImagesData = {
     limit?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/images";
 };
 
@@ -485,7 +521,12 @@ export type GoogleAiModeData = {
     language?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/aiMode";
 };
 
@@ -545,7 +586,12 @@ export type GoogleShoppingData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/shopping";
 };
 
@@ -647,7 +693,12 @@ export type GoogleSuggestData = {
     language?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/suggest";
 };
 
@@ -715,7 +766,12 @@ export type GoogleAdsSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/ads/search";
 };
 
@@ -782,7 +838,12 @@ export type GoogleAdsAdData = {
     advertiserId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/ads/ad";
 };
 
@@ -855,7 +916,12 @@ export type GoogleAdsAdvertisersData = {
     country?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/ads/advertisers";
 };
 
@@ -933,7 +999,12 @@ export type GoogleScholarData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/scholar";
 };
 
@@ -1035,7 +1106,12 @@ export type GoogleVideosData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/videos";
 };
 
@@ -1125,7 +1201,12 @@ export type GoogleJobsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/jobs";
 };
 
@@ -1238,7 +1319,12 @@ export type GooglePatentsData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/patents";
 };
 
@@ -1304,7 +1390,12 @@ export type YoutubeSuggestData = {
     language?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/suggest";
 };
 
@@ -1371,7 +1462,12 @@ export type YoutubeSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/search";
 };
 
@@ -1414,6 +1510,7 @@ export type YoutubeSearchResponses = {
              * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
              */
             publishedAt?: string;
+            channelAvatarUrl?: string;
           }
         | {
             type: "channel";
@@ -1465,7 +1562,12 @@ export type YoutubeTranscriptData = {
     includeTimestamps?: boolean;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/transcript";
 };
 
@@ -1523,7 +1625,12 @@ export type YoutubeVideoData = {
     videoId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/video";
 };
 
@@ -1607,7 +1714,12 @@ export type YoutubeCommentsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/comments";
 };
 
@@ -1689,7 +1801,12 @@ export type YoutubeChannelData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/channel";
 };
 
@@ -1800,7 +1917,12 @@ export type YoutubeChannelSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/channel/search";
 };
 
@@ -1870,7 +1992,12 @@ export type YoutubeRelatedData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/related";
 };
 
@@ -1914,6 +2041,7 @@ export type YoutubeRelatedResponses = {
              * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
              */
             publishedAt?: string;
+            channelAvatarUrl?: string;
           }
         | {
             type: "channel";
@@ -1957,7 +2085,12 @@ export type YoutubeHashtagData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/hashtag";
 };
 
@@ -2031,7 +2164,12 @@ export type YoutubePostData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/post";
 };
 
@@ -2118,7 +2256,12 @@ export type YoutubeChartsData = {
     limit?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/charts";
 };
 
@@ -2193,7 +2336,12 @@ export type YoutubePlaylistData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/youtube/playlist";
 };
 
@@ -2286,7 +2434,12 @@ export type RedditSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/reddit/search";
 };
 
@@ -2401,7 +2554,12 @@ export type RedditPostData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/reddit/post";
 };
 
@@ -2503,7 +2661,12 @@ export type RedditSubredditData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/reddit/subreddit";
 };
 
@@ -2614,7 +2777,12 @@ export type RedditUserData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/reddit/user";
 };
 
@@ -2723,7 +2891,12 @@ export type RedditDomainData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/reddit/domain";
 };
 
@@ -2805,7 +2978,12 @@ export type RedditDiscussionsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/reddit/discussions";
 };
 
@@ -2881,7 +3059,12 @@ export type RedditSubredditsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/reddit/subreddits";
 };
 
@@ -2951,7 +3134,12 @@ export type GoogleMapsSearchData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/maps/search";
 };
 
@@ -3032,7 +3220,12 @@ export type GoogleMapsPlaceData = {
     language?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/maps/place";
 };
 
@@ -3112,7 +3305,12 @@ export type GoogleMapsReviewsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/maps/reviews";
 };
 
@@ -3190,7 +3388,12 @@ export type InstagramCommentsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/instagram/comments";
 };
 
@@ -3249,7 +3452,12 @@ export type InstagramPostData = {
     postCode?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/instagram/post";
 };
 
@@ -3340,7 +3548,12 @@ export type InstagramProfileData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/instagram/profile";
 };
 
@@ -3440,7 +3653,12 @@ export type InstagramProfileReelsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/instagram/profile/reels";
 };
 
@@ -3497,7 +3715,12 @@ export type InstagramSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/instagram/search";
 };
 
@@ -3566,7 +3789,12 @@ export type InstagramTranscriptData = {
     includeTimestamps?: boolean;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/instagram/transcript";
 };
 
@@ -3628,7 +3856,12 @@ export type TiktokProfileData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/profile";
 };
 
@@ -3719,7 +3952,12 @@ export type TiktokVideoData = {
     videoId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/video";
 };
 
@@ -3789,7 +4027,12 @@ export type TiktokHashtagData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/hashtag";
 };
 
@@ -3864,7 +4107,12 @@ export type TiktokSoundData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/sound";
 };
 
@@ -3949,7 +4197,12 @@ export type TiktokCommentsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/comments";
 };
 
@@ -4019,7 +4272,12 @@ export type TiktokSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/search";
 };
 
@@ -4112,7 +4370,12 @@ export type TiktokTranscriptData = {
     includeTimestamps?: boolean;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/transcript";
 };
 
@@ -4172,7 +4435,12 @@ export type TiktokAdsSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/ads/search";
 };
 
@@ -4235,7 +4503,12 @@ export type TiktokAdsAdData = {
     adId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/ads/ad";
 };
 
@@ -4312,7 +4585,12 @@ export type TiktokShopSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/shop/search";
 };
 
@@ -4380,7 +4658,12 @@ export type TiktokShopProductsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/shop/products";
 };
 
@@ -4452,7 +4735,12 @@ export type TiktokShopProductData = {
     productId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/shop/product";
 };
 
@@ -4530,7 +4818,12 @@ export type TiktokShopReviewsData = {
     productId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tiktok/shop/reviews";
 };
 
@@ -4620,7 +4913,12 @@ export type MetaAdsPageData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/meta/ads/page";
 };
 
@@ -4724,7 +5022,12 @@ export type LinkedinJobsSearchData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/linkedin/jobs/search";
 };
 
@@ -4788,7 +5091,12 @@ export type LinkedinJobsJobData = {
     jobId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/linkedin/jobs/job";
 };
 
@@ -4857,7 +5165,12 @@ export type LinkedinCompanyData = {
     companyId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/linkedin/company";
 };
 
@@ -4915,7 +5228,12 @@ export type LinkedinProfileData = {
     profileId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/linkedin/profile";
 };
 
@@ -4991,7 +5309,12 @@ export type LinkedinPostsData = {
     companyId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/linkedin/posts";
 };
 
@@ -5147,7 +5470,12 @@ export type ZillowSearchData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/zillow/search";
 };
 
@@ -5231,7 +5559,12 @@ export type ZillowPropertyData = {
     propertyId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/zillow/property";
 };
 
@@ -5346,7 +5679,12 @@ export type UpworkSearchData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/upwork/search";
 };
 
@@ -5420,7 +5758,12 @@ export type UpworkJobData = {
     jobId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/upwork/job";
 };
 
@@ -5558,7 +5901,12 @@ export type GoogleTrendsRelatedData = {
       | "travel";
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/trends/related";
 };
 
@@ -5636,7 +5984,12 @@ export type GoogleTrendsTrendingData = {
     sort?: "relevance" | "searchVolume" | "recency" | "title";
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/trends/trending";
 };
 
@@ -5808,7 +6161,12 @@ export type IndeedSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/indeed/search";
 };
 
@@ -5962,7 +6320,12 @@ export type IndeedJobData = {
       | "pa";
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/indeed/job";
 };
 
@@ -6037,6 +6400,134 @@ export type IndeedJobResponses = {
 
 export type IndeedJobResponse = IndeedJobResponses[keyof IndeedJobResponses];
 
+export type CareersJobsData = {
+  body: {
+    /**
+     * Link to the company job board, like https://boards.greenhouse.io/figma.
+     */
+    boardUrl: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/careers/jobs";
+};
+
+export type CareersJobsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type CareersJobsError = CareersJobsErrors[keyof CareersJobsErrors];
+
+export type CareersJobsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        jobId?: string;
+        jobUrl: string;
+        title?: string;
+        department?: string;
+        team?: string;
+        location?: string;
+        workplaceType?: "remote" | "hybrid" | "onsite";
+        employmentType?: string;
+        publishedAt?: string;
+        updatedAt?: string;
+        postedText?: string;
+        boardUrl: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type CareersJobsResponse =
+  CareersJobsResponses[keyof CareersJobsResponses];
+
+export type CareersJobData = {
+  body: {
+    /**
+     * Link to the company job, like https://boards.greenhouse.io/figma/jobs/5426468004.
+     */
+    jobUrl: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/careers/job";
+};
+
+export type CareersJobErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type CareersJobError = CareersJobErrors[keyof CareersJobErrors];
+
+export type CareersJobResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      jobId?: string;
+      jobUrl: string;
+      title?: string;
+      department?: string;
+      team?: string;
+      location?: string;
+      workplaceType?: "remote" | "hybrid" | "onsite";
+      employmentType?: string;
+      publishedAt?: string;
+      updatedAt?: string;
+      postedText?: string;
+      description?: string;
+      salaryMin?: number;
+      salaryMax?: number;
+      salaryCurrency?: string;
+      salaryPeriod?: "hour" | "day" | "week" | "month" | "year";
+      applyUrl?: string;
+      boardUrl: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type CareersJobResponse = CareersJobResponses[keyof CareersJobResponses];
+
 export type TripadvisorSearchData = {
   body: {
     query: string;
@@ -6044,7 +6535,12 @@ export type TripadvisorSearchData = {
     location?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tripadvisor/search";
 };
 
@@ -6101,7 +6597,12 @@ export type TripadvisorPlaceData = {
     placeId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tripadvisor/place";
 };
 
@@ -6207,7 +6708,12 @@ export type TripadvisorReviewsData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/tripadvisor/reviews";
 };
 
@@ -6325,7 +6831,12 @@ export type GoogleFlightsData = {
     maxDurationHours?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/flights";
 };
 
@@ -6500,7 +7011,12 @@ export type GoogleHotelsData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/hotels";
 };
 
@@ -6566,6 +7082,260 @@ export type GoogleHotelsResponses = {
 export type GoogleHotelsResponse =
   GoogleHotelsResponses[keyof GoogleHotelsResponses];
 
+export type BookingSearchData = {
+  body: {
+    /**
+     * Where to stay: a city, region or landmark, like Lisbon.
+     */
+    query: string;
+    /**
+     * Defaults to tomorrow.
+     */
+    checkIn?: string;
+    /**
+     * Defaults to one night after checkIn.
+     */
+    checkOut?: string;
+    adults?: number;
+    rooms?: number;
+    /**
+     * ISO 4217 currency code, e.g. USD.
+     */
+    currency?: string;
+    /**
+     * Booking.com's own Sort by: relevance (Our top picks) or distance (closest to the center of the place first).
+     */
+    sort?: "relevance" | "distance";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/booking/search";
+};
+
+export type BookingSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type BookingSearchError = BookingSearchErrors[keyof BookingSearchErrors];
+
+export type BookingSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      place?: string;
+      checkIn: string;
+      checkOut: string;
+      total?: number;
+      results: Array<{
+        position: number;
+        hotelId?: string;
+        hotelUrl: string;
+        name?: string;
+        reviewScore?: number;
+        reviews?: number;
+        price?: number;
+        taxesAndFees?: number;
+        originalPrice?: number;
+        priceCurrency?: string;
+        stars?: number;
+        address?: string;
+        city?: string;
+        countryCode?: string;
+        area?: string;
+        distanceText?: string;
+        latitude?: number;
+        longitude?: number;
+        imageUrl?: string;
+        hasFreeCancellation: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type BookingSearchResponse =
+  BookingSearchResponses[keyof BookingSearchResponses];
+
+export type BookingHotelData = {
+  body: {
+    /**
+     * Link to the Booking.com hotel, like https://www.booking.com/hotel/pt/hf-fenix-urban.html. Send this or hotelId.
+     */
+    hotelUrl?: string;
+    /**
+     * Booking.com hotel id, like 179501. Send this or hotelUrl.
+     */
+    hotelId?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/booking/hotel";
+};
+
+export type BookingHotelErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type BookingHotelError = BookingHotelErrors[keyof BookingHotelErrors];
+
+export type BookingHotelResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      hotelId?: string;
+      hotelUrl: string;
+      name?: string;
+      type?: string;
+      stars?: number;
+      reviewScore?: number;
+      reviews?: number;
+      description?: string;
+      scores: Array<{
+        category?: string;
+        score: number;
+      }>;
+      addressFull?: string;
+      addressStreet?: string;
+      addressCity?: string;
+      addressCountryCode?: string;
+      latitude?: number;
+      longitude?: number;
+      checkInFrom?: string;
+      checkOutUntil?: string;
+      facilities: Array<{
+        group?: string;
+        name?: string;
+      }>;
+      rooms: Array<{
+        roomId?: string;
+        name?: string;
+        sizeSquareMeters?: number;
+        description?: string;
+      }>;
+      imageUrls: Array<string>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type BookingHotelResponse =
+  BookingHotelResponses[keyof BookingHotelResponses];
+
+export type BookingHotelReviewsData = {
+  body: {
+    /**
+     * Link to the Booking.com hotel, like https://www.booking.com/hotel/pt/hf-fenix-urban.html. Send this or hotelId.
+     */
+    hotelUrl?: string;
+    /**
+     * Booking.com hotel id, like 179501. Send this or hotelUrl.
+     */
+    hotelId?: string;
+    /**
+     * Booking.com's own Sort reviews by: mostRelevant, newest or lowestScore (lowest scores first).
+     */
+    sort?: "mostRelevant" | "newest" | "lowestScore";
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/booking/hotel/reviews";
+};
+
+export type BookingHotelReviewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type BookingHotelReviewsError =
+  BookingHotelReviewsErrors[keyof BookingHotelReviewsErrors];
+
+export type BookingHotelReviewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      hotelId?: string;
+      total: number;
+      results: Array<{
+        reviewId?: string;
+        score?: number;
+        title?: string;
+        positiveText?: string;
+        negativeText?: string;
+        language?: string;
+        createdAt?: string;
+        travelerType?: string;
+        authorCountryCode?: string;
+        roomName?: string;
+        nights?: number;
+        checkIn?: string;
+        checkOut?: string;
+        ownerReplyText?: string;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type BookingHotelReviewsResponse =
+  BookingHotelReviewsResponses[keyof BookingHotelReviewsResponses];
+
 export type AmazonSearchData = {
   body: {
     query?: string;
@@ -6615,7 +7385,12 @@ export type AmazonSearchData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/amazon/search";
 };
 
@@ -6703,7 +7478,12 @@ export type AmazonProductData = {
       | "eg";
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/amazon/product";
 };
 
@@ -6814,7 +7594,12 @@ export type AmazonBestsellersData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/amazon/bestsellers";
 };
 
@@ -6880,7 +7665,12 @@ export type AppstoreAppData = {
     country?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/appstore/app";
 };
 
@@ -6966,7 +7756,12 @@ export type AppstoreSearchData = {
     limit?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/appstore/search";
 };
 
@@ -7052,7 +7847,12 @@ export type AppstoreReviewsData = {
     page?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/appstore/reviews";
 };
 
@@ -7135,7 +7935,12 @@ export type AppstoreTopData = {
     limit?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/appstore/top";
 };
 
@@ -7205,7 +8010,12 @@ export type GooglePlayAppData = {
     language?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/play/app";
 };
 
@@ -7292,7 +8102,12 @@ export type GooglePlaySearchData = {
     limit?: number;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/play/search";
 };
 
@@ -7366,7 +8181,12 @@ export type GooglePlayReviewsData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/play/reviews";
 };
 
@@ -7424,7 +8244,12 @@ export type PinterestSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/pinterest/search";
 };
 
@@ -7498,7 +8323,12 @@ export type PinterestPinData = {
     pinId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/pinterest/pin";
 };
 
@@ -7571,7 +8401,12 @@ export type PinterestBoardData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/pinterest/board";
 };
 
@@ -7667,7 +8502,12 @@ export type PinterestProfileData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/pinterest/profile";
 };
 
@@ -7748,6 +8588,9 @@ export type PinterestProfileResponse =
 
 export type MetaAdsSearchData = {
   body: {
+    /**
+     * Words to find in the ad. Several words match as one exact phrase.
+     */
     query: string;
     /**
      * ISO 3166-1 alpha-2 country code, or all. Any case is accepted.
@@ -7787,7 +8630,12 @@ export type MetaAdsSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/meta/ads/search";
 };
 
@@ -7877,7 +8725,12 @@ export type MetaAdsAdData = {
     adId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/meta/ads/ad";
 };
 
@@ -7993,7 +8846,12 @@ export type LinkedinAdsSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/linkedin/ads/search";
 };
 
@@ -8054,7 +8912,12 @@ export type LinkedinAdsAdData = {
     adId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/linkedin/ads/ad";
 };
 
@@ -8132,7 +8995,12 @@ export type MicrosoftAdsSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/microsoft/ads/search";
 };
 
@@ -8186,7 +9054,12 @@ export type MicrosoftAdsAdData = {
     adId: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/microsoft/ads/ad";
 };
 
@@ -8246,7 +9119,12 @@ export type MicrosoftAdsAdvertisersData = {
     query: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/microsoft/ads/advertisers";
 };
 
@@ -8303,7 +9181,12 @@ export type PinterestAdsSearchData = {
     cursor?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/pinterest/ads/search";
 };
 
@@ -8375,7 +9258,12 @@ export type PinterestAdsAdData = {
     adId?: string;
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/pinterest/ads/ad";
 };
 
@@ -8462,7 +9350,12 @@ export type AmazonSuggestData = {
       | "sg";
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/amazon/suggest";
 };
 
@@ -8554,7 +9447,12 @@ export type GoogleTrendsInterestData = {
       | "travel";
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/trends/interest";
 };
 
@@ -8654,7 +9552,12 @@ export type GoogleTrendsRegionsData = {
     resolution?: "country" | "region" | "metro";
   };
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
   url: "/v1/google/trends/regions";
 };
 
@@ -8694,6 +9597,993 @@ export type GoogleTrendsRegionsResponses = {
 
 export type GoogleTrendsRegionsResponse =
   GoogleTrendsRegionsResponses[keyof GoogleTrendsRegionsResponses];
+
+export type ThreadsProfileData = {
+  body: {
+    /**
+     * Link to the Threads profile, like https://www.threads.com/@nasa. Send this or username.
+     */
+    userUrl?: string;
+    /**
+     * Threads profile username, like nasa. Send this or userUrl.
+     */
+    username?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/threads/profile";
+};
+
+export type ThreadsProfileErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type ThreadsProfileError =
+  ThreadsProfileErrors[keyof ThreadsProfileErrors];
+
+export type ThreadsProfileResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      userId?: string;
+      username?: string;
+      userUrl: string;
+      name?: string;
+      bio?: string;
+      bioLinkUrls: Array<string>;
+      isVerified: boolean;
+      isPrivate: boolean;
+      followers?: number;
+      threads?: number;
+      avatarUrl?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type ThreadsProfileResponse =
+  ThreadsProfileResponses[keyof ThreadsProfileResponses];
+
+export type ThreadsProfilePostsData = {
+  body: {
+    /**
+     * Link to the Threads profile, like https://www.threads.com/@nasa. Send this or username.
+     */
+    userUrl?: string;
+    /**
+     * Threads profile username, like nasa. Send this or userUrl.
+     */
+    username?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/threads/profile/posts";
+};
+
+export type ThreadsProfilePostsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type ThreadsProfilePostsError =
+  ThreadsProfilePostsErrors[keyof ThreadsProfilePostsErrors];
+
+export type ThreadsProfilePostsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
+        text?: string;
+        publishedAt?: string;
+        likes?: number;
+        replies?: number;
+        reposts?: number;
+        quotes?: number;
+        shares?: number;
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+        imageDescription?: string;
+        linkUrl?: string;
+        linkTitle?: string;
+        quotedPostUrl?: string;
+        isPinned: boolean;
+        authorId?: string;
+        authorUsername?: string;
+        authorUrl: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type ThreadsProfilePostsResponse =
+  ThreadsProfilePostsResponses[keyof ThreadsProfilePostsResponses];
+
+export type ThreadsPostData = {
+  body: {
+    /**
+     * Link to the Threads post, like https://www.threads.com/@nasa/post/DeKza99kXKb. Send this or postCode.
+     */
+    postUrl?: string;
+    /**
+     * Threads post code, like DeKza99kXKb. Send this or postUrl.
+     */
+    postCode?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/threads/post";
+};
+
+export type ThreadsPostErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type ThreadsPostError = ThreadsPostErrors[keyof ThreadsPostErrors];
+
+export type ThreadsPostResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      postId?: string;
+      postCode?: string;
+      postUrl: string;
+      text?: string;
+      publishedAt?: string;
+      likes?: number;
+      replies?: number;
+      reposts?: number;
+      quotes?: number;
+      shares?: number;
+      imageUrls: Array<string>;
+      videoUrls: Array<string>;
+      imageDescription?: string;
+      linkUrl?: string;
+      linkTitle?: string;
+      quotedPostUrl?: string;
+      isPinned: boolean;
+      authorId?: string;
+      authorUsername?: string;
+      authorUrl: string;
+      authorAvatarUrl?: string;
+      authorIsVerified: boolean;
+      results: Array<{
+        postId?: string;
+        postCode?: string;
+        postUrl: string;
+        text?: string;
+        publishedAt?: string;
+        likes?: number;
+        replies?: number;
+        reposts?: number;
+        quotes?: number;
+        shares?: number;
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+        imageDescription?: string;
+        linkUrl?: string;
+        linkTitle?: string;
+        quotedPostUrl?: string;
+        isPinned: boolean;
+        authorId?: string;
+        authorUsername?: string;
+        authorUrl: string;
+        authorAvatarUrl?: string;
+        authorIsVerified: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type ThreadsPostResponse =
+  ThreadsPostResponses[keyof ThreadsPostResponses];
+
+export type TrustpilotCompanyData = {
+  body: {
+    /**
+     * Link to the Trustpilot company, like https://www.trustpilot.com/review/stripe.com. Send this or companyDomain.
+     */
+    companyUrl?: string;
+    /**
+     * Trustpilot company domain, like stripe.com. Send this or companyUrl.
+     */
+    companyDomain?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/trustpilot/company";
+};
+
+export type TrustpilotCompanyErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TrustpilotCompanyError =
+  TrustpilotCompanyErrors[keyof TrustpilotCompanyErrors];
+
+export type TrustpilotCompanyResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      companyId?: string;
+      companyDomain?: string;
+      companyUrl: string;
+      name?: string;
+      website?: string;
+      description?: string;
+      trustScore?: number;
+      stars?: number;
+      reviews?: number;
+      ratingsOne?: number;
+      ratingsTwo?: number;
+      ratingsThree?: number;
+      ratingsFour?: number;
+      ratingsFive?: number;
+      categories: Array<string>;
+      isClaimed: boolean;
+      isClosed: boolean;
+      email?: string;
+      phone?: string;
+      addressStreet?: string;
+      addressCity?: string;
+      addressPostalCode?: string;
+      addressCountry?: string;
+      negativeReviewsRepliedPercent?: number;
+      averageDaysToReply?: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TrustpilotCompanyResponse =
+  TrustpilotCompanyResponses[keyof TrustpilotCompanyResponses];
+
+export type TrustpilotCompanyReviewsData = {
+  body: {
+    /**
+     * Link to the Trustpilot company, like https://www.trustpilot.com/review/stripe.com. Send this or companyDomain.
+     */
+    companyUrl?: string;
+    /**
+     * Trustpilot company domain, like stripe.com. Send this or companyUrl.
+     */
+    companyDomain?: string;
+    /**
+     * Only reviews with these star ratings, 1 to 5. Empty means every rating.
+     */
+    ratings?: Array<number>;
+    language?: string;
+    /**
+     * Only reviews published in the last 30 days, 3, 6 or 12 months.
+     */
+    datePublished?:
+      | "last30Days"
+      | "last3Months"
+      | "last6Months"
+      | "last12Months";
+    /**
+     * Only reviews Trustpilot marks as verified.
+     */
+    verifiedOnly?: boolean;
+    /**
+     * Only reviews that mention this word or phrase.
+     */
+    search?: string;
+    /**
+     * Page number, starting at 1. Trustpilot shows 10 pages of 20 reviews without an account; narrow with ratings, language, datePublished or search to reach older reviews.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/trustpilot/company/reviews";
+};
+
+export type TrustpilotCompanyReviewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TrustpilotCompanyReviewsError =
+  TrustpilotCompanyReviewsErrors[keyof TrustpilotCompanyReviewsErrors];
+
+export type TrustpilotCompanyReviewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      companyDomain?: string;
+      companyName?: string;
+      total?: number;
+      results: Array<{
+        reviewId?: string;
+        reviewUrl: string;
+        rating: number;
+        title?: string;
+        text?: string;
+        language?: string;
+        publishedAt?: string;
+        experiencedDate?: string;
+        isVerified: boolean;
+        authorName?: string;
+        authorCountry?: string;
+        ownerReplyText?: string;
+        ownerReplyAt?: string;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TrustpilotCompanyReviewsResponse =
+  TrustpilotCompanyReviewsResponses[keyof TrustpilotCompanyReviewsResponses];
+
+export type TrustpilotSearchData = {
+  body: {
+    query: string;
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/trustpilot/search";
+};
+
+export type TrustpilotSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type TrustpilotSearchError =
+  TrustpilotSearchErrors[keyof TrustpilotSearchErrors];
+
+export type TrustpilotSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      total?: number;
+      results: Array<{
+        companyId?: string;
+        companyDomain?: string;
+        companyUrl: string;
+        name?: string;
+        website?: string;
+        trustScore?: number;
+        stars?: number;
+        reviews?: number;
+        categories?: Array<string>;
+        addressStreet?: string;
+        addressCity?: string;
+        addressPostalCode?: string;
+        addressCountry?: string;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type TrustpilotSearchResponse =
+  TrustpilotSearchResponses[keyof TrustpilotSearchResponses];
+
+export type EbaySearchData = {
+  body: {
+    query: string;
+    condition?: "new" | "used";
+    /**
+     * Only auctions. With sort endingSoonest this lists auctions about to end; ebay.item then returns what each one sold for.
+     */
+    auctionsOnly?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
+    /**
+     * priceLow and priceHigh return each page in order of totalPrice: price plus shipping to New York 10001. Across pages the order is eBay's, so a listing can belong on the neighbouring page. Listings with no totalPrice come last on their page: the price is hidden (isPriceHidden), the variation range is outside the price filter, or it is pickup only outside the United States.
+     */
+    sort?: "bestMatch" | "priceLow" | "priceHigh" | "endingSoonest";
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/ebay/search";
+};
+
+export type EbaySearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type EbaySearchError = EbaySearchErrors[keyof EbaySearchErrors];
+
+export type EbaySearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      total?: number;
+      results: Array<{
+        itemId?: string;
+        itemUrl: string;
+        title?: string;
+        imageUrl?: string;
+        price?: number;
+        priceMax?: number;
+        isPriceHidden: boolean;
+        originalPrice?: number;
+        /**
+         * ISO 4217 currency code, e.g. USD.
+         */
+        priceCurrency?: string;
+        shippingCost?: number;
+        isPickupOnly: boolean;
+        totalPrice?: number;
+        condition?: string;
+        isAuction: boolean;
+        bids?: number;
+        timeLeft?: string;
+        hasBestOffer: boolean;
+        itemLocation?: string;
+        quantitySold?: number;
+        watchers?: number;
+        sellerName?: string;
+        sellerFeedbackPercent?: number;
+        sellerFeedbackScore?: number;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type EbaySearchResponse = EbaySearchResponses[keyof EbaySearchResponses];
+
+export type EbayItemData = {
+  body: {
+    /**
+     * Link to the eBay item, like https://www.ebay.com/itm/266625967665. Send this or itemId.
+     */
+    itemUrl?: string;
+    /**
+     * EBay item id, like 266625967665. Send this or itemUrl.
+     */
+    itemId?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/ebay/item";
+};
+
+export type EbayItemErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type EbayItemError = EbayItemErrors[keyof EbayItemErrors];
+
+export type EbayItemResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      itemId?: string;
+      itemUrl: string;
+      title?: string;
+      price?: number;
+      originalPrice?: number;
+      /**
+       * ISO 4217 currency code, e.g. USD.
+       */
+      priceCurrency?: string;
+      condition?: string;
+      isAuction: boolean;
+      bids?: number;
+      isEnded: boolean;
+      endedAt?: string;
+      isSold: boolean;
+      soldPrice?: number;
+      soldAt?: string;
+      isAvailable?: boolean;
+      quantityAvailable?: number;
+      quantitySold?: number;
+      brand?: string;
+      model?: string;
+      specifics: Array<{
+        name?: string;
+        value?: string;
+      }>;
+      categories: Array<string>;
+      sellerName?: string;
+      sellerFeedbackScore?: number;
+      sellerFeedbackPercent?: number;
+      shippingCost?: number;
+      shippingPostalCode?: string;
+      itemLocation?: string;
+      returnsAccepted?: boolean;
+      returnDays?: number;
+      listedAt?: string;
+      imageUrls: Array<string>;
+      description?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type EbayItemResponse = EbayItemResponses[keyof EbayItemResponses];
+
+export type AirbnbSearchData = {
+  body: {
+    /**
+     * A city, region, neighborhood or landmark, like Lisbon, Portugal.
+     */
+    location: string;
+    /**
+     * First night, as YYYY-MM-DD.
+     */
+    checkIn: string;
+    /**
+     * Day you leave, as YYYY-MM-DD.
+     */
+    checkOut: string;
+    /**
+     * Number of guests. Only stays that fit this many.
+     */
+    guests?: number;
+    /**
+     * Airbnb's own price range minimum: the nightly price after discounts and before taxes, in currency.
+     */
+    minPrice?: number;
+    /**
+     * Airbnb's own price range maximum: the nightly price after discounts and before taxes, in currency.
+     */
+    maxPrice?: number;
+    /**
+     * Airbnb's own Type of place filter: entireHome (Entire home) or privateRoom (Room).
+     */
+    roomType?: "entireHome" | "privateRoom";
+    /**
+     * Currency of every price in the answer and of minPrice and maxPrice.
+     */
+    currency?:
+      | "USD"
+      | "EUR"
+      | "GBP"
+      | "JPY"
+      | "CAD"
+      | "AUD"
+      | "CHF"
+      | "MXN"
+      | "BRL";
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/airbnb/search";
+};
+
+export type AirbnbSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AirbnbSearchError = AirbnbSearchErrors[keyof AirbnbSearchErrors];
+
+export type AirbnbSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      location?: string;
+      results: Array<{
+        listingId?: string;
+        listingUrl: string;
+        title?: string;
+        /**
+         * What Airbnb calls the place, like Apartment, Room, Condo or Hotel.
+         */
+        propertyType?: string;
+        area?: string;
+        rating?: number;
+        /**
+         * Number of reviews Airbnb shows for the stay, the same as total in airbnb.reviews. A room in a larger property shares the property's reviews.
+         */
+        reviews?: number;
+        /**
+         * Price of the whole stay, taxes and fees included.
+         */
+        priceTotal?: number;
+        /**
+         * The whole stay before a discount, when Airbnb shows one.
+         */
+        priceBeforeDiscount?: number;
+        /**
+         * Nightly price after discounts, before taxes and fees.
+         */
+        pricePerNight?: number;
+        priceCurrency?:
+          | "USD"
+          | "EUR"
+          | "GBP"
+          | "JPY"
+          | "CAD"
+          | "AUD"
+          | "CHF"
+          | "MXN"
+          | "BRL";
+        badges?: Array<string>;
+        imageUrls?: Array<string>;
+        latitude?: number;
+        longitude?: number;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AirbnbSearchResponse =
+  AirbnbSearchResponses[keyof AirbnbSearchResponses];
+
+export type AirbnbListingData = {
+  body: {
+    /**
+     * Link to the Airbnb listing, like https://www.airbnb.com/rooms/18249319. Send this or listingId.
+     */
+    listingUrl?: string;
+    /**
+     * Airbnb listing id, like 18249319. Send this or listingUrl.
+     */
+    listingId?: string;
+    /**
+     * First night, as YYYY-MM-DD. Send it with checkOut to get the price.
+     */
+    checkIn?: string;
+    /**
+     * Day you leave, as YYYY-MM-DD. Send it with checkIn to get the price.
+     */
+    checkOut?: string;
+    /**
+     * Number of guests. Only stays that fit this many.
+     */
+    guests?: number;
+    /**
+     * Currency of every price in the answer and of minPrice and maxPrice.
+     */
+    currency?:
+      | "USD"
+      | "EUR"
+      | "GBP"
+      | "JPY"
+      | "CAD"
+      | "AUD"
+      | "CHF"
+      | "MXN"
+      | "BRL";
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/airbnb/listing";
+};
+
+export type AirbnbListingErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AirbnbListingError = AirbnbListingErrors[keyof AirbnbListingErrors];
+
+export type AirbnbListingResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      listingId?: string;
+      listingUrl: string;
+      title?: string;
+      description?: string;
+      propertyType?: string;
+      location?: string;
+      latitude?: number;
+      longitude?: number;
+      hostName?: string;
+      hostIsSuperhost?: boolean;
+      guests?: number;
+      bedrooms?: number;
+      beds?: number;
+      bathrooms?: number;
+      amenities: Array<string>;
+      rating?: number;
+      /**
+       * Number of reviews Airbnb shows for the stay, the same as total in airbnb.reviews. A room in a larger property shares the property's reviews.
+       */
+      reviews?: number;
+      isGuestFavorite?: boolean;
+      ratingAccuracy?: number;
+      ratingCheckin?: number;
+      ratingCleanliness?: number;
+      ratingCommunication?: number;
+      ratingLocation?: number;
+      ratingValue?: number;
+      houseRules: Array<string>;
+      imageUrls: Array<string>;
+      /**
+       * Whether the stay can be booked for checkIn to checkOut. Null without dates.
+       */
+      isAvailable?: boolean;
+      /**
+       * Price of the whole stay, taxes and fees included.
+       */
+      priceTotal?: number;
+      /**
+       * The whole stay before a discount, when Airbnb shows one.
+       */
+      priceBeforeDiscount?: number;
+      /**
+       * Nightly price after discounts, before taxes and fees.
+       */
+      pricePerNight?: number;
+      priceCurrency?:
+        | "USD"
+        | "EUR"
+        | "GBP"
+        | "JPY"
+        | "CAD"
+        | "AUD"
+        | "CHF"
+        | "MXN"
+        | "BRL";
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AirbnbListingResponse =
+  AirbnbListingResponses[keyof AirbnbListingResponses];
+
+export type AirbnbReviewsData = {
+  body: {
+    /**
+     * Link to the Airbnb listing, like https://www.airbnb.com/rooms/18249319. Send this or listingId.
+     */
+    listingUrl?: string;
+    /**
+     * Airbnb listing id, like 18249319. Send this or listingUrl.
+     */
+    listingId?: string;
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/airbnb/reviews";
+};
+
+export type AirbnbReviewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AirbnbReviewsError = AirbnbReviewsErrors[keyof AirbnbReviewsErrors];
+
+export type AirbnbReviewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      listingId?: string;
+      total?: number;
+      results: Array<{
+        reviewId?: string;
+        rating?: number;
+        text?: string;
+        language?: string;
+        /**
+         * Airbnb's English translation, when the review is in another language.
+         */
+        translatedText?: string;
+        createdAt?: string;
+        authorName?: string;
+        /**
+         * Airbnb's note on the trip, like Stayed a few nights or Stayed with kids.
+         */
+        stayNote?: string;
+        hostReplyText?: string;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AirbnbReviewsResponse =
+  AirbnbReviewsResponses[keyof AirbnbReviewsResponses];
 
 export type ClientOptions = {
   baseUrl: "https://api.stophy.dev" | (string & {});
