@@ -1,6 +1,6 @@
 # Stophy SDKs
 
-The web data layer for AI agents, in TypeScript and Python. Live web data as typed JSON. Search, video, social, jobs, places, property and ads behind one key, with a price shown before every call. You pay only for answers that come back.
+The web data API for AI agents, in TypeScript and Python. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers.
 
 | Language | Install | Guide |
 | --- | --- | --- |
@@ -19,7 +19,7 @@ from stophy import Stophy
 result = Stophy().google.search(query="bun runtime")
 ```
 
-Both examples work without an API key. So do Google News, YouTube search, YouTube video details, YouTube transcripts, Reddit search and Google Maps search, within a small free allowance. For everything else, get a key from the [dashboard](https://stophy.dev/dashboard).
+Both examples work without an API key. So do some other searches and lookups, within a small free allowance. The [endpoint list](https://api.stophy.dev/v1/endpoints) marks them with `keyless: true`. For everything else, get a key from the [dashboard](https://stophy.dev/dashboard).
 
 ## More data
 

@@ -5,6 +5,11 @@ from __future__ import annotations
 from typing import Any, Literal, Mapping, Protocol
 
 from .models import (
+    AirbnbListingResponse,
+    AirbnbReviewsResponse,
+    AirbnbSearchCurrency,
+    AirbnbSearchResponse,
+    AirbnbSearchRoomType,
     AmazonBestsellersResponse,
     AmazonProductResponse,
     AmazonSearchCountry,
@@ -19,6 +24,17 @@ from .models import (
     AppstoreTopChart,
     AppstoreTopGenre,
     AppstoreTopResponse,
+    BookingHotelResponse,
+    BookingHotelReviewsResponse,
+    BookingHotelReviewsSort,
+    BookingSearchResponse,
+    BookingSearchSort,
+    CareersJobResponse,
+    CareersJobsResponse,
+    EbayItemResponse,
+    EbaySearchCondition,
+    EbaySearchResponse,
+    EbaySearchSort,
     EndpointCatalog,
     GoogleAdsAdResponse,
     GoogleAdsAdvertisersResponse,
@@ -140,6 +156,9 @@ from .models import (
     RedditUserResponse,
     RedditUserSort,
     RedditUserTab,
+    ThreadsPostResponse,
+    ThreadsProfilePostsResponse,
+    ThreadsProfileResponse,
     TiktokAdsAdResponse,
     TiktokAdsSearchResponse,
     TiktokCommentsResponse,
@@ -162,6 +181,10 @@ from .models import (
     TripadvisorReviewsTravelerTypesItem,
     TripadvisorSearchResponse,
     TripadvisorSearchType,
+    TrustpilotCompanyResponse,
+    TrustpilotCompanyReviewsDatePublished,
+    TrustpilotCompanyReviewsResponse,
+    TrustpilotSearchResponse,
     UpworkJobResponse,
     UpworkSearchDuration,
     UpworkSearchExperienceLevel,
@@ -246,6 +269,8 @@ class SyncGoogleSearch:
         verbatim: bool | None = None,
         file_type: GoogleSearchFileType | None = None,
         safe_search: bool | None = None,
+        scrape_results: bool | None = None,
+        scrape_limit: int | None = None,
         page: int | None = None,
     ) -> GoogleSearchResponse:
         body = _omit_none(
@@ -259,6 +284,8 @@ class SyncGoogleSearch:
                 "verbatim": verbatim,
                 "fileType": file_type,
                 "safeSearch": safe_search,
+                "scrapeResults": scrape_results,
+                "scrapeLimit": scrape_limit,
                 "page": page,
             }
         )
@@ -2525,6 +2552,52 @@ class SyncIndeed:
         self.job = SyncIndeedJob(call)
 
 
+class SyncCareersJobs:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        board_url: str,
+        cursor: str | None = None,
+    ) -> CareersJobsResponse:
+        body = _omit_none(
+            {
+                "boardUrl": board_url,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/careers/jobs", body)
+
+
+class SyncCareersJob:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        job_url: str,
+    ) -> CareersJobResponse:
+        body = _omit_none(
+            {
+                "jobUrl": job_url,
+            }
+        )
+        return self._call("POST", "/v1/careers/job", body)
+
+
+class SyncCareers:
+    jobs: SyncCareersJobs
+    job: SyncCareersJob
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.jobs = SyncCareersJobs(call)
+        self.job = SyncCareersJob(call)
+
+
 class SyncTripadvisorSearch:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -2606,6 +2679,92 @@ class SyncTripadvisor:
         self.search = SyncTripadvisorSearch(call)
         self.place = SyncTripadvisorPlace(call)
         self.reviews = SyncTripadvisorReviews(call)
+
+
+class SyncBookingSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        check_in: str | None = None,
+        check_out: str | None = None,
+        adults: int | None = None,
+        rooms: int | None = None,
+        currency: str | None = None,
+        sort: BookingSearchSort | None = None,
+        cursor: str | None = None,
+    ) -> BookingSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "checkIn": check_in,
+                "checkOut": check_out,
+                "adults": adults,
+                "rooms": rooms,
+                "currency": currency,
+                "sort": sort,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/booking/search", body)
+
+
+class SyncBookingHotelReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        hotel_url: str | None = None,
+        hotel_id: str | None = None,
+        sort: BookingHotelReviewsSort | None = None,
+        page: int | None = None,
+    ) -> BookingHotelReviewsResponse:
+        body = _omit_none(
+            {
+                "hotelUrl": hotel_url,
+                "hotelId": hotel_id,
+                "sort": sort,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/booking/hotel/reviews", body)
+
+
+class SyncBookingHotel:
+    reviews: SyncBookingHotelReviews
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.reviews = SyncBookingHotelReviews(call)
+
+    def __call__(
+        self,
+        *,
+        hotel_url: str | None = None,
+        hotel_id: str | None = None,
+    ) -> BookingHotelResponse:
+        body = _omit_none(
+            {
+                "hotelUrl": hotel_url,
+                "hotelId": hotel_id,
+            }
+        )
+        return self._call("POST", "/v1/booking/hotel", body)
+
+
+class SyncBooking:
+    search: SyncBookingSearch
+    hotel: SyncBookingHotel
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncBookingSearch(call)
+        self.hotel = SyncBookingHotel(call)
 
 
 class SyncAmazonSearch:
@@ -3047,6 +3206,313 @@ class SyncMicrosoft:
         self.ads = SyncMicrosoftAds(call)
 
 
+class SyncThreadsProfilePosts:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        user_url: str | None = None,
+        username: str | None = None,
+        cursor: str | None = None,
+    ) -> ThreadsProfilePostsResponse:
+        body = _omit_none(
+            {
+                "userUrl": user_url,
+                "username": username,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/threads/profile/posts", body)
+
+
+class SyncThreadsProfile:
+    posts: SyncThreadsProfilePosts
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.posts = SyncThreadsProfilePosts(call)
+
+    def __call__(
+        self,
+        *,
+        user_url: str | None = None,
+        username: str | None = None,
+    ) -> ThreadsProfileResponse:
+        body = _omit_none(
+            {
+                "userUrl": user_url,
+                "username": username,
+            }
+        )
+        return self._call("POST", "/v1/threads/profile", body)
+
+
+class SyncThreadsPost:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        post_url: str | None = None,
+        post_code: str | None = None,
+        cursor: str | None = None,
+    ) -> ThreadsPostResponse:
+        body = _omit_none(
+            {
+                "postUrl": post_url,
+                "postCode": post_code,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/threads/post", body)
+
+
+class SyncThreads:
+    profile: SyncThreadsProfile
+    post: SyncThreadsPost
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.profile = SyncThreadsProfile(call)
+        self.post = SyncThreadsPost(call)
+
+
+class SyncTrustpilotCompanyReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_domain: str | None = None,
+        ratings: list[int] | None = None,
+        language: str | None = None,
+        date_published: TrustpilotCompanyReviewsDatePublished | None = None,
+        verified_only: bool | None = None,
+        search: str | None = None,
+        page: int | None = None,
+    ) -> TrustpilotCompanyReviewsResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyDomain": company_domain,
+                "ratings": ratings,
+                "language": language,
+                "datePublished": date_published,
+                "verifiedOnly": verified_only,
+                "search": search,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/trustpilot/company/reviews", body)
+
+
+class SyncTrustpilotCompany:
+    reviews: SyncTrustpilotCompanyReviews
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.reviews = SyncTrustpilotCompanyReviews(call)
+
+    def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_domain: str | None = None,
+    ) -> TrustpilotCompanyResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyDomain": company_domain,
+            }
+        )
+        return self._call("POST", "/v1/trustpilot/company", body)
+
+
+class SyncTrustpilotSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        page: int | None = None,
+    ) -> TrustpilotSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/trustpilot/search", body)
+
+
+class SyncTrustpilot:
+    company: SyncTrustpilotCompany
+    search: SyncTrustpilotSearch
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.company = SyncTrustpilotCompany(call)
+        self.search = SyncTrustpilotSearch(call)
+
+
+class SyncEbaySearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        condition: EbaySearchCondition | None = None,
+        auctions_only: bool | None = None,
+        min_price: float | None = None,
+        max_price: float | None = None,
+        sort: EbaySearchSort | None = None,
+        page: int | None = None,
+    ) -> EbaySearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "condition": condition,
+                "auctionsOnly": auctions_only,
+                "minPrice": min_price,
+                "maxPrice": max_price,
+                "sort": sort,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/ebay/search", body)
+
+
+class SyncEbayItem:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        item_url: str | None = None,
+        item_id: str | None = None,
+    ) -> EbayItemResponse:
+        body = _omit_none(
+            {
+                "itemUrl": item_url,
+                "itemId": item_id,
+            }
+        )
+        return self._call("POST", "/v1/ebay/item", body)
+
+
+class SyncEbay:
+    search: SyncEbaySearch
+    item: SyncEbayItem
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncEbaySearch(call)
+        self.item = SyncEbayItem(call)
+
+
+class SyncAirbnbSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        location: str,
+        check_in: str,
+        check_out: str,
+        guests: int | None = None,
+        min_price: int | None = None,
+        max_price: int | None = None,
+        room_type: AirbnbSearchRoomType | None = None,
+        currency: AirbnbSearchCurrency | None = None,
+        cursor: str | None = None,
+    ) -> AirbnbSearchResponse:
+        body = _omit_none(
+            {
+                "location": location,
+                "checkIn": check_in,
+                "checkOut": check_out,
+                "guests": guests,
+                "minPrice": min_price,
+                "maxPrice": max_price,
+                "roomType": room_type,
+                "currency": currency,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/airbnb/search", body)
+
+
+class SyncAirbnbListing:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        listing_url: str | None = None,
+        listing_id: str | None = None,
+        check_in: str | None = None,
+        check_out: str | None = None,
+        guests: int | None = None,
+        currency: AirbnbSearchCurrency | None = None,
+    ) -> AirbnbListingResponse:
+        body = _omit_none(
+            {
+                "listingUrl": listing_url,
+                "listingId": listing_id,
+                "checkIn": check_in,
+                "checkOut": check_out,
+                "guests": guests,
+                "currency": currency,
+            }
+        )
+        return self._call("POST", "/v1/airbnb/listing", body)
+
+
+class SyncAirbnbReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        listing_url: str | None = None,
+        listing_id: str | None = None,
+        page: int | None = None,
+    ) -> AirbnbReviewsResponse:
+        body = _omit_none(
+            {
+                "listingUrl": listing_url,
+                "listingId": listing_id,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/airbnb/reviews", body)
+
+
+class SyncAirbnb:
+    search: SyncAirbnbSearch
+    listing: SyncAirbnbListing
+    reviews: SyncAirbnbReviews
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncAirbnbSearch(call)
+        self.listing = SyncAirbnbListing(call)
+        self.reviews = SyncAirbnbReviews(call)
+
+
 class SyncWebSearch:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -3063,6 +3529,8 @@ class SyncWebSearch:
         verbatim: bool | None = None,
         file_type: GoogleSearchFileType | None = None,
         safe_search: bool | None = None,
+        scrape_results: bool | None = None,
+        scrape_limit: int | None = None,
         page: int | None = None,
     ) -> GoogleSearchResponse:
         body = _omit_none(
@@ -3076,6 +3544,8 @@ class SyncWebSearch:
                 "verbatim": verbatim,
                 "fileType": file_type,
                 "safeSearch": safe_search,
+                "scrapeResults": scrape_results,
+                "scrapeLimit": scrape_limit,
                 "page": page,
             }
         )
@@ -3137,11 +3607,17 @@ class SyncSurface:
     zillow: SyncZillow
     upwork: SyncUpwork
     indeed: SyncIndeed
+    careers: SyncCareers
     tripadvisor: SyncTripadvisor
+    booking: SyncBooking
     amazon: SyncAmazon
     appstore: SyncAppstore
     pinterest: SyncPinterest
     microsoft: SyncMicrosoft
+    threads: SyncThreads
+    trustpilot: SyncTrustpilot
+    ebay: SyncEbay
+    airbnb: SyncAirbnb
     web: SyncWeb
 
     def __init__(self, call: SyncCall) -> None:
@@ -3156,11 +3632,17 @@ class SyncSurface:
         self.zillow = SyncZillow(call)
         self.upwork = SyncUpwork(call)
         self.indeed = SyncIndeed(call)
+        self.careers = SyncCareers(call)
         self.tripadvisor = SyncTripadvisor(call)
+        self.booking = SyncBooking(call)
         self.amazon = SyncAmazon(call)
         self.appstore = SyncAppstore(call)
         self.pinterest = SyncPinterest(call)
         self.microsoft = SyncMicrosoft(call)
+        self.threads = SyncThreads(call)
+        self.trustpilot = SyncTrustpilot(call)
+        self.ebay = SyncEbay(call)
+        self.airbnb = SyncAirbnb(call)
         self.web = SyncWeb(call)
 
 
@@ -3191,6 +3673,8 @@ class AsyncGoogleSearch:
         verbatim: bool | None = None,
         file_type: GoogleSearchFileType | None = None,
         safe_search: bool | None = None,
+        scrape_results: bool | None = None,
+        scrape_limit: int | None = None,
         page: int | None = None,
     ) -> GoogleSearchResponse:
         body = _omit_none(
@@ -3204,6 +3688,8 @@ class AsyncGoogleSearch:
                 "verbatim": verbatim,
                 "fileType": file_type,
                 "safeSearch": safe_search,
+                "scrapeResults": scrape_results,
+                "scrapeLimit": scrape_limit,
                 "page": page,
             }
         )
@@ -5470,6 +5956,52 @@ class AsyncIndeed:
         self.job = AsyncIndeedJob(call)
 
 
+class AsyncCareersJobs:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        board_url: str,
+        cursor: str | None = None,
+    ) -> CareersJobsResponse:
+        body = _omit_none(
+            {
+                "boardUrl": board_url,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/careers/jobs", body)
+
+
+class AsyncCareersJob:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        job_url: str,
+    ) -> CareersJobResponse:
+        body = _omit_none(
+            {
+                "jobUrl": job_url,
+            }
+        )
+        return await self._call("POST", "/v1/careers/job", body)
+
+
+class AsyncCareers:
+    jobs: AsyncCareersJobs
+    job: AsyncCareersJob
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.jobs = AsyncCareersJobs(call)
+        self.job = AsyncCareersJob(call)
+
+
 class AsyncTripadvisorSearch:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -5551,6 +6083,92 @@ class AsyncTripadvisor:
         self.search = AsyncTripadvisorSearch(call)
         self.place = AsyncTripadvisorPlace(call)
         self.reviews = AsyncTripadvisorReviews(call)
+
+
+class AsyncBookingSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        check_in: str | None = None,
+        check_out: str | None = None,
+        adults: int | None = None,
+        rooms: int | None = None,
+        currency: str | None = None,
+        sort: BookingSearchSort | None = None,
+        cursor: str | None = None,
+    ) -> BookingSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "checkIn": check_in,
+                "checkOut": check_out,
+                "adults": adults,
+                "rooms": rooms,
+                "currency": currency,
+                "sort": sort,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/booking/search", body)
+
+
+class AsyncBookingHotelReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        hotel_url: str | None = None,
+        hotel_id: str | None = None,
+        sort: BookingHotelReviewsSort | None = None,
+        page: int | None = None,
+    ) -> BookingHotelReviewsResponse:
+        body = _omit_none(
+            {
+                "hotelUrl": hotel_url,
+                "hotelId": hotel_id,
+                "sort": sort,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/booking/hotel/reviews", body)
+
+
+class AsyncBookingHotel:
+    reviews: AsyncBookingHotelReviews
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.reviews = AsyncBookingHotelReviews(call)
+
+    async def __call__(
+        self,
+        *,
+        hotel_url: str | None = None,
+        hotel_id: str | None = None,
+    ) -> BookingHotelResponse:
+        body = _omit_none(
+            {
+                "hotelUrl": hotel_url,
+                "hotelId": hotel_id,
+            }
+        )
+        return await self._call("POST", "/v1/booking/hotel", body)
+
+
+class AsyncBooking:
+    search: AsyncBookingSearch
+    hotel: AsyncBookingHotel
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncBookingSearch(call)
+        self.hotel = AsyncBookingHotel(call)
 
 
 class AsyncAmazonSearch:
@@ -5992,6 +6610,313 @@ class AsyncMicrosoft:
         self.ads = AsyncMicrosoftAds(call)
 
 
+class AsyncThreadsProfilePosts:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        user_url: str | None = None,
+        username: str | None = None,
+        cursor: str | None = None,
+    ) -> ThreadsProfilePostsResponse:
+        body = _omit_none(
+            {
+                "userUrl": user_url,
+                "username": username,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/threads/profile/posts", body)
+
+
+class AsyncThreadsProfile:
+    posts: AsyncThreadsProfilePosts
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.posts = AsyncThreadsProfilePosts(call)
+
+    async def __call__(
+        self,
+        *,
+        user_url: str | None = None,
+        username: str | None = None,
+    ) -> ThreadsProfileResponse:
+        body = _omit_none(
+            {
+                "userUrl": user_url,
+                "username": username,
+            }
+        )
+        return await self._call("POST", "/v1/threads/profile", body)
+
+
+class AsyncThreadsPost:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        post_url: str | None = None,
+        post_code: str | None = None,
+        cursor: str | None = None,
+    ) -> ThreadsPostResponse:
+        body = _omit_none(
+            {
+                "postUrl": post_url,
+                "postCode": post_code,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/threads/post", body)
+
+
+class AsyncThreads:
+    profile: AsyncThreadsProfile
+    post: AsyncThreadsPost
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.profile = AsyncThreadsProfile(call)
+        self.post = AsyncThreadsPost(call)
+
+
+class AsyncTrustpilotCompanyReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_domain: str | None = None,
+        ratings: list[int] | None = None,
+        language: str | None = None,
+        date_published: TrustpilotCompanyReviewsDatePublished | None = None,
+        verified_only: bool | None = None,
+        search: str | None = None,
+        page: int | None = None,
+    ) -> TrustpilotCompanyReviewsResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyDomain": company_domain,
+                "ratings": ratings,
+                "language": language,
+                "datePublished": date_published,
+                "verifiedOnly": verified_only,
+                "search": search,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/trustpilot/company/reviews", body)
+
+
+class AsyncTrustpilotCompany:
+    reviews: AsyncTrustpilotCompanyReviews
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.reviews = AsyncTrustpilotCompanyReviews(call)
+
+    async def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_domain: str | None = None,
+    ) -> TrustpilotCompanyResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyDomain": company_domain,
+            }
+        )
+        return await self._call("POST", "/v1/trustpilot/company", body)
+
+
+class AsyncTrustpilotSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        page: int | None = None,
+    ) -> TrustpilotSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/trustpilot/search", body)
+
+
+class AsyncTrustpilot:
+    company: AsyncTrustpilotCompany
+    search: AsyncTrustpilotSearch
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.company = AsyncTrustpilotCompany(call)
+        self.search = AsyncTrustpilotSearch(call)
+
+
+class AsyncEbaySearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        condition: EbaySearchCondition | None = None,
+        auctions_only: bool | None = None,
+        min_price: float | None = None,
+        max_price: float | None = None,
+        sort: EbaySearchSort | None = None,
+        page: int | None = None,
+    ) -> EbaySearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "condition": condition,
+                "auctionsOnly": auctions_only,
+                "minPrice": min_price,
+                "maxPrice": max_price,
+                "sort": sort,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/ebay/search", body)
+
+
+class AsyncEbayItem:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        item_url: str | None = None,
+        item_id: str | None = None,
+    ) -> EbayItemResponse:
+        body = _omit_none(
+            {
+                "itemUrl": item_url,
+                "itemId": item_id,
+            }
+        )
+        return await self._call("POST", "/v1/ebay/item", body)
+
+
+class AsyncEbay:
+    search: AsyncEbaySearch
+    item: AsyncEbayItem
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncEbaySearch(call)
+        self.item = AsyncEbayItem(call)
+
+
+class AsyncAirbnbSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        location: str,
+        check_in: str,
+        check_out: str,
+        guests: int | None = None,
+        min_price: int | None = None,
+        max_price: int | None = None,
+        room_type: AirbnbSearchRoomType | None = None,
+        currency: AirbnbSearchCurrency | None = None,
+        cursor: str | None = None,
+    ) -> AirbnbSearchResponse:
+        body = _omit_none(
+            {
+                "location": location,
+                "checkIn": check_in,
+                "checkOut": check_out,
+                "guests": guests,
+                "minPrice": min_price,
+                "maxPrice": max_price,
+                "roomType": room_type,
+                "currency": currency,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/airbnb/search", body)
+
+
+class AsyncAirbnbListing:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        listing_url: str | None = None,
+        listing_id: str | None = None,
+        check_in: str | None = None,
+        check_out: str | None = None,
+        guests: int | None = None,
+        currency: AirbnbSearchCurrency | None = None,
+    ) -> AirbnbListingResponse:
+        body = _omit_none(
+            {
+                "listingUrl": listing_url,
+                "listingId": listing_id,
+                "checkIn": check_in,
+                "checkOut": check_out,
+                "guests": guests,
+                "currency": currency,
+            }
+        )
+        return await self._call("POST", "/v1/airbnb/listing", body)
+
+
+class AsyncAirbnbReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        listing_url: str | None = None,
+        listing_id: str | None = None,
+        page: int | None = None,
+    ) -> AirbnbReviewsResponse:
+        body = _omit_none(
+            {
+                "listingUrl": listing_url,
+                "listingId": listing_id,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/airbnb/reviews", body)
+
+
+class AsyncAirbnb:
+    search: AsyncAirbnbSearch
+    listing: AsyncAirbnbListing
+    reviews: AsyncAirbnbReviews
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncAirbnbSearch(call)
+        self.listing = AsyncAirbnbListing(call)
+        self.reviews = AsyncAirbnbReviews(call)
+
+
 class AsyncWebSearch:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -6008,6 +6933,8 @@ class AsyncWebSearch:
         verbatim: bool | None = None,
         file_type: GoogleSearchFileType | None = None,
         safe_search: bool | None = None,
+        scrape_results: bool | None = None,
+        scrape_limit: int | None = None,
         page: int | None = None,
     ) -> GoogleSearchResponse:
         body = _omit_none(
@@ -6021,6 +6948,8 @@ class AsyncWebSearch:
                 "verbatim": verbatim,
                 "fileType": file_type,
                 "safeSearch": safe_search,
+                "scrapeResults": scrape_results,
+                "scrapeLimit": scrape_limit,
                 "page": page,
             }
         )
@@ -6082,11 +7011,17 @@ class AsyncSurface:
     zillow: AsyncZillow
     upwork: AsyncUpwork
     indeed: AsyncIndeed
+    careers: AsyncCareers
     tripadvisor: AsyncTripadvisor
+    booking: AsyncBooking
     amazon: AsyncAmazon
     appstore: AsyncAppstore
     pinterest: AsyncPinterest
     microsoft: AsyncMicrosoft
+    threads: AsyncThreads
+    trustpilot: AsyncTrustpilot
+    ebay: AsyncEbay
+    airbnb: AsyncAirbnb
     web: AsyncWeb
 
     def __init__(self, call: AsyncCall) -> None:
@@ -6101,9 +7036,15 @@ class AsyncSurface:
         self.zillow = AsyncZillow(call)
         self.upwork = AsyncUpwork(call)
         self.indeed = AsyncIndeed(call)
+        self.careers = AsyncCareers(call)
         self.tripadvisor = AsyncTripadvisor(call)
+        self.booking = AsyncBooking(call)
         self.amazon = AsyncAmazon(call)
         self.appstore = AsyncAppstore(call)
         self.pinterest = AsyncPinterest(call)
         self.microsoft = AsyncMicrosoft(call)
+        self.threads = AsyncThreads(call)
+        self.trustpilot = AsyncTrustpilot(call)
+        self.ebay = AsyncEbay(call)
+        self.airbnb = AsyncAirbnb(call)
         self.web = AsyncWeb(call)

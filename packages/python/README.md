@@ -1,6 +1,6 @@
 # Stophy for Python
 
-The web data layer for AI agents, in Python. Live web data as typed JSON. Search, video, social, jobs, places, property and ads behind one key, with a price shown before every call. You pay only for answers that come back. Every method and result is typed.
+The web data API for AI agents, in Python. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers. Every method and result is typed.
 
 ## Install
 
@@ -17,7 +17,7 @@ result = Stophy().google.search(query="bun runtime")
 print(result["data"]["results"])
 ```
 
-Google search, Google News, YouTube search, YouTube video details, YouTube transcripts, Reddit search and Google Maps search work without a key, with a small free allowance. Every other method raises a `StophyError` with the code `unauthorized`.
+Some searches and lookups work without a key, within a small free allowance. The [endpoint list](https://api.stophy.dev/v1/endpoints) marks them with `keyless: true`. Every other method raises a `StophyError` with the code `unauthorized`.
 
 ## Use an API key
 

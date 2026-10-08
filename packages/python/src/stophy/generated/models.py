@@ -701,6 +701,12 @@ IndeedSearchResponseDataResultsItemSalaryPeriod = Literal[
     "year",
 ]
 
+CareersJobsResponseDataResultsItemWorkplaceType = Literal[
+    "remote",
+    "hybrid",
+    "onsite",
+]
+
 TripadvisorSearchType = Literal[
     "all",
     "hotels",
@@ -794,6 +800,17 @@ GoogleHotelsSort = Literal[
     "lowestPrice",
     "highestRating",
     "mostReviewed",
+]
+
+BookingSearchSort = Literal[
+    "relevance",
+    "distance",
+]
+
+BookingHotelReviewsSort = Literal[
+    "mostRelevant",
+    "newest",
+    "lowestScore",
 ]
 
 AmazonSearchSort = Literal[
@@ -922,6 +939,42 @@ GoogleTrendsRegionsResolution = Literal[
     "metro",
 ]
 
+TrustpilotCompanyReviewsDatePublished = Literal[
+    "last30Days",
+    "last3Months",
+    "last6Months",
+    "last12Months",
+]
+
+EbaySearchCondition = Literal[
+    "new",
+    "used",
+]
+
+EbaySearchSort = Literal[
+    "bestMatch",
+    "priceLow",
+    "priceHigh",
+    "endingSoonest",
+]
+
+AirbnbSearchRoomType = Literal[
+    "entireHome",
+    "privateRoom",
+]
+
+AirbnbSearchCurrency = Literal[
+    "USD",
+    "EUR",
+    "GBP",
+    "JPY",
+    "CAD",
+    "AUD",
+    "CHF",
+    "MXN",
+    "BRL",
+]
+
 LinkedinProfileResponseDataRolesItem = TypedDict(
     "LinkedinProfileResponseDataRolesItem",
     {
@@ -1012,6 +1065,8 @@ class GoogleSearchResponseDataResultsItemOption0(TypedDict):
     date: NotRequired[str]
     sitelinks: NotRequired[list[GoogleSearchResponseDataResultsItemOption0SitelinksItem]]
     position: int
+    markdown: NotRequired[str]
+    scrapeError: NotRequired[str]
 
 
 class GoogleSearchResponseDataResultsItemOption1(TypedDict):
@@ -1410,6 +1465,7 @@ class YoutubeSearchResponseDataResultsItemOption0(TypedDict):
     isShort: bool
     isLive: bool
     publishedAt: NotRequired[str]
+    channelAvatarUrl: NotRequired[str]
 
 
 class YoutubeSearchResponseDataResultsItemOption1(TypedDict):
@@ -1541,6 +1597,23 @@ class YoutubeCommentsResponse(TypedDict):
     requestId: str
 
 
+class YoutubeChannelResponseDataResultsItemOption0(TypedDict):
+    type: Literal["video"]
+    videoId: NotRequired[str]
+    videoUrl: str
+    title: NotRequired[str]
+    channelId: NotRequired[str]
+    channelName: NotRequired[str]
+    channelUrl: NotRequired[str]
+    channelUsername: NotRequired[str]
+    durationSeconds: NotRequired[int]
+    views: NotRequired[int]
+    thumbnailUrl: NotRequired[str]
+    isShort: bool
+    isLive: bool
+    publishedAt: NotRequired[str]
+
+
 class YoutubeChannelResponseDataResultsItemOption2(TypedDict):
     type: Literal["post"]
     postId: NotRequired[str]
@@ -1570,7 +1643,7 @@ class YoutubeChannelResponseData(TypedDict):
     joinedDate: NotRequired[str]
     totalViews: NotRequired[int]
     results: list[
-        YoutubeSearchResponseDataResultsItemOption0
+        YoutubeChannelResponseDataResultsItemOption0
         | YoutubeSearchResponseDataResultsItemOption2
         | YoutubeChannelResponseDataResultsItemOption2
     ]
@@ -1585,7 +1658,7 @@ class YoutubeChannelResponse(TypedDict):
 
 
 class YoutubeChannelSearchResponseData(TypedDict):
-    results: list[YoutubeSearchResponseDataResultsItemOption0]
+    results: list[YoutubeChannelResponseDataResultsItemOption0]
     cursor: NotRequired[str]
 
 
@@ -1663,7 +1736,7 @@ class YoutubePlaylistResponseData(TypedDict):
     videos: NotRequired[int]
     views: NotRequired[int]
     thumbnailUrl: NotRequired[str]
-    results: list[YoutubeSearchResponseDataResultsItemOption0]
+    results: list[YoutubeChannelResponseDataResultsItemOption0]
     cursor: NotRequired[str]
 
 
@@ -3067,6 +3140,61 @@ class IndeedJobResponse(TypedDict):
     requestId: str
 
 
+class CareersJobsResponseDataResultsItem(TypedDict):
+    jobId: NotRequired[str]
+    jobUrl: str
+    title: NotRequired[str]
+    department: NotRequired[str]
+    team: NotRequired[str]
+    location: NotRequired[str]
+    workplaceType: NotRequired[CareersJobsResponseDataResultsItemWorkplaceType]
+    employmentType: NotRequired[str]
+    publishedAt: NotRequired[str]
+    updatedAt: NotRequired[str]
+    postedText: NotRequired[str]
+    boardUrl: str
+
+
+class CareersJobsResponseData(TypedDict):
+    results: list[CareersJobsResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class CareersJobsResponse(TypedDict):
+    success: Literal[True]
+    data: CareersJobsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class CareersJobResponseData(TypedDict):
+    jobId: NotRequired[str]
+    jobUrl: str
+    title: NotRequired[str]
+    department: NotRequired[str]
+    team: NotRequired[str]
+    location: NotRequired[str]
+    workplaceType: NotRequired[CareersJobsResponseDataResultsItemWorkplaceType]
+    employmentType: NotRequired[str]
+    publishedAt: NotRequired[str]
+    updatedAt: NotRequired[str]
+    postedText: NotRequired[str]
+    description: NotRequired[str]
+    salaryMin: NotRequired[float]
+    salaryMax: NotRequired[float]
+    salaryCurrency: NotRequired[str]
+    salaryPeriod: NotRequired[IndeedSearchResponseDataResultsItemSalaryPeriod]
+    applyUrl: NotRequired[str]
+    boardUrl: str
+
+
+class CareersJobResponse(TypedDict):
+    success: Literal[True]
+    data: CareersJobResponseData
+    creditsUsed: int
+    requestId: str
+
+
 class TripadvisorSearchResponseDataResultsItem(TypedDict):
     placeId: NotRequired[str]
     placeUrl: NotRequired[str]
@@ -3269,6 +3397,123 @@ class GoogleHotelsResponseData(TypedDict):
 class GoogleHotelsResponse(TypedDict):
     success: Literal[True]
     data: GoogleHotelsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class BookingSearchResponseDataResultsItem(TypedDict):
+    position: int
+    hotelId: NotRequired[str]
+    hotelUrl: str
+    name: NotRequired[str]
+    reviewScore: NotRequired[float]
+    reviews: NotRequired[int]
+    price: NotRequired[float]
+    taxesAndFees: NotRequired[float]
+    originalPrice: NotRequired[float]
+    priceCurrency: NotRequired[str]
+    stars: NotRequired[int]
+    address: NotRequired[str]
+    city: NotRequired[str]
+    countryCode: NotRequired[str]
+    area: NotRequired[str]
+    distanceText: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    imageUrl: NotRequired[str]
+    hasFreeCancellation: bool
+
+
+class BookingSearchResponseData(TypedDict):
+    place: NotRequired[str]
+    checkIn: str
+    checkOut: str
+    total: NotRequired[int]
+    results: list[BookingSearchResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class BookingSearchResponse(TypedDict):
+    success: Literal[True]
+    data: BookingSearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class BookingHotelResponseDataScoresItem(TypedDict):
+    category: NotRequired[str]
+    score: float
+
+
+class BookingHotelResponseDataFacilitiesItem(TypedDict):
+    group: NotRequired[str]
+    name: NotRequired[str]
+
+
+class BookingHotelResponseDataRoomsItem(TypedDict):
+    roomId: NotRequired[str]
+    name: NotRequired[str]
+    sizeSquareMeters: NotRequired[float]
+    description: NotRequired[str]
+
+
+class BookingHotelResponseData(TypedDict):
+    hotelId: NotRequired[str]
+    hotelUrl: str
+    name: NotRequired[str]
+    type: NotRequired[str]
+    stars: NotRequired[int]
+    reviewScore: NotRequired[float]
+    reviews: NotRequired[int]
+    description: NotRequired[str]
+    scores: list[BookingHotelResponseDataScoresItem]
+    addressFull: NotRequired[str]
+    addressStreet: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressCountryCode: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    checkInFrom: NotRequired[str]
+    checkOutUntil: NotRequired[str]
+    facilities: list[BookingHotelResponseDataFacilitiesItem]
+    rooms: list[BookingHotelResponseDataRoomsItem]
+    imageUrls: list[str]
+
+
+class BookingHotelResponse(TypedDict):
+    success: Literal[True]
+    data: BookingHotelResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class BookingHotelReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
+    score: NotRequired[float]
+    title: NotRequired[str]
+    positiveText: NotRequired[str]
+    negativeText: NotRequired[str]
+    language: NotRequired[str]
+    createdAt: NotRequired[str]
+    travelerType: NotRequired[str]
+    authorCountryCode: NotRequired[str]
+    roomName: NotRequired[str]
+    nights: NotRequired[int]
+    checkIn: NotRequired[str]
+    checkOut: NotRequired[str]
+    ownerReplyText: NotRequired[str]
+
+
+class BookingHotelReviewsResponseData(TypedDict):
+    hotelId: NotRequired[str]
+    total: int
+    results: list[BookingHotelReviewsResponseDataResultsItem]
+    page: int
+
+
+class BookingHotelReviewsResponse(TypedDict):
+    success: Literal[True]
+    data: BookingHotelReviewsResponseData
     creditsUsed: int
     requestId: str
 
@@ -4076,6 +4321,372 @@ class GoogleTrendsRegionsResponseData(TypedDict):
 class GoogleTrendsRegionsResponse(TypedDict):
     success: Literal[True]
     data: GoogleTrendsRegionsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class ThreadsProfileResponseData(TypedDict):
+    userId: NotRequired[str]
+    username: NotRequired[str]
+    userUrl: str
+    name: NotRequired[str]
+    bio: NotRequired[str]
+    bioLinkUrls: list[str]
+    isVerified: bool
+    isPrivate: bool
+    followers: NotRequired[int]
+    threads: NotRequired[int]
+    avatarUrl: NotRequired[str]
+
+
+class ThreadsProfileResponse(TypedDict):
+    success: Literal[True]
+    data: ThreadsProfileResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class ThreadsProfilePostsResponseDataResultsItem(TypedDict):
+    postId: NotRequired[str]
+    postCode: NotRequired[str]
+    postUrl: str
+    text: NotRequired[str]
+    publishedAt: NotRequired[str]
+    likes: NotRequired[int]
+    replies: NotRequired[int]
+    reposts: NotRequired[int]
+    quotes: NotRequired[int]
+    shares: NotRequired[int]
+    imageUrls: NotRequired[list[str]]
+    videoUrls: NotRequired[list[str]]
+    imageDescription: NotRequired[str]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    quotedPostUrl: NotRequired[str]
+    isPinned: bool
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorUrl: str
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: bool
+
+
+class ThreadsProfilePostsResponseData(TypedDict):
+    results: list[ThreadsProfilePostsResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class ThreadsProfilePostsResponse(TypedDict):
+    success: Literal[True]
+    data: ThreadsProfilePostsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class ThreadsPostResponseData(TypedDict):
+    postId: NotRequired[str]
+    postCode: NotRequired[str]
+    postUrl: str
+    text: NotRequired[str]
+    publishedAt: NotRequired[str]
+    likes: NotRequired[int]
+    replies: NotRequired[int]
+    reposts: NotRequired[int]
+    quotes: NotRequired[int]
+    shares: NotRequired[int]
+    imageUrls: list[str]
+    videoUrls: list[str]
+    imageDescription: NotRequired[str]
+    linkUrl: NotRequired[str]
+    linkTitle: NotRequired[str]
+    quotedPostUrl: NotRequired[str]
+    isPinned: bool
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorUrl: str
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: bool
+    results: list[ThreadsProfilePostsResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class ThreadsPostResponse(TypedDict):
+    success: Literal[True]
+    data: ThreadsPostResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class TrustpilotCompanyResponseData(TypedDict):
+    companyId: NotRequired[str]
+    companyDomain: NotRequired[str]
+    companyUrl: str
+    name: NotRequired[str]
+    website: NotRequired[str]
+    description: NotRequired[str]
+    trustScore: NotRequired[float]
+    stars: NotRequired[float]
+    reviews: NotRequired[int]
+    ratingsOne: NotRequired[int]
+    ratingsTwo: NotRequired[int]
+    ratingsThree: NotRequired[int]
+    ratingsFour: NotRequired[int]
+    ratingsFive: NotRequired[int]
+    categories: list[str]
+    isClaimed: bool
+    isClosed: bool
+    email: NotRequired[str]
+    phone: NotRequired[str]
+    addressStreet: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    addressCountry: NotRequired[str]
+    negativeReviewsRepliedPercent: NotRequired[float]
+    averageDaysToReply: NotRequired[float]
+
+
+class TrustpilotCompanyResponse(TypedDict):
+    success: Literal[True]
+    data: TrustpilotCompanyResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class TrustpilotCompanyReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
+    reviewUrl: str
+    rating: int
+    title: NotRequired[str]
+    text: NotRequired[str]
+    language: NotRequired[str]
+    publishedAt: NotRequired[str]
+    experiencedDate: NotRequired[str]
+    isVerified: bool
+    authorName: NotRequired[str]
+    authorCountry: NotRequired[str]
+    ownerReplyText: NotRequired[str]
+    ownerReplyAt: NotRequired[str]
+
+
+class TrustpilotCompanyReviewsResponseData(TypedDict):
+    companyDomain: NotRequired[str]
+    companyName: NotRequired[str]
+    total: NotRequired[int]
+    results: list[TrustpilotCompanyReviewsResponseDataResultsItem]
+    page: int
+
+
+class TrustpilotCompanyReviewsResponse(TypedDict):
+    success: Literal[True]
+    data: TrustpilotCompanyReviewsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class TrustpilotSearchResponseDataResultsItem(TypedDict):
+    companyId: NotRequired[str]
+    companyDomain: NotRequired[str]
+    companyUrl: str
+    name: NotRequired[str]
+    website: NotRequired[str]
+    trustScore: NotRequired[float]
+    stars: NotRequired[float]
+    reviews: NotRequired[int]
+    categories: NotRequired[list[str]]
+    addressStreet: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    addressCountry: NotRequired[str]
+
+
+class TrustpilotSearchResponseData(TypedDict):
+    total: NotRequired[int]
+    results: list[TrustpilotSearchResponseDataResultsItem]
+    page: int
+
+
+class TrustpilotSearchResponse(TypedDict):
+    success: Literal[True]
+    data: TrustpilotSearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class EbaySearchResponseDataResultsItem(TypedDict):
+    itemId: NotRequired[str]
+    itemUrl: str
+    title: NotRequired[str]
+    imageUrl: NotRequired[str]
+    price: NotRequired[float]
+    priceMax: NotRequired[float]
+    isPriceHidden: bool
+    originalPrice: NotRequired[float]
+    priceCurrency: NotRequired[str]
+    shippingCost: NotRequired[float]
+    isPickupOnly: bool
+    totalPrice: NotRequired[float]
+    condition: NotRequired[str]
+    isAuction: bool
+    bids: NotRequired[int]
+    timeLeft: NotRequired[str]
+    hasBestOffer: bool
+    itemLocation: NotRequired[str]
+    quantitySold: NotRequired[int]
+    watchers: NotRequired[int]
+    sellerName: NotRequired[str]
+    sellerFeedbackPercent: NotRequired[float]
+    sellerFeedbackScore: NotRequired[int]
+
+
+class EbaySearchResponseData(TypedDict):
+    total: NotRequired[int]
+    results: list[EbaySearchResponseDataResultsItem]
+    page: int
+
+
+class EbaySearchResponse(TypedDict):
+    success: Literal[True]
+    data: EbaySearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class EbayItemResponseData(TypedDict):
+    itemId: NotRequired[str]
+    itemUrl: str
+    title: NotRequired[str]
+    price: NotRequired[float]
+    originalPrice: NotRequired[float]
+    priceCurrency: NotRequired[str]
+    condition: NotRequired[str]
+    isAuction: bool
+    bids: NotRequired[int]
+    isEnded: bool
+    endedAt: NotRequired[str]
+    isSold: bool
+    soldPrice: NotRequired[float]
+    soldAt: NotRequired[str]
+    isAvailable: NotRequired[bool]
+    quantityAvailable: NotRequired[int]
+    quantitySold: NotRequired[int]
+    brand: NotRequired[str]
+    model: NotRequired[str]
+    specifics: list[ZillowPropertyResponseDataFactsItem]
+    categories: list[str]
+    sellerName: NotRequired[str]
+    sellerFeedbackScore: NotRequired[int]
+    sellerFeedbackPercent: NotRequired[float]
+    shippingCost: NotRequired[float]
+    shippingPostalCode: NotRequired[str]
+    itemLocation: NotRequired[str]
+    returnsAccepted: NotRequired[bool]
+    returnDays: NotRequired[int]
+    listedAt: NotRequired[str]
+    imageUrls: list[str]
+    description: NotRequired[str]
+
+
+class EbayItemResponse(TypedDict):
+    success: Literal[True]
+    data: EbayItemResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class AirbnbSearchResponseDataResultsItem(TypedDict):
+    listingId: NotRequired[str]
+    listingUrl: str
+    title: NotRequired[str]
+    propertyType: NotRequired[str]
+    area: NotRequired[str]
+    rating: NotRequired[float]
+    reviews: NotRequired[int]
+    priceTotal: NotRequired[float]
+    priceBeforeDiscount: NotRequired[float]
+    pricePerNight: NotRequired[float]
+    priceCurrency: NotRequired[AirbnbSearchCurrency]
+    badges: NotRequired[list[str]]
+    imageUrls: NotRequired[list[str]]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+
+
+class AirbnbSearchResponseData(TypedDict):
+    location: NotRequired[str]
+    results: list[AirbnbSearchResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class AirbnbSearchResponse(TypedDict):
+    success: Literal[True]
+    data: AirbnbSearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class AirbnbListingResponseData(TypedDict):
+    listingId: NotRequired[str]
+    listingUrl: str
+    title: NotRequired[str]
+    description: NotRequired[str]
+    propertyType: NotRequired[str]
+    location: NotRequired[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    hostName: NotRequired[str]
+    hostIsSuperhost: NotRequired[bool]
+    guests: NotRequired[int]
+    bedrooms: NotRequired[int]
+    beds: NotRequired[int]
+    bathrooms: NotRequired[float]
+    amenities: list[str]
+    rating: NotRequired[float]
+    reviews: NotRequired[int]
+    isGuestFavorite: NotRequired[bool]
+    ratingAccuracy: NotRequired[float]
+    ratingCheckin: NotRequired[float]
+    ratingCleanliness: NotRequired[float]
+    ratingCommunication: NotRequired[float]
+    ratingLocation: NotRequired[float]
+    ratingValue: NotRequired[float]
+    houseRules: list[str]
+    imageUrls: list[str]
+    isAvailable: NotRequired[bool]
+    priceTotal: NotRequired[float]
+    priceBeforeDiscount: NotRequired[float]
+    pricePerNight: NotRequired[float]
+    priceCurrency: NotRequired[AirbnbSearchCurrency]
+
+
+class AirbnbListingResponse(TypedDict):
+    success: Literal[True]
+    data: AirbnbListingResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class AirbnbReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
+    rating: NotRequired[float]
+    text: NotRequired[str]
+    language: NotRequired[str]
+    translatedText: NotRequired[str]
+    createdAt: NotRequired[str]
+    authorName: NotRequired[str]
+    stayNote: NotRequired[str]
+    hostReplyText: NotRequired[str]
+
+
+class AirbnbReviewsResponseData(TypedDict):
+    listingId: NotRequired[str]
+    total: NotRequired[int]
+    results: list[AirbnbReviewsResponseDataResultsItem]
+    page: int
+
+
+class AirbnbReviewsResponse(TypedDict):
+    success: Literal[True]
+    data: AirbnbReviewsResponseData
     creditsUsed: int
     requestId: str
 
