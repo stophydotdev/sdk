@@ -1,6 +1,6 @@
 {
   "name": "stophy",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "The web data API for AI agents. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers.",
   "type": "module",
   "license": "MIT",

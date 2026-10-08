@@ -1,5 +1,12 @@
 # stophy
 
+## 1.0.8
+
+### Patch Changes
+
+- 2690531: Follow the new API. Every request names things as the response does: send a link or an id, such as `videoUrl` or `videoId`, `placeUrl` or `placeId`, `userUrl` or `username`, and exactly one of the pair. `sortBy` is now `sort`, and a few filters are renamed. Search, news, images, maps, Play, flights and trends now live under `google`, and `transcript` is now `youtube.transcript`, `instagram.transcript` and `tiktok.transcript`. Amazon search, product, bestsellers and suggest are new. Page-numbered results no longer return `hasMore`: ask for the next page until `results` is empty. Most calls cost 1 credit, some cost 2, and long lists cost 1 credit per 10 results.
+- 8398d41: Airbnb, Booking, company career pages, Threads, Trustpilot and eBay are new. Search stays and read a listing and its reviews with `airbnb.search`, `airbnb.listing` and `airbnb.reviews`. Search hotels and read one with `booking.search`, `booking.hotel` and `booking.hotel.reviews`. List a company's open jobs from its own job board with `careers.jobs` and `careers.job`. Read Threads with `threads.profile`, `threads.profile.posts` and `threads.post`. Check a company with `trustpilot.search`, `trustpilot.company` and `trustpilot.company.reviews`. Search eBay with `ebay.search` and `ebay.item`. Each call costs 1 credit.
+
 ## 1.0.7
 
 ### Patch Changes
