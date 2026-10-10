@@ -1,5 +1,11 @@
 # stophy
 
+## 2.0.0
+
+### Major Changes
+
+- 1efd853: The client follows the live API. Facebook pages, posts, comments and Marketplace, and X profiles and posts are new. The endpoints the API removed are gone, so YouTube charts, hashtag, related and channel search, Microsoft ads, Pinterest ads, Google videos, Reddit domain and Instagram search no longer have methods.
+
 ## 1.0.8
 
 ### Patch Changes
