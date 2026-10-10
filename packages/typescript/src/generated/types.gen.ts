@@ -129,22 +129,6 @@ export type GoogleSearchData = {
      */
     time?: "pastHour" | "past24Hours" | "pastWeek" | "pastMonth" | "pastYear";
     /**
-     * Google's Verbatim: search the exact words, with no spelling fixes.
-     */
-    verbatim?: boolean;
-    fileType?:
-      | "pdf"
-      | "doc"
-      | "docx"
-      | "xls"
-      | "xlsx"
-      | "ppt"
-      | "pptx"
-      | "txt"
-      | "rtf"
-      | "csv"
-      | "kml";
-    /**
      * Hide explicit results.
      */
     safeSearch?: boolean;
@@ -223,6 +207,10 @@ export type GoogleSearchResponses = {
           url: string;
         }>;
       };
+      /**
+       * Whether the rows came from Google or from a backup search engine.
+       */
+      engine?: "google" | "other";
       results: Array<
         | {
             type: "web";
@@ -430,23 +418,8 @@ export type GoogleImagesData = {
      */
     language?: string;
     size?: "large" | "medium" | "icon";
-    color?:
-      | "blackAndWhite"
-      | "transparent"
-      | "red"
-      | "orange"
-      | "yellow"
-      | "green"
-      | "teal"
-      | "blue"
-      | "purple"
-      | "pink"
-      | "white"
-      | "gray"
-      | "black"
-      | "brown";
     type?: "clipArt" | "lineDrawing" | "gif";
-    time?: "past24Hours" | "pastWeek" | "pastMonth" | "pastYear";
+    time?: "past24Hours" | "pastWeek";
     /**
      * Creative Commons, or commercial and other licenses.
      */
@@ -749,7 +722,7 @@ export type GoogleAdsSearchData = {
     country?: string;
     mediaType?: "text" | "image" | "video";
     /**
-     * Google's own Platform filter: where the ad was shown.
+     * Google's own Platform filter: where the ad was shown. Google leaves out ads shown before 4 September 2023 when it is set.
      */
     platform?: "search" | "youtube" | "play" | "maps" | "shopping";
     /**
@@ -806,6 +779,9 @@ export type GoogleAdsSearchResponses = {
         advertiserUrl: string;
         domain?: string;
         format: "text" | "image" | "video" | "unknown";
+        /**
+         * When Google first showed the ad.
+         */
         firstShownAt?: string;
         lastShownAt?: string;
         daysShown?: number;
@@ -874,8 +850,14 @@ export type GoogleAdsAdResponses = {
       advertiserUrl: string;
       domain?: string;
       format: "text" | "image" | "video" | "unknown";
+      /**
+       * When Google first showed the ad, exact when Google gives the time. Null when it does not, which is common. The first day per country is in regions and can be later than the real first showing, so read the google.ads.search row for the ad's first time.
+       */
       firstShownAt?: string;
       lastShownAt?: string;
+      /**
+       * How many days the ad ran. Null when Google gives no count for the ad.
+       */
       daysShown?: number;
       previewUrl?: string;
       imageUrl?: string;
@@ -891,7 +873,13 @@ export type GoogleAdsAdResponses = {
       }>;
       regions: Array<{
         country?: string;
+        /**
+         * The first day Google shows the ad in this country, as the start of that day in UTC.
+         */
         firstShownAt?: string;
+        /**
+         * The last day Google shows the ad in this country, as the start of that day in UTC.
+         */
         lastShownAt?: string;
         impressionsMin?: number;
         impressionsMax?: number;
@@ -911,9 +899,13 @@ export type GoogleAdsAdvertisersData = {
   body: {
     query: string;
     /**
-     * Country code like de. Advertisers are matched on ads shown in this country, wherever the advertiser is based. Any case is accepted.
+     * Country code like de. Advertisers are matched on ads shown in this country, wherever the advertiser is based, and adsMin and adsMax count only the ads shown there. Any case is accepted.
      */
     country?: string;
+    /**
+     * How many advertisers to ask Google for, 1 to 100. Google ranks the list for the count you ask, so a larger limit is not the same list with more rows added, and there are no further pages. Fewer come back when Google has fewer matches.
+     */
+    limit?: number;
   };
   path?: never;
   query?: {
@@ -1071,96 +1063,6 @@ export type GoogleScholarResponses = {
 export type GoogleScholarResponse =
   GoogleScholarResponses[keyof GoogleScholarResponses];
 
-export type GoogleVideosData = {
-  body: {
-    query: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * Two-letter language code like en or pt. Any case is accepted.
-     */
-    language?: string;
-    includeDomains?: Array<string>;
-    excludeDomains?: Array<string>;
-    /**
-     * Google's Tools time filter. Leave out for any time.
-     */
-    time?: "pastHour" | "past24Hours" | "pastWeek" | "pastMonth" | "pastYear";
-    /**
-     * Google's own Duration: short is under 4 min, medium 4–20, long 20+.
-     */
-    duration?: "short" | "medium" | "long";
-    /**
-     * Google's own High quality.
-     */
-    highQuality?: boolean;
-    /**
-     * Google's own Closed captioned.
-     */
-    closedCaptioned?: boolean;
-    /**
-     * Page number, starting at 1.
-     */
-    page?: number;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/google/videos";
-};
-
-export type GoogleVideosErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleVideosError = GoogleVideosErrors[keyof GoogleVideosErrors];
-
-export type GoogleVideosResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        title: string;
-        url: string;
-        /**
-         * Where the video is hosted, like YouTube.
-         */
-        site?: string;
-        channelName?: string;
-        durationSeconds?: number;
-        /**
-         * Approximate when Google shows only how long ago, like 1 month ago.
-         */
-        publishedAt?: string;
-        description?: string;
-        position: number;
-      }>;
-      page: number;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleVideosResponse =
-  GoogleVideosResponses[keyof GoogleVideosResponses];
-
 export type GoogleJobsData = {
   body: {
     /**
@@ -1191,10 +1093,6 @@ export type GoogleJobsData = {
      * Google Jobs' own Remote chip.
      */
     remote?: boolean;
-    /**
-     * Google Jobs' own No degree chip.
-     */
-    noDegree?: boolean;
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -1240,7 +1138,7 @@ export type GoogleJobsResponses = {
          */
         via?: string;
         /**
-         * Approximate: Google shows how long ago.
+         * Rounded to what Google shows: the hour for posts under a day old, the day for older ones.
          */
         publishedAt?: string;
         jobType?: string;
@@ -1383,7 +1281,114 @@ export type YoutubeSuggestData = {
     /**
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
-    country?: string;
+    country?:
+      | "dz"
+      | "ar"
+      | "au"
+      | "at"
+      | "az"
+      | "bh"
+      | "bd"
+      | "by"
+      | "be"
+      | "bo"
+      | "ba"
+      | "br"
+      | "bg"
+      | "ca"
+      | "cl"
+      | "co"
+      | "cr"
+      | "hr"
+      | "cy"
+      | "cz"
+      | "dk"
+      | "do"
+      | "ec"
+      | "eg"
+      | "sv"
+      | "ee"
+      | "fi"
+      | "fr"
+      | "ge"
+      | "de"
+      | "gh"
+      | "gr"
+      | "gt"
+      | "hn"
+      | "hk"
+      | "hu"
+      | "is"
+      | "in"
+      | "id"
+      | "iq"
+      | "ie"
+      | "il"
+      | "it"
+      | "jm"
+      | "jp"
+      | "jo"
+      | "kz"
+      | "ke"
+      | "kw"
+      | "lv"
+      | "lb"
+      | "ly"
+      | "li"
+      | "lt"
+      | "lu"
+      | "my"
+      | "mt"
+      | "mx"
+      | "me"
+      | "ma"
+      | "np"
+      | "nl"
+      | "nz"
+      | "ni"
+      | "ng"
+      | "mk"
+      | "no"
+      | "om"
+      | "pk"
+      | "pa"
+      | "pg"
+      | "py"
+      | "pe"
+      | "ph"
+      | "pl"
+      | "pt"
+      | "pr"
+      | "qa"
+      | "ro"
+      | "ru"
+      | "sa"
+      | "sn"
+      | "rs"
+      | "sg"
+      | "sk"
+      | "si"
+      | "za"
+      | "kr"
+      | "es"
+      | "lk"
+      | "se"
+      | "ch"
+      | "tw"
+      | "tz"
+      | "th"
+      | "tn"
+      | "tr"
+      | "ug"
+      | "ua"
+      | "ae"
+      | "gb"
+      | "us"
+      | "uy"
+      | "ve"
+      | "vn"
+      | "ye"
+      | "zw";
     /**
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
@@ -1507,7 +1512,7 @@ export type YoutubeSearchResponses = {
             isShort: boolean;
             isLive: boolean;
             /**
-             * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+             * Approximate: YouTube lists show only how long ago a video was published, so this is rounded to that unit, such as a day or a year. youtube.video has the exact time.
              */
             publishedAt?: string;
             channelAvatarUrl?: string;
@@ -1754,6 +1759,9 @@ export type YoutubeCommentsResponses = {
         authorUrl?: string;
         likes: number;
         replies: number;
+        /**
+         * Approximate: YouTube shows only how long ago a comment was written, so this is rounded to that unit, such as a day or a year.
+         */
         publishedAt?: string;
         isPinned: boolean;
         isHearted: boolean;
@@ -1859,7 +1867,7 @@ export type YoutubeChannelResponses = {
             isShort: boolean;
             isLive: boolean;
             /**
-             * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+             * Approximate: YouTube lists show only how long ago a video was published, so this is rounded to that unit, such as a day or a year. youtube.video has the exact time.
              */
             publishedAt?: string;
           }
@@ -1880,6 +1888,9 @@ export type YoutubeChannelResponses = {
             postId?: string;
             postUrl: string;
             text?: string;
+            /**
+             * Approximate: YouTube shows only how long ago a post was published, so this is rounded to that unit, such as a day or a year.
+             */
             publishedAt?: string;
             likes?: number;
             comments?: number;
@@ -1899,250 +1910,6 @@ export type YoutubeChannelResponses = {
 
 export type YoutubeChannelResponse =
   YoutubeChannelResponses[keyof YoutubeChannelResponses];
-
-export type YoutubeChannelSearchData = {
-  body: {
-    query: string;
-    /**
-     * Link to the YouTube channel, like https://www.youtube.com/@mkbhd. Send this or channelId.
-     */
-    channelUrl?: string;
-    /**
-     * YouTube channel handle or id, like @mkbhd. Send this or channelUrl.
-     */
-    channelId?: string;
-    /**
-     * The cursor from the previous response. Send it as is.
-     */
-    cursor?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/youtube/channel/search";
-};
-
-export type YoutubeChannelSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type YoutubeChannelSearchError =
-  YoutubeChannelSearchErrors[keyof YoutubeChannelSearchErrors];
-
-export type YoutubeChannelSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        type: "video";
-        videoId?: string;
-        videoUrl: string;
-        title?: string;
-        channelId?: string;
-        channelName?: string;
-        channelUrl?: string;
-        channelUsername?: string;
-        durationSeconds?: number;
-        views?: number;
-        thumbnailUrl?: string;
-        isShort: boolean;
-        isLive: boolean;
-        /**
-         * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
-         */
-        publishedAt?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type YoutubeChannelSearchResponse =
-  YoutubeChannelSearchResponses[keyof YoutubeChannelSearchResponses];
-
-export type YoutubeRelatedData = {
-  body: {
-    /**
-     * Link to the YouTube video, like https://youtu.be/p0fybvFyOlM. Send this or videoId.
-     */
-    videoUrl?: string;
-    /**
-     * YouTube video id, like p0fybvFyOlM. Send this or videoUrl.
-     */
-    videoId?: string;
-    /**
-     * The cursor from the previous response. Send it as is.
-     */
-    cursor?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/youtube/related";
-};
-
-export type YoutubeRelatedErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type YoutubeRelatedError =
-  YoutubeRelatedErrors[keyof YoutubeRelatedErrors];
-
-export type YoutubeRelatedResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<
-        | {
-            type: "video";
-            videoId?: string;
-            videoUrl: string;
-            title?: string;
-            channelId?: string;
-            channelName?: string;
-            channelUrl?: string;
-            channelUsername?: string;
-            durationSeconds?: number;
-            views?: number;
-            thumbnailUrl?: string;
-            isShort: boolean;
-            isLive: boolean;
-            /**
-             * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
-             */
-            publishedAt?: string;
-            channelAvatarUrl?: string;
-          }
-        | {
-            type: "channel";
-            channelId?: string;
-            channelUrl: string;
-            channelName?: string;
-            channelUsername?: string;
-            description?: string;
-            subscribers?: number;
-            thumbnailUrl?: string;
-          }
-        | {
-            type: "playlist";
-            playlistId?: string;
-            playlistUrl: string;
-            title?: string;
-            channelId?: string;
-            channelName?: string;
-            channelUrl?: string;
-            channelUsername?: string;
-            videos?: number;
-            thumbnailUrl?: string;
-          }
-      >;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type YoutubeRelatedResponse =
-  YoutubeRelatedResponses[keyof YoutubeRelatedResponses];
-
-export type YoutubeHashtagData = {
-  body: {
-    hashtag: string;
-    /**
-     * The cursor from the previous response. Send it as is.
-     */
-    cursor?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/youtube/hashtag";
-};
-
-export type YoutubeHashtagErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type YoutubeHashtagError =
-  YoutubeHashtagErrors[keyof YoutubeHashtagErrors];
-
-export type YoutubeHashtagResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        type: "video";
-        videoId?: string;
-        videoUrl: string;
-        title?: string;
-        channelId?: string;
-        channelName?: string;
-        channelUrl?: string;
-        channelUsername?: string;
-        durationSeconds?: number;
-        views?: number;
-        thumbnailUrl?: string;
-        isShort: boolean;
-        isLive: boolean;
-        /**
-         * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
-         */
-        publishedAt?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type YoutubeHashtagResponse =
-  YoutubeHashtagResponses[keyof YoutubeHashtagResponses];
 
 export type YoutubePostData = {
   body: {
@@ -2196,6 +1963,9 @@ export type YoutubePostResponses = {
       postId?: string;
       postUrl?: string;
       text?: string;
+      /**
+       * Approximate: YouTube shows only how long ago a post was published, so this is rounded to that unit, such as a day or a year.
+       */
       publishedAt?: string;
       likes?: number;
       comments?: number;
@@ -2214,10 +1984,16 @@ export type YoutubePostResponses = {
         authorUrl?: string;
         likes: number;
         replies: number;
+        /**
+         * Approximate: YouTube shows only how long ago a comment was written, so this is rounded to that unit, such as a day or a year.
+         */
         publishedAt?: string;
         isPinned: boolean;
         isHearted: boolean;
         isChannelOwner: boolean;
+        /**
+         * Send this as cursor to youtube.post, with the same postId, to read this comment's replies. It does not work with youtube.comments.
+         */
         repliesCursor?: string;
       }>;
       cursor?: string;
@@ -2229,96 +2005,6 @@ export type YoutubePostResponses = {
 
 export type YoutubePostResponse =
   YoutubePostResponses[keyof YoutubePostResponses];
-
-export type YoutubeChartsData = {
-  body: {
-    /**
-     * YouTube Charts' own chart.
-     */
-    chart?:
-      | "topSongs"
-      | "topVideos"
-      | "topArtists"
-      | "topShortsSongs"
-      | "topPodcasts"
-      | "trending";
-    /**
-     * One of YouTube Charts' own countries as a 2-letter code, or global.
-     */
-    country?: string;
-    /**
-     * Daily exists for topVideos and topShortsSongs only.
-     */
-    interval?: "weekly" | "daily";
-    /**
-     * Return at most this many results. You pay 1 credit per 10 returned.
-     */
-    limit?: number;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/youtube/charts";
-};
-
-export type YoutubeChartsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type YoutubeChartsError = YoutubeChartsErrors[keyof YoutubeChartsErrors];
-
-export type YoutubeChartsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      chart?: string;
-      country?: string;
-      /**
-       * The last day the chart covers.
-       */
-      throughDate?: string;
-      results: Array<{
-        position: number;
-        previousPosition?: number;
-        /**
-         * Weeks on the chart, or days for a daily chart.
-         */
-        periodsOnChart?: number;
-        viewsChangePercent?: number;
-        title?: string;
-        artists?: Array<string>;
-        views?: number;
-        videoId?: string;
-        videoUrl?: string;
-        channelId?: string;
-        channelUrl?: string;
-        playlistUrl?: string;
-        durationSeconds?: number;
-        releaseDate?: string;
-        label?: string;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type YoutubeChartsResponse =
-  YoutubeChartsResponses[keyof YoutubeChartsResponses];
 
 export type YoutubePlaylistData = {
   body: {
@@ -2376,6 +2062,10 @@ export type YoutubePlaylistResponses = {
       channelUsername?: string;
       videos?: number;
       views?: number;
+      /**
+       * Videos YouTube hides from the list because they are unavailable.
+       */
+      hiddenVideos?: number;
       thumbnailUrl?: string;
       results: Array<{
         type: "video";
@@ -2392,7 +2082,7 @@ export type YoutubePlaylistResponses = {
         isShort: boolean;
         isLive: boolean;
         /**
-         * Approximate: YouTube lists show only how long ago a video was published. youtube.video has the exact time.
+         * Approximate: YouTube lists show only how long ago a video was published, so this is rounded to that unit, such as a day or a year. youtube.video has the exact time.
          */
         publishedAt?: string;
       }>;
@@ -2868,100 +2558,6 @@ export type RedditUserResponses = {
 
 export type RedditUserResponse = RedditUserResponses[keyof RedditUserResponses];
 
-export type RedditDomainData = {
-  body: {
-    domain: string;
-    /**
-     * Reddit's own sort.
-     */
-    sort?: "hot" | "newest" | "top" | "controversial";
-    /**
-     * Reddit's own time filter. Leave out for Reddit's default.
-     */
-    time?:
-      | "pastHour"
-      | "today"
-      | "pastWeek"
-      | "pastMonth"
-      | "pastYear"
-      | "allTime";
-    /**
-     * The cursor from the previous response. Send it as is.
-     */
-    cursor?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/reddit/domain";
-};
-
-export type RedditDomainErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type RedditDomainError = RedditDomainErrors[keyof RedditDomainErrors];
-
-export type RedditDomainResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        type: "post";
-        postId?: string;
-        postUrl: string;
-        title?: string;
-        text?: string;
-        authorId?: string;
-        authorUsername?: string;
-        authorUrl?: string;
-        subreddit?: string;
-        score: number;
-        upvotePercent?: number;
-        comments: number;
-        publishedAt?: string;
-        flair?: string;
-        linkUrl?: string;
-        thumbnailUrl?: string;
-        isNsfw: boolean;
-        isVideo: boolean;
-        isPinned: boolean;
-        imageUrls?: Array<string>;
-        videoUrl?: string;
-        videoHlsUrl?: string;
-        videoDurationSeconds?: number;
-        pollOptions?: Array<{
-          text?: string;
-          votes?: number;
-        }>;
-        pollTotalVotes?: number;
-        pollEndsAt?: string;
-        repostOfUrl?: string;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type RedditDomainResponse =
-  RedditDomainResponses[keyof RedditDomainResponses];
-
 export type RedditDiscussionsData = {
   body: {
     /**
@@ -3377,11 +2973,6 @@ export type InstagramCommentsData = {
      * Instagram post or reel code, like DdG4RIxIPyf. Send this or postUrl.
      */
     postCode?: string;
-    comment?: string;
-    /**
-     * Instagram's comment order. Leave out for newest. Replies have no order filter.
-     */
-    sort?: "newest" | "popular";
     /**
      * The cursor from the previous response. Send it as is.
      */
@@ -3427,7 +3018,7 @@ export type InstagramCommentsResponses = {
         authorAvatarUrl?: string;
         authorIsVerified: boolean;
         text?: string;
-        replies?: number;
+        likes?: number;
         publishedAt?: string;
       }>;
       cursor?: string;
@@ -3520,7 +3111,6 @@ export type InstagramPostResponses = {
         authorIsVerified: boolean;
         text?: string;
         likes?: number;
-        replies?: number;
         publishedAt?: string;
       }>;
     };
@@ -3705,73 +3295,6 @@ export type InstagramProfileReelsResponses = {
 export type InstagramProfileReelsResponse =
   InstagramProfileReelsResponses[keyof InstagramProfileReelsResponses];
 
-export type InstagramSearchData = {
-  body: {
-    query: string;
-    type?: "all" | "reels";
-    /**
-     * The cursor from the previous response. Send it as is.
-     */
-    cursor?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/instagram/search";
-};
-
-export type InstagramSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type InstagramSearchError =
-  InstagramSearchErrors[keyof InstagramSearchErrors];
-
-export type InstagramSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        postId?: string;
-        postCode?: string;
-        postUrl: string;
-        type: "photo" | "video" | "reel" | "carousel";
-        text?: string;
-        hashtags?: Array<string>;
-        mentions?: Array<string>;
-        views?: number;
-        thumbnailUrl?: string;
-        videoUrls?: Array<string>;
-        authorId?: string;
-        authorUsername?: string;
-        authorUrl?: string;
-        authorAvatarUrl?: string;
-        authorIsVerified: boolean;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type InstagramSearchResponse =
-  InstagramSearchResponses[keyof InstagramSearchResponses];
-
 export type InstagramTranscriptData = {
   body: {
     /**
@@ -3943,7 +3466,7 @@ export type TiktokProfileResponse =
 export type TiktokVideoData = {
   body: {
     /**
-     * Link to the TikTok video, like https://www.tiktok.com/@khaby.lame/video/7137423965982592302. Send this or videoId.
+     * Link to the TikTok video, like https://www.tiktok.com/@charlidamelio/video/7137423965982592302. Send this or videoId.
      */
     videoUrl?: string;
     /**
@@ -4183,7 +3706,7 @@ export type TiktokSoundResponse =
 export type TiktokCommentsData = {
   body: {
     /**
-     * Link to the TikTok video, like https://www.tiktok.com/@khaby.lame/video/7137423965982592302. Send this or videoId.
+     * Link to the TikTok video, like https://www.tiktok.com/@charlidamelio/video/7137423965982592302. Send this or videoId.
      */
     videoUrl?: string;
     /**
@@ -4230,6 +3753,7 @@ export type TiktokCommentsResponses = {
       results: Array<{
         commentId?: string;
         text?: string;
+        imageUrls?: Array<string>;
         authorId?: string;
         authorUsername?: string;
         authorName?: string;
@@ -4356,7 +3880,7 @@ export type TiktokSearchResponse =
 export type TiktokTranscriptData = {
   body: {
     /**
-     * Link to the TikTok video, like https://www.tiktok.com/@khaby.lame/video/7137423965982592302. Send this or videoId.
+     * Link to the TikTok video, like https://www.tiktok.com/@charlidamelio/video/7137423965982592302. Send this or videoId.
      */
     videoUrl?: string;
     /**
@@ -4423,7 +3947,13 @@ export type TiktokTranscriptResponse =
 
 export type TiktokAdsSearchData = {
   body: {
+    /**
+     * A keyword to find in ads. Send this or advertiser, not both.
+     */
     query?: string;
+    /**
+     * An advertiser name. TikTok matches the name exactly, so use it as tiktok.ads.ad gives it, like Nike, Inc. When no listed advertiser has exactly this name, the closest listed name is used. Send this or query, not both.
+     */
     advertiser?: string;
     /**
      * European country code like de. TikTok publishes ads for these countries only. Any case is accepted.
@@ -4467,6 +3997,9 @@ export type TiktokAdsSearchResponses = {
     data: {
       advertiserId?: string;
       advertiserName?: string;
+      /**
+       * How many ads match. Null when TikTok caps the count at 5000 for a large search.
+       */
       total?: number;
       results: Array<{
         adId?: string;
@@ -4872,7 +4405,7 @@ export type TiktokShopReviewsResponse =
 export type MetaAdsPageData = {
   body: {
     /**
-     * The Facebook page: its id, name or URL.
+     * The Facebook page: its numeric id, its username, its exact name as the Ad Library lists it, or its URL.
      */
     advertiser: string;
     /**
@@ -4883,7 +4416,7 @@ export type MetaAdsPageData = {
     /**
      * The Ad Library's own Media type filter: image, video, or text (no image or video).
      */
-    mediaType?: "image" | "video" | "text" | "meme" | "imageAndMeme";
+    mediaType?: "image" | "video" | "text";
     /**
      * The Ad Library's own Platform filter: only ads shown on at least one of these platforms.
      */
@@ -4971,7 +4504,10 @@ export type MetaAdsPageResponses = {
           imageUrl?: string;
           videoUrl?: string;
         }>;
-        versions: number;
+        /**
+         * How many copies of this creative the Ad Library groups together. Meta sends it on one ad of each group, so other ads of the group and ad details give null.
+         */
+        versions?: number;
         categories?: Array<string>;
         paidBy?: string;
         spendMin?: number;
@@ -4984,6 +4520,9 @@ export type MetaAdsPageResponses = {
         impressionsMax?: number;
         reachMin?: number;
         reachMax?: number;
+        /**
+         * Countries the Ad Library says the ad ran in. Meta sends none for most ads, so an empty list means unknown, not worldwide. It is not the country you searched.
+         */
         countries?: Array<string>;
       }>;
       cursor?: string;
@@ -5264,6 +4803,7 @@ export type LinkedinProfileResponses = {
       headline?: string;
       location?: string;
       about?: string;
+      isAboutTruncated: boolean;
       followers?: number;
       roles: Array<{
         title?: string;
@@ -5307,6 +4847,10 @@ export type LinkedinPostsData = {
      * LinkedIn company slug, like microsoft. Send this or companyUrl.
      */
     companyId?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
   };
   path?: never;
   query?: {
@@ -5349,6 +4893,7 @@ export type LinkedinPostsResponses = {
         authorName?: string;
         authorUrl?: string;
       }>;
+      cursor?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -5442,6 +4987,9 @@ export type ZillowSearchData = {
      * Zillow's own "Pets Allowed" filter. Only matching homes when true. Rentals only: needs status forRent.
      */
     petsAllowed?: boolean;
+    /**
+     * Zillow's own Home type filter. On rentals, apartment and condo are one Zillow category (apartments, condos and co-ops), so either one returns both.
+     */
     homeTypes?: Array<
       | "house"
       | "townhouse"
@@ -5451,6 +4999,9 @@ export type ZillowSearchData = {
       | "apartment"
       | "manufactured"
     >;
+    /**
+     * Zillow's own sort. priceHigh, bedrooms, bathrooms, squareFeet and lotSize put the largest first, and priceLow the smallest. A rental building sits where its highest unit rent falls.
+     */
     sort?:
       | "relevance"
       | "newest"
@@ -5506,7 +5057,7 @@ export type ZillowSearchResponses = {
         status: "forSale" | "forRent" | "sold" | "other";
         statusText?: string;
         /**
-         * Asking price, monthly rent, or the sale price of a sold home. Null when Zillow shows none, which includes sold homes in states that keep sale prices private, such as Texas.
+         * Asking price, monthly rent, or the sale price of a sold home. For a rental building, the lowest monthly rent among its units. Null when Zillow shows none, which includes sold homes in states that keep sale prices private, such as Texas.
          */
         price?: number;
         priceCurrency?: "USD";
@@ -5931,6 +5482,17 @@ export type GoogleTrendsRelatedResponses = {
   200: {
     success: true;
     data: {
+      /**
+       * Rising related queries. Google shows Breakout instead of a percent above 5000.
+       */
+      rising: Array<{
+        query?: string;
+        increasePercent?: number;
+        isBreakout: boolean;
+      }>;
+      /**
+       * Top related queries, 100 is the most.
+       */
       results: Array<{
         query?: string;
         value: number;
@@ -7006,9 +6568,9 @@ export type GoogleHotelsData = {
     specialOffers?: boolean;
     sort?: "relevance" | "lowestPrice" | "highestRating" | "mostReviewed";
     /**
-     * Page number, starting at 1.
+     * The cursor from the previous response. Send it as is.
      */
-    page?: number;
+    cursor?: string;
   };
   path?: never;
   query?: {
@@ -7072,7 +6634,7 @@ export type GoogleHotelsResponses = {
         amenities?: Array<string>;
         position: number;
       }>;
-      page: number;
+      cursor?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -7096,7 +6658,13 @@ export type BookingSearchData = {
      * Defaults to one night after checkIn.
      */
     checkOut?: string;
+    /**
+     * Adults across all rooms. Prices are for the whole group.
+     */
     adults?: number;
+    /**
+     * Rooms to book, at most one per adult. Prices are for all rooms together.
+     */
     rooms?: number;
     /**
      * ISO 4217 currency code, e.g. USD.
@@ -7152,6 +6720,9 @@ export type BookingSearchResponses = {
         name?: string;
         reviewScore?: number;
         reviews?: number;
+        /**
+         * Price of the whole stay for all rooms. Null when the hotel has no room for these dates and guests, which Booking.com's own page shows as not found.
+         */
         price?: number;
         taxesAndFees?: number;
         originalPrice?: number;
@@ -7269,13 +6840,13 @@ export type BookingHotelReviewsData = {
      */
     hotelId?: string;
     /**
-     * Booking.com's own Sort reviews by: mostRelevant, newest or lowestScore (lowest scores first).
+     * Booking.com's own Sort reviews by: newest, mostRelevant or lowestScore (lowest scores first). Only newest pages without gaps. The other orders change between requests, so a walk through the pages can miss reviews.
      */
-    sort?: "mostRelevant" | "newest" | "lowestScore";
+    sort?: "newest" | "mostRelevant" | "lowestScore";
     /**
-     * Page number, starting at 1.
+     * The cursor from the previous response. Send it as is.
      */
-    page?: number;
+    cursor?: string;
   };
   path?: never;
   query?: {
@@ -7326,7 +6897,7 @@ export type BookingHotelReviewsResponses = {
         checkOut?: string;
         ownerReplyText?: string;
       }>;
-      page: number;
+      cursor?: string;
     };
     creditsUsed: number;
     requestId: string;
@@ -7539,6 +7110,9 @@ export type AmazonProductResponses = {
         name?: string;
         value?: string;
       }>;
+      /**
+       * Up to 13 reviews Amazon shows on the product page. Amazon shows them on some visits only, so this can be empty when the product has reviews.
+       */
       topReviews: Array<{
         reviewId?: string;
         authorName?: string;
@@ -7749,6 +7323,9 @@ export type AppstoreSearchData = {
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
     country?: string;
+    /**
+     * The device the apps must run on, iphone, ipad or mac. An iPhone app can also run on an iPad or a Mac, so it can show under more than one.
+     */
     device?: "iphone" | "ipad" | "mac";
     /**
      * Return at most this many apps. You pay 1 credit per 10 returned.
@@ -7899,6 +7476,9 @@ export type AppstoreReviewsResponse =
 export type AppstoreTopData = {
   body: {
     chart?: "free" | "paid" | "grossing";
+    /**
+     * The device the apps must run on, iphone, ipad or mac. An iPhone app can also run on an iPad or a Mac, so it can show under more than one.
+     */
     device?: "iphone" | "ipad" | "mac";
     genre?:
       | "business"
@@ -8165,10 +7745,6 @@ export type GooglePlayReviewsData = {
      * Google Play app package name, like com.spotify.music. Send this or appUrl.
      */
     appId?: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
     /**
      * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
      */
@@ -8586,6 +8162,155 @@ export type PinterestProfileResponses = {
 export type PinterestProfileResponse =
   PinterestProfileResponses[keyof PinterestProfileResponses];
 
+export type XProfileData = {
+  body: {
+    /**
+     * Link to the X profile, like https://x.com/nasa. Send this or username.
+     */
+    profileUrl?: string;
+    /**
+     * X profile handle, like nasa. Send this or profileUrl.
+     */
+    username?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/x/profile";
+};
+
+export type XProfileErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type XProfileError = XProfileErrors[keyof XProfileErrors];
+
+export type XProfileResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      userId?: string;
+      username?: string;
+      profileUrl: string;
+      name?: string;
+      bio?: string;
+      location?: string;
+      website?: string;
+      joinedAt?: string;
+      followers?: number;
+      following?: number;
+      posts?: number;
+      isVerified: boolean;
+      verifiedType?: string;
+      isProtected: boolean;
+      avatarUrl?: string;
+      bannerUrl?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type XProfileResponse = XProfileResponses[keyof XProfileResponses];
+
+export type XPostData = {
+  body: {
+    /**
+     * Link to the X post, like https://x.com/nasa/status/2107773105779167621. Send this or postId.
+     */
+    postUrl?: string;
+    /**
+     * X post id, like 2107773105779167621. Send this or postUrl.
+     */
+    postId?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/x/post";
+};
+
+export type XPostErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type XPostError = XPostErrors[keyof XPostErrors];
+
+export type XPostResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      postId?: string;
+      postUrl: string;
+      text?: string;
+      publishedAt?: string;
+      language?: string;
+      likes?: number;
+      replies?: number;
+      reposts?: number;
+      quotes?: number;
+      bookmarks?: number;
+      views?: number;
+      authorId?: string;
+      authorUsername?: string;
+      authorName?: string;
+      authorUrl?: string;
+      authorAvatarUrl?: string;
+      authorIsVerified?: boolean;
+      media: Array<{
+        type: "photo" | "video" | "gif";
+        url: string;
+        thumbnailUrl?: string;
+        width?: number;
+        height?: number;
+        durationSeconds?: number;
+        altText?: string;
+      }>;
+      links: Array<string>;
+      hashtags: Array<string>;
+      mentions: Array<string>;
+      replyToUrl?: string;
+      quotedUrl?: string;
+      quotedText?: string;
+      quotedAuthorUsername?: string;
+      isEdited: boolean;
+      isSensitive: boolean;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type XPostResponse = XPostResponses[keyof XPostResponses];
+
 export type MetaAdsSearchData = {
   body: {
     /**
@@ -8600,7 +8325,7 @@ export type MetaAdsSearchData = {
     /**
      * The Ad Library's own Media type filter: image, video, or text (no image or video).
      */
-    mediaType?: "image" | "video" | "text" | "meme" | "imageAndMeme";
+    mediaType?: "image" | "video" | "text";
     /**
      * The Ad Library's own Platform filter: only ads shown on at least one of these platforms.
      */
@@ -8688,7 +8413,10 @@ export type MetaAdsSearchResponses = {
           imageUrl?: string;
           videoUrl?: string;
         }>;
-        versions: number;
+        /**
+         * How many copies of this creative the Ad Library groups together. Meta sends it on one ad of each group, so other ads of the group and ad details give null.
+         */
+        versions?: number;
         categories?: Array<string>;
         paidBy?: string;
         spendMin?: number;
@@ -8701,6 +8429,9 @@ export type MetaAdsSearchResponses = {
         impressionsMax?: number;
         reachMin?: number;
         reachMax?: number;
+        /**
+         * Countries the Ad Library says the ad ran in. Meta sends none for most ads, so an empty list means unknown, not worldwide. It is not the country you searched.
+         */
         countries?: Array<string>;
       }>;
       cursor?: string;
@@ -8782,7 +8513,10 @@ export type MetaAdsAdResponses = {
         imageUrl?: string;
         videoUrl?: string;
       }>;
-      versions: number;
+      /**
+       * How many copies of this creative the Ad Library groups together. Meta sends it on one ad of each group, so other ads of the group and ad details give null.
+       */
+      versions?: number;
       categories: Array<string>;
       paidBy?: string;
       spendMin?: number;
@@ -8795,6 +8529,9 @@ export type MetaAdsAdResponses = {
       impressionsMax?: number;
       reachMin?: number;
       reachMax?: number;
+      /**
+       * Countries the Ad Library says the ad ran in. Meta sends none for most ads, so an empty list means unknown, not worldwide. It is not the country you searched.
+       */
       countries: Array<string>;
       advertiserDescription?: string;
       advertiserCategory?: string;
@@ -8839,6 +8576,9 @@ export type LinkedinAdsSearchData = {
      * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
      */
     country?: string;
+    /**
+     * Only ads shown in the last 30 days or the last year.
+     */
     within?: "month" | "year" | "all";
     /**
      * The cursor from the previous response. Send it as is.
@@ -8980,345 +8720,6 @@ export type LinkedinAdsAdResponses = {
 
 export type LinkedinAdsAdResponse =
   LinkedinAdsAdResponses[keyof LinkedinAdsAdResponses];
-
-export type MicrosoftAdsSearchData = {
-  body: {
-    query?: string;
-    advertiser?: string;
-    /**
-     * EU/EEA country code like de. Microsoft publishes ads for these countries only. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * The cursor from the previous response. Send it as is.
-     */
-    cursor?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/microsoft/ads/search";
-};
-
-export type MicrosoftAdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MicrosoftAdsSearchError =
-  MicrosoftAdsSearchErrors[keyof MicrosoftAdsSearchErrors];
-
-export type MicrosoftAdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      total?: number;
-      results: Array<{
-        adId?: string;
-        advertiserId?: string;
-        advertiserName?: string;
-        headline?: string;
-        text?: string;
-        linkUrl?: string;
-        linkCaption?: string;
-        imageUrls?: Array<string>;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MicrosoftAdsSearchResponse =
-  MicrosoftAdsSearchResponses[keyof MicrosoftAdsSearchResponses];
-
-export type MicrosoftAdsAdData = {
-  body: {
-    /**
-     * Microsoft Ad Library ad id, like 1234567890.
-     */
-    adId: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/microsoft/ads/ad";
-};
-
-export type MicrosoftAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MicrosoftAdsAdError =
-  MicrosoftAdsAdErrors[keyof MicrosoftAdsAdErrors];
-
-export type MicrosoftAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      adId?: string;
-      advertiserId?: string;
-      advertiserName?: string;
-      headline?: string;
-      text?: string;
-      linkUrl?: string;
-      linkCaption?: string;
-      imageUrls: Array<string>;
-      paidBy?: string;
-      firstShownAt?: string;
-      lastShownAt?: string;
-      impressionsMin?: number;
-      impressionsMax?: number;
-      countries: Array<{
-        country?: string;
-        share?: number;
-      }>;
-      targeting: Array<{
-        type?: string;
-        isExcluded: boolean;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MicrosoftAdsAdResponse =
-  MicrosoftAdsAdResponses[keyof MicrosoftAdsAdResponses];
-
-export type MicrosoftAdsAdvertisersData = {
-  body: {
-    query: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/microsoft/ads/advertisers";
-};
-
-export type MicrosoftAdsAdvertisersErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type MicrosoftAdsAdvertisersError =
-  MicrosoftAdsAdvertisersErrors[keyof MicrosoftAdsAdvertisersErrors];
-
-export type MicrosoftAdsAdvertisersResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      total?: number;
-      results: Array<{
-        advertiserId?: string;
-        advertiserName?: string;
-        advertiserCountry?: string;
-        isVerified: boolean;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type MicrosoftAdsAdvertisersResponse =
-  MicrosoftAdsAdvertisersResponses[keyof MicrosoftAdsAdvertisersResponses];
-
-export type PinterestAdsSearchData = {
-  body: {
-    /**
-     * EU country code like fr, or br or tr. Pinterest publishes ads for these countries only. Any case is accepted.
-     */
-    country: string;
-    /**
-     * Advertiser name to filter by. Pinterest does not publish advertiser names on the ads themselves, so results carry no advertiser.
-     */
-    advertiser?: string;
-    /**
-     * The cursor from the previous response. Send it as is.
-     */
-    cursor?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/pinterest/ads/search";
-};
-
-export type PinterestAdsSearchErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type PinterestAdsSearchError =
-  PinterestAdsSearchErrors[keyof PinterestAdsSearchErrors];
-
-export type PinterestAdsSearchResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        adId?: string;
-        adUrl: string;
-        headline?: string;
-        text?: string;
-        advertisers?: Array<string>;
-        imageUrl?: string;
-        videoUrl?: string;
-        links?: Array<string>;
-        firstShownAt?: string;
-        lastShownAt?: string;
-        reachMin?: number;
-        reachMax?: number;
-        reachByCountry?: Array<{
-          country?: string;
-          reachMin?: number;
-          reachMax?: number;
-        }>;
-        countries?: Array<string>;
-        ageRanges?: Array<string>;
-        genders?: Array<string>;
-        interests?: Array<string>;
-        audienceTypes?: Array<string>;
-        isCommercial: boolean;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type PinterestAdsSearchResponse =
-  PinterestAdsSearchResponses[keyof PinterestAdsSearchResponses];
-
-export type PinterestAdsAdData = {
-  body: {
-    /**
-     * Link to the Pinterest ad, like https://ads.pinterest.com/ads-repository/1234567890123456/. Send this or adId.
-     */
-    adUrl?: string;
-    /**
-     * Pinterest ad id, like 1234567890123456. Send this or adUrl.
-     */
-    adId?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/pinterest/ads/ad";
-};
-
-export type PinterestAdsAdErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type PinterestAdsAdError =
-  PinterestAdsAdErrors[keyof PinterestAdsAdErrors];
-
-export type PinterestAdsAdResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      adId?: string;
-      adUrl: string;
-      headline?: string;
-      text?: string;
-      advertisers: Array<string>;
-      imageUrl?: string;
-      videoUrl?: string;
-      links: Array<string>;
-      firstShownAt?: string;
-      lastShownAt?: string;
-      reachMin?: number;
-      reachMax?: number;
-      reachByCountry: Array<{
-        country?: string;
-        reachMin?: number;
-        reachMax?: number;
-      }>;
-      countries: Array<string>;
-      ageRanges: Array<string>;
-      genders: Array<string>;
-      interests: Array<string>;
-      audienceTypes: Array<string>;
-      isCommercial: boolean;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type PinterestAdsAdResponse =
-  PinterestAdsAdResponses[keyof PinterestAdsAdResponses];
 
 export type AmazonSuggestData = {
   body: {
@@ -10016,7 +9417,7 @@ export type TrustpilotSearchData = {
   body: {
     query: string;
     /**
-     * Page number, starting at 1.
+     * Page number, starting at 1. Trustpilot shows 10 pages of 10 companies without an account, so one search reaches at most 100 companies even when total is larger. Make the query more specific to reach the rest.
      */
     page?: number;
   };
@@ -10345,7 +9746,7 @@ export type AirbnbSearchResponses = {
          */
         reviews?: number;
         /**
-         * Price of the whole stay, taxes and fees included.
+         * The Total line of Airbnb's price details for the whole stay: the nights after discounts, plus every fee and tax Airbnb lists there, like Taxes, Taxes and fees or Resort fee. Airbnb lists no tax or fee for some places, such as Tokyo, Rio de Janeiro and Sydney, and there it equals pricePerNight times the nights. Exact to the cent; Airbnb's page rounds it up to a whole unit.
          */
         priceTotal?: number;
         /**
@@ -10353,7 +9754,7 @@ export type AirbnbSearchResponses = {
          */
         priceBeforeDiscount?: number;
         /**
-         * Nightly price after discounts, before taxes and fees.
+         * Average price of one night after discounts, from the nights line of Airbnb's price details. It leaves out taxes and fees, so priceTotal is higher than this times the nights wherever Airbnb lists any.
          */
         pricePerNight?: number;
         priceCurrency?:
@@ -10481,7 +9882,7 @@ export type AirbnbListingResponses = {
        */
       isAvailable?: boolean;
       /**
-       * Price of the whole stay, taxes and fees included.
+       * The Total line of Airbnb's price details for the whole stay: the nights after discounts, plus every fee and tax Airbnb lists there, like Taxes, Taxes and fees or Resort fee. Airbnb lists no tax or fee for some places, such as Tokyo, Rio de Janeiro and Sydney, and there it equals pricePerNight times the nights. Exact to the cent; Airbnb's page rounds it up to a whole unit.
        */
       priceTotal?: number;
       /**
@@ -10489,7 +9890,7 @@ export type AirbnbListingResponses = {
        */
       priceBeforeDiscount?: number;
       /**
-       * Nightly price after discounts, before taxes and fees.
+       * Average price of one night after discounts, from the nights line of Airbnb's price details. It leaves out taxes and fees, so priceTotal is higher than this times the nights wherever Airbnb lists any.
        */
       pricePerNight?: number;
       priceCurrency?:
@@ -10584,6 +9985,384 @@ export type AirbnbReviewsResponses = {
 
 export type AirbnbReviewsResponse =
   AirbnbReviewsResponses[keyof AirbnbReviewsResponses];
+
+export type FacebookPageData = {
+  body: {
+    /**
+     * Link to the Facebook page, like https://www.facebook.com/NASA. Send this or username.
+     */
+    pageUrl?: string;
+    /**
+     * Facebook page name, like NASA. Send this or pageUrl.
+     */
+    username?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/facebook/page";
+};
+
+export type FacebookPageErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type FacebookPageError = FacebookPageErrors[keyof FacebookPageErrors];
+
+export type FacebookPageResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      pageId?: string;
+      username?: string;
+      pageUrl: string;
+      name?: string;
+      category?: string;
+      isVerified: boolean;
+      followers?: number;
+      likes?: number;
+      talkingAboutThis?: number;
+      bio?: string;
+      address?: string;
+      phone?: string;
+      email?: string;
+      websites: Array<string>;
+      priceRange?: string;
+      avatarUrl?: string;
+      coverUrl?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type FacebookPageResponse =
+  FacebookPageResponses[keyof FacebookPageResponses];
+
+export type FacebookPostData = {
+  body: {
+    /**
+     * Link to the Facebook post, reel or video, like https://www.facebook.com/NASA/posts/pfbid02gw6zHFiZqf2s6SfjfvdBiBc2qwhTRfXkXsoaUrWS5ik7omNgKFtzDsfimXD4Lpx7l. Send this or postId.
+     */
+    postUrl?: string;
+    /**
+     * Facebook post, reel or video ID, like 1652244896270880. Send this or postUrl.
+     */
+    postId?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/facebook/post";
+};
+
+export type FacebookPostErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type FacebookPostError = FacebookPostErrors[keyof FacebookPostErrors];
+
+export type FacebookPostResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      postId?: string;
+      postUrl: string;
+      text?: string;
+      publishedAt?: string;
+      authorId?: string;
+      authorName?: string;
+      authorUrl?: string;
+      media: Array<{
+        type: "photo" | "video";
+        url?: string;
+        imageUrl?: string;
+        videoUrl?: string;
+        width?: number;
+        height?: number;
+        durationSeconds?: number;
+        altText?: string;
+      }>;
+      reactions?: {
+        total: number;
+        like: number;
+        love: number;
+        care: number;
+        haha: number;
+        wow: number;
+        sad: number;
+        angry: number;
+      };
+      comments?: number;
+      shares?: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type FacebookPostResponse =
+  FacebookPostResponses[keyof FacebookPostResponses];
+
+export type FacebookPostCommentsData = {
+  body: {
+    /**
+     * Link to the Facebook post, reel or video, like https://www.facebook.com/NASA/posts/pfbid02gw6zHFiZqf2s6SfjfvdBiBc2qwhTRfXkXsoaUrWS5ik7omNgKFtzDsfimXD4Lpx7l. Send this or postId.
+     */
+    postUrl?: string;
+    /**
+     * Facebook post, reel or video ID, like 1652244896270880. Send this or postUrl.
+     */
+    postId?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/facebook/post/comments";
+};
+
+export type FacebookPostCommentsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type FacebookPostCommentsError =
+  FacebookPostCommentsErrors[keyof FacebookPostCommentsErrors];
+
+export type FacebookPostCommentsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        commentId?: string;
+        commentUrl?: string;
+        text?: string;
+        publishedAt?: string;
+        authorId?: string;
+        authorName?: string;
+        authorUrl?: string;
+        likes?: number;
+        replies?: number;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type FacebookPostCommentsResponse =
+  FacebookPostCommentsResponses[keyof FacebookPostCommentsResponses];
+
+export type FacebookPagePostsData = {
+  body: {
+    /**
+     * Link to the Facebook page, like https://www.facebook.com/NASA. Send this or username.
+     */
+    pageUrl?: string;
+    /**
+     * Facebook page name, like NASA. Send this or pageUrl.
+     */
+    username?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/facebook/page/posts";
+};
+
+export type FacebookPagePostsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type FacebookPagePostsError =
+  FacebookPagePostsErrors[keyof FacebookPagePostsErrors];
+
+export type FacebookPagePostsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        postId?: string;
+        postUrl: string;
+        text?: string;
+        publishedAt?: string;
+        authorId?: string;
+        authorName?: string;
+        authorUrl?: string;
+        media?: Array<{
+          type: "photo" | "video";
+          url?: string;
+          imageUrl?: string;
+          videoUrl?: string;
+          width?: number;
+          height?: number;
+          durationSeconds?: number;
+          altText?: string;
+        }>;
+        reactions?: {
+          total: number;
+          like: number;
+          love: number;
+          care: number;
+          haha: number;
+          wow: number;
+          sad: number;
+          angry: number;
+        };
+        comments?: number;
+        shares?: number;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type FacebookPagePostsResponse =
+  FacebookPagePostsResponses[keyof FacebookPagePostsResponses];
+
+export type FacebookMarketplaceSearchData = {
+  body: {
+    /**
+     * Search query for Marketplace listings (e.g., "bike")
+     */
+    query: string;
+    /**
+     * City and state or ZIP code (e.g., "Austin, Texas", "78701")
+     */
+    location: string;
+    /**
+     * Lowest price in local currency (e.g., 50)
+     */
+    minPrice?: number;
+    /**
+     * Highest price in local currency (e.g., 500)
+     */
+    maxPrice?: number;
+    /**
+     * Sort order (newest, priceLow or priceHigh), relevance by default
+     */
+    sort?: "newest" | "priceLow" | "priceHigh";
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/facebook/marketplace/search";
+};
+
+export type FacebookMarketplaceSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type FacebookMarketplaceSearchError =
+  FacebookMarketplaceSearchErrors[keyof FacebookMarketplaceSearchErrors];
+
+export type FacebookMarketplaceSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      location?: string;
+      latitude: number;
+      longitude: number;
+      results: Array<{
+        listingId?: string;
+        listingUrl: string;
+        title?: string;
+        price?: number;
+        priceText?: string;
+        city?: string;
+        state?: string;
+        imageUrl?: string;
+        publishedAt?: string;
+        isPending: boolean;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type FacebookMarketplaceSearchResponse =
+  FacebookMarketplaceSearchResponses[keyof FacebookMarketplaceSearchResponses];
 
 export type ClientOptions = {
   baseUrl: "https://api.stophy.dev" | (string & {});

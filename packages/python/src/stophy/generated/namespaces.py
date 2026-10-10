@@ -36,6 +36,12 @@ from .models import (
     EbaySearchResponse,
     EbaySearchSort,
     EndpointCatalog,
+    FacebookMarketplaceSearchResponse,
+    FacebookMarketplaceSearchSort,
+    FacebookPagePostsResponse,
+    FacebookPageResponse,
+    FacebookPostCommentsResponse,
+    FacebookPostResponse,
     GoogleAdsAdResponse,
     GoogleAdsAdvertisersResponse,
     GoogleAdsSearchMediaType,
@@ -52,7 +58,6 @@ from .models import (
     GoogleHotelsPropertyTypesItem,
     GoogleHotelsResponse,
     GoogleHotelsSort,
-    GoogleImagesColor,
     GoogleImagesResponse,
     GoogleImagesSize,
     GoogleImagesTime,
@@ -82,7 +87,6 @@ from .models import (
     GooglePlaySearchResponse,
     GoogleScholarResponse,
     GoogleScholarType,
-    GoogleSearchFileType,
     GoogleSearchResponse,
     GoogleSearchTime,
     GoogleShoppingResponse,
@@ -99,8 +103,6 @@ from .models import (
     GoogleTrendsTrendingSort,
     GoogleTrendsTrendingStatus,
     GoogleTrendsTrendingTime,
-    GoogleVideosDuration,
-    GoogleVideosResponse,
     IndeedJobResponse,
     IndeedSearchCountry,
     IndeedSearchDatePosted,
@@ -111,12 +113,9 @@ from .models import (
     IndeedSearchRemote,
     IndeedSearchResponse,
     InstagramCommentsResponse,
-    InstagramCommentsSort,
     InstagramPostResponse,
     InstagramProfileReelsResponse,
     InstagramProfileResponse,
-    InstagramSearchResponse,
-    InstagramSearchType,
     LinkedinAdsAdResponse,
     LinkedinAdsSearchResponse,
     LinkedinAdsSearchWithin,
@@ -131,18 +130,12 @@ from .models import (
     MetaAdsPagePlatformsItem,
     MetaAdsPageResponse,
     MetaAdsPageStatus,
-    MicrosoftAdsAdResponse,
-    MicrosoftAdsAdvertisersResponse,
-    MicrosoftAdsSearchResponse,
-    PinterestAdsAdResponse,
-    PinterestAdsSearchResponse,
     PinterestBoardResponse,
     PinterestPinResponse,
     PinterestProfileResponse,
     PinterestSearchResponse,
     PinterestSearchType,
-    RedditDomainResponse,
-    RedditDomainSort,
+    RedditDiscussionsResponse,
     RedditPostResponse,
     RedditPostSort,
     RedditSearchResponse,
@@ -192,13 +185,11 @@ from .models import (
     UpworkSearchResponse,
     UpworkSearchSort,
     UpworkSearchWorkload,
+    XPostResponse,
+    XProfileResponse,
     YoutubeChannelResponse,
-    YoutubeChannelSearchResponse,
     YoutubeChannelSort,
     YoutubeChannelTab,
-    YoutubeChartsChart,
-    YoutubeChartsInterval,
-    YoutubeChartsResponse,
     YoutubeCommentsResponse,
     YoutubeCommentsSort,
     YoutubePlaylistResponse,
@@ -209,6 +200,7 @@ from .models import (
     YoutubeSearchResponse,
     YoutubeSearchType,
     YoutubeSearchUploadDate,
+    YoutubeSuggestCountry,
     YoutubeTranscriptResponse,
     YoutubeVideoResponse,
     ZillowPropertyResponse,
@@ -266,8 +258,6 @@ class SyncGoogleSearch:
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         time: GoogleSearchTime | None = None,
-        verbatim: bool | None = None,
-        file_type: GoogleSearchFileType | None = None,
         safe_search: bool | None = None,
         scrape_results: bool | None = None,
         scrape_limit: int | None = None,
@@ -281,8 +271,6 @@ class SyncGoogleSearch:
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "time": time,
-                "verbatim": verbatim,
-                "fileType": file_type,
                 "safeSearch": safe_search,
                 "scrapeResults": scrape_results,
                 "scrapeLimit": scrape_limit,
@@ -336,7 +324,6 @@ class SyncGoogleImages:
         country: str | None = None,
         language: str | None = None,
         size: GoogleImagesSize | None = None,
-        color: GoogleImagesColor | None = None,
         type: GoogleImagesType | None = None,
         time: GoogleImagesTime | None = None,
         usage_rights: GoogleImagesUsageRights | None = None,
@@ -348,7 +335,6 @@ class SyncGoogleImages:
                 "country": country,
                 "language": language,
                 "size": size,
-                "color": color,
                 "type": type,
                 "time": time,
                 "usageRights": usage_rights,
@@ -488,11 +474,13 @@ class SyncGoogleAdsAdvertisers:
         *,
         query: str,
         country: str | None = None,
+        limit: int | None = None,
     ) -> GoogleAdsAdvertisersResponse:
         body = _omit_none(
             {
                 "query": query,
                 "country": country,
+                "limit": limit,
             }
         )
         return self._call("POST", "/v1/google/ads/advertisers", body)
@@ -543,41 +531,6 @@ class SyncGoogleScholar:
         return self._call("POST", "/v1/google/scholar", body)
 
 
-class SyncGoogleVideos:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        include_domains: list[str] | None = None,
-        exclude_domains: list[str] | None = None,
-        time: GoogleSearchTime | None = None,
-        duration: GoogleVideosDuration | None = None,
-        high_quality: bool | None = None,
-        closed_captioned: bool | None = None,
-        page: int | None = None,
-    ) -> GoogleVideosResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-                "includeDomains": include_domains,
-                "excludeDomains": exclude_domains,
-                "time": time,
-                "duration": duration,
-                "highQuality": high_quality,
-                "closedCaptioned": closed_captioned,
-                "page": page,
-            }
-        )
-        return self._call("POST", "/v1/google/videos", body)
-
-
 class SyncGoogleJobs:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -592,7 +545,6 @@ class SyncGoogleJobs:
         date_posted: GoogleJobsDatePosted | None = None,
         job_type: GoogleJobsJobType | None = None,
         remote: bool | None = None,
-        no_degree: bool | None = None,
         cursor: str | None = None,
     ) -> GoogleJobsResponse:
         body = _omit_none(
@@ -604,7 +556,6 @@ class SyncGoogleJobs:
                 "datePosted": date_posted,
                 "jobType": job_type,
                 "remote": remote,
-                "noDegree": no_degree,
                 "cursor": cursor,
             }
         )
@@ -922,7 +873,7 @@ class SyncGoogleHotels:
         free_cancellation: bool | None = None,
         special_offers: bool | None = None,
         sort: GoogleHotelsSort | None = None,
-        page: int | None = None,
+        cursor: str | None = None,
     ) -> GoogleHotelsResponse:
         body = _omit_none(
             {
@@ -941,7 +892,7 @@ class SyncGoogleHotels:
                 "freeCancellation": free_cancellation,
                 "specialOffers": special_offers,
                 "sort": sort,
-                "page": page,
+                "cursor": cursor,
             }
         )
         return self._call("POST", "/v1/google/hotels", body)
@@ -1002,7 +953,6 @@ class SyncGooglePlayReviews:
         *,
         app_url: str | None = None,
         app_id: str | None = None,
-        country: str | None = None,
         language: str | None = None,
         sort: GooglePlayReviewsSort | None = None,
         rating: int | None = None,
@@ -1012,7 +962,6 @@ class SyncGooglePlayReviews:
             {
                 "appUrl": app_url,
                 "appId": app_id,
-                "country": country,
                 "language": language,
                 "sort": sort,
                 "rating": rating,
@@ -1043,7 +992,6 @@ class SyncGoogle:
     suggest: SyncGoogleSuggest
     ads: SyncGoogleAds
     scholar: SyncGoogleScholar
-    videos: SyncGoogleVideos
     jobs: SyncGoogleJobs
     patents: SyncGooglePatents
     maps: SyncGoogleMaps
@@ -1062,7 +1010,6 @@ class SyncGoogle:
         self.suggest = SyncGoogleSuggest(call)
         self.ads = SyncGoogleAds(call)
         self.scholar = SyncGoogleScholar(call)
-        self.videos = SyncGoogleVideos(call)
         self.jobs = SyncGoogleJobs(call)
         self.patents = SyncGooglePatents(call)
         self.maps = SyncGoogleMaps(call)
@@ -1080,7 +1027,7 @@ class SyncYoutubeSuggest:
         self,
         *,
         query: str,
-        country: str | None = None,
+        country: YoutubeSuggestCountry | None = None,
         language: str | None = None,
     ) -> GoogleSuggestResponse:
         body = _omit_none(
@@ -1189,35 +1136,9 @@ class SyncYoutubeComments:
         return self._call("POST", "/v1/youtube/comments", body)
 
 
-class SyncYoutubeChannelSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        channel_url: str | None = None,
-        channel_id: str | None = None,
-        cursor: str | None = None,
-    ) -> YoutubeChannelSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "channelUrl": channel_url,
-                "channelId": channel_id,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/youtube/channel/search", body)
-
-
 class SyncYoutubeChannel:
-    search: SyncYoutubeChannelSearch
-
     def __init__(self, call: SyncCall) -> None:
         self._call = call
-        self.search = SyncYoutubeChannelSearch(call)
 
     def __call__(
         self,
@@ -1238,46 +1159,6 @@ class SyncYoutubeChannel:
             }
         )
         return self._call("POST", "/v1/youtube/channel", body)
-
-
-class SyncYoutubeRelated:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        video_url: str | None = None,
-        video_id: str | None = None,
-        cursor: str | None = None,
-    ) -> YoutubeSearchResponse:
-        body = _omit_none(
-            {
-                "videoUrl": video_url,
-                "videoId": video_id,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/youtube/related", body)
-
-
-class SyncYoutubeHashtag:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        hashtag: str,
-        cursor: str | None = None,
-    ) -> YoutubeChannelSearchResponse:
-        body = _omit_none(
-            {
-                "hashtag": hashtag,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/youtube/hashtag", body)
 
 
 class SyncYoutubePost:
@@ -1301,29 +1182,6 @@ class SyncYoutubePost:
             }
         )
         return self._call("POST", "/v1/youtube/post", body)
-
-
-class SyncYoutubeCharts:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        chart: YoutubeChartsChart | None = None,
-        country: str | None = None,
-        interval: YoutubeChartsInterval | None = None,
-        limit: int | None = None,
-    ) -> YoutubeChartsResponse:
-        body = _omit_none(
-            {
-                "chart": chart,
-                "country": country,
-                "interval": interval,
-                "limit": limit,
-            }
-        )
-        return self._call("POST", "/v1/youtube/charts", body)
 
 
 class SyncYoutubePlaylist:
@@ -1354,10 +1212,7 @@ class SyncYoutube:
     video: SyncYoutubeVideo
     comments: SyncYoutubeComments
     channel: SyncYoutubeChannel
-    related: SyncYoutubeRelated
-    hashtag: SyncYoutubeHashtag
     post: SyncYoutubePost
-    charts: SyncYoutubeCharts
     playlist: SyncYoutubePlaylist
 
     def __init__(self, call: SyncCall) -> None:
@@ -1368,10 +1223,7 @@ class SyncYoutube:
         self.video = SyncYoutubeVideo(call)
         self.comments = SyncYoutubeComments(call)
         self.channel = SyncYoutubeChannel(call)
-        self.related = SyncYoutubeRelated(call)
-        self.hashtag = SyncYoutubeHashtag(call)
         self.post = SyncYoutubePost(call)
-        self.charts = SyncYoutubeCharts(call)
         self.playlist = SyncYoutubePlaylist(call)
 
 
@@ -1477,29 +1329,6 @@ class SyncRedditUser:
         return self._call("POST", "/v1/reddit/user", body)
 
 
-class SyncRedditDomain:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        domain: str,
-        sort: RedditDomainSort | None = None,
-        time: RedditSearchTime | None = None,
-        cursor: str | None = None,
-    ) -> RedditDomainResponse:
-        body = _omit_none(
-            {
-                "domain": domain,
-                "sort": sort,
-                "time": time,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/reddit/domain", body)
-
-
 class SyncRedditDiscussions:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -1510,7 +1339,7 @@ class SyncRedditDiscussions:
         post_url: str | None = None,
         post_id: str | None = None,
         cursor: str | None = None,
-    ) -> RedditDomainResponse:
+    ) -> RedditDiscussionsResponse:
         body = _omit_none(
             {
                 "postUrl": post_url,
@@ -1545,7 +1374,6 @@ class SyncReddit:
     post: SyncRedditPost
     subreddit: SyncRedditSubreddit
     user: SyncRedditUser
-    domain: SyncRedditDomain
     discussions: SyncRedditDiscussions
     subreddits: SyncRedditSubreddits
 
@@ -1555,7 +1383,6 @@ class SyncReddit:
         self.post = SyncRedditPost(call)
         self.subreddit = SyncRedditSubreddit(call)
         self.user = SyncRedditUser(call)
-        self.domain = SyncRedditDomain(call)
         self.discussions = SyncRedditDiscussions(call)
         self.subreddits = SyncRedditSubreddits(call)
 
@@ -1569,16 +1396,12 @@ class SyncInstagramComments:
         *,
         post_url: str | None = None,
         post_code: str | None = None,
-        comment: str | None = None,
-        sort: InstagramCommentsSort | None = None,
         cursor: str | None = None,
     ) -> InstagramCommentsResponse:
         body = _omit_none(
             {
                 "postUrl": post_url,
                 "postCode": post_code,
-                "comment": comment,
-                "sort": sort,
                 "cursor": cursor,
             }
         )
@@ -1649,27 +1472,6 @@ class SyncInstagramProfile:
         return self._call("POST", "/v1/instagram/profile", body)
 
 
-class SyncInstagramSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        type: InstagramSearchType | None = None,
-        cursor: str | None = None,
-    ) -> InstagramSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "type": type,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/instagram/search", body)
-
-
 class SyncInstagramTranscript:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -1697,7 +1499,6 @@ class SyncInstagram:
     comments: SyncInstagramComments
     post: SyncInstagramPost
     profile: SyncInstagramProfile
-    search: SyncInstagramSearch
     transcript: SyncInstagramTranscript
 
     def __init__(self, call: SyncCall) -> None:
@@ -1705,7 +1506,6 @@ class SyncInstagram:
         self.comments = SyncInstagramComments(call)
         self.post = SyncInstagramPost(call)
         self.profile = SyncInstagramProfile(call)
-        self.search = SyncInstagramSearch(call)
         self.transcript = SyncInstagramTranscript(call)
 
 
@@ -2238,6 +2038,7 @@ class SyncLinkedinPosts:
         profile_id: str | None = None,
         company_url: str | None = None,
         company_id: str | None = None,
+        cursor: str | None = None,
     ) -> LinkedinPostsResponse:
         body = _omit_none(
             {
@@ -2245,6 +2046,7 @@ class SyncLinkedinPosts:
                 "profileId": profile_id,
                 "companyUrl": company_url,
                 "companyId": company_id,
+                "cursor": cursor,
             }
         )
         return self._call("POST", "/v1/linkedin/posts", body)
@@ -2722,14 +2524,14 @@ class SyncBookingHotelReviews:
         hotel_url: str | None = None,
         hotel_id: str | None = None,
         sort: BookingHotelReviewsSort | None = None,
-        page: int | None = None,
+        cursor: str | None = None,
     ) -> BookingHotelReviewsResponse:
         body = _omit_none(
             {
                 "hotelUrl": hotel_url,
                 "hotelId": hotel_id,
                 "sort": sort,
-                "page": page,
+                "cursor": cursor,
             }
         )
         return self._call("POST", "/v1/booking/hotel/reviews", body)
@@ -3063,62 +2865,11 @@ class SyncPinterestProfile:
         return self._call("POST", "/v1/pinterest/profile", body)
 
 
-class SyncPinterestAdsSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        country: str,
-        advertiser: str | None = None,
-        cursor: str | None = None,
-    ) -> PinterestAdsSearchResponse:
-        body = _omit_none(
-            {
-                "country": country,
-                "advertiser": advertiser,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/pinterest/ads/search", body)
-
-
-class SyncPinterestAdsAd:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        ad_url: str | None = None,
-        ad_id: str | None = None,
-    ) -> PinterestAdsAdResponse:
-        body = _omit_none(
-            {
-                "adUrl": ad_url,
-                "adId": ad_id,
-            }
-        )
-        return self._call("POST", "/v1/pinterest/ads/ad", body)
-
-
-class SyncPinterestAds:
-    search: SyncPinterestAdsSearch
-    ad: SyncPinterestAdsAd
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.search = SyncPinterestAdsSearch(call)
-        self.ad = SyncPinterestAdsAd(call)
-
-
 class SyncPinterest:
     search: SyncPinterestSearch
     pin: SyncPinterestPin
     board: SyncPinterestBoard
     profile: SyncPinterestProfile
-    ads: SyncPinterestAds
 
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -3126,84 +2877,54 @@ class SyncPinterest:
         self.pin = SyncPinterestPin(call)
         self.board = SyncPinterestBoard(call)
         self.profile = SyncPinterestProfile(call)
-        self.ads = SyncPinterestAds(call)
 
 
-class SyncMicrosoftAdsSearch:
+class SyncXProfile:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
 
     def __call__(
         self,
         *,
-        query: str | None = None,
-        advertiser: str | None = None,
-        country: str | None = None,
-        cursor: str | None = None,
-    ) -> MicrosoftAdsSearchResponse:
+        profile_url: str | None = None,
+        username: str | None = None,
+    ) -> XProfileResponse:
         body = _omit_none(
             {
-                "query": query,
-                "advertiser": advertiser,
-                "country": country,
-                "cursor": cursor,
+                "profileUrl": profile_url,
+                "username": username,
             }
         )
-        return self._call("POST", "/v1/microsoft/ads/search", body)
+        return self._call("POST", "/v1/x/profile", body)
 
 
-class SyncMicrosoftAdsAd:
+class SyncXPost:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
 
     def __call__(
         self,
         *,
-        ad_id: str,
-    ) -> MicrosoftAdsAdResponse:
+        post_url: str | None = None,
+        post_id: str | None = None,
+    ) -> XPostResponse:
         body = _omit_none(
             {
-                "adId": ad_id,
+                "postUrl": post_url,
+                "postId": post_id,
             }
         )
-        return self._call("POST", "/v1/microsoft/ads/ad", body)
+        return self._call("POST", "/v1/x/post", body)
 
 
-class SyncMicrosoftAdsAdvertisers:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-    ) -> MicrosoftAdsAdvertisersResponse:
-        body = _omit_none(
-            {
-                "query": query,
-            }
-        )
-        return self._call("POST", "/v1/microsoft/ads/advertisers", body)
-
-
-class SyncMicrosoftAds:
-    search: SyncMicrosoftAdsSearch
-    ad: SyncMicrosoftAdsAd
-    advertisers: SyncMicrosoftAdsAdvertisers
+class SyncX:
+    profile: SyncXProfile
+    post: SyncXPost
 
     def __init__(self, call: SyncCall) -> None:
         self._call = call
-        self.search = SyncMicrosoftAdsSearch(call)
-        self.ad = SyncMicrosoftAdsAd(call)
-        self.advertisers = SyncMicrosoftAdsAdvertisers(call)
-
-
-class SyncMicrosoft:
-    ads: SyncMicrosoftAds
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.ads = SyncMicrosoftAds(call)
+        self.profile = SyncXProfile(call)
+        self.post = SyncXPost(call)
 
 
 class SyncThreadsProfilePosts:
@@ -3513,6 +3234,137 @@ class SyncAirbnb:
         self.reviews = SyncAirbnbReviews(call)
 
 
+class SyncFacebookPagePosts:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        page_url: str | None = None,
+        username: str | None = None,
+        cursor: str | None = None,
+    ) -> FacebookPagePostsResponse:
+        body = _omit_none(
+            {
+                "pageUrl": page_url,
+                "username": username,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/facebook/page/posts", body)
+
+
+class SyncFacebookPage:
+    posts: SyncFacebookPagePosts
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.posts = SyncFacebookPagePosts(call)
+
+    def __call__(
+        self,
+        *,
+        page_url: str | None = None,
+        username: str | None = None,
+    ) -> FacebookPageResponse:
+        body = _omit_none(
+            {
+                "pageUrl": page_url,
+                "username": username,
+            }
+        )
+        return self._call("POST", "/v1/facebook/page", body)
+
+
+class SyncFacebookPostComments:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        post_url: str | None = None,
+        post_id: str | None = None,
+        cursor: str | None = None,
+    ) -> FacebookPostCommentsResponse:
+        body = _omit_none(
+            {
+                "postUrl": post_url,
+                "postId": post_id,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/facebook/post/comments", body)
+
+
+class SyncFacebookPost:
+    comments: SyncFacebookPostComments
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.comments = SyncFacebookPostComments(call)
+
+    def __call__(
+        self,
+        *,
+        post_url: str | None = None,
+        post_id: str | None = None,
+    ) -> FacebookPostResponse:
+        body = _omit_none(
+            {
+                "postUrl": post_url,
+                "postId": post_id,
+            }
+        )
+        return self._call("POST", "/v1/facebook/post", body)
+
+
+class SyncFacebookMarketplaceSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        location: str,
+        min_price: int | None = None,
+        max_price: int | None = None,
+        sort: FacebookMarketplaceSearchSort | None = None,
+    ) -> FacebookMarketplaceSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "location": location,
+                "minPrice": min_price,
+                "maxPrice": max_price,
+                "sort": sort,
+            }
+        )
+        return self._call("POST", "/v1/facebook/marketplace/search", body)
+
+
+class SyncFacebookMarketplace:
+    search: SyncFacebookMarketplaceSearch
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncFacebookMarketplaceSearch(call)
+
+
+class SyncFacebook:
+    page: SyncFacebookPage
+    post: SyncFacebookPost
+    marketplace: SyncFacebookMarketplace
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.page = SyncFacebookPage(call)
+        self.post = SyncFacebookPost(call)
+        self.marketplace = SyncFacebookMarketplace(call)
+
+
 class SyncWebSearch:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -3526,8 +3378,6 @@ class SyncWebSearch:
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         time: GoogleSearchTime | None = None,
-        verbatim: bool | None = None,
-        file_type: GoogleSearchFileType | None = None,
         safe_search: bool | None = None,
         scrape_results: bool | None = None,
         scrape_limit: int | None = None,
@@ -3541,8 +3391,6 @@ class SyncWebSearch:
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "time": time,
-                "verbatim": verbatim,
-                "fileType": file_type,
                 "safeSearch": safe_search,
                 "scrapeResults": scrape_results,
                 "scrapeLimit": scrape_limit,
@@ -3613,11 +3461,12 @@ class SyncSurface:
     amazon: SyncAmazon
     appstore: SyncAppstore
     pinterest: SyncPinterest
-    microsoft: SyncMicrosoft
+    x: SyncX
     threads: SyncThreads
     trustpilot: SyncTrustpilot
     ebay: SyncEbay
     airbnb: SyncAirbnb
+    facebook: SyncFacebook
     web: SyncWeb
 
     def __init__(self, call: SyncCall) -> None:
@@ -3638,11 +3487,12 @@ class SyncSurface:
         self.amazon = SyncAmazon(call)
         self.appstore = SyncAppstore(call)
         self.pinterest = SyncPinterest(call)
-        self.microsoft = SyncMicrosoft(call)
+        self.x = SyncX(call)
         self.threads = SyncThreads(call)
         self.trustpilot = SyncTrustpilot(call)
         self.ebay = SyncEbay(call)
         self.airbnb = SyncAirbnb(call)
+        self.facebook = SyncFacebook(call)
         self.web = SyncWeb(call)
 
 
@@ -3670,8 +3520,6 @@ class AsyncGoogleSearch:
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         time: GoogleSearchTime | None = None,
-        verbatim: bool | None = None,
-        file_type: GoogleSearchFileType | None = None,
         safe_search: bool | None = None,
         scrape_results: bool | None = None,
         scrape_limit: int | None = None,
@@ -3685,8 +3533,6 @@ class AsyncGoogleSearch:
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "time": time,
-                "verbatim": verbatim,
-                "fileType": file_type,
                 "safeSearch": safe_search,
                 "scrapeResults": scrape_results,
                 "scrapeLimit": scrape_limit,
@@ -3740,7 +3586,6 @@ class AsyncGoogleImages:
         country: str | None = None,
         language: str | None = None,
         size: GoogleImagesSize | None = None,
-        color: GoogleImagesColor | None = None,
         type: GoogleImagesType | None = None,
         time: GoogleImagesTime | None = None,
         usage_rights: GoogleImagesUsageRights | None = None,
@@ -3752,7 +3597,6 @@ class AsyncGoogleImages:
                 "country": country,
                 "language": language,
                 "size": size,
-                "color": color,
                 "type": type,
                 "time": time,
                 "usageRights": usage_rights,
@@ -3892,11 +3736,13 @@ class AsyncGoogleAdsAdvertisers:
         *,
         query: str,
         country: str | None = None,
+        limit: int | None = None,
     ) -> GoogleAdsAdvertisersResponse:
         body = _omit_none(
             {
                 "query": query,
                 "country": country,
+                "limit": limit,
             }
         )
         return await self._call("POST", "/v1/google/ads/advertisers", body)
@@ -3947,41 +3793,6 @@ class AsyncGoogleScholar:
         return await self._call("POST", "/v1/google/scholar", body)
 
 
-class AsyncGoogleVideos:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        include_domains: list[str] | None = None,
-        exclude_domains: list[str] | None = None,
-        time: GoogleSearchTime | None = None,
-        duration: GoogleVideosDuration | None = None,
-        high_quality: bool | None = None,
-        closed_captioned: bool | None = None,
-        page: int | None = None,
-    ) -> GoogleVideosResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-                "includeDomains": include_domains,
-                "excludeDomains": exclude_domains,
-                "time": time,
-                "duration": duration,
-                "highQuality": high_quality,
-                "closedCaptioned": closed_captioned,
-                "page": page,
-            }
-        )
-        return await self._call("POST", "/v1/google/videos", body)
-
-
 class AsyncGoogleJobs:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -3996,7 +3807,6 @@ class AsyncGoogleJobs:
         date_posted: GoogleJobsDatePosted | None = None,
         job_type: GoogleJobsJobType | None = None,
         remote: bool | None = None,
-        no_degree: bool | None = None,
         cursor: str | None = None,
     ) -> GoogleJobsResponse:
         body = _omit_none(
@@ -4008,7 +3818,6 @@ class AsyncGoogleJobs:
                 "datePosted": date_posted,
                 "jobType": job_type,
                 "remote": remote,
-                "noDegree": no_degree,
                 "cursor": cursor,
             }
         )
@@ -4326,7 +4135,7 @@ class AsyncGoogleHotels:
         free_cancellation: bool | None = None,
         special_offers: bool | None = None,
         sort: GoogleHotelsSort | None = None,
-        page: int | None = None,
+        cursor: str | None = None,
     ) -> GoogleHotelsResponse:
         body = _omit_none(
             {
@@ -4345,7 +4154,7 @@ class AsyncGoogleHotels:
                 "freeCancellation": free_cancellation,
                 "specialOffers": special_offers,
                 "sort": sort,
-                "page": page,
+                "cursor": cursor,
             }
         )
         return await self._call("POST", "/v1/google/hotels", body)
@@ -4406,7 +4215,6 @@ class AsyncGooglePlayReviews:
         *,
         app_url: str | None = None,
         app_id: str | None = None,
-        country: str | None = None,
         language: str | None = None,
         sort: GooglePlayReviewsSort | None = None,
         rating: int | None = None,
@@ -4416,7 +4224,6 @@ class AsyncGooglePlayReviews:
             {
                 "appUrl": app_url,
                 "appId": app_id,
-                "country": country,
                 "language": language,
                 "sort": sort,
                 "rating": rating,
@@ -4447,7 +4254,6 @@ class AsyncGoogle:
     suggest: AsyncGoogleSuggest
     ads: AsyncGoogleAds
     scholar: AsyncGoogleScholar
-    videos: AsyncGoogleVideos
     jobs: AsyncGoogleJobs
     patents: AsyncGooglePatents
     maps: AsyncGoogleMaps
@@ -4466,7 +4272,6 @@ class AsyncGoogle:
         self.suggest = AsyncGoogleSuggest(call)
         self.ads = AsyncGoogleAds(call)
         self.scholar = AsyncGoogleScholar(call)
-        self.videos = AsyncGoogleVideos(call)
         self.jobs = AsyncGoogleJobs(call)
         self.patents = AsyncGooglePatents(call)
         self.maps = AsyncGoogleMaps(call)
@@ -4484,7 +4289,7 @@ class AsyncYoutubeSuggest:
         self,
         *,
         query: str,
-        country: str | None = None,
+        country: YoutubeSuggestCountry | None = None,
         language: str | None = None,
     ) -> GoogleSuggestResponse:
         body = _omit_none(
@@ -4593,35 +4398,9 @@ class AsyncYoutubeComments:
         return await self._call("POST", "/v1/youtube/comments", body)
 
 
-class AsyncYoutubeChannelSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        channel_url: str | None = None,
-        channel_id: str | None = None,
-        cursor: str | None = None,
-    ) -> YoutubeChannelSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "channelUrl": channel_url,
-                "channelId": channel_id,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/youtube/channel/search", body)
-
-
 class AsyncYoutubeChannel:
-    search: AsyncYoutubeChannelSearch
-
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
-        self.search = AsyncYoutubeChannelSearch(call)
 
     async def __call__(
         self,
@@ -4642,46 +4421,6 @@ class AsyncYoutubeChannel:
             }
         )
         return await self._call("POST", "/v1/youtube/channel", body)
-
-
-class AsyncYoutubeRelated:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        video_url: str | None = None,
-        video_id: str | None = None,
-        cursor: str | None = None,
-    ) -> YoutubeSearchResponse:
-        body = _omit_none(
-            {
-                "videoUrl": video_url,
-                "videoId": video_id,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/youtube/related", body)
-
-
-class AsyncYoutubeHashtag:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        hashtag: str,
-        cursor: str | None = None,
-    ) -> YoutubeChannelSearchResponse:
-        body = _omit_none(
-            {
-                "hashtag": hashtag,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/youtube/hashtag", body)
 
 
 class AsyncYoutubePost:
@@ -4705,29 +4444,6 @@ class AsyncYoutubePost:
             }
         )
         return await self._call("POST", "/v1/youtube/post", body)
-
-
-class AsyncYoutubeCharts:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        chart: YoutubeChartsChart | None = None,
-        country: str | None = None,
-        interval: YoutubeChartsInterval | None = None,
-        limit: int | None = None,
-    ) -> YoutubeChartsResponse:
-        body = _omit_none(
-            {
-                "chart": chart,
-                "country": country,
-                "interval": interval,
-                "limit": limit,
-            }
-        )
-        return await self._call("POST", "/v1/youtube/charts", body)
 
 
 class AsyncYoutubePlaylist:
@@ -4758,10 +4474,7 @@ class AsyncYoutube:
     video: AsyncYoutubeVideo
     comments: AsyncYoutubeComments
     channel: AsyncYoutubeChannel
-    related: AsyncYoutubeRelated
-    hashtag: AsyncYoutubeHashtag
     post: AsyncYoutubePost
-    charts: AsyncYoutubeCharts
     playlist: AsyncYoutubePlaylist
 
     def __init__(self, call: AsyncCall) -> None:
@@ -4772,10 +4485,7 @@ class AsyncYoutube:
         self.video = AsyncYoutubeVideo(call)
         self.comments = AsyncYoutubeComments(call)
         self.channel = AsyncYoutubeChannel(call)
-        self.related = AsyncYoutubeRelated(call)
-        self.hashtag = AsyncYoutubeHashtag(call)
         self.post = AsyncYoutubePost(call)
-        self.charts = AsyncYoutubeCharts(call)
         self.playlist = AsyncYoutubePlaylist(call)
 
 
@@ -4881,29 +4591,6 @@ class AsyncRedditUser:
         return await self._call("POST", "/v1/reddit/user", body)
 
 
-class AsyncRedditDomain:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        domain: str,
-        sort: RedditDomainSort | None = None,
-        time: RedditSearchTime | None = None,
-        cursor: str | None = None,
-    ) -> RedditDomainResponse:
-        body = _omit_none(
-            {
-                "domain": domain,
-                "sort": sort,
-                "time": time,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/reddit/domain", body)
-
-
 class AsyncRedditDiscussions:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -4914,7 +4601,7 @@ class AsyncRedditDiscussions:
         post_url: str | None = None,
         post_id: str | None = None,
         cursor: str | None = None,
-    ) -> RedditDomainResponse:
+    ) -> RedditDiscussionsResponse:
         body = _omit_none(
             {
                 "postUrl": post_url,
@@ -4949,7 +4636,6 @@ class AsyncReddit:
     post: AsyncRedditPost
     subreddit: AsyncRedditSubreddit
     user: AsyncRedditUser
-    domain: AsyncRedditDomain
     discussions: AsyncRedditDiscussions
     subreddits: AsyncRedditSubreddits
 
@@ -4959,7 +4645,6 @@ class AsyncReddit:
         self.post = AsyncRedditPost(call)
         self.subreddit = AsyncRedditSubreddit(call)
         self.user = AsyncRedditUser(call)
-        self.domain = AsyncRedditDomain(call)
         self.discussions = AsyncRedditDiscussions(call)
         self.subreddits = AsyncRedditSubreddits(call)
 
@@ -4973,16 +4658,12 @@ class AsyncInstagramComments:
         *,
         post_url: str | None = None,
         post_code: str | None = None,
-        comment: str | None = None,
-        sort: InstagramCommentsSort | None = None,
         cursor: str | None = None,
     ) -> InstagramCommentsResponse:
         body = _omit_none(
             {
                 "postUrl": post_url,
                 "postCode": post_code,
-                "comment": comment,
-                "sort": sort,
                 "cursor": cursor,
             }
         )
@@ -5053,27 +4734,6 @@ class AsyncInstagramProfile:
         return await self._call("POST", "/v1/instagram/profile", body)
 
 
-class AsyncInstagramSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        type: InstagramSearchType | None = None,
-        cursor: str | None = None,
-    ) -> InstagramSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "type": type,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/instagram/search", body)
-
-
 class AsyncInstagramTranscript:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -5101,7 +4761,6 @@ class AsyncInstagram:
     comments: AsyncInstagramComments
     post: AsyncInstagramPost
     profile: AsyncInstagramProfile
-    search: AsyncInstagramSearch
     transcript: AsyncInstagramTranscript
 
     def __init__(self, call: AsyncCall) -> None:
@@ -5109,7 +4768,6 @@ class AsyncInstagram:
         self.comments = AsyncInstagramComments(call)
         self.post = AsyncInstagramPost(call)
         self.profile = AsyncInstagramProfile(call)
-        self.search = AsyncInstagramSearch(call)
         self.transcript = AsyncInstagramTranscript(call)
 
 
@@ -5642,6 +5300,7 @@ class AsyncLinkedinPosts:
         profile_id: str | None = None,
         company_url: str | None = None,
         company_id: str | None = None,
+        cursor: str | None = None,
     ) -> LinkedinPostsResponse:
         body = _omit_none(
             {
@@ -5649,6 +5308,7 @@ class AsyncLinkedinPosts:
                 "profileId": profile_id,
                 "companyUrl": company_url,
                 "companyId": company_id,
+                "cursor": cursor,
             }
         )
         return await self._call("POST", "/v1/linkedin/posts", body)
@@ -6126,14 +5786,14 @@ class AsyncBookingHotelReviews:
         hotel_url: str | None = None,
         hotel_id: str | None = None,
         sort: BookingHotelReviewsSort | None = None,
-        page: int | None = None,
+        cursor: str | None = None,
     ) -> BookingHotelReviewsResponse:
         body = _omit_none(
             {
                 "hotelUrl": hotel_url,
                 "hotelId": hotel_id,
                 "sort": sort,
-                "page": page,
+                "cursor": cursor,
             }
         )
         return await self._call("POST", "/v1/booking/hotel/reviews", body)
@@ -6467,62 +6127,11 @@ class AsyncPinterestProfile:
         return await self._call("POST", "/v1/pinterest/profile", body)
 
 
-class AsyncPinterestAdsSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        country: str,
-        advertiser: str | None = None,
-        cursor: str | None = None,
-    ) -> PinterestAdsSearchResponse:
-        body = _omit_none(
-            {
-                "country": country,
-                "advertiser": advertiser,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/pinterest/ads/search", body)
-
-
-class AsyncPinterestAdsAd:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        ad_url: str | None = None,
-        ad_id: str | None = None,
-    ) -> PinterestAdsAdResponse:
-        body = _omit_none(
-            {
-                "adUrl": ad_url,
-                "adId": ad_id,
-            }
-        )
-        return await self._call("POST", "/v1/pinterest/ads/ad", body)
-
-
-class AsyncPinterestAds:
-    search: AsyncPinterestAdsSearch
-    ad: AsyncPinterestAdsAd
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.search = AsyncPinterestAdsSearch(call)
-        self.ad = AsyncPinterestAdsAd(call)
-
-
 class AsyncPinterest:
     search: AsyncPinterestSearch
     pin: AsyncPinterestPin
     board: AsyncPinterestBoard
     profile: AsyncPinterestProfile
-    ads: AsyncPinterestAds
 
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -6530,84 +6139,54 @@ class AsyncPinterest:
         self.pin = AsyncPinterestPin(call)
         self.board = AsyncPinterestBoard(call)
         self.profile = AsyncPinterestProfile(call)
-        self.ads = AsyncPinterestAds(call)
 
 
-class AsyncMicrosoftAdsSearch:
+class AsyncXProfile:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
 
     async def __call__(
         self,
         *,
-        query: str | None = None,
-        advertiser: str | None = None,
-        country: str | None = None,
-        cursor: str | None = None,
-    ) -> MicrosoftAdsSearchResponse:
+        profile_url: str | None = None,
+        username: str | None = None,
+    ) -> XProfileResponse:
         body = _omit_none(
             {
-                "query": query,
-                "advertiser": advertiser,
-                "country": country,
-                "cursor": cursor,
+                "profileUrl": profile_url,
+                "username": username,
             }
         )
-        return await self._call("POST", "/v1/microsoft/ads/search", body)
+        return await self._call("POST", "/v1/x/profile", body)
 
 
-class AsyncMicrosoftAdsAd:
+class AsyncXPost:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
 
     async def __call__(
         self,
         *,
-        ad_id: str,
-    ) -> MicrosoftAdsAdResponse:
+        post_url: str | None = None,
+        post_id: str | None = None,
+    ) -> XPostResponse:
         body = _omit_none(
             {
-                "adId": ad_id,
+                "postUrl": post_url,
+                "postId": post_id,
             }
         )
-        return await self._call("POST", "/v1/microsoft/ads/ad", body)
+        return await self._call("POST", "/v1/x/post", body)
 
 
-class AsyncMicrosoftAdsAdvertisers:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-    ) -> MicrosoftAdsAdvertisersResponse:
-        body = _omit_none(
-            {
-                "query": query,
-            }
-        )
-        return await self._call("POST", "/v1/microsoft/ads/advertisers", body)
-
-
-class AsyncMicrosoftAds:
-    search: AsyncMicrosoftAdsSearch
-    ad: AsyncMicrosoftAdsAd
-    advertisers: AsyncMicrosoftAdsAdvertisers
+class AsyncX:
+    profile: AsyncXProfile
+    post: AsyncXPost
 
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
-        self.search = AsyncMicrosoftAdsSearch(call)
-        self.ad = AsyncMicrosoftAdsAd(call)
-        self.advertisers = AsyncMicrosoftAdsAdvertisers(call)
-
-
-class AsyncMicrosoft:
-    ads: AsyncMicrosoftAds
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.ads = AsyncMicrosoftAds(call)
+        self.profile = AsyncXProfile(call)
+        self.post = AsyncXPost(call)
 
 
 class AsyncThreadsProfilePosts:
@@ -6917,6 +6496,137 @@ class AsyncAirbnb:
         self.reviews = AsyncAirbnbReviews(call)
 
 
+class AsyncFacebookPagePosts:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        page_url: str | None = None,
+        username: str | None = None,
+        cursor: str | None = None,
+    ) -> FacebookPagePostsResponse:
+        body = _omit_none(
+            {
+                "pageUrl": page_url,
+                "username": username,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/facebook/page/posts", body)
+
+
+class AsyncFacebookPage:
+    posts: AsyncFacebookPagePosts
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.posts = AsyncFacebookPagePosts(call)
+
+    async def __call__(
+        self,
+        *,
+        page_url: str | None = None,
+        username: str | None = None,
+    ) -> FacebookPageResponse:
+        body = _omit_none(
+            {
+                "pageUrl": page_url,
+                "username": username,
+            }
+        )
+        return await self._call("POST", "/v1/facebook/page", body)
+
+
+class AsyncFacebookPostComments:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        post_url: str | None = None,
+        post_id: str | None = None,
+        cursor: str | None = None,
+    ) -> FacebookPostCommentsResponse:
+        body = _omit_none(
+            {
+                "postUrl": post_url,
+                "postId": post_id,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/facebook/post/comments", body)
+
+
+class AsyncFacebookPost:
+    comments: AsyncFacebookPostComments
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.comments = AsyncFacebookPostComments(call)
+
+    async def __call__(
+        self,
+        *,
+        post_url: str | None = None,
+        post_id: str | None = None,
+    ) -> FacebookPostResponse:
+        body = _omit_none(
+            {
+                "postUrl": post_url,
+                "postId": post_id,
+            }
+        )
+        return await self._call("POST", "/v1/facebook/post", body)
+
+
+class AsyncFacebookMarketplaceSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        location: str,
+        min_price: int | None = None,
+        max_price: int | None = None,
+        sort: FacebookMarketplaceSearchSort | None = None,
+    ) -> FacebookMarketplaceSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "location": location,
+                "minPrice": min_price,
+                "maxPrice": max_price,
+                "sort": sort,
+            }
+        )
+        return await self._call("POST", "/v1/facebook/marketplace/search", body)
+
+
+class AsyncFacebookMarketplace:
+    search: AsyncFacebookMarketplaceSearch
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncFacebookMarketplaceSearch(call)
+
+
+class AsyncFacebook:
+    page: AsyncFacebookPage
+    post: AsyncFacebookPost
+    marketplace: AsyncFacebookMarketplace
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.page = AsyncFacebookPage(call)
+        self.post = AsyncFacebookPost(call)
+        self.marketplace = AsyncFacebookMarketplace(call)
+
+
 class AsyncWebSearch:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -6930,8 +6640,6 @@ class AsyncWebSearch:
         include_domains: list[str] | None = None,
         exclude_domains: list[str] | None = None,
         time: GoogleSearchTime | None = None,
-        verbatim: bool | None = None,
-        file_type: GoogleSearchFileType | None = None,
         safe_search: bool | None = None,
         scrape_results: bool | None = None,
         scrape_limit: int | None = None,
@@ -6945,8 +6653,6 @@ class AsyncWebSearch:
                 "includeDomains": include_domains,
                 "excludeDomains": exclude_domains,
                 "time": time,
-                "verbatim": verbatim,
-                "fileType": file_type,
                 "safeSearch": safe_search,
                 "scrapeResults": scrape_results,
                 "scrapeLimit": scrape_limit,
@@ -7017,11 +6723,12 @@ class AsyncSurface:
     amazon: AsyncAmazon
     appstore: AsyncAppstore
     pinterest: AsyncPinterest
-    microsoft: AsyncMicrosoft
+    x: AsyncX
     threads: AsyncThreads
     trustpilot: AsyncTrustpilot
     ebay: AsyncEbay
     airbnb: AsyncAirbnb
+    facebook: AsyncFacebook
     web: AsyncWeb
 
     def __init__(self, call: AsyncCall) -> None:
@@ -7042,9 +6749,10 @@ class AsyncSurface:
         self.amazon = AsyncAmazon(call)
         self.appstore = AsyncAppstore(call)
         self.pinterest = AsyncPinterest(call)
-        self.microsoft = AsyncMicrosoft(call)
+        self.x = AsyncX(call)
         self.threads = AsyncThreads(call)
         self.trustpilot = AsyncTrustpilot(call)
         self.ebay = AsyncEbay(call)
         self.airbnb = AsyncAirbnb(call)
+        self.facebook = AsyncFacebook(call)
         self.web = AsyncWeb(call)
