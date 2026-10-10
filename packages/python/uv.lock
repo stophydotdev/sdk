@@ -259,7 +259,7 @@ wheels = [
 
 [[package]]
 name = "stophy"
-version = "1.0.8"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },

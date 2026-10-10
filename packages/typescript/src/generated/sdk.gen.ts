@@ -38,9 +38,6 @@ import type {
   GoogleScholarData,
   GoogleScholarResponse,
   GoogleScholarError,
-  GoogleVideosData,
-  GoogleVideosResponse,
-  GoogleVideosError,
   GoogleJobsData,
   GoogleJobsResponse,
   GoogleJobsError,
@@ -65,21 +62,9 @@ import type {
   YoutubeChannelData,
   YoutubeChannelResponse,
   YoutubeChannelError,
-  YoutubeChannelSearchData,
-  YoutubeChannelSearchResponse,
-  YoutubeChannelSearchError,
-  YoutubeRelatedData,
-  YoutubeRelatedResponse,
-  YoutubeRelatedError,
-  YoutubeHashtagData,
-  YoutubeHashtagResponse,
-  YoutubeHashtagError,
   YoutubePostData,
   YoutubePostResponse,
   YoutubePostError,
-  YoutubeChartsData,
-  YoutubeChartsResponse,
-  YoutubeChartsError,
   YoutubePlaylistData,
   YoutubePlaylistResponse,
   YoutubePlaylistError,
@@ -95,9 +80,6 @@ import type {
   RedditUserData,
   RedditUserResponse,
   RedditUserError,
-  RedditDomainData,
-  RedditDomainResponse,
-  RedditDomainError,
   RedditDiscussionsData,
   RedditDiscussionsResponse,
   RedditDiscussionsError,
@@ -125,9 +107,6 @@ import type {
   InstagramProfileReelsData,
   InstagramProfileReelsResponse,
   InstagramProfileReelsError,
-  InstagramSearchData,
-  InstagramSearchResponse,
-  InstagramSearchError,
   InstagramTranscriptData,
   InstagramTranscriptResponse,
   InstagramTranscriptError,
@@ -284,6 +263,12 @@ import type {
   PinterestProfileData,
   PinterestProfileResponse,
   PinterestProfileError,
+  XProfileData,
+  XProfileResponse,
+  XProfileError,
+  XPostData,
+  XPostResponse,
+  XPostError,
   MetaAdsSearchData,
   MetaAdsSearchResponse,
   MetaAdsSearchError,
@@ -296,21 +281,6 @@ import type {
   LinkedinAdsAdData,
   LinkedinAdsAdResponse,
   LinkedinAdsAdError,
-  MicrosoftAdsSearchData,
-  MicrosoftAdsSearchResponse,
-  MicrosoftAdsSearchError,
-  MicrosoftAdsAdData,
-  MicrosoftAdsAdResponse,
-  MicrosoftAdsAdError,
-  MicrosoftAdsAdvertisersData,
-  MicrosoftAdsAdvertisersResponse,
-  MicrosoftAdsAdvertisersError,
-  PinterestAdsSearchData,
-  PinterestAdsSearchResponse,
-  PinterestAdsSearchError,
-  PinterestAdsAdData,
-  PinterestAdsAdResponse,
-  PinterestAdsAdError,
   AmazonSuggestData,
   AmazonSuggestResponse,
   AmazonSuggestError,
@@ -353,6 +323,21 @@ import type {
   AirbnbReviewsData,
   AirbnbReviewsResponse,
   AirbnbReviewsError,
+  FacebookPageData,
+  FacebookPageResponse,
+  FacebookPageError,
+  FacebookPostData,
+  FacebookPostResponse,
+  FacebookPostError,
+  FacebookPostCommentsData,
+  FacebookPostCommentsResponse,
+  FacebookPostCommentsError,
+  FacebookPagePostsData,
+  FacebookPagePostsResponse,
+  FacebookPagePostsError,
+  FacebookMarketplaceSearchData,
+  FacebookMarketplaceSearchResponse,
+  FacebookMarketplaceSearchError,
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -390,7 +375,7 @@ export const listEndpoints = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Google and get results, the AI Overview, the knowledge panel and related questions
+ * Scrape Google Search results
  * Costs 1 credit per call, plus 1 credit for each result that comes back with its page text when scrapeResults is on. Pages with page. Works without an API key, within free limits.
  */
 export const googleSearch = <ThrowOnError extends boolean = false>(
@@ -417,7 +402,7 @@ export const googleSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Google News by keyword, date, site and country, or read headlines by topic
+ * Scrape Google News results and headlines
  * Costs 1 credit per call. Pages with page. Works without an API key, within free limits.
  */
 export const googleNews = <ThrowOnError extends boolean = false>(
@@ -444,7 +429,7 @@ export const googleNews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Google Images and get each full-size image with the page it comes from
+ * Scrape Google Images results
  * Costs 1 credit per 10 images.
  */
 export const googleImages = <ThrowOnError extends boolean = false>(
@@ -471,7 +456,7 @@ export const googleImages = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Ask Google AI Mode a question and get its answer with the sources it cites
+ * Scrape Google AI Mode answers with their sources
  * Costs 2 credits per call.
  */
 export const googleAiMode = <ThrowOnError extends boolean = false>(
@@ -498,7 +483,7 @@ export const googleAiMode = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Compare product prices and sellers on Google Shopping by country
+ * Scrape Google Shopping results
  * Costs 2 credits per call. Pages with page.
  */
 export const googleShopping = <ThrowOnError extends boolean = false>(
@@ -525,7 +510,7 @@ export const googleShopping = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get Google search suggestions for a keyword
+ * Scrape Google search suggestions
  * Costs 1 credit per call. Works without an API key, within free limits.
  */
 export const googleSuggest = <ThrowOnError extends boolean = false>(
@@ -552,7 +537,7 @@ export const googleSuggest = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the Google ads library
+ * Scrape ads from the Google ads library
  * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const googleAdsSearch = <ThrowOnError extends boolean = false>(
@@ -579,7 +564,7 @@ export const googleAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Google ad's details
+ * Scrape a Google ad's details
  * Costs 1 credit per call.
  */
 export const googleAdsAd = <ThrowOnError extends boolean = false>(
@@ -606,7 +591,7 @@ export const googleAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Find advertisers in the Google ads library
+ * Scrape advertisers from the Google ads library
  * Costs 1 credit per call.
  */
 export const googleAdsAdvertisers = <ThrowOnError extends boolean = false>(
@@ -633,7 +618,7 @@ export const googleAdsAdvertisers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Google Scholar for papers, books and case law, with citations
+ * Scrape Google Scholar search results
  * Costs 1 credit per call. Pages with page.
  */
 export const googleScholar = <ThrowOnError extends boolean = false>(
@@ -660,34 +645,7 @@ export const googleScholar = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Google's Videos tab for videos from every site, with duration and channel
- * Costs 1 credit per call. Pages with page.
- */
-export const googleVideos = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleVideosData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleVideosResponse,
-    GoogleVideosError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/videos",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Search Google Jobs: openings from many job sites, with apply links and highlights
+ * Scrape Google Jobs results
  * Costs 1 credit per call. Pages with cursor.
  */
 export const googleJobs = <ThrowOnError extends boolean = false>(
@@ -714,7 +672,7 @@ export const googleJobs = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Google Patents by words, inventor, assignee, office, dates and status
+ * Scrape Google Patents search results
  * Costs 1 credit per call. Pages with page. Works without an API key, within free limits.
  */
 export const googlePatents = <ThrowOnError extends boolean = false>(
@@ -741,7 +699,7 @@ export const googlePatents = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get YouTube search suggestions for a keyword
+ * Scrape YouTube search suggestions
  * Costs 1 credit per call.
  */
 export const youtubeSuggest = <ThrowOnError extends boolean = false>(
@@ -768,7 +726,7 @@ export const youtubeSuggest = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search YouTube videos, channels, playlists and shorts
+ * Scrape YouTube search results
  * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const youtubeSearch = <ThrowOnError extends boolean = false>(
@@ -795,7 +753,7 @@ export const youtubeSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get what a YouTube video says, from its captions
+ * Scrape a YouTube video's transcript
  * Costs 1 credit per call. Works without an API key, within free limits.
  */
 export const youtubeTranscript = <ThrowOnError extends boolean = false>(
@@ -822,7 +780,7 @@ export const youtubeTranscript = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a video's stats, description, chapters and most replayed moments
+ * Scrape a YouTube video page
  * Costs 1 credit per call. Works without an API key, within free limits.
  */
 export const youtubeVideo = <ThrowOnError extends boolean = false>(
@@ -849,7 +807,7 @@ export const youtubeVideo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a video's comments, or the replies to one comment
+ * Scrape the comments of a YouTube video
  * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const youtubeComments = <ThrowOnError extends boolean = false>(
@@ -876,7 +834,7 @@ export const youtubeComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a channel's profile and one tab of videos, shorts, live, playlists, podcasts or posts
+ * Scrape a YouTube channel and its videos
  * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const youtubeChannel = <ThrowOnError extends boolean = false>(
@@ -903,88 +861,7 @@ export const youtubeChannel = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search one channel's videos, like the search box on its YouTube page
- * Costs 1 credit per call. Pages with cursor.
- */
-export const youtubeChannelSearch = <ThrowOnError extends boolean = false>(
-  options: Options<YoutubeChannelSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    YoutubeChannelSearchResponse,
-    YoutubeChannelSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/youtube/channel/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get the videos YouTube suggests next to a video, like its Up next list
- * Costs 1 credit per call. Pages with cursor.
- */
-export const youtubeRelated = <ThrowOnError extends boolean = false>(
-  options: Options<YoutubeRelatedData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    YoutubeRelatedResponse,
-    YoutubeRelatedError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/youtube/related",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get the videos on a YouTube hashtag page, like youtube.com/hashtag/sourdough
- * Costs 1 credit per call. Pages with cursor.
- */
-export const youtubeHashtag = <ThrowOnError extends boolean = false>(
-  options: Options<YoutubeHashtagData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    YoutubeHashtagResponse,
-    YoutubeHashtagError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/youtube/hashtag",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a YouTube community post and its comments
+ * Scrape a YouTube community post and its comments
  * Costs 1 credit per call. Pages with cursor.
  */
 export const youtubePost = <ThrowOnError extends boolean = false>(
@@ -1011,34 +888,7 @@ export const youtubePost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get YouTube Charts: top songs, videos, artists, Shorts songs, podcasts or trending
- * Costs 1 credit per 10 results.
- */
-export const youtubeCharts = <ThrowOnError extends boolean = false>(
-  options: Options<YoutubeChartsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    YoutubeChartsResponse,
-    YoutubeChartsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/youtube/charts",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a playlist and a page of its videos
+ * Scrape a YouTube playlist and its videos
  * Costs 1 credit per call. Pages with cursor.
  */
 export const youtubePlaylist = <ThrowOnError extends boolean = false>(
@@ -1065,7 +915,7 @@ export const youtubePlaylist = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Reddit posts, subreddits and users
+ * Scrape Reddit search results
  * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const redditSearch = <ThrowOnError extends boolean = false>(
@@ -1092,7 +942,7 @@ export const redditSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Read a post and its comment thread, with a cursor for the rest of the comments
+ * Scrape a Reddit post and its comments
  * Costs 1 credit per call. Pages with cursor.
  */
 export const redditPost = <ThrowOnError extends boolean = false>(
@@ -1119,7 +969,7 @@ export const redditPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a subreddit's info and a page of its posts
+ * Scrape a subreddit and its posts
  * Costs 1 credit per call. Pages with cursor.
  */
 export const redditSubreddit = <ThrowOnError extends boolean = false>(
@@ -1146,7 +996,7 @@ export const redditSubreddit = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a user's profile and a page of their posts and comments
+ * Scrape a Reddit user's profile, posts and comments
  * Costs 1 credit per call. Pages with cursor.
  */
 export const redditUser = <ThrowOnError extends boolean = false>(
@@ -1173,34 +1023,7 @@ export const redditUser = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get Reddit posts that link to a website
- * Costs 1 credit per call. Pages with cursor.
- */
-export const redditDomain = <ThrowOnError extends boolean = false>(
-  options: Options<RedditDomainData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    RedditDomainResponse,
-    RedditDomainError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/reddit/domain",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * See where else on Reddit one link was shared, like Reddit's Other discussions
+ * Scrape where else a link was shared on Reddit
  * Costs 1 credit per call. Pages with cursor.
  */
 export const redditDiscussions = <ThrowOnError extends boolean = false>(
@@ -1227,7 +1050,7 @@ export const redditDiscussions = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * List Reddit's popular or newest communities
+ * Scrape Reddit's popular or newest communities
  * Costs 1 credit per call. Pages with cursor.
  */
 export const redditSubreddits = <ThrowOnError extends boolean = false>(
@@ -1254,7 +1077,7 @@ export const redditSubreddits = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search places on Google Maps by keyword and location
+ * Scrape Google Maps search results
  * Costs 1 credit per call. Pages with page. Works without an API key, within free limits.
  */
 export const googleMapsSearch = <ThrowOnError extends boolean = false>(
@@ -1281,7 +1104,7 @@ export const googleMapsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a place's address, hours, rating and contact details
+ * Scrape a Google Maps place's details
  * Costs 1 credit per call.
  */
 export const googleMapsPlace = <ThrowOnError extends boolean = false>(
@@ -1308,7 +1131,7 @@ export const googleMapsPlace = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a place's reviews
+ * Scrape a Google Maps place's reviews
  * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const googleMapsReviews = <ThrowOnError extends boolean = false>(
@@ -1335,7 +1158,7 @@ export const googleMapsReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a post's comments, or the replies to one comment
+ * Scrape the comments of an Instagram post
  * Costs 1 credit per call. Pages with cursor.
  */
 export const instagramComments = <ThrowOnError extends boolean = false>(
@@ -1362,7 +1185,7 @@ export const instagramComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a post or reel, with its top comments
+ * Scrape an Instagram post or reel
  * Costs 1 credit per call.
  */
 export const instagramPost = <ThrowOnError extends boolean = false>(
@@ -1389,7 +1212,7 @@ export const instagramPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's bio, stats and a page of its posts and reels
+ * Scrape an Instagram profile and its posts
  * Costs 2 credits per call. Pages with cursor.
  */
 export const instagramProfile = <ThrowOnError extends boolean = false>(
@@ -1416,7 +1239,7 @@ export const instagramProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * A profile's reels, with play counts
+ * Scrape an Instagram profile's reels
  * Costs 1 credit per call. Pages with cursor.
  */
 export const instagramProfileReels = <ThrowOnError extends boolean = false>(
@@ -1443,35 +1266,8 @@ export const instagramProfileReels = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Instagram posts and reels
- * Costs 1 credit per call. Pages with cursor.
- */
-export const instagramSearch = <ThrowOnError extends boolean = false>(
-  options: Options<InstagramSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    InstagramSearchResponse,
-    InstagramSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/instagram/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get what an Instagram video says, from its audio
- * Costs 1 credit when the video has captions; otherwise 2 credits plus 1 credit for every 10 seconds of audio, up to 30 minutes.
+ * Scrape an Instagram video's transcript
+ * Costs 2 credits plus 1 credit for every 10 seconds of audio, up to 30 minutes.
  */
 export const instagramTranscript = <ThrowOnError extends boolean = false>(
   options: Options<InstagramTranscriptData, ThrowOnError>
@@ -1497,7 +1293,7 @@ export const instagramTranscript = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile's bio, stats and a page of its videos
+ * Scrape a TikTok profile and its videos
  * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const tiktokProfile = <ThrowOnError extends boolean = false>(
@@ -1524,7 +1320,7 @@ export const tiktokProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a video's caption, stats and music
+ * Scrape a TikTok video
  * Costs 1 credit per call.
  */
 export const tiktokVideo = <ThrowOnError extends boolean = false>(
@@ -1551,7 +1347,7 @@ export const tiktokVideo = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a page of videos for a hashtag
+ * Scrape TikTok videos for a hashtag
  * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokHashtag = <ThrowOnError extends boolean = false>(
@@ -1578,7 +1374,7 @@ export const tiktokHashtag = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a sound and a page of videos that use it
+ * Scrape a TikTok sound and its videos
  * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokSound = <ThrowOnError extends boolean = false>(
@@ -1605,7 +1401,7 @@ export const tiktokSound = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a video's comments, or the replies to one comment
+ * Scrape the comments of a TikTok video
  * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokComments = <ThrowOnError extends boolean = false>(
@@ -1632,7 +1428,7 @@ export const tiktokComments = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search TikTok videos and users
+ * Scrape TikTok search results
  * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokSearch = <ThrowOnError extends boolean = false>(
@@ -1659,7 +1455,7 @@ export const tiktokSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get what a TikTok video says, from captions or its own audio
+ * Scrape a TikTok video's transcript
  * Costs 1 credit when the video has captions; otherwise 2 credits plus 1 credit for every 10 seconds of audio, up to 3 minutes. Works without an API key, within free limits.
  */
 export const tiktokTranscript = <ThrowOnError extends boolean = false>(
@@ -1686,7 +1482,7 @@ export const tiktokTranscript = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the TikTok ad library
+ * Scrape ads from the TikTok ad library
  * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokAdsSearch = <ThrowOnError extends boolean = false>(
@@ -1713,7 +1509,7 @@ export const tiktokAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a TikTok ad's details and reach
+ * Scrape a TikTok ad's details
  * Costs 1 credit per call.
  */
 export const tiktokAdsAd = <ThrowOnError extends boolean = false>(
@@ -1740,7 +1536,7 @@ export const tiktokAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Shop products by keyword, with price and sales
+ * Scrape TikTok Shop search results
  * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokShopSearch = <ThrowOnError extends boolean = false>(
@@ -1767,7 +1563,7 @@ export const tiktokShopSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * A seller's products, name, rating and sales
+ * Scrape a TikTok Shop seller's products
  * Costs 1 credit per call. Pages with cursor.
  */
 export const tiktokShopProducts = <ThrowOnError extends boolean = false>(
@@ -1794,7 +1590,7 @@ export const tiktokShopProducts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * A product's price, stock, seller, images and videos
+ * Scrape a TikTok Shop product page
  * Costs 1 credit per call.
  */
 export const tiktokShopProduct = <ThrowOnError extends boolean = false>(
@@ -1821,7 +1617,7 @@ export const tiktokShopProduct = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * The first page of a product's reviews
+ * Scrape a TikTok Shop product's reviews
  * Costs 1 credit per call.
  */
 export const tiktokShopReviews = <ThrowOnError extends boolean = false>(
@@ -1848,7 +1644,7 @@ export const tiktokShopReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get the ads a Facebook page runs
+ * Scrape the ads a Facebook page runs
  * Costs 1 credit per call. Pages with cursor.
  */
 export const metaAdsPage = <ThrowOnError extends boolean = false>(
@@ -1875,7 +1671,7 @@ export const metaAdsPage = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search LinkedIn jobs
+ * Scrape LinkedIn job search results
  * Costs 1 credit per call. Pages with page.
  */
 export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
@@ -1902,7 +1698,7 @@ export const linkedinJobsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a LinkedIn job's details
+ * Scrape a LinkedIn job page
  * Costs 1 credit per call.
  */
 export const linkedinJobsJob = <ThrowOnError extends boolean = false>(
@@ -1929,7 +1725,7 @@ export const linkedinJobsJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a company's profile, size and industry
+ * Scrape a LinkedIn company page
  * Costs 1 credit per call.
  */
 export const linkedinCompany = <ThrowOnError extends boolean = false>(
@@ -1956,7 +1752,7 @@ export const linkedinCompany = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a person's profile
+ * Scrape a public LinkedIn profile
  * Costs 2 credits per call.
  */
 export const linkedinProfile = <ThrowOnError extends boolean = false>(
@@ -1983,8 +1779,8 @@ export const linkedinProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a person's or company's latest public posts
- * Costs 1 credit per call.
+ * Scrape a person's or company's public LinkedIn posts
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const linkedinPosts = <ThrowOnError extends boolean = false>(
   options: Options<LinkedinPostsData, ThrowOnError>
@@ -2010,7 +1806,7 @@ export const linkedinPosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search homes for sale, for rent or sold
+ * Scrape Zillow search results
  * Costs 2 credits per call. Pages with page.
  */
 export const zillowSearch = <ThrowOnError extends boolean = false>(
@@ -2037,7 +1833,7 @@ export const zillowSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a home's details, price and Zestimate
+ * Scrape a Zillow property page
  * Costs 2 credits per call.
  */
 export const zillowProperty = <ThrowOnError extends boolean = false>(
@@ -2064,7 +1860,7 @@ export const zillowProperty = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Upwork jobs
+ * Scrape Upwork job search results
  * Costs 1 credit per call. Pages with page.
  */
 export const upworkSearch = <ThrowOnError extends boolean = false>(
@@ -2091,7 +1887,7 @@ export const upworkSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get an Upwork job's details
+ * Scrape an Upwork job page
  * Costs 1 credit per call.
  */
 export const upworkJob = <ThrowOnError extends boolean = false>(
@@ -2118,7 +1914,7 @@ export const upworkJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get related searches for a keyword
+ * Scrape Google Trends related searches
  * Costs 1 credit per call.
  */
 export const googleTrendsRelated = <ThrowOnError extends boolean = false>(
@@ -2145,7 +1941,7 @@ export const googleTrendsRelated = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get what is trending on Google now
+ * Scrape what is trending on Google now
  * Costs 1 credit per call.
  */
 export const googleTrendsTrending = <ThrowOnError extends boolean = false>(
@@ -2172,7 +1968,7 @@ export const googleTrendsTrending = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Indeed jobs
+ * Scrape Indeed job search results
  * Costs 1 credit per call. Pages with cursor.
  */
 export const indeedSearch = <ThrowOnError extends boolean = false>(
@@ -2199,7 +1995,7 @@ export const indeedSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get an Indeed job's details
+ * Scrape an Indeed job page
  * Costs 1 credit per call.
  */
 export const indeedJob = <ThrowOnError extends boolean = false>(
@@ -2226,7 +2022,7 @@ export const indeedJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * List a company's open jobs from its own job board
+ * Scrape a company's open jobs from its careers page
  * Costs 1 credit per call. Pages with cursor.
  */
 export const careersJobs = <ThrowOnError extends boolean = false>(
@@ -2253,7 +2049,7 @@ export const careersJobs = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get one job from a company's own job board
+ * Scrape one job from a company's careers page
  * Costs 1 credit per call.
  */
 export const careersJob = <ThrowOnError extends boolean = false>(
@@ -2280,7 +2076,7 @@ export const careersJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search hotels, restaurants and attractions
+ * Scrape Tripadvisor search results
  * Costs 1 credit per call.
  */
 export const tripadvisorSearch = <ThrowOnError extends boolean = false>(
@@ -2307,7 +2103,7 @@ export const tripadvisorSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a place's rating, ranking and details
+ * Scrape a Tripadvisor place page
  * Costs 1 credit per call.
  */
 export const tripadvisorPlace = <ThrowOnError extends boolean = false>(
@@ -2334,7 +2130,7 @@ export const tripadvisorPlace = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a place's reviews
+ * Scrape a Tripadvisor place's reviews
  * Costs 1 credit per call. Pages with page.
  */
 export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
@@ -2361,7 +2157,7 @@ export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search flights with prices and times
+ * Scrape Google Flights results with prices and times
  * Costs 1 credit per call.
  */
 export const googleFlights = <ThrowOnError extends boolean = false>(
@@ -2388,8 +2184,8 @@ export const googleFlights = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Google Hotels with prices, ratings and Google's own filters
- * Costs 1 credit per call. Pages with page.
+ * Scrape Google Hotels results with prices and ratings
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const googleHotels = <ThrowOnError extends boolean = false>(
   options: Options<GoogleHotelsData, ThrowOnError>
@@ -2415,7 +2211,7 @@ export const googleHotels = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Booking.com hotels for a place and dates, with prices and review scores
+ * Scrape Booking.com search results with prices
  * Costs 1 credit per call. Pages with cursor.
  */
 export const bookingSearch = <ThrowOnError extends boolean = false>(
@@ -2442,7 +2238,7 @@ export const bookingSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Booking.com hotel's description, address, scores, facilities, rooms and photos
+ * Scrape a Booking.com hotel page
  * Costs 1 credit per call.
  */
 export const bookingHotel = <ThrowOnError extends boolean = false>(
@@ -2469,8 +2265,8 @@ export const bookingHotel = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Booking.com hotel's guest reviews
- * Costs 1 credit per call. Pages with page.
+ * Scrape a Booking.com hotel's guest reviews
+ * Costs 1 credit per call. Pages with cursor.
  */
 export const bookingHotelReviews = <ThrowOnError extends boolean = false>(
   options: Options<BookingHotelReviewsData, ThrowOnError>
@@ -2496,7 +2292,7 @@ export const bookingHotelReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Amazon products
+ * Scrape Amazon search results
  * Costs 2 credits per call. Pages with page.
  */
 export const amazonSearch = <ThrowOnError extends boolean = false>(
@@ -2523,7 +2319,7 @@ export const amazonSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a product's price, details and rating
+ * Scrape an Amazon product page
  * Costs 2 credits per call.
  */
 export const amazonProduct = <ThrowOnError extends boolean = false>(
@@ -2550,7 +2346,7 @@ export const amazonProduct = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get the best sellers in a category
+ * Scrape Amazon Best Sellers lists
  * Costs 2 credits per call. Pages with page.
  */
 export const amazonBestsellers = <ThrowOnError extends boolean = false>(
@@ -2577,7 +2373,7 @@ export const amazonBestsellers = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get an app's details from the App Store
+ * Scrape an App Store app page
  * Costs 1 credit per call.
  */
 export const appstoreApp = <ThrowOnError extends boolean = false>(
@@ -2604,7 +2400,7 @@ export const appstoreApp = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search App Store apps
+ * Scrape App Store search results
  * Costs 1 credit per 10 apps.
  */
 export const appstoreSearch = <ThrowOnError extends boolean = false>(
@@ -2631,7 +2427,7 @@ export const appstoreSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get an app's App Store reviews
+ * Scrape an App Store app's reviews
  * Costs 1 credit per call. Pages with page. Works without an API key, within free limits.
  */
 export const appstoreReviews = <ThrowOnError extends boolean = false>(
@@ -2658,7 +2454,7 @@ export const appstoreReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get App Store top charts
+ * Scrape App Store top charts
  * Costs 1 credit per 10 apps.
  */
 export const appstoreTop = <ThrowOnError extends boolean = false>(
@@ -2685,7 +2481,7 @@ export const appstoreTop = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get an app's details from Google Play
+ * Scrape a Google Play app page
  * Costs 1 credit per call.
  */
 export const googlePlayApp = <ThrowOnError extends boolean = false>(
@@ -2712,7 +2508,7 @@ export const googlePlayApp = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search Google Play apps
+ * Scrape Google Play search results
  * Costs 1 credit per 10 apps.
  */
 export const googlePlaySearch = <ThrowOnError extends boolean = false>(
@@ -2739,7 +2535,7 @@ export const googlePlaySearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get an app's Google Play reviews
+ * Scrape a Google Play app's reviews
  * Costs 1 credit per call. Pages with cursor. Works without an API key, within free limits.
  */
 export const googlePlayReviews = <ThrowOnError extends boolean = false>(
@@ -2766,7 +2562,7 @@ export const googlePlayReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search pins
+ * Scrape Pinterest search results
  * Costs 1 credit per call. Pages with cursor.
  */
 export const pinterestSearch = <ThrowOnError extends boolean = false>(
@@ -2793,7 +2589,7 @@ export const pinterestSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a pin's details
+ * Scrape a Pinterest pin
  * Costs 1 credit per call. Works without an API key, within free limits.
  */
 export const pinterestPin = <ThrowOnError extends boolean = false>(
@@ -2820,7 +2616,7 @@ export const pinterestPin = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a board and a page of its pins
+ * Scrape a Pinterest board and its pins
  * Costs 1 credit per call. Pages with cursor.
  */
 export const pinterestBoard = <ThrowOnError extends boolean = false>(
@@ -2847,7 +2643,7 @@ export const pinterestBoard = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a profile and a page of its pins
+ * Scrape a Pinterest profile and its pins
  * Costs 1 credit per call. Pages with cursor.
  */
 export const pinterestProfile = <ThrowOnError extends boolean = false>(
@@ -2874,7 +2670,61 @@ export const pinterestProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the Meta ad library
+ * Scrape an X profile
+ * Costs 1 credit per call. Works without an API key, within free limits.
+ */
+export const xProfile = <ThrowOnError extends boolean = false>(
+  options: Options<XProfileData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    XProfileResponse,
+    XProfileError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/x/profile",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape an X post
+ * Costs 1 credit per call. Works without an API key, within free limits.
+ */
+export const xPost = <ThrowOnError extends boolean = false>(
+  options: Options<XPostData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    XPostResponse,
+    XPostError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/x/post",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape ads from the Meta ad library
  * Costs 1 credit per call. Pages with cursor.
  */
 export const metaAdsSearch = <ThrowOnError extends boolean = false>(
@@ -2901,7 +2751,7 @@ export const metaAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Meta ad's details
+ * Scrape a Meta ad's details
  * Costs 1 credit per call.
  */
 export const metaAdsAd = <ThrowOnError extends boolean = false>(
@@ -2928,7 +2778,7 @@ export const metaAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the LinkedIn ad library
+ * Scrape ads from the LinkedIn ad library
  * Costs 1 credit per call. Pages with cursor.
  */
 export const linkedinAdsSearch = <ThrowOnError extends boolean = false>(
@@ -2955,7 +2805,7 @@ export const linkedinAdsSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a LinkedIn ad's details
+ * Scrape a LinkedIn ad's details
  * Costs 1 credit per call.
  */
 export const linkedinAdsAd = <ThrowOnError extends boolean = false>(
@@ -2982,142 +2832,7 @@ export const linkedinAdsAd = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search ads in the Microsoft ads library
- * Costs 1 credit per call. Pages with cursor.
- */
-export const microsoftAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<MicrosoftAdsSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MicrosoftAdsSearchResponse,
-    MicrosoftAdsSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/microsoft/ads/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a Microsoft ad's details
- * Costs 1 credit per call.
- */
-export const microsoftAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<MicrosoftAdsAdData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MicrosoftAdsAdResponse,
-    MicrosoftAdsAdError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/microsoft/ads/ad",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Find advertisers in the Microsoft ads library
- * Costs 1 credit per call.
- */
-export const microsoftAdsAdvertisers = <ThrowOnError extends boolean = false>(
-  options: Options<MicrosoftAdsAdvertisersData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    MicrosoftAdsAdvertisersResponse,
-    MicrosoftAdsAdvertisersError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/microsoft/ads/advertisers",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Search ads in the Pinterest ads library
- * Costs 1 credit per call. Pages with cursor.
- */
-export const pinterestAdsSearch = <ThrowOnError extends boolean = false>(
-  options: Options<PinterestAdsSearchData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    PinterestAdsSearchResponse,
-    PinterestAdsSearchError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/pinterest/ads/search",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get a Pinterest ad's details
- * Costs 1 credit per call.
- */
-export const pinterestAdsAd = <ThrowOnError extends boolean = false>(
-  options: Options<PinterestAdsAdData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    PinterestAdsAdResponse,
-    PinterestAdsAdError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/pinterest/ads/ad",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Get Amazon search suggestions for a keyword
+ * Scrape Amazon search suggestions
  * Costs 1 credit per call.
  */
 export const amazonSuggest = <ThrowOnError extends boolean = false>(
@@ -3144,7 +2859,7 @@ export const amazonSuggest = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get Google Trends search interest over time, newest first, with one value per query
+ * Scrape Google Trends interest over time
  * Costs 1 credit per call.
  */
 export const googleTrendsInterest = <ThrowOnError extends boolean = false>(
@@ -3171,7 +2886,7 @@ export const googleTrendsInterest = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get Google Trends search interest by region
+ * Scrape Google Trends interest by region
  * Costs 1 credit per call.
  */
 export const googleTrendsRegions = <ThrowOnError extends boolean = false>(
@@ -3198,7 +2913,7 @@ export const googleTrendsRegions = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Threads profile's name, bio, links and follower count
+ * Scrape a Threads profile
  * Costs 1 credit per call.
  */
 export const threadsProfile = <ThrowOnError extends boolean = false>(
@@ -3225,7 +2940,7 @@ export const threadsProfile = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Threads profile's recent posts, with like, reply and repost counts
+ * Scrape a Threads profile's posts
  * Costs 1 credit per call. Pages with cursor.
  */
 export const threadsProfilePosts = <ThrowOnError extends boolean = false>(
@@ -3252,7 +2967,7 @@ export const threadsProfilePosts = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a Threads post with its counts and its replies
+ * Scrape a Threads post and its replies
  * Costs 1 credit per call. Pages with cursor.
  */
 export const threadsPost = <ThrowOnError extends boolean = false>(
@@ -3279,7 +2994,7 @@ export const threadsPost = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a company's TrustScore, rating breakdown and contact details
+ * Scrape a Trustpilot company page
  * Costs 1 credit per call.
  */
 export const trustpilotCompany = <ThrowOnError extends boolean = false>(
@@ -3306,7 +3021,7 @@ export const trustpilotCompany = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a company's reviews, newest first
+ * Scrape a Trustpilot company's reviews
  * Costs 1 credit per call. Pages with page.
  */
 export const trustpilotCompanyReviews = <ThrowOnError extends boolean = false>(
@@ -3333,7 +3048,7 @@ export const trustpilotCompanyReviews = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search companies by name and see their TrustScore
+ * Scrape Trustpilot search results
  * Costs 1 credit per call. Pages with page.
  */
 export const trustpilotSearch = <ThrowOnError extends boolean = false>(
@@ -3360,7 +3075,7 @@ export const trustpilotSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search eBay listings with prices, shipping and sellers
+ * Scrape eBay search results
  * Costs 1 credit per call. Pages with page.
  */
 export const ebaySearch = <ThrowOnError extends boolean = false>(
@@ -3387,7 +3102,7 @@ export const ebaySearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get an eBay item's price, condition, seller, and what it sold for once ended
+ * Scrape an eBay item page
  * Costs 1 credit per call.
  */
 export const ebayItem = <ThrowOnError extends boolean = false>(
@@ -3414,7 +3129,7 @@ export const ebayItem = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Search stays for a place and dates, with prices
+ * Scrape Airbnb search results with prices
  * Costs 1 credit per call. Pages with cursor.
  */
 export const airbnbSearch = <ThrowOnError extends boolean = false>(
@@ -3441,7 +3156,7 @@ export const airbnbSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a stay's details, host, amenities, ratings and price
+ * Scrape an Airbnb listing's details, host, amenities, ratings and price
  * Costs 1 credit per call.
  */
 export const airbnbListing = <ThrowOnError extends boolean = false>(
@@ -3468,7 +3183,7 @@ export const airbnbListing = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a stay's guest reviews, newest first
+ * Scrape an Airbnb listing's guest reviews
  * Costs 1 credit per call. Pages with page.
  */
 export const airbnbReviews = <ThrowOnError extends boolean = false>(
@@ -3486,6 +3201,141 @@ export const airbnbReviews = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/airbnb/reviews",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape a public Facebook page's details
+ * Costs 1 credit per call.
+ */
+export const facebookPage = <ThrowOnError extends boolean = false>(
+  options: Options<FacebookPageData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    FacebookPageResponse,
+    FacebookPageError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/facebook/page",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape a public Facebook post, reel or video
+ * Costs 1 credit per call.
+ */
+export const facebookPost = <ThrowOnError extends boolean = false>(
+  options: Options<FacebookPostData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    FacebookPostResponse,
+    FacebookPostError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/facebook/post",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape the comments of a public Facebook post
+ * Costs 1 credit per call. Pages with cursor.
+ */
+export const facebookPostComments = <ThrowOnError extends boolean = false>(
+  options: Options<FacebookPostCommentsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    FacebookPostCommentsResponse,
+    FacebookPostCommentsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/facebook/post/comments",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape a public Facebook page's posts
+ * Costs 1 credit per call. Pages with cursor.
+ */
+export const facebookPagePosts = <ThrowOnError extends boolean = false>(
+  options: Options<FacebookPagePostsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    FacebookPagePostsResponse,
+    FacebookPagePostsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/facebook/page/posts",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape Facebook Marketplace search results
+ * Costs 1 credit per call.
+ */
+export const facebookMarketplaceSearch = <ThrowOnError extends boolean = false>(
+  options: Options<FacebookMarketplaceSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    FacebookMarketplaceSearchResponse,
+    FacebookMarketplaceSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/facebook/marketplace/search",
     ...options,
     headers: {
       "Content-Type": "application/json",
