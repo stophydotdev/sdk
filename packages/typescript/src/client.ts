@@ -28,7 +28,7 @@ function env(name: string): string | undefined {
 	return typeof process === "undefined" ? undefined : process.env[name];
 }
 
-/** Typed client for the Stophy web data API. Namespaces come from the OpenAPI document. */
+/** Typed client for the Stophy web scraping API. Namespaces come from the OpenAPI document. */
 // The generated surface is copied onto this instance in the constructor.
 // biome-ignore lint/suspicious/noUnsafeDeclarationMerging: namespaces are assigned from bindSurface
 export class Stophy {

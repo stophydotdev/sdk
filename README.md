@@ -1,6 +1,6 @@
 # Stophy SDKs
 
-The web data API for AI agents, in TypeScript and Python. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers.
+Web scraping API for AI agents, in TypeScript and Python. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers.
 
 | Language | Install | Guide |
 | --- | --- | --- |

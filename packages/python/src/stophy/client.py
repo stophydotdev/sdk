@@ -11,7 +11,7 @@ from .transport import DEFAULT_BASE_URL, SyncTransport, compact, default_headers
 
 
 class Stophy(SyncSurface):
-    """Synchronous client for the Stophy web data API."""
+    """Synchronous client for the Stophy web scraping API."""
 
     def __init__(
         self,

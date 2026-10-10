@@ -1,6 +1,6 @@
 # Stophy for TypeScript
 
-The web data API for AI agents, in TypeScript. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers. Every method and result is typed.
+Web scraping API for AI agents, in TypeScript. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers. Every method and result is typed.
 
 ## Install
 

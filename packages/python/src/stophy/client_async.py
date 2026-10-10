@@ -11,7 +11,7 @@ from .transport import DEFAULT_BASE_URL, AsyncTransport, compact, default_header
 
 
 class AsyncStophy(AsyncSurface):
-    """Asynchronous client for the Stophy web data API."""
+    """Asynchronous client for the Stophy web scraping API."""
 
     def __init__(
         self,
