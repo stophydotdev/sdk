@@ -1,6 +1,6 @@
 {
   "name": "stophy",
-  "version": "1.0.8",
+  "version": "2.0.0",
   "description": "Web scraping API for AI agents. One API to search the web, read what people say, and look up products, places, jobs and homes. Pay only for answers.",
   "type": "module",
   "license": "MIT",
