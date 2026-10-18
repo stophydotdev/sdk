@@ -14,9 +14,49 @@ GoogleSearchTime = Literal[
     "pastYear",
 ]
 
-GoogleSearchResponseDataEngine = Literal[
-    "google",
-    "other",
+WebSearchTime = Literal[
+    "pastWeek",
+    "pastMonth",
+    "pastYear",
+]
+
+WebScrapeFormatsItemOption0 = Literal[
+    "markdown",
+    "html",
+    "rawHtml",
+    "links",
+    "screenshot",
+]
+
+WebScrapeActionsItemOption5Direction = Literal[
+    "up",
+    "down",
+]
+
+WebScrapeResponseDataMetadataCacheState = Literal[
+    "hit",
+    "miss",
+]
+
+WebContactsResponseDataSocialsItemNetwork = Literal[
+    "linkedin",
+    "instagram",
+    "x",
+    "facebook",
+    "youtube",
+    "tiktok",
+    "pinterest",
+    "discord",
+    "whatsapp",
+    "telegram",
+]
+
+WebCrawlStartResponseDataStatus = Literal[
+    "queued",
+    "running",
+    "completed",
+    "cancelled",
+    "failed",
 ]
 
 GoogleNewsTopic = Literal[
@@ -90,20 +130,6 @@ GoogleScholarResponseDataResultsItemFormat = Literal[
     "book",
     "citation",
     "doc",
-]
-
-GoogleJobsDatePosted = Literal[
-    "yesterday",
-    "last3Days",
-    "lastWeek",
-    "lastMonth",
-]
-
-GoogleJobsJobType = Literal[
-    "fullTime",
-    "partTime",
-    "contract",
-    "internship",
 ]
 
 GooglePatentsLanguage = Literal[
@@ -778,6 +804,14 @@ TripadvisorReviewsSort = Literal[
     "detailed",
 ]
 
+YelpBusinessReviewsSort = Literal[
+    "relevance",
+    "newest",
+    "oldest",
+    "highest",
+    "lowest",
+]
+
 GoogleFlightsCabin = Literal[
     "economy",
     "premiumEconomy",
@@ -946,7 +980,12 @@ PinterestSearchType = Literal[
     "videos",
 ]
 
-XPostResponseDataMediaItemType = Literal[
+XProfilePostsResponseDataOrder = Literal[
+    "newest",
+    "popular",
+]
+
+XProfilePostsResponseDataResultsItemMediaItemType = Literal[
     "photo",
     "video",
     "gif",
@@ -1171,7 +1210,6 @@ class GoogleSearchResponseDataPeopleAlsoAskItem(TypedDict):
 class GoogleSearchResponseData(TypedDict):
     aiOverview: NotRequired[GoogleSearchResponseDataAiOverview]
     knowledgeGraph: NotRequired[GoogleSearchResponseDataKnowledgeGraph]
-    engine: NotRequired[GoogleSearchResponseDataEngine]
     results: list[
         GoogleSearchResponseDataResultsItemOption0
         | GoogleSearchResponseDataResultsItemOption1
@@ -1190,7 +1228,27 @@ class GoogleSearchResponse(TypedDict):
     requestId: str
 
 
-class GoogleNewsResponseDataResultsItem(TypedDict):
+class WebSearchResponseDataResultsItem(TypedDict):
+    url: str
+    title: str
+    description: NotRequired[str]
+    position: int
+    markdown: NotRequired[str]
+    scrapeError: NotRequired[str]
+
+
+class WebSearchResponseData(TypedDict):
+    results: list[WebSearchResponseDataResultsItem]
+
+
+class WebSearchResponse(TypedDict):
+    success: Literal[True]
+    data: WebSearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class WebNewsResponseDataResultsItem(TypedDict):
     url: str
     title: str
     source: NotRequired[str]
@@ -1199,19 +1257,18 @@ class GoogleNewsResponseDataResultsItem(TypedDict):
     position: int
 
 
-class GoogleNewsResponseData(TypedDict):
-    results: list[GoogleNewsResponseDataResultsItem]
-    page: int
+class WebNewsResponseData(TypedDict):
+    results: list[WebNewsResponseDataResultsItem]
 
 
-class GoogleNewsResponse(TypedDict):
+class WebNewsResponse(TypedDict):
     success: Literal[True]
-    data: GoogleNewsResponseData
+    data: WebNewsResponseData
     creditsUsed: int
     requestId: str
 
 
-class GoogleImagesResponseDataResultsItem(TypedDict):
+class WebImagesResponseDataResultsItem(TypedDict):
     imageUrl: str
     title: NotRequired[str]
     pageUrl: str
@@ -1222,69 +1279,269 @@ class GoogleImagesResponseDataResultsItem(TypedDict):
     position: int
 
 
-class GoogleImagesResponseData(TypedDict):
-    results: list[GoogleImagesResponseDataResultsItem]
+class WebImagesResponseData(TypedDict):
+    results: list[WebImagesResponseDataResultsItem]
 
 
-class GoogleImagesResponse(TypedDict):
+class WebImagesResponse(TypedDict):
     success: Literal[True]
-    data: GoogleImagesResponseData
+    data: WebImagesResponseData
     creditsUsed: int
     requestId: str
 
 
-class GoogleAiModeResponseDataSourcesItem(TypedDict):
-    url: str
+class WebScrapeFormatsItemOption1(TypedDict):
+    type: Literal["screenshot"]
+    fullPage: NotRequired[bool]
+
+
+class WebScrapeLocation(TypedDict):
+    country: str
+
+
+class WebScrapeActionsItemOption0(TypedDict):
+    type: Literal["wait"]
+    milliseconds: int
+
+
+class WebScrapeActionsItemOption1(TypedDict):
+    type: Literal["wait"]
+    selector: str
+
+
+class WebScrapeActionsItemOption2(TypedDict):
+    type: Literal["click"]
+    selector: str
+
+
+class WebScrapeActionsItemOption3(TypedDict):
+    type: Literal["write"]
+    text: str
+
+
+class WebScrapeActionsItemOption4(TypedDict):
+    type: Literal["press"]
+    key: str
+
+
+class WebScrapeActionsItemOption5(TypedDict):
+    type: Literal["scroll"]
+    direction: WebScrapeActionsItemOption5Direction
+
+
+class WebScrapeResponseDataMetadata(TypedDict):
+    title: NotRequired[str]
+    description: NotRequired[str]
+    language: NotRequired[str]
+    ogImage: NotRequired[str]
+    sourceURL: NotRequired[str]
+    statusCode: int
+    contentType: NotRequired[str]
+    cacheState: WebScrapeResponseDataMetadataCacheState
+    cachedAt: NotRequired[str]
+    numPages: NotRequired[int]
+
+
+class WebScrapeResponseData(TypedDict):
+    markdown: NotRequired[str]
+    html: NotRequired[str]
+    rawHtml: NotRequired[str]
+    links: NotRequired[list[str]]
+    screenshot: NotRequired[str]
+    isTruncated: bool
+    metadata: WebScrapeResponseDataMetadata
+
+
+class WebScrapeResponse(TypedDict):
+    success: Literal[True]
+    data: WebScrapeResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class WebParseResponseDataMetadata(TypedDict):
+    title: NotRequired[str]
+    contentType: NotRequired[str]
+    numPages: NotRequired[int]
+
+
+class WebParseResponseData(TypedDict):
+    markdown: NotRequired[str]
+    isTruncated: bool
+    metadata: NotRequired[WebParseResponseDataMetadata]
+
+
+class WebParseResponse(TypedDict):
+    success: Literal[True]
+    data: WebParseResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class WebMapResponseDataResultsItem(TypedDict):
+    url: NotRequired[str]
     title: NotRequired[str]
 
 
-class GoogleAiModeResponseData(TypedDict):
-    query: NotRequired[str]
-    answer: str
-    sources: list[GoogleAiModeResponseDataSourcesItem]
+class WebMapResponseData(TypedDict):
+    results: list[WebMapResponseDataResultsItem]
+    page: int
+    totalPages: int
 
 
-class GoogleAiModeResponse(TypedDict):
+class WebMapResponse(TypedDict):
     success: Literal[True]
-    data: GoogleAiModeResponseData
+    data: WebMapResponseData
     creditsUsed: int
     requestId: str
 
 
-class GoogleShoppingResponseDataFiltersItemOptionsItem(TypedDict):
-    label: str
-    filter: str
-    isSelected: bool
+class WebContactsResponseDataEmailsItem(TypedDict):
+    email: NotRequired[str]
+    pages: NotRequired[list[str]]
 
 
-class GoogleShoppingResponseDataFiltersItem(TypedDict):
-    group: str
-    options: NotRequired[list[GoogleShoppingResponseDataFiltersItemOptionsItem]]
+class WebContactsResponseDataPhonesItem(TypedDict):
+    phone: NotRequired[str]
+    pages: NotRequired[list[str]]
 
 
-class GoogleShoppingResponseDataResultsItem(TypedDict):
-    productId: str
-    title: str
-    price: float
-    priceCurrency: NotRequired[str]
-    originalPrice: NotRequired[float]
-    seller: NotRequired[str]
-    delivery: NotRequired[str]
-    returns: NotRequired[str]
-    rating: NotRequired[float]
-    reviews: NotRequired[int]
-    position: int
+class WebContactsResponseDataSocialsItem(TypedDict):
+    network: WebContactsResponseDataSocialsItemNetwork
+    username: NotRequired[str]
+    url: NotRequired[str]
+    pages: NotRequired[list[str]]
 
 
-class GoogleShoppingResponseData(TypedDict):
-    filters: NotRequired[list[GoogleShoppingResponseDataFiltersItem]]
-    results: list[GoogleShoppingResponseDataResultsItem]
+class WebContactsResponseData(TypedDict):
+    url: NotRequired[str]
+    emails: list[WebContactsResponseDataEmailsItem]
+    phones: list[WebContactsResponseDataPhonesItem]
+    socials: list[WebContactsResponseDataSocialsItem]
+
+
+class WebContactsResponse(TypedDict):
+    success: Literal[True]
+    data: WebContactsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class WebCrawlResponseDataResultsItem(TypedDict):
+    url: NotRequired[str]
+    title: NotRequired[str]
+    depth: int
+    markdown: NotRequired[str]
+
+
+class WebCrawlResponseData(TypedDict):
+    pagesRead: int
+    results: list[WebCrawlResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class WebCrawlResponse(TypedDict):
+    success: Literal[True]
+    data: WebCrawlResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class WebCrawlStartResponseData(TypedDict):
+    id: NotRequired[str]
+    status: WebCrawlStartResponseDataStatus
+    total: int
+
+
+class WebCrawlStartResponse(TypedDict):
+    success: Literal[True]
+    data: WebCrawlStartResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class WebCrawlStatusResponseDataErrorsItem(TypedDict):
+    url: NotRequired[str]
+    code: NotRequired[str]
+    message: NotRequired[str]
+
+
+class WebCrawlStatusResponseData(TypedDict):
+    id: NotRequired[str]
+    status: WebCrawlStartResponseDataStatus
+    total: int
+    completed: int
+    failed: int
+    creditsUsed: int
+    message: NotRequired[str]
+    errors: list[WebCrawlStatusResponseDataErrorsItem]
+    results: list[WebCrawlResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class WebCrawlStatusResponse(TypedDict):
+    success: Literal[True]
+    data: WebCrawlStatusResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class WebCrawlCancelResponseData(TypedDict):
+    id: NotRequired[str]
+    status: WebCrawlStartResponseDataStatus
+    total: int
+    completed: int
+    failed: int
+    creditsUsed: int
+    message: NotRequired[str]
+
+
+class WebCrawlCancelResponse(TypedDict):
+    success: Literal[True]
+    data: WebCrawlCancelResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class WebBatchStatusResponseDataResultsItem(TypedDict):
+    markdown: NotRequired[str]
+    html: NotRequired[str]
+    rawHtml: NotRequired[str]
+    links: NotRequired[list[str]]
+    screenshot: NotRequired[str]
+    isTruncated: bool
+    metadata: WebScrapeResponseDataMetadata
+    url: NotRequired[str]
+
+
+class WebBatchStatusResponseData(TypedDict):
+    id: NotRequired[str]
+    status: WebCrawlStartResponseDataStatus
+    total: int
+    completed: int
+    failed: int
+    creditsUsed: int
+    message: NotRequired[str]
+    errors: list[WebCrawlStatusResponseDataErrorsItem]
+    results: list[WebBatchStatusResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class WebBatchStatusResponse(TypedDict):
+    success: Literal[True]
+    data: WebBatchStatusResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class GoogleNewsResponseData(TypedDict):
+    results: list[WebNewsResponseDataResultsItem]
     page: int
 
 
-class GoogleShoppingResponse(TypedDict):
+class GoogleNewsResponse(TypedDict):
     success: Literal[True]
-    data: GoogleShoppingResponseData
+    data: GoogleNewsResponseData
     creditsUsed: int
     requestId: str
 
@@ -1425,36 +1682,6 @@ class GoogleScholarResponseData(TypedDict):
 class GoogleScholarResponse(TypedDict):
     success: Literal[True]
     data: GoogleScholarResponseData
-    creditsUsed: int
-    requestId: str
-
-
-class GoogleJobsResponseDataResultsItem(TypedDict):
-    jobId: str
-    title: str
-    companyName: NotRequired[str]
-    location: NotRequired[str]
-    via: NotRequired[str]
-    publishedAt: NotRequired[str]
-    jobType: NotRequired[str]
-    salary: NotRequired[str]
-    benefits: NotRequired[list[str]]
-    apply: NotRequired[list[GoogleSearchResponseDataKnowledgeGraphProfilesItem]]
-    qualifications: NotRequired[list[str]]
-    responsibilities: NotRequired[list[str]]
-    description: NotRequired[str]
-    jobUrl: str
-    position: int
-
-
-class GoogleJobsResponseData(TypedDict):
-    results: list[GoogleJobsResponseDataResultsItem]
-    cursor: NotRequired[str]
-
-
-class GoogleJobsResponse(TypedDict):
-    success: Literal[True]
-    data: GoogleJobsResponseData
     creditsUsed: int
     requestId: str
 
@@ -3173,6 +3400,88 @@ class CareersJobResponse(TypedDict):
     requestId: str
 
 
+class GlassdoorCompanyResponseData(TypedDict):
+    companyId: NotRequired[str]
+    companyUrl: NotRequired[str]
+    name: NotRequired[str]
+    rating: NotRequired[float]
+    reviews: NotRequired[int]
+    cultureRating: NotRequired[float]
+    workLifeBalanceRating: NotRequired[float]
+    payRating: NotRequired[float]
+    managementRating: NotRequired[float]
+    careerOpportunitiesRating: NotRequired[float]
+    recommendPercent: NotRequired[int]
+    ceoApprovalPercent: NotRequired[int]
+    size: NotRequired[str]
+    industry: NotRequired[str]
+    headquarters: NotRequired[str]
+    website: NotRequired[str]
+
+
+class GlassdoorCompanyResponse(TypedDict):
+    success: Literal[True]
+    data: GlassdoorCompanyResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class GlassdoorCompanyReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
+    rating: NotRequired[float]
+    title: NotRequired[str]
+    pros: NotRequired[str]
+    cons: NotRequired[str]
+    adviceToManagement: NotRequired[str]
+    jobTitle: NotRequired[str]
+    location: NotRequired[str]
+    employmentStatus: NotRequired[str]
+    createdDate: NotRequired[str]
+
+
+class GlassdoorCompanyReviewsResponseData(TypedDict):
+    companyId: NotRequired[str]
+    total: NotRequired[int]
+    totalAllLanguages: NotRequired[int]
+    results: list[GlassdoorCompanyReviewsResponseDataResultsItem]
+    page: int
+
+
+class GlassdoorCompanyReviewsResponse(TypedDict):
+    success: Literal[True]
+    data: GlassdoorCompanyReviewsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class GlassdoorCompanySalariesResponseDataResultsItem(TypedDict):
+    jobTitle: NotRequired[str]
+    reports: NotRequired[int]
+    totalPayMin: NotRequired[float]
+    totalPayMedian: NotRequired[float]
+    totalPayMax: NotRequired[float]
+    basePayMin: NotRequired[float]
+    basePayMedian: NotRequired[float]
+    basePayMax: NotRequired[float]
+    payCurrency: NotRequired[str]
+    payPeriod: NotRequired[LinkedinJobsSearchResponseDataResultsItemSalaryPeriod]
+
+
+class GlassdoorCompanySalariesResponseData(TypedDict):
+    companyId: NotRequired[str]
+    country: NotRequired[str]
+    total: NotRequired[int]
+    results: list[GlassdoorCompanySalariesResponseDataResultsItem]
+    page: int
+
+
+class GlassdoorCompanySalariesResponse(TypedDict):
+    success: Literal[True]
+    data: GlassdoorCompanySalariesResponseData
+    creditsUsed: int
+    requestId: str
+
+
 class TripadvisorSearchResponseDataResultsItem(TypedDict):
     placeId: NotRequired[str]
     placeUrl: NotRequired[str]
@@ -3285,6 +3594,95 @@ class TripadvisorReviewsResponseData(TypedDict):
 class TripadvisorReviewsResponse(TypedDict):
     success: Literal[True]
     data: TripadvisorReviewsResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class YelpSearchResponseDataResultsItem(TypedDict):
+    businessId: NotRequired[str]
+    businessAlias: NotRequired[str]
+    businessUrl: str
+    name: NotRequired[str]
+    rating: NotRequired[float]
+    reviews: NotRequired[int]
+    priceLevel: NotRequired[str]
+    categories: NotRequired[list[str]]
+    addressStreet: NotRequired[str]
+    addressCity: NotRequired[str]
+
+
+class YelpSearchResponseData(TypedDict):
+    results: list[YelpSearchResponseDataResultsItem]
+
+
+class YelpSearchResponse(TypedDict):
+    success: Literal[True]
+    data: YelpSearchResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class YelpBusinessResponseDataHoursItem(TypedDict):
+    day: NotRequired[str]
+    times: NotRequired[list[str]]
+
+
+class YelpBusinessResponseData(TypedDict):
+    businessId: NotRequired[str]
+    businessAlias: NotRequired[str]
+    businessUrl: str
+    name: NotRequired[str]
+    rating: NotRequired[float]
+    reviews: NotRequired[int]
+    priceLevel: NotRequired[str]
+    categories: list[str]
+    addressFull: NotRequired[str]
+    addressStreet: NotRequired[str]
+    addressCity: NotRequired[str]
+    addressRegion: NotRequired[str]
+    addressPostalCode: NotRequired[str]
+    addressCountry: NotRequired[str]
+    neighborhoods: list[str]
+    latitude: NotRequired[float]
+    longitude: NotRequired[float]
+    phone: NotRequired[str]
+    website: NotRequired[str]
+    hours: list[YelpBusinessResponseDataHoursItem]
+    photosAndVideos: NotRequired[int]
+    isClaimed: NotRequired[bool]
+
+
+class YelpBusinessResponse(TypedDict):
+    success: Literal[True]
+    data: YelpBusinessResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class YelpBusinessReviewsResponseDataResultsItem(TypedDict):
+    reviewId: NotRequired[str]
+    reviewUrl: NotRequired[str]
+    rating: NotRequired[float]
+    text: NotRequired[str]
+    language: NotRequired[str]
+    createdAt: NotRequired[str]
+    authorName: NotRequired[str]
+    ownerReplyText: NotRequired[str]
+    ownerReplyAt: NotRequired[str]
+
+
+class YelpBusinessReviewsResponseData(TypedDict):
+    businessId: NotRequired[str]
+    businessName: NotRequired[str]
+    businessUrl: NotRequired[str]
+    total: NotRequired[int]
+    results: list[YelpBusinessReviewsResponseDataResultsItem]
+    page: int
+
+
+class YelpBusinessReviewsResponse(TypedDict):
+    success: Literal[True]
+    data: YelpBusinessReviewsResponseData
     creditsUsed: int
     requestId: str
 
@@ -3573,6 +3971,33 @@ class AmazonProductResponseData(TypedDict):
 class AmazonProductResponse(TypedDict):
     success: Literal[True]
     data: AmazonProductResponseData
+    creditsUsed: int
+    requestId: str
+
+
+class AmazonReviewsResponseDataResultsItem(TypedDict):
+    authorName: NotRequired[str]
+    rating: int
+    title: NotRequired[str]
+    text: NotRequired[str]
+    publishedAt: NotRequired[str]
+    country: NotRequired[str]
+    isVerified: bool
+    isVine: bool
+    helpfulVotes: int
+    imageUrls: NotRequired[list[str]]
+    videoUrls: NotRequired[list[str]]
+
+
+class AmazonReviewsResponseData(TypedDict):
+    productId: NotRequired[str]
+    results: list[AmazonReviewsResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class AmazonReviewsResponse(TypedDict):
+    success: Literal[True]
+    data: AmazonReviewsResponseData
     creditsUsed: int
     requestId: str
 
@@ -3922,6 +4347,36 @@ class PinterestPinResponse(TypedDict):
     requestId: str
 
 
+class PinterestBoardResponseDataResultsItem(TypedDict):
+    pinId: NotRequired[str]
+    pinUrl: str
+    title: NotRequired[str]
+    text: NotRequired[str]
+    altText: NotRequired[str]
+    linkUrl: NotRequired[str]
+    domain: NotRequired[str]
+    publishedAt: NotRequired[str]
+    imageUrl: NotRequired[str]
+    imageWidth: NotRequired[int]
+    imageHeight: NotRequired[int]
+    dominantColor: NotRequired[str]
+    videoUrl: NotRequired[str]
+    videoDurationSeconds: NotRequired[float]
+    saves: NotRequired[int]
+    reposts: NotRequired[int]
+    reactions: NotRequired[int]
+    isPromoted: bool
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    boardId: NotRequired[str]
+    boardName: NotRequired[str]
+    boardUrl: NotRequired[str]
+
+
 class PinterestBoardResponseData(TypedDict):
     boardId: NotRequired[str]
     boardUrl: str
@@ -3938,7 +4393,7 @@ class PinterestBoardResponseData(TypedDict):
     authorUrl: NotRequired[str]
     authorAvatarUrl: NotRequired[str]
     authorIsVerified: NotRequired[bool]
-    results: list[PinterestPinResponseData]
+    results: list[PinterestBoardResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -3947,6 +4402,35 @@ class PinterestBoardResponse(TypedDict):
     data: PinterestBoardResponseData
     creditsUsed: int
     requestId: str
+
+
+class PinterestProfileResponseDataResultsItem(TypedDict):
+    pinId: NotRequired[str]
+    pinUrl: str
+    title: NotRequired[str]
+    text: NotRequired[str]
+    altText: NotRequired[str]
+    linkUrl: NotRequired[str]
+    domain: NotRequired[str]
+    publishedAt: NotRequired[str]
+    imageUrl: NotRequired[str]
+    imageWidth: NotRequired[int]
+    imageHeight: NotRequired[int]
+    dominantColor: NotRequired[str]
+    videoUrl: NotRequired[str]
+    videoDurationSeconds: NotRequired[float]
+    saves: NotRequired[int]
+    reactions: NotRequired[int]
+    isPromoted: bool
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    boardId: NotRequired[str]
+    boardName: NotRequired[str]
+    boardUrl: NotRequired[str]
 
 
 class PinterestProfileResponseData(TypedDict):
@@ -3964,7 +4448,7 @@ class PinterestProfileResponseData(TypedDict):
     isVerified: bool
     isPrivate: bool
     createdAt: NotRequired[str]
-    results: list[PinterestPinResponseData]
+    results: list[PinterestProfileResponseDataResultsItem]
     cursor: NotRequired[str]
 
 
@@ -4001,14 +4485,59 @@ class XProfileResponse(TypedDict):
     requestId: str
 
 
-class XPostResponseDataMediaItem(TypedDict):
-    type: XPostResponseDataMediaItemType
+class XProfilePostsResponseDataResultsItemMediaItem(TypedDict):
+    type: XProfilePostsResponseDataResultsItemMediaItemType
     url: str
     thumbnailUrl: NotRequired[str]
     width: NotRequired[int]
     height: NotRequired[int]
     durationSeconds: NotRequired[float]
     altText: NotRequired[str]
+
+
+class XProfilePostsResponseDataResultsItem(TypedDict):
+    postId: NotRequired[str]
+    postUrl: str
+    text: NotRequired[str]
+    publishedAt: NotRequired[str]
+    language: NotRequired[str]
+    likes: NotRequired[int]
+    replies: NotRequired[int]
+    reposts: NotRequired[int]
+    quotes: NotRequired[int]
+    bookmarks: NotRequired[int]
+    views: NotRequired[int]
+    authorId: NotRequired[str]
+    authorUsername: NotRequired[str]
+    authorName: NotRequired[str]
+    authorUrl: NotRequired[str]
+    authorAvatarUrl: NotRequired[str]
+    authorIsVerified: NotRequired[bool]
+    media: NotRequired[list[XProfilePostsResponseDataResultsItemMediaItem]]
+    links: NotRequired[list[str]]
+    hashtags: NotRequired[list[str]]
+    mentions: NotRequired[list[str]]
+    replyToUrl: NotRequired[str]
+    quotedUrl: NotRequired[str]
+    quotedText: NotRequired[str]
+    quotedAuthorUsername: NotRequired[str]
+    isEdited: bool
+    isSensitive: bool
+    isPinned: bool
+    isRepost: bool
+
+
+class XProfilePostsResponseData(TypedDict):
+    order: XProfilePostsResponseDataOrder
+    results: list[XProfilePostsResponseDataResultsItem]
+    cursor: NotRequired[str]
+
+
+class XProfilePostsResponse(TypedDict):
+    success: Literal[True]
+    data: XProfilePostsResponseData
+    creditsUsed: int
+    requestId: str
 
 
 class XPostResponseData(TypedDict):
@@ -4029,7 +4558,7 @@ class XPostResponseData(TypedDict):
     authorUrl: NotRequired[str]
     authorAvatarUrl: NotRequired[str]
     authorIsVerified: NotRequired[bool]
-    media: list[XPostResponseDataMediaItem]
+    media: list[XProfilePostsResponseDataResultsItemMediaItem]
     links: list[str]
     hashtags: list[str]
     mentions: list[str]
@@ -4745,7 +5274,3 @@ class FacebookMarketplaceSearchResponse(TypedDict):
     data: FacebookMarketplaceSearchResponseData
     creditsUsed: int
     requestId: str
-
-
-WebSearchResponse = GoogleSearchResponse
-WebSearchResponseData = GoogleSearchResponseData

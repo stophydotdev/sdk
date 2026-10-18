@@ -12,6 +12,7 @@ from .models import (
     AirbnbSearchRoomType,
     AmazonBestsellersResponse,
     AmazonProductResponse,
+    AmazonReviewsResponse,
     AmazonSearchCountry,
     AmazonSearchResponse,
     AmazonSearchSort,
@@ -42,12 +43,14 @@ from .models import (
     FacebookPageResponse,
     FacebookPostCommentsResponse,
     FacebookPostResponse,
+    GlassdoorCompanyResponse,
+    GlassdoorCompanyReviewsResponse,
+    GlassdoorCompanySalariesResponse,
     GoogleAdsAdResponse,
     GoogleAdsAdvertisersResponse,
     GoogleAdsSearchMediaType,
     GoogleAdsSearchPlatform,
     GoogleAdsSearchResponse,
-    GoogleAiModeResponse,
     GoogleFlightsArrivalTime,
     GoogleFlightsCabin,
     GoogleFlightsDepartureTime,
@@ -58,14 +61,10 @@ from .models import (
     GoogleHotelsPropertyTypesItem,
     GoogleHotelsResponse,
     GoogleHotelsSort,
-    GoogleImagesResponse,
     GoogleImagesSize,
     GoogleImagesTime,
     GoogleImagesType,
     GoogleImagesUsageRights,
-    GoogleJobsDatePosted,
-    GoogleJobsJobType,
-    GoogleJobsResponse,
     GoogleMapsPlaceResponse,
     GoogleMapsReviewsResponse,
     GoogleMapsReviewsSort,
@@ -89,7 +88,6 @@ from .models import (
     GoogleScholarType,
     GoogleSearchResponse,
     GoogleSearchTime,
-    GoogleShoppingResponse,
     GoogleSuggestResponse,
     GoogleTrendsInterestResponse,
     GoogleTrendsRegionsResolution,
@@ -185,8 +183,35 @@ from .models import (
     UpworkSearchResponse,
     UpworkSearchSort,
     UpworkSearchWorkload,
+    WebBatchStatusResponse,
+    WebContactsResponse,
+    WebCrawlCancelResponse,
+    WebCrawlResponse,
+    WebCrawlStartResponse,
+    WebCrawlStatusResponse,
+    WebImagesResponse,
+    WebMapResponse,
+    WebNewsResponse,
+    WebParseResponse,
+    WebScrapeActionsItemOption0,
+    WebScrapeActionsItemOption1,
+    WebScrapeActionsItemOption2,
+    WebScrapeActionsItemOption3,
+    WebScrapeActionsItemOption4,
+    WebScrapeActionsItemOption5,
+    WebScrapeFormatsItemOption0,
+    WebScrapeFormatsItemOption1,
+    WebScrapeLocation,
+    WebScrapeResponse,
+    WebSearchResponse,
+    WebSearchTime,
     XPostResponse,
+    XProfilePostsResponse,
     XProfileResponse,
+    YelpBusinessResponse,
+    YelpBusinessReviewsResponse,
+    YelpBusinessReviewsSort,
+    YelpSearchResponse,
     YoutubeChannelResponse,
     YoutubeChannelSort,
     YoutubeChannelTab,
@@ -328,7 +353,7 @@ class SyncGoogleImages:
         time: GoogleImagesTime | None = None,
         usage_rights: GoogleImagesUsageRights | None = None,
         limit: int | None = None,
-    ) -> GoogleImagesResponse:
+    ) -> WebImagesResponse:
         body = _omit_none(
             {
                 "query": query,
@@ -342,52 +367,6 @@ class SyncGoogleImages:
             }
         )
         return self._call("POST", "/v1/google/images", body)
-
-
-class SyncGoogleAiMode:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-    ) -> GoogleAiModeResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-            }
-        )
-        return self._call("POST", "/v1/google/aiMode", body)
-
-
-class SyncGoogleShopping:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        filter: str | None = None,
-        country: str | None = None,
-        language: str | None = None,
-        page: int | None = None,
-    ) -> GoogleShoppingResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "filter": filter,
-                "country": country,
-                "language": language,
-                "page": page,
-            }
-        )
-        return self._call("POST", "/v1/google/shopping", body)
 
 
 class SyncGoogleSuggest:
@@ -529,37 +508,6 @@ class SyncGoogleScholar:
             }
         )
         return self._call("POST", "/v1/google/scholar", body)
-
-
-class SyncGoogleJobs:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        location: str | None = None,
-        country: str | None = None,
-        language: str | None = None,
-        date_posted: GoogleJobsDatePosted | None = None,
-        job_type: GoogleJobsJobType | None = None,
-        remote: bool | None = None,
-        cursor: str | None = None,
-    ) -> GoogleJobsResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "location": location,
-                "country": country,
-                "language": language,
-                "datePosted": date_posted,
-                "jobType": job_type,
-                "remote": remote,
-                "cursor": cursor,
-            }
-        )
-        return self._call("POST", "/v1/google/jobs", body)
 
 
 class SyncGooglePatents:
@@ -987,12 +935,9 @@ class SyncGoogle:
     search: SyncGoogleSearch
     news: SyncGoogleNews
     images: SyncGoogleImages
-    aiMode: SyncGoogleAiMode
-    shopping: SyncGoogleShopping
     suggest: SyncGoogleSuggest
     ads: SyncGoogleAds
     scholar: SyncGoogleScholar
-    jobs: SyncGoogleJobs
     patents: SyncGooglePatents
     maps: SyncGoogleMaps
     trends: SyncGoogleTrends
@@ -1005,18 +950,423 @@ class SyncGoogle:
         self.search = SyncGoogleSearch(call)
         self.news = SyncGoogleNews(call)
         self.images = SyncGoogleImages(call)
-        self.aiMode = SyncGoogleAiMode(call)
-        self.shopping = SyncGoogleShopping(call)
         self.suggest = SyncGoogleSuggest(call)
         self.ads = SyncGoogleAds(call)
         self.scholar = SyncGoogleScholar(call)
-        self.jobs = SyncGoogleJobs(call)
         self.patents = SyncGooglePatents(call)
         self.maps = SyncGoogleMaps(call)
         self.trends = SyncGoogleTrends(call)
         self.flights = SyncGoogleFlights(call)
         self.hotels = SyncGoogleHotels(call)
         self.play = SyncGooglePlay(call)
+
+
+class SyncWebSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        country: str | None = None,
+        include_domains: list[str] | None = None,
+        exclude_domains: list[str] | None = None,
+        time: WebSearchTime | None = None,
+        safe_search: bool | None = None,
+        limit: int | None = None,
+        scrape_results: bool | None = None,
+        scrape_limit: int | None = None,
+    ) -> WebSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "country": country,
+                "includeDomains": include_domains,
+                "excludeDomains": exclude_domains,
+                "time": time,
+                "safeSearch": safe_search,
+                "limit": limit,
+                "scrapeResults": scrape_results,
+                "scrapeLimit": scrape_limit,
+            }
+        )
+        return self._call("POST", "/v1/web/search", body)
+
+
+class SyncWebNews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        country: str | None = None,
+        time: WebSearchTime | None = None,
+        limit: int | None = None,
+    ) -> WebNewsResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "country": country,
+                "time": time,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/web/news", body)
+
+
+class SyncWebImages:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        safe_search: bool | None = None,
+        limit: int | None = None,
+    ) -> WebImagesResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "safeSearch": safe_search,
+                "limit": limit,
+            }
+        )
+        return self._call("POST", "/v1/web/images", body)
+
+
+class SyncWebScrape:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        url: str,
+        formats: list[WebScrapeFormatsItemOption0 | WebScrapeFormatsItemOption1] | None = None,
+        only_main_content: bool | None = None,
+        include_tags: list[str] | None = None,
+        exclude_tags: list[str] | None = None,
+        wait_for: int | None = None,
+        timeout: int | None = None,
+        max_age: int | None = None,
+        location: WebScrapeLocation | None = None,
+        actions: list[
+            WebScrapeActionsItemOption0
+            | WebScrapeActionsItemOption1
+            | WebScrapeActionsItemOption2
+            | WebScrapeActionsItemOption3
+            | WebScrapeActionsItemOption4
+            | WebScrapeActionsItemOption5
+        ]
+        | None = None,
+        max_chars: int | None = None,
+    ) -> WebScrapeResponse:
+        body = _omit_none(
+            {
+                "url": url,
+                "formats": formats,
+                "onlyMainContent": only_main_content,
+                "includeTags": include_tags,
+                "excludeTags": exclude_tags,
+                "waitFor": wait_for,
+                "timeout": timeout,
+                "maxAge": max_age,
+                "location": location,
+                "actions": actions,
+                "maxChars": max_chars,
+            }
+        )
+        return self._call("POST", "/v1/web/scrape", body)
+
+
+class SyncWebParse:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        file: str,
+        filename: str | None = None,
+        max_pages: int | None = None,
+    ) -> WebParseResponse:
+        body = _omit_none(
+            {
+                "file": file,
+                "filename": filename,
+                "maxPages": max_pages,
+            }
+        )
+        return self._call("POST", "/v1/web/parse", body)
+
+
+class SyncWebMap:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        url: str,
+        search: str | None = None,
+        include_subdomains: bool | None = None,
+        page: int | None = None,
+    ) -> WebMapResponse:
+        body = _omit_none(
+            {
+                "url": url,
+                "search": search,
+                "includeSubdomains": include_subdomains,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/web/map", body)
+
+
+class SyncWebContacts:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        url: str,
+    ) -> WebContactsResponse:
+        body = _omit_none(
+            {
+                "url": url,
+            }
+        )
+        return self._call("POST", "/v1/web/contacts", body)
+
+
+class SyncWebCrawlStart:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        url: str,
+        goal: str | None = None,
+        include_paths: list[str] | None = None,
+        exclude_paths: list[str] | None = None,
+        max_depth: int | None = None,
+        max_pages: int | None = None,
+        entire_site: bool | None = None,
+        include_subdomains: bool | None = None,
+        only_main_content: bool | None = None,
+        webhook: str | None = None,
+    ) -> WebCrawlStartResponse:
+        body = _omit_none(
+            {
+                "url": url,
+                "goal": goal,
+                "includePaths": include_paths,
+                "excludePaths": exclude_paths,
+                "maxDepth": max_depth,
+                "maxPages": max_pages,
+                "entireSite": entire_site,
+                "includeSubdomains": include_subdomains,
+                "onlyMainContent": only_main_content,
+                "webhook": webhook,
+            }
+        )
+        return self._call("POST", "/v1/web/crawl/start", body)
+
+
+class SyncWebCrawlStatus:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        id: str,
+        cursor: str | None = None,
+    ) -> WebCrawlStatusResponse:
+        body = _omit_none(
+            {
+                "id": id,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/web/crawl/status", body)
+
+
+class SyncWebCrawlCancel:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        id: str,
+    ) -> WebCrawlCancelResponse:
+        body = _omit_none(
+            {
+                "id": id,
+            }
+        )
+        return self._call("POST", "/v1/web/crawl/cancel", body)
+
+
+class SyncWebCrawl:
+    start: SyncWebCrawlStart
+    status: SyncWebCrawlStatus
+    cancel: SyncWebCrawlCancel
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.start = SyncWebCrawlStart(call)
+        self.status = SyncWebCrawlStatus(call)
+        self.cancel = SyncWebCrawlCancel(call)
+
+    def __call__(
+        self,
+        *,
+        url: str,
+        goal: str | None = None,
+        include_paths: list[str] | None = None,
+        exclude_paths: list[str] | None = None,
+        max_depth: int | None = None,
+        max_pages: int | None = None,
+        entire_site: bool | None = None,
+        include_subdomains: bool | None = None,
+        only_main_content: bool | None = None,
+        cursor: str | None = None,
+    ) -> WebCrawlResponse:
+        body = _omit_none(
+            {
+                "url": url,
+                "goal": goal,
+                "includePaths": include_paths,
+                "excludePaths": exclude_paths,
+                "maxDepth": max_depth,
+                "maxPages": max_pages,
+                "entireSite": entire_site,
+                "includeSubdomains": include_subdomains,
+                "onlyMainContent": only_main_content,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/web/crawl", body)
+
+
+class SyncWebBatchStatus:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        id: str,
+        cursor: str | None = None,
+    ) -> WebBatchStatusResponse:
+        body = _omit_none(
+            {
+                "id": id,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/web/batch/status", body)
+
+
+class SyncWebBatchCancel:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        id: str,
+    ) -> WebCrawlCancelResponse:
+        body = _omit_none(
+            {
+                "id": id,
+            }
+        )
+        return self._call("POST", "/v1/web/batch/cancel", body)
+
+
+class SyncWebBatch:
+    status: SyncWebBatchStatus
+    cancel: SyncWebBatchCancel
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.status = SyncWebBatchStatus(call)
+        self.cancel = SyncWebBatchCancel(call)
+
+    def __call__(
+        self,
+        *,
+        urls: list[str],
+        webhook: str | None = None,
+        formats: list[WebScrapeFormatsItemOption0 | WebScrapeFormatsItemOption1] | None = None,
+        only_main_content: bool | None = None,
+        include_tags: list[str] | None = None,
+        exclude_tags: list[str] | None = None,
+        wait_for: int | None = None,
+        timeout: int | None = None,
+        max_age: int | None = None,
+        location: WebScrapeLocation | None = None,
+        actions: list[
+            WebScrapeActionsItemOption0
+            | WebScrapeActionsItemOption1
+            | WebScrapeActionsItemOption2
+            | WebScrapeActionsItemOption3
+            | WebScrapeActionsItemOption4
+            | WebScrapeActionsItemOption5
+        ]
+        | None = None,
+        max_chars: int | None = None,
+    ) -> WebCrawlStartResponse:
+        body = _omit_none(
+            {
+                "urls": urls,
+                "webhook": webhook,
+                "formats": formats,
+                "onlyMainContent": only_main_content,
+                "includeTags": include_tags,
+                "excludeTags": exclude_tags,
+                "waitFor": wait_for,
+                "timeout": timeout,
+                "maxAge": max_age,
+                "location": location,
+                "actions": actions,
+                "maxChars": max_chars,
+            }
+        )
+        return self._call("POST", "/v1/web/batch", body)
+
+
+class SyncWeb:
+    search: SyncWebSearch
+    news: SyncWebNews
+    images: SyncWebImages
+    scrape: SyncWebScrape
+    parse: SyncWebParse
+    map: SyncWebMap
+    contacts: SyncWebContacts
+    crawl: SyncWebCrawl
+    batch: SyncWebBatch
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncWebSearch(call)
+        self.news = SyncWebNews(call)
+        self.images = SyncWebImages(call)
+        self.scrape = SyncWebScrape(call)
+        self.parse = SyncWebParse(call)
+        self.map = SyncWebMap(call)
+        self.contacts = SyncWebContacts(call)
+        self.crawl = SyncWebCrawl(call)
+        self.batch = SyncWebBatch(call)
 
 
 class SyncYoutubeSuggest:
@@ -2400,6 +2750,84 @@ class SyncCareers:
         self.job = SyncCareersJob(call)
 
 
+class SyncGlassdoorCompanyReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_id: str | None = None,
+        page: int | None = None,
+    ) -> GlassdoorCompanyReviewsResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyId": company_id,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/glassdoor/company/reviews", body)
+
+
+class SyncGlassdoorCompanySalaries:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_id: str | None = None,
+        country: str | None = None,
+        page: int | None = None,
+    ) -> GlassdoorCompanySalariesResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyId": company_id,
+                "country": country,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/glassdoor/company/salaries", body)
+
+
+class SyncGlassdoorCompany:
+    reviews: SyncGlassdoorCompanyReviews
+    salaries: SyncGlassdoorCompanySalaries
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.reviews = SyncGlassdoorCompanyReviews(call)
+        self.salaries = SyncGlassdoorCompanySalaries(call)
+
+    def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_id: str | None = None,
+        company_name: str | None = None,
+    ) -> GlassdoorCompanyResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyId": company_id,
+                "companyName": company_name,
+            }
+        )
+        return self._call("POST", "/v1/glassdoor/company", body)
+
+
+class SyncGlassdoor:
+    company: SyncGlassdoorCompany
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.company = SyncGlassdoorCompany(call)
+
+
 class SyncTripadvisorSearch:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -2481,6 +2909,80 @@ class SyncTripadvisor:
         self.search = SyncTripadvisorSearch(call)
         self.place = SyncTripadvisorPlace(call)
         self.reviews = SyncTripadvisorReviews(call)
+
+
+class SyncYelpSearch:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        query: str,
+        location: str,
+    ) -> YelpSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "location": location,
+            }
+        )
+        return self._call("POST", "/v1/yelp/search", body)
+
+
+class SyncYelpBusinessReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        business_url: str | None = None,
+        business_id: str | None = None,
+        sort: YelpBusinessReviewsSort | None = None,
+        page: int | None = None,
+    ) -> YelpBusinessReviewsResponse:
+        body = _omit_none(
+            {
+                "businessUrl": business_url,
+                "businessId": business_id,
+                "sort": sort,
+                "page": page,
+            }
+        )
+        return self._call("POST", "/v1/yelp/business/reviews", body)
+
+
+class SyncYelpBusiness:
+    reviews: SyncYelpBusinessReviews
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.reviews = SyncYelpBusinessReviews(call)
+
+    def __call__(
+        self,
+        *,
+        business_url: str | None = None,
+        business_id: str | None = None,
+    ) -> YelpBusinessResponse:
+        body = _omit_none(
+            {
+                "businessUrl": business_url,
+                "businessId": business_id,
+            }
+        )
+        return self._call("POST", "/v1/yelp/business", body)
+
+
+class SyncYelp:
+    search: SyncYelpSearch
+    business: SyncYelpBusiness
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.search = SyncYelpSearch(call)
+        self.business = SyncYelpBusiness(call)
 
 
 class SyncBookingSearch:
@@ -2623,6 +3125,31 @@ class SyncAmazonProduct:
         return self._call("POST", "/v1/amazon/product", body)
 
 
+class SyncAmazonReviews:
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+
+    def __call__(
+        self,
+        *,
+        product_url: str | None = None,
+        product_id: str | None = None,
+        rating: int | None = None,
+        verified_only: bool | None = None,
+        cursor: str | None = None,
+    ) -> AmazonReviewsResponse:
+        body = _omit_none(
+            {
+                "productUrl": product_url,
+                "productId": product_id,
+                "rating": rating,
+                "verifiedOnly": verified_only,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/amazon/reviews", body)
+
+
 class SyncAmazonBestsellers:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
@@ -2666,6 +3193,7 @@ class SyncAmazonSuggest:
 class SyncAmazon:
     search: SyncAmazonSearch
     product: SyncAmazonProduct
+    reviews: SyncAmazonReviews
     bestsellers: SyncAmazonBestsellers
     suggest: SyncAmazonSuggest
 
@@ -2673,6 +3201,7 @@ class SyncAmazon:
         self._call = call
         self.search = SyncAmazonSearch(call)
         self.product = SyncAmazonProduct(call)
+        self.reviews = SyncAmazonReviews(call)
         self.bestsellers = SyncAmazonBestsellers(call)
         self.suggest = SyncAmazonSuggest(call)
 
@@ -2879,9 +3408,33 @@ class SyncPinterest:
         self.profile = SyncPinterestProfile(call)
 
 
-class SyncXProfile:
+class SyncXProfilePosts:
     def __init__(self, call: SyncCall) -> None:
         self._call = call
+
+    def __call__(
+        self,
+        *,
+        profile_url: str | None = None,
+        username: str | None = None,
+        cursor: str | None = None,
+    ) -> XProfilePostsResponse:
+        body = _omit_none(
+            {
+                "profileUrl": profile_url,
+                "username": username,
+                "cursor": cursor,
+            }
+        )
+        return self._call("POST", "/v1/x/profile/posts", body)
+
+
+class SyncXProfile:
+    posts: SyncXProfilePosts
+
+    def __init__(self, call: SyncCall) -> None:
+        self._call = call
+        self.posts = SyncXProfilePosts(call)
 
     def __call__(
         self,
@@ -3365,87 +3918,10 @@ class SyncFacebook:
         self.marketplace = SyncFacebookMarketplace(call)
 
 
-class SyncWebSearch:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        include_domains: list[str] | None = None,
-        exclude_domains: list[str] | None = None,
-        time: GoogleSearchTime | None = None,
-        safe_search: bool | None = None,
-        scrape_results: bool | None = None,
-        scrape_limit: int | None = None,
-        page: int | None = None,
-    ) -> GoogleSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-                "includeDomains": include_domains,
-                "excludeDomains": exclude_domains,
-                "time": time,
-                "safeSearch": safe_search,
-                "scrapeResults": scrape_results,
-                "scrapeLimit": scrape_limit,
-                "page": page,
-            }
-        )
-        return self._call("POST", "/v1/web/search", body)
-
-
-class SyncWebNews:
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-
-    def __call__(
-        self,
-        *,
-        query: str | None = None,
-        topic: GoogleNewsTopic | None = None,
-        country: str | None = None,
-        language: str | None = None,
-        include_domains: list[str] | None = None,
-        exclude_domains: list[str] | None = None,
-        time: GoogleSearchTime | None = None,
-        sort: GoogleNewsSort | None = None,
-        page: int | None = None,
-    ) -> GoogleNewsResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "topic": topic,
-                "country": country,
-                "language": language,
-                "includeDomains": include_domains,
-                "excludeDomains": exclude_domains,
-                "time": time,
-                "sort": sort,
-                "page": page,
-            }
-        )
-        return self._call("POST", "/v1/web/news", body)
-
-
-class SyncWeb:
-    search: SyncWebSearch
-    news: SyncWebNews
-
-    def __init__(self, call: SyncCall) -> None:
-        self._call = call
-        self.search = SyncWebSearch(call)
-        self.news = SyncWebNews(call)
-
-
 class SyncSurface:
     endpoints: SyncEndpoints
     google: SyncGoogle
+    web: SyncWeb
     youtube: SyncYoutube
     reddit: SyncReddit
     instagram: SyncInstagram
@@ -3456,7 +3932,9 @@ class SyncSurface:
     upwork: SyncUpwork
     indeed: SyncIndeed
     careers: SyncCareers
+    glassdoor: SyncGlassdoor
     tripadvisor: SyncTripadvisor
+    yelp: SyncYelp
     booking: SyncBooking
     amazon: SyncAmazon
     appstore: SyncAppstore
@@ -3467,11 +3945,11 @@ class SyncSurface:
     ebay: SyncEbay
     airbnb: SyncAirbnb
     facebook: SyncFacebook
-    web: SyncWeb
 
     def __init__(self, call: SyncCall) -> None:
         self.endpoints = SyncEndpoints(call)
         self.google = SyncGoogle(call)
+        self.web = SyncWeb(call)
         self.youtube = SyncYoutube(call)
         self.reddit = SyncReddit(call)
         self.instagram = SyncInstagram(call)
@@ -3482,7 +3960,9 @@ class SyncSurface:
         self.upwork = SyncUpwork(call)
         self.indeed = SyncIndeed(call)
         self.careers = SyncCareers(call)
+        self.glassdoor = SyncGlassdoor(call)
         self.tripadvisor = SyncTripadvisor(call)
+        self.yelp = SyncYelp(call)
         self.booking = SyncBooking(call)
         self.amazon = SyncAmazon(call)
         self.appstore = SyncAppstore(call)
@@ -3493,7 +3973,6 @@ class SyncSurface:
         self.ebay = SyncEbay(call)
         self.airbnb = SyncAirbnb(call)
         self.facebook = SyncFacebook(call)
-        self.web = SyncWeb(call)
 
 
 class AsyncEndpoints:
@@ -3590,7 +4069,7 @@ class AsyncGoogleImages:
         time: GoogleImagesTime | None = None,
         usage_rights: GoogleImagesUsageRights | None = None,
         limit: int | None = None,
-    ) -> GoogleImagesResponse:
+    ) -> WebImagesResponse:
         body = _omit_none(
             {
                 "query": query,
@@ -3604,52 +4083,6 @@ class AsyncGoogleImages:
             }
         )
         return await self._call("POST", "/v1/google/images", body)
-
-
-class AsyncGoogleAiMode:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-    ) -> GoogleAiModeResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-            }
-        )
-        return await self._call("POST", "/v1/google/aiMode", body)
-
-
-class AsyncGoogleShopping:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        filter: str | None = None,
-        country: str | None = None,
-        language: str | None = None,
-        page: int | None = None,
-    ) -> GoogleShoppingResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "filter": filter,
-                "country": country,
-                "language": language,
-                "page": page,
-            }
-        )
-        return await self._call("POST", "/v1/google/shopping", body)
 
 
 class AsyncGoogleSuggest:
@@ -3791,37 +4224,6 @@ class AsyncGoogleScholar:
             }
         )
         return await self._call("POST", "/v1/google/scholar", body)
-
-
-class AsyncGoogleJobs:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        location: str | None = None,
-        country: str | None = None,
-        language: str | None = None,
-        date_posted: GoogleJobsDatePosted | None = None,
-        job_type: GoogleJobsJobType | None = None,
-        remote: bool | None = None,
-        cursor: str | None = None,
-    ) -> GoogleJobsResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "location": location,
-                "country": country,
-                "language": language,
-                "datePosted": date_posted,
-                "jobType": job_type,
-                "remote": remote,
-                "cursor": cursor,
-            }
-        )
-        return await self._call("POST", "/v1/google/jobs", body)
 
 
 class AsyncGooglePatents:
@@ -4249,12 +4651,9 @@ class AsyncGoogle:
     search: AsyncGoogleSearch
     news: AsyncGoogleNews
     images: AsyncGoogleImages
-    aiMode: AsyncGoogleAiMode
-    shopping: AsyncGoogleShopping
     suggest: AsyncGoogleSuggest
     ads: AsyncGoogleAds
     scholar: AsyncGoogleScholar
-    jobs: AsyncGoogleJobs
     patents: AsyncGooglePatents
     maps: AsyncGoogleMaps
     trends: AsyncGoogleTrends
@@ -4267,18 +4666,423 @@ class AsyncGoogle:
         self.search = AsyncGoogleSearch(call)
         self.news = AsyncGoogleNews(call)
         self.images = AsyncGoogleImages(call)
-        self.aiMode = AsyncGoogleAiMode(call)
-        self.shopping = AsyncGoogleShopping(call)
         self.suggest = AsyncGoogleSuggest(call)
         self.ads = AsyncGoogleAds(call)
         self.scholar = AsyncGoogleScholar(call)
-        self.jobs = AsyncGoogleJobs(call)
         self.patents = AsyncGooglePatents(call)
         self.maps = AsyncGoogleMaps(call)
         self.trends = AsyncGoogleTrends(call)
         self.flights = AsyncGoogleFlights(call)
         self.hotels = AsyncGoogleHotels(call)
         self.play = AsyncGooglePlay(call)
+
+
+class AsyncWebSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        country: str | None = None,
+        include_domains: list[str] | None = None,
+        exclude_domains: list[str] | None = None,
+        time: WebSearchTime | None = None,
+        safe_search: bool | None = None,
+        limit: int | None = None,
+        scrape_results: bool | None = None,
+        scrape_limit: int | None = None,
+    ) -> WebSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "country": country,
+                "includeDomains": include_domains,
+                "excludeDomains": exclude_domains,
+                "time": time,
+                "safeSearch": safe_search,
+                "limit": limit,
+                "scrapeResults": scrape_results,
+                "scrapeLimit": scrape_limit,
+            }
+        )
+        return await self._call("POST", "/v1/web/search", body)
+
+
+class AsyncWebNews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        country: str | None = None,
+        time: WebSearchTime | None = None,
+        limit: int | None = None,
+    ) -> WebNewsResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "country": country,
+                "time": time,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/web/news", body)
+
+
+class AsyncWebImages:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        safe_search: bool | None = None,
+        limit: int | None = None,
+    ) -> WebImagesResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "safeSearch": safe_search,
+                "limit": limit,
+            }
+        )
+        return await self._call("POST", "/v1/web/images", body)
+
+
+class AsyncWebScrape:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        url: str,
+        formats: list[WebScrapeFormatsItemOption0 | WebScrapeFormatsItemOption1] | None = None,
+        only_main_content: bool | None = None,
+        include_tags: list[str] | None = None,
+        exclude_tags: list[str] | None = None,
+        wait_for: int | None = None,
+        timeout: int | None = None,
+        max_age: int | None = None,
+        location: WebScrapeLocation | None = None,
+        actions: list[
+            WebScrapeActionsItemOption0
+            | WebScrapeActionsItemOption1
+            | WebScrapeActionsItemOption2
+            | WebScrapeActionsItemOption3
+            | WebScrapeActionsItemOption4
+            | WebScrapeActionsItemOption5
+        ]
+        | None = None,
+        max_chars: int | None = None,
+    ) -> WebScrapeResponse:
+        body = _omit_none(
+            {
+                "url": url,
+                "formats": formats,
+                "onlyMainContent": only_main_content,
+                "includeTags": include_tags,
+                "excludeTags": exclude_tags,
+                "waitFor": wait_for,
+                "timeout": timeout,
+                "maxAge": max_age,
+                "location": location,
+                "actions": actions,
+                "maxChars": max_chars,
+            }
+        )
+        return await self._call("POST", "/v1/web/scrape", body)
+
+
+class AsyncWebParse:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        file: str,
+        filename: str | None = None,
+        max_pages: int | None = None,
+    ) -> WebParseResponse:
+        body = _omit_none(
+            {
+                "file": file,
+                "filename": filename,
+                "maxPages": max_pages,
+            }
+        )
+        return await self._call("POST", "/v1/web/parse", body)
+
+
+class AsyncWebMap:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        url: str,
+        search: str | None = None,
+        include_subdomains: bool | None = None,
+        page: int | None = None,
+    ) -> WebMapResponse:
+        body = _omit_none(
+            {
+                "url": url,
+                "search": search,
+                "includeSubdomains": include_subdomains,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/web/map", body)
+
+
+class AsyncWebContacts:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        url: str,
+    ) -> WebContactsResponse:
+        body = _omit_none(
+            {
+                "url": url,
+            }
+        )
+        return await self._call("POST", "/v1/web/contacts", body)
+
+
+class AsyncWebCrawlStart:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        url: str,
+        goal: str | None = None,
+        include_paths: list[str] | None = None,
+        exclude_paths: list[str] | None = None,
+        max_depth: int | None = None,
+        max_pages: int | None = None,
+        entire_site: bool | None = None,
+        include_subdomains: bool | None = None,
+        only_main_content: bool | None = None,
+        webhook: str | None = None,
+    ) -> WebCrawlStartResponse:
+        body = _omit_none(
+            {
+                "url": url,
+                "goal": goal,
+                "includePaths": include_paths,
+                "excludePaths": exclude_paths,
+                "maxDepth": max_depth,
+                "maxPages": max_pages,
+                "entireSite": entire_site,
+                "includeSubdomains": include_subdomains,
+                "onlyMainContent": only_main_content,
+                "webhook": webhook,
+            }
+        )
+        return await self._call("POST", "/v1/web/crawl/start", body)
+
+
+class AsyncWebCrawlStatus:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        id: str,
+        cursor: str | None = None,
+    ) -> WebCrawlStatusResponse:
+        body = _omit_none(
+            {
+                "id": id,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/web/crawl/status", body)
+
+
+class AsyncWebCrawlCancel:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        id: str,
+    ) -> WebCrawlCancelResponse:
+        body = _omit_none(
+            {
+                "id": id,
+            }
+        )
+        return await self._call("POST", "/v1/web/crawl/cancel", body)
+
+
+class AsyncWebCrawl:
+    start: AsyncWebCrawlStart
+    status: AsyncWebCrawlStatus
+    cancel: AsyncWebCrawlCancel
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.start = AsyncWebCrawlStart(call)
+        self.status = AsyncWebCrawlStatus(call)
+        self.cancel = AsyncWebCrawlCancel(call)
+
+    async def __call__(
+        self,
+        *,
+        url: str,
+        goal: str | None = None,
+        include_paths: list[str] | None = None,
+        exclude_paths: list[str] | None = None,
+        max_depth: int | None = None,
+        max_pages: int | None = None,
+        entire_site: bool | None = None,
+        include_subdomains: bool | None = None,
+        only_main_content: bool | None = None,
+        cursor: str | None = None,
+    ) -> WebCrawlResponse:
+        body = _omit_none(
+            {
+                "url": url,
+                "goal": goal,
+                "includePaths": include_paths,
+                "excludePaths": exclude_paths,
+                "maxDepth": max_depth,
+                "maxPages": max_pages,
+                "entireSite": entire_site,
+                "includeSubdomains": include_subdomains,
+                "onlyMainContent": only_main_content,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/web/crawl", body)
+
+
+class AsyncWebBatchStatus:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        id: str,
+        cursor: str | None = None,
+    ) -> WebBatchStatusResponse:
+        body = _omit_none(
+            {
+                "id": id,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/web/batch/status", body)
+
+
+class AsyncWebBatchCancel:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        id: str,
+    ) -> WebCrawlCancelResponse:
+        body = _omit_none(
+            {
+                "id": id,
+            }
+        )
+        return await self._call("POST", "/v1/web/batch/cancel", body)
+
+
+class AsyncWebBatch:
+    status: AsyncWebBatchStatus
+    cancel: AsyncWebBatchCancel
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.status = AsyncWebBatchStatus(call)
+        self.cancel = AsyncWebBatchCancel(call)
+
+    async def __call__(
+        self,
+        *,
+        urls: list[str],
+        webhook: str | None = None,
+        formats: list[WebScrapeFormatsItemOption0 | WebScrapeFormatsItemOption1] | None = None,
+        only_main_content: bool | None = None,
+        include_tags: list[str] | None = None,
+        exclude_tags: list[str] | None = None,
+        wait_for: int | None = None,
+        timeout: int | None = None,
+        max_age: int | None = None,
+        location: WebScrapeLocation | None = None,
+        actions: list[
+            WebScrapeActionsItemOption0
+            | WebScrapeActionsItemOption1
+            | WebScrapeActionsItemOption2
+            | WebScrapeActionsItemOption3
+            | WebScrapeActionsItemOption4
+            | WebScrapeActionsItemOption5
+        ]
+        | None = None,
+        max_chars: int | None = None,
+    ) -> WebCrawlStartResponse:
+        body = _omit_none(
+            {
+                "urls": urls,
+                "webhook": webhook,
+                "formats": formats,
+                "onlyMainContent": only_main_content,
+                "includeTags": include_tags,
+                "excludeTags": exclude_tags,
+                "waitFor": wait_for,
+                "timeout": timeout,
+                "maxAge": max_age,
+                "location": location,
+                "actions": actions,
+                "maxChars": max_chars,
+            }
+        )
+        return await self._call("POST", "/v1/web/batch", body)
+
+
+class AsyncWeb:
+    search: AsyncWebSearch
+    news: AsyncWebNews
+    images: AsyncWebImages
+    scrape: AsyncWebScrape
+    parse: AsyncWebParse
+    map: AsyncWebMap
+    contacts: AsyncWebContacts
+    crawl: AsyncWebCrawl
+    batch: AsyncWebBatch
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncWebSearch(call)
+        self.news = AsyncWebNews(call)
+        self.images = AsyncWebImages(call)
+        self.scrape = AsyncWebScrape(call)
+        self.parse = AsyncWebParse(call)
+        self.map = AsyncWebMap(call)
+        self.contacts = AsyncWebContacts(call)
+        self.crawl = AsyncWebCrawl(call)
+        self.batch = AsyncWebBatch(call)
 
 
 class AsyncYoutubeSuggest:
@@ -5662,6 +6466,84 @@ class AsyncCareers:
         self.job = AsyncCareersJob(call)
 
 
+class AsyncGlassdoorCompanyReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_id: str | None = None,
+        page: int | None = None,
+    ) -> GlassdoorCompanyReviewsResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyId": company_id,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/glassdoor/company/reviews", body)
+
+
+class AsyncGlassdoorCompanySalaries:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_id: str | None = None,
+        country: str | None = None,
+        page: int | None = None,
+    ) -> GlassdoorCompanySalariesResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyId": company_id,
+                "country": country,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/glassdoor/company/salaries", body)
+
+
+class AsyncGlassdoorCompany:
+    reviews: AsyncGlassdoorCompanyReviews
+    salaries: AsyncGlassdoorCompanySalaries
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.reviews = AsyncGlassdoorCompanyReviews(call)
+        self.salaries = AsyncGlassdoorCompanySalaries(call)
+
+    async def __call__(
+        self,
+        *,
+        company_url: str | None = None,
+        company_id: str | None = None,
+        company_name: str | None = None,
+    ) -> GlassdoorCompanyResponse:
+        body = _omit_none(
+            {
+                "companyUrl": company_url,
+                "companyId": company_id,
+                "companyName": company_name,
+            }
+        )
+        return await self._call("POST", "/v1/glassdoor/company", body)
+
+
+class AsyncGlassdoor:
+    company: AsyncGlassdoorCompany
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.company = AsyncGlassdoorCompany(call)
+
+
 class AsyncTripadvisorSearch:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -5743,6 +6625,80 @@ class AsyncTripadvisor:
         self.search = AsyncTripadvisorSearch(call)
         self.place = AsyncTripadvisorPlace(call)
         self.reviews = AsyncTripadvisorReviews(call)
+
+
+class AsyncYelpSearch:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        query: str,
+        location: str,
+    ) -> YelpSearchResponse:
+        body = _omit_none(
+            {
+                "query": query,
+                "location": location,
+            }
+        )
+        return await self._call("POST", "/v1/yelp/search", body)
+
+
+class AsyncYelpBusinessReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        business_url: str | None = None,
+        business_id: str | None = None,
+        sort: YelpBusinessReviewsSort | None = None,
+        page: int | None = None,
+    ) -> YelpBusinessReviewsResponse:
+        body = _omit_none(
+            {
+                "businessUrl": business_url,
+                "businessId": business_id,
+                "sort": sort,
+                "page": page,
+            }
+        )
+        return await self._call("POST", "/v1/yelp/business/reviews", body)
+
+
+class AsyncYelpBusiness:
+    reviews: AsyncYelpBusinessReviews
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.reviews = AsyncYelpBusinessReviews(call)
+
+    async def __call__(
+        self,
+        *,
+        business_url: str | None = None,
+        business_id: str | None = None,
+    ) -> YelpBusinessResponse:
+        body = _omit_none(
+            {
+                "businessUrl": business_url,
+                "businessId": business_id,
+            }
+        )
+        return await self._call("POST", "/v1/yelp/business", body)
+
+
+class AsyncYelp:
+    search: AsyncYelpSearch
+    business: AsyncYelpBusiness
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.search = AsyncYelpSearch(call)
+        self.business = AsyncYelpBusiness(call)
 
 
 class AsyncBookingSearch:
@@ -5885,6 +6841,31 @@ class AsyncAmazonProduct:
         return await self._call("POST", "/v1/amazon/product", body)
 
 
+class AsyncAmazonReviews:
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+
+    async def __call__(
+        self,
+        *,
+        product_url: str | None = None,
+        product_id: str | None = None,
+        rating: int | None = None,
+        verified_only: bool | None = None,
+        cursor: str | None = None,
+    ) -> AmazonReviewsResponse:
+        body = _omit_none(
+            {
+                "productUrl": product_url,
+                "productId": product_id,
+                "rating": rating,
+                "verifiedOnly": verified_only,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/amazon/reviews", body)
+
+
 class AsyncAmazonBestsellers:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
@@ -5928,6 +6909,7 @@ class AsyncAmazonSuggest:
 class AsyncAmazon:
     search: AsyncAmazonSearch
     product: AsyncAmazonProduct
+    reviews: AsyncAmazonReviews
     bestsellers: AsyncAmazonBestsellers
     suggest: AsyncAmazonSuggest
 
@@ -5935,6 +6917,7 @@ class AsyncAmazon:
         self._call = call
         self.search = AsyncAmazonSearch(call)
         self.product = AsyncAmazonProduct(call)
+        self.reviews = AsyncAmazonReviews(call)
         self.bestsellers = AsyncAmazonBestsellers(call)
         self.suggest = AsyncAmazonSuggest(call)
 
@@ -6141,9 +7124,33 @@ class AsyncPinterest:
         self.profile = AsyncPinterestProfile(call)
 
 
-class AsyncXProfile:
+class AsyncXProfilePosts:
     def __init__(self, call: AsyncCall) -> None:
         self._call = call
+
+    async def __call__(
+        self,
+        *,
+        profile_url: str | None = None,
+        username: str | None = None,
+        cursor: str | None = None,
+    ) -> XProfilePostsResponse:
+        body = _omit_none(
+            {
+                "profileUrl": profile_url,
+                "username": username,
+                "cursor": cursor,
+            }
+        )
+        return await self._call("POST", "/v1/x/profile/posts", body)
+
+
+class AsyncXProfile:
+    posts: AsyncXProfilePosts
+
+    def __init__(self, call: AsyncCall) -> None:
+        self._call = call
+        self.posts = AsyncXProfilePosts(call)
 
     async def __call__(
         self,
@@ -6627,87 +7634,10 @@ class AsyncFacebook:
         self.marketplace = AsyncFacebookMarketplace(call)
 
 
-class AsyncWebSearch:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str,
-        country: str | None = None,
-        language: str | None = None,
-        include_domains: list[str] | None = None,
-        exclude_domains: list[str] | None = None,
-        time: GoogleSearchTime | None = None,
-        safe_search: bool | None = None,
-        scrape_results: bool | None = None,
-        scrape_limit: int | None = None,
-        page: int | None = None,
-    ) -> GoogleSearchResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "country": country,
-                "language": language,
-                "includeDomains": include_domains,
-                "excludeDomains": exclude_domains,
-                "time": time,
-                "safeSearch": safe_search,
-                "scrapeResults": scrape_results,
-                "scrapeLimit": scrape_limit,
-                "page": page,
-            }
-        )
-        return await self._call("POST", "/v1/web/search", body)
-
-
-class AsyncWebNews:
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-
-    async def __call__(
-        self,
-        *,
-        query: str | None = None,
-        topic: GoogleNewsTopic | None = None,
-        country: str | None = None,
-        language: str | None = None,
-        include_domains: list[str] | None = None,
-        exclude_domains: list[str] | None = None,
-        time: GoogleSearchTime | None = None,
-        sort: GoogleNewsSort | None = None,
-        page: int | None = None,
-    ) -> GoogleNewsResponse:
-        body = _omit_none(
-            {
-                "query": query,
-                "topic": topic,
-                "country": country,
-                "language": language,
-                "includeDomains": include_domains,
-                "excludeDomains": exclude_domains,
-                "time": time,
-                "sort": sort,
-                "page": page,
-            }
-        )
-        return await self._call("POST", "/v1/web/news", body)
-
-
-class AsyncWeb:
-    search: AsyncWebSearch
-    news: AsyncWebNews
-
-    def __init__(self, call: AsyncCall) -> None:
-        self._call = call
-        self.search = AsyncWebSearch(call)
-        self.news = AsyncWebNews(call)
-
-
 class AsyncSurface:
     endpoints: AsyncEndpoints
     google: AsyncGoogle
+    web: AsyncWeb
     youtube: AsyncYoutube
     reddit: AsyncReddit
     instagram: AsyncInstagram
@@ -6718,7 +7648,9 @@ class AsyncSurface:
     upwork: AsyncUpwork
     indeed: AsyncIndeed
     careers: AsyncCareers
+    glassdoor: AsyncGlassdoor
     tripadvisor: AsyncTripadvisor
+    yelp: AsyncYelp
     booking: AsyncBooking
     amazon: AsyncAmazon
     appstore: AsyncAppstore
@@ -6729,11 +7661,11 @@ class AsyncSurface:
     ebay: AsyncEbay
     airbnb: AsyncAirbnb
     facebook: AsyncFacebook
-    web: AsyncWeb
 
     def __init__(self, call: AsyncCall) -> None:
         self.endpoints = AsyncEndpoints(call)
         self.google = AsyncGoogle(call)
+        self.web = AsyncWeb(call)
         self.youtube = AsyncYoutube(call)
         self.reddit = AsyncReddit(call)
         self.instagram = AsyncInstagram(call)
@@ -6744,7 +7676,9 @@ class AsyncSurface:
         self.upwork = AsyncUpwork(call)
         self.indeed = AsyncIndeed(call)
         self.careers = AsyncCareers(call)
+        self.glassdoor = AsyncGlassdoor(call)
         self.tripadvisor = AsyncTripadvisor(call)
+        self.yelp = AsyncYelp(call)
         self.booking = AsyncBooking(call)
         self.amazon = AsyncAmazon(call)
         self.appstore = AsyncAppstore(call)
@@ -6755,4 +7689,3 @@ class AsyncSurface:
         self.ebay = AsyncEbay(call)
         self.airbnb = AsyncAirbnb(call)
         self.facebook = AsyncFacebook(call)
-        self.web = AsyncWeb(call)

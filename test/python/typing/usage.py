@@ -12,7 +12,7 @@ from stophy.generated.models import (
 
 def sync_search() -> GoogleSearchResponse:
     with Stophy() as stophy:
-        return stophy.web.search(query="bun runtime", page=2)
+        return stophy.google.search(query="bun runtime", page=2)
 
 
 def sync_ads() -> MetaAdsPageResponse:
@@ -22,7 +22,7 @@ def sync_ads() -> MetaAdsPageResponse:
 
 async def async_search() -> GoogleSearchResponse:
     async with AsyncStophy() as stophy:
-        return await stophy.web.search(query="bun runtime", page=2)
+        return await stophy.google.search(query="bun runtime", page=2)
 
 
 async def async_transcript() -> YoutubeTranscriptResponse:
