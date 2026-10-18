@@ -207,10 +207,6 @@ export type GoogleSearchResponses = {
           url: string;
         }>;
       };
-      /**
-       * Whether the rows came from Google or from a backup search engine.
-       */
-      engine?: "google" | "other";
       results: Array<
         | {
             type: "web";
@@ -312,6 +308,1156 @@ export type GoogleSearchResponses = {
 export type GoogleSearchResponse =
   GoogleSearchResponses[keyof GoogleSearchResponses];
 
+export type WebSearchData = {
+  body: {
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    includeDomains?: Array<string>;
+    excludeDomains?: Array<string>;
+    /**
+     * Only pages from the past week, month or year. Leave out for any time.
+     */
+    time?: "pastWeek" | "pastMonth" | "pastYear";
+    /**
+     * Hide explicit results.
+     */
+    safeSearch?: boolean;
+    /**
+     * Return at most this many results. You pay 1 credit per 10 returned.
+     */
+    limit?: number;
+    /**
+     * Also read the top results and add each page's text as markdown. Costs 1 more credit for each result that comes back with its text.
+     */
+    scrapeResults?: boolean;
+    /**
+     * How many of the top results to read when scrapeResults is on.
+     */
+    scrapeLimit?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/search";
+};
+
+export type WebSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebSearchError = WebSearchErrors[keyof WebSearchErrors];
+
+export type WebSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        url: string;
+        title: string;
+        /**
+         * Text shown under the title.
+         */
+        description?: string;
+        position: number;
+        /**
+         * The page's text, when scrapeResults is on and the page was read.
+         */
+        markdown?: string;
+        /**
+         * Why this page has no markdown, when scrapeResults is on.
+         */
+        scrapeError?: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebSearchResponse = WebSearchResponses[keyof WebSearchResponses];
+
+export type WebNewsData = {
+  body: {
+    query: string;
+    /**
+     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
+     */
+    country?: string;
+    /**
+     * Only articles from the past week, month or year. Leave out for any time.
+     */
+    time?: "pastWeek" | "pastMonth" | "pastYear";
+    /**
+     * Return at most this many articles. You pay 1 credit per 10 returned.
+     */
+    limit?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/news";
+};
+
+export type WebNewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebNewsError = WebNewsErrors[keyof WebNewsErrors];
+
+export type WebNewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        url: string;
+        title: string;
+        /**
+         * Publication that ran the article.
+         */
+        source?: string;
+        /**
+         * Text shown under the headline.
+         */
+        description?: string;
+        /**
+         * When the article was published.
+         */
+        publishedAt?: string;
+        position: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebNewsResponse = WebNewsResponses[keyof WebNewsResponses];
+
+export type WebImagesData = {
+  body: {
+    query: string;
+    /**
+     * Hide explicit images.
+     */
+    safeSearch?: boolean;
+    /**
+     * Return at most this many images. You pay 1 credit per 10 returned.
+     */
+    limit?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/images";
+};
+
+export type WebImagesErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebImagesError = WebImagesErrors[keyof WebImagesErrors];
+
+export type WebImagesResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        imageUrl: string;
+        title?: string;
+        pageUrl: string;
+        source?: string;
+        width: number;
+        height: number;
+        thumbnailUrl: string;
+        position: number;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebImagesResponse = WebImagesResponses[keyof WebImagesResponses];
+
+export type WebScrapeData = {
+  body: {
+    /**
+     * The page or PDF to read, such as https://bun.com/docs.
+     */
+    url: string;
+    /**
+     * What to return: markdown (clean page text), html (the cleaned page), rawHtml (the page as sent), links (every link on the page) and screenshot (a JPEG of the visible page, as base64). Send { "type": "screenshot", "fullPage": true } for the whole page. A screenshot costs 3 credits, or 15 on the hardest pages to reach. A PDF comes back as markdown only.
+     */
+    formats?: Array<
+      | ("markdown" | "html" | "rawHtml" | "links" | "screenshot")
+      | {
+          type: "screenshot";
+          /**
+           * Capture the whole page from top to bottom instead of the visible part.
+           */
+          fullPage?: boolean;
+        }
+    >;
+    /**
+     * Keep only the page's main content, without menus, headers, footers and ads.
+     */
+    onlyMainContent?: boolean;
+    /**
+     * Keep only the parts of the page that match these CSS selectors, such as article or .price. When set, onlyMainContent is not applied.
+     */
+    includeTags?: Array<string>;
+    /**
+     * Remove the parts of the page that match these CSS selectors, such as .comments.
+     */
+    excludeTags?: Array<string>;
+    /**
+     * Extra milliseconds to wait before reading, for pages that load their content late. To wait for an element, add a wait action with a selector. A read that waits costs 3 credits, or 15 on the hardest pages to reach.
+     */
+    waitFor?: number;
+    /**
+     * How long to keep trying, in milliseconds. Pages behind a bot check can need 10 to 30 seconds the first time.
+     */
+    timeout?: number;
+    /**
+     * Accept a stored answer up to this many milliseconds old. 0 always reads the page live. metadata.cacheState says which one you got.
+     */
+    maxAge?: number;
+    /**
+     * Where to read the page from. The default is the United States.
+     */
+    location?: {
+      /**
+       * Two-letter country code to read the page from, such as DE or JP.
+       */
+      country: string;
+    };
+    /**
+     * Steps to run on the page, in order, before reading it: { "type": "wait", "milliseconds": 500 }, { "type": "wait", "selector": ".results" }, { "type": "click", "selector": "button.more" }, { "type": "write", "text": "tides" }, { "type": "press", "key": "Enter" } or { "type": "scroll", "direction": "down" }. A read with actions costs 3 credits, or 15 on the hardest pages to reach.
+     */
+    actions?: Array<
+      | {
+          type: "wait";
+          milliseconds: number;
+        }
+      | {
+          type: "wait";
+          selector: string;
+        }
+      | {
+          type: "click";
+          selector: string;
+        }
+      | {
+          type: "write";
+          text: string;
+        }
+      | {
+          type: "press";
+          key: string;
+        }
+      | {
+          type: "scroll";
+          direction: "up" | "down";
+        }
+    >;
+    /**
+     * Cut the markdown at this many characters; isTruncated says when that happened.
+     */
+    maxChars?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/scrape";
+};
+
+export type WebScrapeErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebScrapeError = WebScrapeErrors[keyof WebScrapeErrors];
+
+export type WebScrapeResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      markdown?: string;
+      html?: string;
+      rawHtml?: string;
+      links?: Array<string>;
+      screenshot?: string;
+      isTruncated: boolean;
+      metadata: {
+        title?: string;
+        description?: string;
+        language?: string;
+        ogImage?: string;
+        sourceURL?: string;
+        statusCode: number;
+        contentType?: string;
+        cacheState: "hit" | "miss";
+        cachedAt?: string;
+        numPages?: number;
+      };
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebScrapeResponse = WebScrapeResponses[keyof WebScrapeResponses];
+
+export type WebParseData = {
+  body: {
+    /**
+     * The file's bytes as base64, up to 10 MB: a PDF, a Word .docx, an Excel .xlsx, a PowerPoint .pptx or an HTML file.
+     */
+    file: string;
+    /**
+     * The file's name, such as report.docx. The type is read from the file itself.
+     */
+    filename?: string;
+    /**
+     * Read at most this many PDF pages, sheets or slides; isTruncated says when the file had more.
+     */
+    maxPages?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/parse";
+};
+
+export type WebParseErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebParseError = WebParseErrors[keyof WebParseErrors];
+
+export type WebParseResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      markdown?: string;
+      isTruncated: boolean;
+      metadata?: {
+        title?: string;
+        contentType?: string;
+        /**
+         * Pages of a PDF, sheets of a workbook or slides of a deck.
+         */
+        numPages?: number;
+      };
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebParseResponse = WebParseResponses[keyof WebParseResponses];
+
+export type WebMapData = {
+  body: {
+    /**
+     * Any page of the site to map, such as https://bun.com.
+     */
+    url: string;
+    /**
+     * Keep only addresses that mention these words, best matches first, such as pricing.
+     */
+    search?: string;
+    /**
+     * Also list pages on subdomains, such as docs.bun.com for bun.com.
+     */
+    includeSubdomains?: boolean;
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/map";
+};
+
+export type WebMapErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebMapError = WebMapErrors[keyof WebMapErrors];
+
+export type WebMapResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        url?: string;
+        title?: string;
+      }>;
+      page: number;
+      totalPages: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebMapResponse = WebMapResponses[keyof WebMapResponses];
+
+export type WebContactsData = {
+  body: {
+    /**
+     * The website to read, such as https://bun.com.
+     */
+    url: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/contacts";
+};
+
+export type WebContactsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebContactsError = WebContactsErrors[keyof WebContactsErrors];
+
+export type WebContactsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      /**
+       * The page the read started from, after redirects.
+       */
+      url?: string;
+      /**
+       * Email addresses the site publishes, the most reliable first.
+       */
+      emails: Array<{
+        email?: string;
+        /**
+         * The pages of the site that showed it, the most useful first.
+         */
+        pages?: Array<string>;
+      }>;
+      /**
+       * Phone numbers the site publishes, the most reliable first.
+       */
+      phones: Array<{
+        /**
+         * In international format when valid.
+         */
+        phone?: string;
+        /**
+         * The pages of the site that showed it, the most useful first.
+         */
+        pages?: Array<string>;
+      }>;
+      /**
+       * Social profiles the site links to, the site's own first.
+       */
+      socials: Array<{
+        network:
+          | "linkedin"
+          | "instagram"
+          | "x"
+          | "facebook"
+          | "youtube"
+          | "tiktok"
+          | "pinterest"
+          | "discord"
+          | "whatsapp"
+          | "telegram";
+        username?: string;
+        /**
+         * The profile's main page.
+         */
+        url?: string;
+        /**
+         * The pages of the site that showed it, the most useful first.
+         */
+        pages?: Array<string>;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebContactsResponse =
+  WebContactsResponses[keyof WebContactsResponses];
+
+export type WebCrawlData = {
+  body: {
+    /**
+     * The page to start from, such as https://bun.com/docs.
+     */
+    url: string;
+    /**
+     * What you are looking for, such as sqlite performance. Pages about it are read first, and the crawl stops once new pages stop mentioning it.
+     */
+    goal?: string;
+    /**
+     * Read only pages whose path matches one of these, such as /blog*.
+     */
+    includePaths?: Array<string>;
+    /**
+     * Skip pages whose path matches one of these, such as /tag*.
+     */
+    excludePaths?: Array<string>;
+    /**
+     * How many links away from the start page to go.
+     */
+    maxDepth?: number;
+    /**
+     * Stop after reading this many pages in total, across every call.
+     */
+    maxPages?: number;
+    /**
+     * Read the whole site, not only pages under the start page's path.
+     */
+    entireSite?: boolean;
+    /**
+     * Also read pages on subdomains, such as docs.bun.com for bun.com.
+     */
+    includeSubdomains?: boolean;
+    /**
+     * Keep only each page's main content, without menus, headers and footers.
+     */
+    onlyMainContent?: boolean;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/crawl";
+};
+
+export type WebCrawlErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebCrawlError = WebCrawlErrors[keyof WebCrawlErrors];
+
+export type WebCrawlResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      pagesRead: number;
+      results: Array<{
+        url?: string;
+        title?: string;
+        depth: number;
+        markdown?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebCrawlResponse = WebCrawlResponses[keyof WebCrawlResponses];
+
+export type WebCrawlStartData = {
+  body: {
+    /**
+     * The page to start from, such as https://bun.com/docs.
+     */
+    url: string;
+    /**
+     * What you are looking for, such as sqlite performance. Pages about it are read first, and the crawl stops once new pages stop mentioning it.
+     */
+    goal?: string;
+    /**
+     * Read only pages whose path matches one of these, such as /blog*.
+     */
+    includePaths?: Array<string>;
+    /**
+     * Skip pages whose path matches one of these, such as /tag*.
+     */
+    excludePaths?: Array<string>;
+    /**
+     * How many links away from the start page to go.
+     */
+    maxDepth?: number;
+    /**
+     * Stop after reading this many pages in total, across every call.
+     */
+    maxPages?: number;
+    /**
+     * Read the whole site, not only pages under the start page's path.
+     */
+    entireSite?: boolean;
+    /**
+     * Also read pages on subdomains, such as docs.bun.com for bun.com.
+     */
+    includeSubdomains?: boolean;
+    /**
+     * Keep only each page's main content, without menus, headers and footers.
+     */
+    onlyMainContent?: boolean;
+    /**
+     * A public address that gets a JSON POST when the job starts, for each finished page, and when the job ends.
+     */
+    webhook?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/crawl/start";
+};
+
+export type WebCrawlStartErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebCrawlStartError = WebCrawlStartErrors[keyof WebCrawlStartErrors];
+
+export type WebCrawlStartResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      id?: string;
+      status: "queued" | "running" | "completed" | "cancelled" | "failed";
+      total: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebCrawlStartResponse =
+  WebCrawlStartResponses[keyof WebCrawlStartResponses];
+
+export type WebCrawlStatusData = {
+  body: {
+    /**
+     * The id web.crawl.start returned.
+     */
+    id: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/crawl/status";
+};
+
+export type WebCrawlStatusErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebCrawlStatusError =
+  WebCrawlStatusErrors[keyof WebCrawlStatusErrors];
+
+export type WebCrawlStatusResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      id?: string;
+      status: "queued" | "running" | "completed" | "cancelled" | "failed";
+      total: number;
+      completed: number;
+      failed: number;
+      creditsUsed: number;
+      message?: string;
+      errors: Array<{
+        url?: string;
+        code?: string;
+        message?: string;
+      }>;
+      results: Array<{
+        url?: string;
+        title?: string;
+        depth: number;
+        markdown?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebCrawlStatusResponse =
+  WebCrawlStatusResponses[keyof WebCrawlStatusResponses];
+
+export type WebCrawlCancelData = {
+  body: {
+    /**
+     * The id web.crawl.start returned.
+     */
+    id: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/crawl/cancel";
+};
+
+export type WebCrawlCancelErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebCrawlCancelError =
+  WebCrawlCancelErrors[keyof WebCrawlCancelErrors];
+
+export type WebCrawlCancelResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      id?: string;
+      status: "queued" | "running" | "completed" | "cancelled" | "failed";
+      total: number;
+      completed: number;
+      failed: number;
+      creditsUsed: number;
+      message?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebCrawlCancelResponse =
+  WebCrawlCancelResponses[keyof WebCrawlCancelResponses];
+
+export type WebBatchData = {
+  body: {
+    /**
+     * The pages or PDFs to read, up to 100. An address sent twice is read once.
+     */
+    urls: Array<string>;
+    /**
+     * A public address that gets a JSON POST when the job starts, for each finished page, and when the job ends.
+     */
+    webhook?: string;
+    /**
+     * What to return: markdown (clean page text), html (the cleaned page), rawHtml (the page as sent), links (every link on the page) and screenshot (a JPEG of the visible page, as base64). Send { "type": "screenshot", "fullPage": true } for the whole page. A screenshot costs 3 credits, or 15 on the hardest pages to reach. A PDF comes back as markdown only.
+     */
+    formats?: Array<
+      | ("markdown" | "html" | "rawHtml" | "links" | "screenshot")
+      | {
+          type: "screenshot";
+          /**
+           * Capture the whole page from top to bottom instead of the visible part.
+           */
+          fullPage?: boolean;
+        }
+    >;
+    /**
+     * Keep only the page's main content, without menus, headers, footers and ads.
+     */
+    onlyMainContent?: boolean;
+    /**
+     * Keep only the parts of the page that match these CSS selectors, such as article or .price. When set, onlyMainContent is not applied.
+     */
+    includeTags?: Array<string>;
+    /**
+     * Remove the parts of the page that match these CSS selectors, such as .comments.
+     */
+    excludeTags?: Array<string>;
+    /**
+     * Extra milliseconds to wait before reading, for pages that load their content late. To wait for an element, add a wait action with a selector. A read that waits costs 3 credits, or 15 on the hardest pages to reach.
+     */
+    waitFor?: number;
+    /**
+     * How long to keep trying, in milliseconds. Pages behind a bot check can need 10 to 30 seconds the first time.
+     */
+    timeout?: number;
+    /**
+     * Accept a stored answer up to this many milliseconds old. 0 always reads the page live. metadata.cacheState says which one you got.
+     */
+    maxAge?: number;
+    /**
+     * Where to read the page from. The default is the United States.
+     */
+    location?: {
+      /**
+       * Two-letter country code to read the page from, such as DE or JP.
+       */
+      country: string;
+    };
+    /**
+     * Steps to run on the page, in order, before reading it: { "type": "wait", "milliseconds": 500 }, { "type": "wait", "selector": ".results" }, { "type": "click", "selector": "button.more" }, { "type": "write", "text": "tides" }, { "type": "press", "key": "Enter" } or { "type": "scroll", "direction": "down" }. A read with actions costs 3 credits, or 15 on the hardest pages to reach.
+     */
+    actions?: Array<
+      | {
+          type: "wait";
+          milliseconds: number;
+        }
+      | {
+          type: "wait";
+          selector: string;
+        }
+      | {
+          type: "click";
+          selector: string;
+        }
+      | {
+          type: "write";
+          text: string;
+        }
+      | {
+          type: "press";
+          key: string;
+        }
+      | {
+          type: "scroll";
+          direction: "up" | "down";
+        }
+    >;
+    /**
+     * Cut the markdown at this many characters; isTruncated says when that happened.
+     */
+    maxChars?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/batch";
+};
+
+export type WebBatchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebBatchError = WebBatchErrors[keyof WebBatchErrors];
+
+export type WebBatchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      id?: string;
+      status: "queued" | "running" | "completed" | "cancelled" | "failed";
+      total: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebBatchResponse = WebBatchResponses[keyof WebBatchResponses];
+
+export type WebBatchStatusData = {
+  body: {
+    /**
+     * The id web.batch returned.
+     */
+    id: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/batch/status";
+};
+
+export type WebBatchStatusErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebBatchStatusError =
+  WebBatchStatusErrors[keyof WebBatchStatusErrors];
+
+export type WebBatchStatusResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      id?: string;
+      status: "queued" | "running" | "completed" | "cancelled" | "failed";
+      total: number;
+      completed: number;
+      failed: number;
+      creditsUsed: number;
+      message?: string;
+      errors: Array<{
+        url?: string;
+        code?: string;
+        message?: string;
+      }>;
+      results: Array<{
+        markdown?: string;
+        html?: string;
+        rawHtml?: string;
+        links?: Array<string>;
+        screenshot?: string;
+        isTruncated: boolean;
+        metadata: {
+          title?: string;
+          description?: string;
+          language?: string;
+          ogImage?: string;
+          sourceURL?: string;
+          statusCode: number;
+          contentType?: string;
+          cacheState: "hit" | "miss";
+          cachedAt?: string;
+          numPages?: number;
+        };
+        url?: string;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebBatchStatusResponse =
+  WebBatchStatusResponses[keyof WebBatchStatusResponses];
+
+export type WebBatchCancelData = {
+  body: {
+    /**
+     * The id web.batch returned.
+     */
+    id: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/web/batch/cancel";
+};
+
+export type WebBatchCancelErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type WebBatchCancelError =
+  WebBatchCancelErrors[keyof WebBatchCancelErrors];
+
+export type WebBatchCancelResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      id?: string;
+      status: "queued" | "running" | "completed" | "cancelled" | "failed";
+      total: number;
+      completed: number;
+      failed: number;
+      creditsUsed: number;
+      message?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type WebBatchCancelResponse =
+  WebBatchCancelResponses[keyof WebBatchCancelResponses];
+
 export type GoogleNewsData = {
   body: {
     query?: string;
@@ -342,7 +1488,7 @@ export type GoogleNewsData = {
      */
     time?: "pastHour" | "past24Hours" | "pastWeek" | "pastMonth" | "pastYear";
     /**
-     * Google News' own sort: by relevance or newest first.
+     * By relevance, or newest first.
      */
     sort?: "relevance" | "newest";
     /**
@@ -477,181 +1623,6 @@ export type GoogleImagesResponses = {
 
 export type GoogleImagesResponse =
   GoogleImagesResponses[keyof GoogleImagesResponses];
-
-export type GoogleAiModeData = {
-  body: {
-    /**
-     * The question to ask, worded the way a person would ask it.
-     */
-    query: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * Two-letter language code like en or pt. Any case is accepted.
-     */
-    language?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/google/aiMode";
-};
-
-export type GoogleAiModeErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleAiModeError = GoogleAiModeErrors[keyof GoogleAiModeErrors];
-
-export type GoogleAiModeResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      query?: string;
-      answer: string;
-      sources: Array<{
-        url: string;
-        title?: string;
-      }>;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleAiModeResponse =
-  GoogleAiModeResponses[keyof GoogleAiModeResponses];
-
-export type GoogleShoppingData = {
-  body: {
-    query: string;
-    /**
-     * A filter from a previous response's filters. Its page already holds earlier choices; a selected one removes it.
-     */
-    filter?: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * Two-letter language code like en or pt. Any case is accepted.
-     */
-    language?: string;
-    /**
-     * Page number, starting at 1.
-     */
-    page?: number;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/google/shopping";
-};
-
-export type GoogleShoppingErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleShoppingError =
-  GoogleShoppingErrors[keyof GoogleShoppingErrors];
-
-export type GoogleShoppingResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      /**
-       * Google Shopping's own filters for this search.
-       */
-      filters?: Array<{
-        /**
-         * Google's name for the filter, like Price or Brand.
-         */
-        group: string;
-        options?: Array<{
-          label: string;
-          /**
-           * Send as filter to apply this choice.
-           */
-          filter: string;
-          isSelected: boolean;
-        }>;
-      }>;
-      results: Array<{
-        /**
-         * Google Shopping's id for this product.
-         */
-        productId: string;
-        title: string;
-        /**
-         * Current price in the country's currency.
-         */
-        price: number;
-        /**
-         * ISO 4217 currency code, e.g. USD.
-         */
-        priceCurrency?: string;
-        /**
-         * Higher price Google shows next to the current one, when there is one.
-         */
-        originalPrice?: number;
-        /**
-         * Store with the listed price.
-         */
-        seller?: string;
-        /**
-         * Delivery terms, in the page language.
-         */
-        delivery?: string;
-        /**
-         * Return terms, in the page language.
-         */
-        returns?: string;
-        rating?: number;
-        /**
-         * How many reviews the rating is based on.
-         */
-        reviews?: number;
-        position: number;
-      }>;
-      page: number;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleShoppingResponse =
-  GoogleShoppingResponses[keyof GoogleShoppingResponses];
 
 export type GoogleSuggestData = {
   body: {
@@ -1062,115 +2033,6 @@ export type GoogleScholarResponses = {
 
 export type GoogleScholarResponse =
   GoogleScholarResponses[keyof GoogleScholarResponses];
-
-export type GoogleJobsData = {
-  body: {
-    /**
-     * The role, like software engineer.
-     */
-    query: string;
-    /**
-     * City or area, like Austin, TX.
-     */
-    location?: string;
-    /**
-     * ISO 3166-1 alpha-2 country code, e.g. us. Any case is accepted.
-     */
-    country?: string;
-    /**
-     * BCP 47 language tag, e.g. en or pt-BR. Any case is accepted.
-     */
-    language?: string;
-    /**
-     * Google Jobs' own Date posted.
-     */
-    datePosted?: "yesterday" | "last3Days" | "lastWeek" | "lastMonth";
-    /**
-     * Google Jobs' own Job type.
-     */
-    jobType?: "fullTime" | "partTime" | "contract" | "internship";
-    /**
-     * Google Jobs' own Remote chip.
-     */
-    remote?: boolean;
-    /**
-     * The cursor from the previous response. Send it as is.
-     */
-    cursor?: string;
-  };
-  path?: never;
-  query?: {
-    /**
-     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
-     */
-    maxTextLength?: number;
-  };
-  url: "/v1/google/jobs";
-};
-
-export type GoogleJobsErrors = {
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "4XX": _Error;
-  /**
-   * The request failed. retryable says whether trying again can help.
-   */
-  "5XX": _Error;
-};
-
-export type GoogleJobsError = GoogleJobsErrors[keyof GoogleJobsErrors];
-
-export type GoogleJobsResponses = {
-  /**
-   * The data, and the credits this call used.
-   */
-  200: {
-    success: true;
-    data: {
-      results: Array<{
-        jobId: string;
-        title: string;
-        companyName?: string;
-        location?: string;
-        /**
-         * The site Google found the post on.
-         */
-        via?: string;
-        /**
-         * Rounded to what Google shows: the hour for posts under a day old, the day for older ones.
-         */
-        publishedAt?: string;
-        jobType?: string;
-        /**
-         * As Google shows it, like 140K–170K a year.
-         */
-        salary?: string;
-        benefits?: Array<string>;
-        apply?: Array<{
-          site: string;
-          url: string;
-        }>;
-        qualifications?: Array<string>;
-        responsibilities?: Array<string>;
-        /**
-         * The start of the job description, as Google shows it.
-         */
-        description?: string;
-        /**
-         * The job on Google Jobs.
-         */
-        jobUrl: string;
-        position: number;
-      }>;
-      cursor?: string;
-    };
-    creditsUsed: number;
-    requestId: string;
-  };
-};
-
-export type GoogleJobsResponse = GoogleJobsResponses[keyof GoogleJobsResponses];
 
 export type GooglePatentsData = {
   body: {
@@ -6090,6 +6952,235 @@ export type CareersJobResponses = {
 
 export type CareersJobResponse = CareersJobResponses[keyof CareersJobResponses];
 
+export type GlassdoorCompanyData = {
+  body: {
+    /**
+     * Link to the Glassdoor company, like https://www.glassdoor.com/Overview/Working-at-Google-EI_IE9079.11,17.htm. Send this or companyId.
+     */
+    companyUrl?: string;
+    /**
+     * Glassdoor company id, like 9079. Send this or companyUrl.
+     */
+    companyId?: string;
+    /**
+     * Glassdoor company name, like Google.
+     */
+    companyName?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/glassdoor/company";
+};
+
+export type GlassdoorCompanyErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GlassdoorCompanyError =
+  GlassdoorCompanyErrors[keyof GlassdoorCompanyErrors];
+
+export type GlassdoorCompanyResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      companyId?: string;
+      companyUrl?: string;
+      name?: string;
+      rating?: number;
+      /**
+       * Reviews in every language.
+       */
+      reviews?: number;
+      cultureRating?: number;
+      workLifeBalanceRating?: number;
+      payRating?: number;
+      managementRating?: number;
+      careerOpportunitiesRating?: number;
+      recommendPercent?: number;
+      ceoApprovalPercent?: number;
+      size?: string;
+      industry?: string;
+      headquarters?: string;
+      website?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GlassdoorCompanyResponse =
+  GlassdoorCompanyResponses[keyof GlassdoorCompanyResponses];
+
+export type GlassdoorCompanyReviewsData = {
+  body: {
+    /**
+     * Link to the Glassdoor company, like https://www.glassdoor.com/Overview/Working-at-Google-EI_IE9079.11,17.htm. Send this or companyId.
+     */
+    companyUrl?: string;
+    /**
+     * Glassdoor company id, like 9079. Send this or companyUrl.
+     */
+    companyId?: string;
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/glassdoor/company/reviews";
+};
+
+export type GlassdoorCompanyReviewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GlassdoorCompanyReviewsError =
+  GlassdoorCompanyReviewsErrors[keyof GlassdoorCompanyReviewsErrors];
+
+export type GlassdoorCompanyReviewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      companyId?: string;
+      /**
+       * Reviews written in English. These are the ones this endpoint lists.
+       */
+      total?: number;
+      /**
+       * Reviews in every language, the same number as reviews on glassdoor.company.
+       */
+      totalAllLanguages?: number;
+      results: Array<{
+        reviewId?: string;
+        rating?: number;
+        title?: string;
+        pros?: string;
+        cons?: string;
+        adviceToManagement?: string;
+        jobTitle?: string;
+        location?: string;
+        employmentStatus?: string;
+        createdDate?: string;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GlassdoorCompanyReviewsResponse =
+  GlassdoorCompanyReviewsResponses[keyof GlassdoorCompanyReviewsResponses];
+
+export type GlassdoorCompanySalariesData = {
+  body: {
+    /**
+     * Link to the Glassdoor company, like https://www.glassdoor.com/Overview/Working-at-Google-EI_IE9079.11,17.htm. Send this or companyId.
+     */
+    companyUrl?: string;
+    /**
+     * Glassdoor company id, like 9079. Send this or companyUrl.
+     */
+    companyId?: string;
+    /**
+     * Country the pay is reported for, as its English name like India or Germany. Defaults to the United States.
+     */
+    country?: string;
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/glassdoor/company/salaries";
+};
+
+export type GlassdoorCompanySalariesErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type GlassdoorCompanySalariesError =
+  GlassdoorCompanySalariesErrors[keyof GlassdoorCompanySalariesErrors];
+
+export type GlassdoorCompanySalariesResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      companyId?: string;
+      country?: string;
+      /**
+       * Job titles with pay reports in this country.
+       */
+      total?: number;
+      results: Array<{
+        jobTitle?: string;
+        reports?: number;
+        totalPayMin?: number;
+        totalPayMedian?: number;
+        totalPayMax?: number;
+        basePayMin?: number;
+        basePayMedian?: number;
+        basePayMax?: number;
+        payCurrency?: string;
+        payPeriod?: "hour" | "month" | "year";
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type GlassdoorCompanySalariesResponse =
+  GlassdoorCompanySalariesResponses[keyof GlassdoorCompanySalariesResponses];
+
 export type TripadvisorSearchData = {
   body: {
     query: string;
@@ -6338,6 +7429,217 @@ export type TripadvisorReviewsResponses = {
 
 export type TripadvisorReviewsResponse =
   TripadvisorReviewsResponses[keyof TripadvisorReviewsResponses];
+
+export type YelpSearchData = {
+  body: {
+    /**
+     * What to find, like plumber, pizza or a business name.
+     */
+    query: string;
+    /**
+     * A city, neighborhood, address or postal code, like Austin, TX.
+     */
+    location: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/yelp/search";
+};
+
+export type YelpSearchErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YelpSearchError = YelpSearchErrors[keyof YelpSearchErrors];
+
+export type YelpSearchResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      results: Array<{
+        businessId?: string;
+        businessAlias?: string;
+        businessUrl: string;
+        name?: string;
+        rating?: number;
+        reviews?: number;
+        priceLevel?: string;
+        categories?: Array<string>;
+        addressStreet?: string;
+        addressCity?: string;
+      }>;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YelpSearchResponse = YelpSearchResponses[keyof YelpSearchResponses];
+
+export type YelpBusinessData = {
+  body: {
+    /**
+     * Link to the Yelp business, like https://www.yelp.com/biz/franklin-barbecue-austin. Send this or businessId.
+     */
+    businessUrl?: string;
+    /**
+     * Yelp business id or alias, like MGzro82Fi4LYvc86acoONQ. Send this or businessUrl.
+     */
+    businessId?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/yelp/business";
+};
+
+export type YelpBusinessErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YelpBusinessError = YelpBusinessErrors[keyof YelpBusinessErrors];
+
+export type YelpBusinessResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      businessId?: string;
+      businessAlias?: string;
+      businessUrl: string;
+      name?: string;
+      rating?: number;
+      reviews?: number;
+      priceLevel?: string;
+      categories: Array<string>;
+      addressFull?: string;
+      addressStreet?: string;
+      addressCity?: string;
+      addressRegion?: string;
+      addressPostalCode?: string;
+      addressCountry?: string;
+      neighborhoods: Array<string>;
+      latitude?: number;
+      longitude?: number;
+      phone?: string;
+      website?: string;
+      hours: Array<{
+        day?: string;
+        times?: Array<string>;
+      }>;
+      photosAndVideos?: number;
+      isClaimed?: boolean;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YelpBusinessResponse =
+  YelpBusinessResponses[keyof YelpBusinessResponses];
+
+export type YelpBusinessReviewsData = {
+  body: {
+    /**
+     * Link to the Yelp business, like https://www.yelp.com/biz/franklin-barbecue-austin. Send this or businessId.
+     */
+    businessUrl?: string;
+    /**
+     * Yelp business id or alias, like MGzro82Fi4LYvc86acoONQ. Send this or businessUrl.
+     */
+    businessId?: string;
+    /**
+     * relevance (Yelp Sort), newest, oldest, highest (Highest Rated) or lowest (Lowest Rated), the same as Yelp's own Sort menu.
+     */
+    sort?: "relevance" | "newest" | "oldest" | "highest" | "lowest";
+    /**
+     * Page number, starting at 1.
+     */
+    page?: number;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/yelp/business/reviews";
+};
+
+export type YelpBusinessReviewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type YelpBusinessReviewsError =
+  YelpBusinessReviewsErrors[keyof YelpBusinessReviewsErrors];
+
+export type YelpBusinessReviewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      businessId?: string;
+      businessName?: string;
+      businessUrl?: string;
+      total?: number;
+      results: Array<{
+        reviewId?: string;
+        reviewUrl?: string;
+        rating?: number;
+        text?: string;
+        language?: string;
+        createdAt?: string;
+        authorName?: string;
+        ownerReplyText?: string;
+        ownerReplyAt?: string;
+      }>;
+      page: number;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type YelpBusinessReviewsResponse =
+  YelpBusinessReviewsResponses[keyof YelpBusinessReviewsResponses];
 
 export type GoogleFlightsData = {
   body: {
@@ -7133,6 +8435,92 @@ export type AmazonProductResponses = {
 
 export type AmazonProductResponse =
   AmazonProductResponses[keyof AmazonProductResponses];
+
+export type AmazonReviewsData = {
+  body: {
+    /**
+     * Link to the Amazon product, like https://www.amazon.com/dp/B0CX23V2ZK. Send this or productId.
+     */
+    productUrl?: string;
+    /**
+     * Amazon product ASIN, like B0CX23V2ZK. Send this or productUrl.
+     */
+    productId?: string;
+    /**
+     * Only reviews with this star rating.
+     */
+    rating?: number;
+    /**
+     * Only reviews from verified purchases.
+     */
+    verifiedOnly?: boolean;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/amazon/reviews";
+};
+
+export type AmazonReviewsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type AmazonReviewsError = AmazonReviewsErrors[keyof AmazonReviewsErrors];
+
+export type AmazonReviewsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      productId?: string;
+      results: Array<{
+        authorName?: string;
+        rating: number;
+        title?: string;
+        text?: string;
+        /**
+         * The day the review was written, at midnight UTC. Amazon gives no time of day.
+         */
+        publishedAt?: string;
+        /**
+         * Where the review was written, like United States.
+         */
+        country?: string;
+        isVerified: boolean;
+        /**
+         * Written in Amazon's Vine program, for a free product.
+         */
+        isVine: boolean;
+        helpfulVotes: number;
+        imageUrls?: Array<string>;
+        videoUrls?: Array<string>;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type AmazonReviewsResponse =
+  AmazonReviewsResponses[keyof AmazonReviewsResponses];
 
 export type AmazonBestsellersData = {
   body: {
@@ -8039,7 +9427,6 @@ export type PinterestBoardResponses = {
         videoDurationSeconds?: number;
         saves?: number;
         reposts?: number;
-        comments?: number;
         reactions?: number;
         isPromoted: boolean;
         authorId?: string;
@@ -8138,8 +9525,6 @@ export type PinterestProfileResponses = {
         videoUrl?: string;
         videoDurationSeconds?: number;
         saves?: number;
-        reposts?: number;
-        comments?: number;
         reactions?: number;
         isPromoted: boolean;
         authorId?: string;
@@ -8226,6 +9611,104 @@ export type XProfileResponses = {
 };
 
 export type XProfileResponse = XProfileResponses[keyof XProfileResponses];
+
+export type XProfilePostsData = {
+  body: {
+    /**
+     * Link to the X profile, like https://x.com/nasa. Send this or username.
+     */
+    profileUrl?: string;
+    /**
+     * X profile handle, like nasa. Send this or profileUrl.
+     */
+    username?: string;
+    /**
+     * The cursor from the previous response. Send it as is.
+     */
+    cursor?: string;
+  };
+  path?: never;
+  query?: {
+    /**
+     * Cut every text value in the response to this many characters. A value that was cut ends with …, and a page whose text was cut has isTruncated set to true. A screenshot is never cut. Leave it out to get the full text.
+     */
+    maxTextLength?: number;
+  };
+  url: "/v1/x/profile/posts";
+};
+
+export type XProfilePostsErrors = {
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "4XX": _Error;
+  /**
+   * The request failed. retryable says whether trying again can help.
+   */
+  "5XX": _Error;
+};
+
+export type XProfilePostsError = XProfilePostsErrors[keyof XProfilePostsErrors];
+
+export type XProfilePostsResponses = {
+  /**
+   * The data, and the credits this call used.
+   */
+  200: {
+    success: true;
+    data: {
+      /**
+       * newest is the profile's posts, newest first, paged with cursor. popular is the set of popular posts X shows for some profiles instead, all in one page.
+       */
+      order: "newest" | "popular";
+      results: Array<{
+        postId?: string;
+        postUrl: string;
+        text?: string;
+        publishedAt?: string;
+        language?: string;
+        likes?: number;
+        replies?: number;
+        reposts?: number;
+        quotes?: number;
+        bookmarks?: number;
+        views?: number;
+        authorId?: string;
+        authorUsername?: string;
+        authorName?: string;
+        authorUrl?: string;
+        authorAvatarUrl?: string;
+        authorIsVerified?: boolean;
+        media?: Array<{
+          type: "photo" | "video" | "gif";
+          url: string;
+          thumbnailUrl?: string;
+          width?: number;
+          height?: number;
+          durationSeconds?: number;
+          altText?: string;
+        }>;
+        links?: Array<string>;
+        hashtags?: Array<string>;
+        mentions?: Array<string>;
+        replyToUrl?: string;
+        quotedUrl?: string;
+        quotedText?: string;
+        quotedAuthorUsername?: string;
+        isEdited: boolean;
+        isSensitive: boolean;
+        isPinned: boolean;
+        isRepost: boolean;
+      }>;
+      cursor?: string;
+    };
+    creditsUsed: number;
+    requestId: string;
+  };
+};
+
+export type XProfilePostsResponse =
+  XProfilePostsResponses[keyof XProfilePostsResponses];
 
 export type XPostData = {
   body: {

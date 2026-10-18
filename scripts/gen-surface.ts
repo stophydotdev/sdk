@@ -1,11 +1,6 @@
 // Builds the namespaced client surface from openapi.json and the hey-api types.
 // Usage: bun scripts/gen-surface.ts
 
-const ALIASES: Record<string, string> = {
-	"/v1/web/search": "/v1/google/search",
-	"/v1/web/news": "/v1/google/news",
-};
-
 const root = new URL("..", import.meta.url);
 const specUrl = new URL("openapi.json", root);
 const typesUrl = new URL(
@@ -92,11 +87,6 @@ function operationsFrom(value: unknown): Operation[] {
 			operations.push(operationFrom(path, "get", item.get));
 		if (isRecord(item.post))
 			operations.push(operationFrom(path, "post", item.post));
-	}
-	for (const [alias, target] of Object.entries(ALIASES)) {
-		const original = operations.find((operation) => operation.path === target);
-		if (original === undefined) continue;
-		operations.push({ ...original, path: alias, segments: segmentsOf(alias) });
 	}
 	return operations;
 }

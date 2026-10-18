@@ -11,18 +11,54 @@ import type {
   GoogleSearchData,
   GoogleSearchResponse,
   GoogleSearchError,
+  WebSearchData,
+  WebSearchResponse,
+  WebSearchError,
+  WebNewsData,
+  WebNewsResponse,
+  WebNewsError,
+  WebImagesData,
+  WebImagesResponse,
+  WebImagesError,
+  WebScrapeData,
+  WebScrapeResponse,
+  WebScrapeError,
+  WebParseData,
+  WebParseResponse,
+  WebParseError,
+  WebMapData,
+  WebMapResponse,
+  WebMapError,
+  WebContactsData,
+  WebContactsResponse,
+  WebContactsError,
+  WebCrawlData,
+  WebCrawlResponse,
+  WebCrawlError,
+  WebCrawlStartData,
+  WebCrawlStartResponse,
+  WebCrawlStartError,
+  WebCrawlStatusData,
+  WebCrawlStatusResponse,
+  WebCrawlStatusError,
+  WebCrawlCancelData,
+  WebCrawlCancelResponse,
+  WebCrawlCancelError,
+  WebBatchData,
+  WebBatchResponse,
+  WebBatchError,
+  WebBatchStatusData,
+  WebBatchStatusResponse,
+  WebBatchStatusError,
+  WebBatchCancelData,
+  WebBatchCancelResponse,
+  WebBatchCancelError,
   GoogleNewsData,
   GoogleNewsResponse,
   GoogleNewsError,
   GoogleImagesData,
   GoogleImagesResponse,
   GoogleImagesError,
-  GoogleAiModeData,
-  GoogleAiModeResponse,
-  GoogleAiModeError,
-  GoogleShoppingData,
-  GoogleShoppingResponse,
-  GoogleShoppingError,
   GoogleSuggestData,
   GoogleSuggestResponse,
   GoogleSuggestError,
@@ -38,9 +74,6 @@ import type {
   GoogleScholarData,
   GoogleScholarResponse,
   GoogleScholarError,
-  GoogleJobsData,
-  GoogleJobsResponse,
-  GoogleJobsError,
   GooglePatentsData,
   GooglePatentsResponse,
   GooglePatentsError,
@@ -197,6 +230,15 @@ import type {
   CareersJobData,
   CareersJobResponse,
   CareersJobError,
+  GlassdoorCompanyData,
+  GlassdoorCompanyResponse,
+  GlassdoorCompanyError,
+  GlassdoorCompanyReviewsData,
+  GlassdoorCompanyReviewsResponse,
+  GlassdoorCompanyReviewsError,
+  GlassdoorCompanySalariesData,
+  GlassdoorCompanySalariesResponse,
+  GlassdoorCompanySalariesError,
   TripadvisorSearchData,
   TripadvisorSearchResponse,
   TripadvisorSearchError,
@@ -206,6 +248,15 @@ import type {
   TripadvisorReviewsData,
   TripadvisorReviewsResponse,
   TripadvisorReviewsError,
+  YelpSearchData,
+  YelpSearchResponse,
+  YelpSearchError,
+  YelpBusinessData,
+  YelpBusinessResponse,
+  YelpBusinessError,
+  YelpBusinessReviewsData,
+  YelpBusinessReviewsResponse,
+  YelpBusinessReviewsError,
   GoogleFlightsData,
   GoogleFlightsResponse,
   GoogleFlightsError,
@@ -227,6 +278,9 @@ import type {
   AmazonProductData,
   AmazonProductResponse,
   AmazonProductError,
+  AmazonReviewsData,
+  AmazonReviewsResponse,
+  AmazonReviewsError,
   AmazonBestsellersData,
   AmazonBestsellersResponse,
   AmazonBestsellersError,
@@ -266,6 +320,9 @@ import type {
   XProfileData,
   XProfileResponse,
   XProfileError,
+  XProfilePostsData,
+  XProfilePostsResponse,
+  XProfilePostsError,
   XPostData,
   XPostResponse,
   XPostError,
@@ -402,6 +459,384 @@ export const googleSearch = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Scrape web search results
+ * Costs 1 credit per 10 results, plus 1 credit for each result that comes back with its page text when scrapeResults is on. Works without an API key, within free limits.
+ */
+export const webSearch = <ThrowOnError extends boolean = false>(
+  options: Options<WebSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebSearchResponse,
+    WebSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape news search results
+ * Costs 1 credit per 10 articles. Works without an API key, within free limits.
+ */
+export const webNews = <ThrowOnError extends boolean = false>(
+  options: Options<WebNewsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebNewsResponse,
+    WebNewsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/news",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape image search results
+ * Costs 1 credit per 10 images. Works without an API key, within free limits.
+ */
+export const webImages = <ThrowOnError extends boolean = false>(
+  options: Options<WebImagesData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebImagesResponse,
+    WebImagesError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/images",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape any public web page as markdown, HTML, links or a screenshot
+ * Costs 1 credit for most pages. 2 or 3 credits when a page takes more work to load, and 15 credits for the hardest pages to reach. A read with a screenshot, actions or waitFor costs 3 credits, or 15 on the hardest pages to reach. An answer from a stored copy costs 1 credit. A page that cannot be read costs nothing. creditsUsed shows what the call cost. Works without an API key, within free limits.
+ */
+export const webScrape = <ThrowOnError extends boolean = false>(
+  options: Options<WebScrapeData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebScrapeResponse,
+    WebScrapeError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/scrape",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Turn a PDF, Word, Excel, PowerPoint or HTML file into markdown
+ * Costs 1 credit per call. Works without an API key, within free limits.
+ */
+export const webParse = <ThrowOnError extends boolean = false>(
+  options: Options<WebParseData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebParseResponse,
+    WebParseError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/parse",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape the list of pages on a website
+ * Costs 1 credit per call. Pages with page. Works without an API key, within free limits.
+ */
+export const webMap = <ThrowOnError extends boolean = false>(
+  options: Options<WebMapData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebMapResponse,
+    WebMapError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/map",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape the emails, phone numbers and social profiles a website publishes
+ * Costs 1 credit per call.
+ */
+export const webContacts = <ThrowOnError extends boolean = false>(
+  options: Options<WebContactsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebContactsResponse,
+    WebContactsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/contacts",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Crawl a website and scrape its pages as markdown
+ * Costs 1 credit a page for most pages, 2 or 3 credits when a page takes more work to load, and 15 credits for the hardest pages to reach. A page that cannot be read costs nothing. Each call reads up to 4 pages. Pages with cursor.
+ */
+export const webCrawl = <ThrowOnError extends boolean = false>(
+  options: Options<WebCrawlData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebCrawlResponse,
+    WebCrawlError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/crawl",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Crawl a website in the background
+ * Costs 1 credit a page for most pages, 2 or 3 credits when a page takes more work to load, and 15 credits for the hardest pages to reach. A page that cannot be read costs nothing. Each page is charged when it finishes. Starting the job is free.
+ */
+export const webCrawlStart = <ThrowOnError extends boolean = false>(
+  options: Options<WebCrawlStartData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebCrawlStartResponse,
+    WebCrawlStartError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/crawl/start",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Check a background crawl and read the finished pages
+ * Costs 0 credits per call. Pages with cursor.
+ */
+export const webCrawlStatus = <ThrowOnError extends boolean = false>(
+  options: Options<WebCrawlStatusData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebCrawlStatusResponse,
+    WebCrawlStatusError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/crawl/status",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Stop a background crawl and keep the pages already read
+ * Costs 0 credits per call.
+ */
+export const webCrawlCancel = <ThrowOnError extends boolean = false>(
+  options: Options<WebCrawlCancelData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebCrawlCancelResponse,
+    WebCrawlCancelError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/crawl/cancel",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape up to 100 pages in the background
+ * Costs 1 credit a page for most pages, 2 or 3 credits when a page takes more work to load, and 15 credits for the hardest pages to reach. A read with a screenshot, actions or waitFor costs 3 credits, or 15 on the hardest pages to reach. An answer from a stored copy costs 1 credit. A page that cannot be read costs nothing. Each page is charged when it finishes. Starting the job is free.
+ */
+export const webBatch = <ThrowOnError extends boolean = false>(
+  options: Options<WebBatchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebBatchResponse,
+    WebBatchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/batch",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Check a batch scrape and read the finished pages
+ * Costs 0 credits per call. Pages with cursor.
+ */
+export const webBatchStatus = <ThrowOnError extends boolean = false>(
+  options: Options<WebBatchStatusData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebBatchStatusResponse,
+    WebBatchStatusError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/batch/status",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Stop a batch scrape and keep the pages already read
+ * Costs 0 credits per call.
+ */
+export const webBatchCancel = <ThrowOnError extends boolean = false>(
+  options: Options<WebBatchCancelData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    WebBatchCancelResponse,
+    WebBatchCancelError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/web/batch/cancel",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
  * Scrape Google News results and headlines
  * Costs 1 credit per call. Pages with page. Works without an API key, within free limits.
  */
@@ -430,7 +865,7 @@ export const googleNews = <ThrowOnError extends boolean = false>(
 
 /**
  * Scrape Google Images results
- * Costs 1 credit per 10 images.
+ * Costs 1 credit per 10 images. Works without an API key, within free limits.
  */
 export const googleImages = <ThrowOnError extends boolean = false>(
   options: Options<GoogleImagesData, ThrowOnError>
@@ -447,60 +882,6 @@ export const googleImages = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/google/images",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Scrape Google AI Mode answers with their sources
- * Costs 2 credits per call.
- */
-export const googleAiMode = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleAiModeData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleAiModeResponse,
-    GoogleAiModeError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/aiMode",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Scrape Google Shopping results
- * Costs 2 credits per call. Pages with page.
- */
-export const googleShopping = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleShoppingData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleShoppingResponse,
-    GoogleShoppingError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/shopping",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -636,33 +1017,6 @@ export const googleScholar = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/google/scholar",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-};
-
-/**
- * Scrape Google Jobs results
- * Costs 1 credit per call. Pages with cursor.
- */
-export const googleJobs = <ThrowOnError extends boolean = false>(
-  options: Options<GoogleJobsData, ThrowOnError>
-) => {
-  return (options.client ?? _heyApiClient).post<
-    GoogleJobsResponse,
-    GoogleJobsError,
-    ThrowOnError
-  >({
-    security: [
-      {
-        scheme: "bearer",
-        type: "http",
-      },
-    ],
-    url: "/v1/google/jobs",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2076,6 +2430,87 @@ export const careersJob = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Scrape a Glassdoor company's ratings and details
+ * Costs 1 credit per call.
+ */
+export const glassdoorCompany = <ThrowOnError extends boolean = false>(
+  options: Options<GlassdoorCompanyData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GlassdoorCompanyResponse,
+    GlassdoorCompanyError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/glassdoor/company",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape a Glassdoor company's employee reviews
+ * Costs 1 credit per call. Pages with page.
+ */
+export const glassdoorCompanyReviews = <ThrowOnError extends boolean = false>(
+  options: Options<GlassdoorCompanyReviewsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GlassdoorCompanyReviewsResponse,
+    GlassdoorCompanyReviewsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/glassdoor/company/reviews",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape a Glassdoor company's salaries by job title
+ * Costs 1 credit per call. Pages with page.
+ */
+export const glassdoorCompanySalaries = <ThrowOnError extends boolean = false>(
+  options: Options<GlassdoorCompanySalariesData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GlassdoorCompanySalariesResponse,
+    GlassdoorCompanySalariesError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/glassdoor/company/salaries",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
  * Scrape Tripadvisor search results
  * Costs 1 credit per call.
  */
@@ -2148,6 +2583,87 @@ export const tripadvisorReviews = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/tripadvisor/reviews",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape Yelp search results
+ * Costs 1 credit per call.
+ */
+export const yelpSearch = <ThrowOnError extends boolean = false>(
+  options: Options<YelpSearchData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    YelpSearchResponse,
+    YelpSearchError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/yelp/search",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape a Yelp business page
+ * Costs 1 credit per call.
+ */
+export const yelpBusiness = <ThrowOnError extends boolean = false>(
+  options: Options<YelpBusinessData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    YelpBusinessResponse,
+    YelpBusinessError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/yelp/business",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape a Yelp business's reviews
+ * Costs 1 credit per call. Pages with page.
+ */
+export const yelpBusinessReviews = <ThrowOnError extends boolean = false>(
+  options: Options<YelpBusinessReviewsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    YelpBusinessReviewsResponse,
+    YelpBusinessReviewsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/yelp/business/reviews",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2337,6 +2853,33 @@ export const amazonProduct = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/amazon/product",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape an Amazon product's US reviews
+ * Costs 1 credit per call. Pages with cursor.
+ */
+export const amazonReviews = <ThrowOnError extends boolean = false>(
+  options: Options<AmazonReviewsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    AmazonReviewsResponse,
+    AmazonReviewsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/amazon/reviews",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2688,6 +3231,33 @@ export const xProfile = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/v1/x/profile",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Scrape an X profile's posts
+ * Costs 1 credit per call. Pages with cursor.
+ */
+export const xProfilePosts = <ThrowOnError extends boolean = false>(
+  options: Options<XProfilePostsData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    XProfilePostsResponse,
+    XProfilePostsError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/v1/x/profile/posts",
     ...options,
     headers: {
       "Content-Type": "application/json",
